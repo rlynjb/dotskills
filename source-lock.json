@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "sources": {
+    "dotfiles": {
+      "repository": "rlynjb/dotfiles",
+      "ref": "master",
+      "commit": "5a0e147ac81db92c1082dfb8ed4a6b629845b742"
+    },
+    "buffr": {
+      "repository": "rlynjb/buffr",
+      "ref": "main",
+      "commit": "d7031090cc001632fd7d649076a2de5bc995b82c"
+    }
+  },
+  "files": [
+    {
+      "source": "buffr",
+      "source_path": "src/agents/core/policy.md",
+      "destination": "skills/buffr-decision-support/references/runtime/m0-policy.md",
+      "blob_sha": "e6e871c94a1669dec7dc91695db5924c3326a71d"
+    },
+    {
+      "source": "buffr",
+      "source_path": "src/agents/context/prompt.md",
+      "destination": "skills/buffr-decision-support/references/runtime/m1-context.md",
+      "blob_sha": "0cb96fa9d82e10da534bee9b133d144fde9cd373"
+    },
+    {
+      "source": "buffr",
+      "source_path": "src/agents/metrics/prompt.md",
+      "destination": "skills/buffr-decision-support/references/runtime/m2-metrics.md",
+      "blob_sha": "8e0a2f3d983dd04bbe706cc36d8622a830be97b2"
+    },
+    {
+      "source": "buffr",
+      "source_path": "src/agents/research/prompt.md",
+      "destination": "skills/buffr-decision-support/references/runtime/m3-research.md",
+      "blob_sha": "d2e9913c131b124648753ec03807cbb2ca397266"
+    },
+    {
+      "source": "buffr",
+      "source_path": "src/agents/diagnosis/prompt.md",
+      "destination": "skills/buffr-decision-support/references/runtime/m4-diagnosis.md",
+      "blob_sha": "b390522e58176c18e6d895a25ff17fdb7328554c"
+    },
+    {
+      "source": "buffr",
+      "source_path": "src/agents/hypothesis/prompt.md",
+      "destination": "skills/buffr-decision-support/references/runtime/m5-hypothesis.md",
+      "blob_sha": "a975e5dac2d5edc20bc91a6fcb63ec284a0aa8bb"
+    },
+    {
+      "source": "buffr",
+      "source_path": "src/agents/test-definition/prompt.md",
+      "destination": "skills/buffr-decision-support/references/runtime/m6-test-definition.md",
+      "blob_sha": "57729a7df072e985ffc56c22d314a606ea9bf3dc"
+    },
+    {
+      "source": "buffr",
+      "source_path": "src/agents/evaluation/prompt.md",
+      "destination": "skills/buffr-decision-support/references/runtime/m7-evaluation.md",
+      "blob_sha": "96f999bf952e93bbd5da3ef4858479d4f57c3989"
+    },
+    {
+      "source": "buffr",
+      "source_path": "docs/module-prompts/classification-diagnosis-module-v3.md",
+      "destination": "skills/buffr-decision-support/references/versioned/classification-diagnosis-module-v3.md",
+      "blob_sha": "9bf3ec24ab86e58f0c0fd7f734d57f60329aaade"
+    },
+    {
+      "source": "buffr",
+      "source_path": "docs/module-prompts/domain-research-module-v2.md",
+      "destination": "skills/buffr-decision-support/references/versioned/domain-research-module-v2.md",
+      "blob_sha": "0573a89c66ae1c0e2c047fccd1f1e24e49a87f80"
+    },
+    {
+      "source": "buffr",
+      "source_path": "docs/module-prompts/etsy-core-agent-prompt-v3.md",
+      "destination": "skills/buffr-decision-support/references/versioned/etsy-core-agent-prompt-v3.md",
+      "blob_sha": "bda43ca3ef386f77e4f2eec1addc082a23463654"
+    },
+    {
+      "source": "buffr",
+      "source_path": "docs/module-prompts/etsy-module-revision-pass-summary.md",
+      "destination": "skills/buffr-decision-support/references/versioned/etsy-module-revision-pass-summary.md",
+      "blob_sha": "0fc86dc6ca8560d4800b9d92e73e3b58c425fc46"
+    },
+    {
+      "source": "buffr",
+      "source_path": "docs/module-prompts/etsy-prompt-module-contract-revision-manifest.md",
+      "destination": "skills/buffr-decision-support/references/versioned/etsy-prompt-module-contract-revision-manifest.md",
+      "blob_sha": "16fbd0911a8512cfeb566884c361676adb83d0e1"
+    },
+    {
+      "source": "buffr",
+      "source_path": "docs/module-prompts/evaluation-learning-module-v3.md",
+      "destination": "skills/buffr-decision-support/references/versioned/evaluation-learning-module-v3.md",
+      "blob_sha": "133b0f495939e70bcf5853b192600fd6d4c61855"
+    },
+    {
+      "source": "buffr",
+      "source_path": "docs/module-prompts/hypothesis-experiment-design-module-v3.md",
+      "destination": "skills/buffr-decision-support/references/versioned/hypothesis-experiment-design-module-v3.md",
+      "blob_sha": "37eb71cdafd332500b9b12ebc9b1e167b0db964b"
+    },
+    {
+      "source": "buffr",
+      "source_path": "docs/module-prompts/metrics-qualification-module-v3.md",
+      "destination": "skills/buffr-decision-support/references/versioned/metrics-qualification-module-v3.md",
+      "blob_sha": "dd378692fe410fcc5f905453cd5e97633ec8c0e3"
+    },
+    {
+      "source": "buffr",
+      "source_path": "docs/module-prompts/product-context-observation-module-v2.md",
+      "destination": "skills/buffr-decision-support/references/versioned/product-context-observation-module-v2.md",
+      "blob_sha": "c92ffaf8392f2c1b05c5f057f67014f1246a7c6e"
+    },
+    {
+      "source": "buffr",
+      "source_path": "docs/module-prompts/test-definition-module-v3.md",
+      "destination": "skills/buffr-decision-support/references/versioned/test-definition-module-v3.md",
+      "blob_sha": "55771c770b1c6f5e0161c731424d92947a7fbd00"
+    },
+    {
+      "source": "dotfiles",
+      "source_path": "reference/code-review-aposd.md",
+      "destination": "skills/code-review/references/code-review-aposd.md",
+      "blob_sha": "7550d475f7922c71474b4ba5a777c24b6a601d40"
+    },
+    {
+      "source": "dotfiles",
+      "source_path": "reference/code-review-at.md",
+      "destination": "skills/code-review/references/code-review-at.md",
+      "blob_sha": "b30fd07963852751a2b718c8d9e65daad12ac3f5"
+    },
+    {
+      "source": "dotfiles",
+      "source_path": "reference/code-review-ddia.md",
+      "destination": "skills/code-review/references/code-review-ddia.md",
+      "blob_sha": "758bfa1f0e1f593c597a2d72d8fffbe5bd4c81e1"
+    },
+    {
+      "source": "dotfiles",
+      "source_path": "reference/code-review-fode.md",
+      "destination": "skills/code-review/references/code-review-fode.md",
+      "blob_sha": "4c9d86e1d8e8f12c71bd94b3fe1f098d40fe25b2"
+    },
+    {
+      "source": "dotfiles",
+      "source_path": "reference/code-review-sdi.md",
+      "destination": "skills/code-review/references/code-review-sdi.md",
+      "blob_sha": "8d2d9e5cc86dfb1a442c4c9dd3cb7c38cd9077d6"
+    },
+    {
+      "source": "dotfiles",
+      "source_path": "reference/code-review.md",
+      "destination": "skills/code-review/references/code-review.md",
+      "blob_sha": "74244e4104efdd478ce13d478cd35c0a01e47b25"
+    },
+    {
+      "source": "dotfiles",
+      "source_path": "reference/investigate-existing-feature.md",
+      "destination": "skills/investigate-existing-feature/references/investigate-existing-feature.md",
+      "blob_sha": "ed897f1c7de6691aecb67087f907df509e00cadf"
+    },
+    {
+      "source": "dotfiles",
+      "source_path": "reference/investigate-new-feature.md",
+      "destination": "skills/investigate-new-feature/references/investigate-new-feature.md",
+      "blob_sha": "8aac98e55fd6bbc9fd62f4e621f63d833c4fffb1"
+    },
+    {
+      "source": "dotfiles",
+      "source_path": "reference/refine-feature-requirements.md",
+      "destination": "skills/refine-feature-requirements/references/refine-feature-requirements.md",
+      "blob_sha": "ea2e7c29c4540fe66c7a64aa4915e07832ecbd1b"
+    },
+    {
+      "source": "dotfiles",
+      "source_path": "reference/rehearse-ga-call.md",
+      "destination": "skills/rehearse-ga-call/references/rehearse-ga-call.md",
+      "blob_sha": "c94eee72d5fdc077b2a9c1190ebbfbb3adc9cd5b"
+    },
+    {
+      "source": "dotfiles",
+      "source_path": "reference/rehearse-google-call.md",
+      "destination": "skills/rehearse-google-call/references/rehearse-google-call.md",
+      "blob_sha": "5b758de0a58414557fa192b2718d7a74f3c61d3e"
+    },
+    {
+      "source": "dotfiles",
+      "source_path": "reference/system-learning-implementation.md",
+      "destination": "skills/system-learning-implementation/references/system-learning-implementation.md",
+      "blob_sha": "3c4a11bd02d7072c9a76d7ceb874feacff6c35ec"
+    },
+    {
+      "source": "dotfiles",
+      "source_path": "reference/system-learning-repo.md",
+      "destination": "skills/system-learning-repo/references/system-learning-repo.md",
+      "blob_sha": "2c031b69f6b1a78c08cbd64926364b37a1087fe9"
+    }
+  ]
+}

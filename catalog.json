@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "name": "DotSkills",
+  "skills": [
+    {
+      "name": "code-review",
+      "category": "engineering",
+      "purpose": "Integrated engineering code review with five specialized book lenses.",
+      "source": "dotfiles",
+      "path": "skills/code-review",
+      "reference_count": 6
+    },
+    {
+      "name": "investigate-existing-feature",
+      "category": "engineering",
+      "purpose": "Feature provenance and dependencies investigation.",
+      "source": "dotfiles",
+      "path": "skills/investigate-existing-feature",
+      "reference_count": 1
+    },
+    {
+      "name": "investigate-new-feature",
+      "category": "engineering",
+      "purpose": "Pre-design feature discovery and requirements.",
+      "source": "dotfiles",
+      "path": "skills/investigate-new-feature",
+      "reference_count": 1
+    },
+    {
+      "name": "refine-feature-requirements",
+      "category": "engineering",
+      "purpose": "Ticket refinement and Superpowers handoff.",
+      "source": "dotfiles",
+      "path": "skills/refine-feature-requirements",
+      "reference_count": 1
+    },
+    {
+      "name": "system-learning-repo",
+      "category": "learning",
+      "purpose": "Learn an unfamiliar repository architecture and data lifecycle.",
+      "source": "dotfiles",
+      "path": "skills/system-learning-repo",
+      "reference_count": 1
+    },
+    {
+      "name": "system-learning-implementation",
+      "category": "learning",
+      "purpose": "Learn a specific code implementation, its mechanisms, and trade-offs.",
+      "source": "dotfiles",
+      "path": "skills/system-learning-implementation",
+      "reference_count": 1
+    },
+    {
+      "name": "rehearse-ga-call",
+      "category": "career",
+      "purpose": "Golden Analytics recruiter screen rehearsal.",
+      "source": "dotfiles",
+      "path": "skills/rehearse-ga-call",
+      "reference_count": 1
+    },
+    {
+      "name": "rehearse-google-call",
+      "category": "career",
+      "purpose": "Google recruiter call rehearsal.",
+      "source": "dotfiles",
+      "path": "skills/rehearse-google-call",
+      "reference_count": 1
+    },
+    {
+      "name": "buffr-decision-support",
+      "category": "decision-support",
+      "purpose": "Buffr M0–M7 module reference and execution guidance; engine remains external.",
+      "source": "buffr",
+      "path": "skills/buffr-decision-support",
+      "reference_count": 18
+    }
+  ]
+}
