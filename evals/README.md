@@ -14,6 +14,11 @@ includes four completed reviews, a graded scorecard, and operation traces.
 Both versions satisfied the initial pair; no quality gain or regression was
 demonstrated on those cases.
 
+The [DDIA reference baseline](code-review/context-validation/results/2026-10-24-ddia-baseline/README.md)
+uses the same cases with the unchanged DDIA prompt file supplied directly.
+Both reviews passed the four quality checks. It is a starting point for work
+on that individual lens, not a test of the skill wrapper or full DDIA coverage.
+
 The fixture verifier checks that the example code behaves as expected.
 Static checks and fixture checks are not skill-quality scores.
 

@@ -1,0 +1,104 @@
+{
+  "recorded_at_utc": "2026-10-25T03:07:55.790132+00:00",
+  "user_facing_date": "2026-10-24",
+  "user_timezone": "America/Los_Angeles",
+  "repo_commit": "e1eda00b1d36b543e8a138b3726921b05ed3062c",
+  "repo_tree": "b5b280368f3acd6b800efe2637f64640b5bbf3ee",
+  "reference_path": "skills/code-review/references/code-review-ddia.md",
+  "reference_blob_sha": "758bfa1f0e1f593c597a2d72d8fffbe5bd4c81e1",
+  "reference_sha256": "355db3a6ce1520d426503f6613a8dbe556e884869d9ce3d56b11f51c0e7b36fd",
+  "configuration": "DDIA reference supplied directly; no SKILL.md or context-quality guide supplied",
+  "task_template_sha256": "d1b029dc7345487e0ce9178ccacb6f09dd0d30ca1e6cd72e8ee1b23d8882e3f7",
+  "grading_protocol_sha256": "663285941b8cd05361508bce2294c4cc1b29eb9fdf05958155b0ae23cf37200c",
+  "recorder_sha256": "d9c29db6522e0e1fdaaec6e114faf1ff22876af2630ee543091aa0f883d49add",
+  "grader_path": "evals/code-review/context-validation/grader.md",
+  "grader_blob_sha": "9c52159489a32ae132356f12bf2970d54519e20d",
+  "model": "Parent-inherited model; no model override; exact build/sampling unavailable",
+  "harness": "ChatGPT collaboration subagents, fork_turns=none",
+  "fixture_check_exit_code": 0,
+  "runs": [
+    {
+      "id": "01",
+      "case": "case-01",
+      "workspace": "/workspace/scratch/3fa7842840f9/ddia-baseline-20261024/review-01",
+      "trace": "/workspace/scratch/3fa7842840f9/ddia-baseline-20261024/evidence/run-01.trace.jsonl",
+      "launch_file": "/workspace/scratch/3fa7842840f9/ddia-baseline-20261024/launch-01.txt",
+      "input_sha256_before": {
+        "guidance/code-review-ddia.md": "355db3a6ce1520d426503f6613a8dbe556e884869d9ce3d56b11f51c0e7b36fd",
+        "project/create-user.cjs": "18bb42bf357e5f58511ca56cca8ee721d2f3c756456089f83a0cb0f3856321f8",
+        "project/requirements.md": "500a079b76d63b9cd5075c763b35600e4d50ec4f906430b64d1ab2451f433ba5",
+        "project/save-user.cjs": "359cc12ef69bc574edee36d6d255b05cb8b248bab74e7f3e9cce57b9040de45d",
+        "task.md": "e60ceaf6641cc40cef672f350e742dfa503211401edf06708d346fe50c72f83a"
+      },
+      "status": "GRADED",
+      "input_sha256_after": {
+        "guidance/code-review-ddia.md": "355db3a6ce1520d426503f6613a8dbe556e884869d9ce3d56b11f51c0e7b36fd",
+        "project/create-user.cjs": "18bb42bf357e5f58511ca56cca8ee721d2f3c756456089f83a0cb0f3856321f8",
+        "project/requirements.md": "500a079b76d63b9cd5075c763b35600e4d50ec4f906430b64d1ab2451f433ba5",
+        "project/save-user.cjs": "359cc12ef69bc574edee36d6d255b05cb8b248bab74e7f3e9cce57b9040de45d",
+        "task.md": "e60ceaf6641cc40cef672f350e742dfa503211401edf06708d346fe50c72f83a"
+      },
+      "inputs_unchanged": true,
+      "trace_sha256": "851afb065553681252d07ea55c6431fb1e650c2534cb3b913cef57ee4ac20f26",
+      "trace_events": 8,
+      "agent": "/root/review_alpha",
+      "raw_response_sha256": "d49ee5f1a0be8cc7f1aede349bb5b848d472dcd47ada602f2b8eb190fda9b993",
+      "grades": {
+        "Q1": "PASS",
+        "Q2": "PASS",
+        "Q3": "PASS",
+        "Q4": "PASS"
+      },
+      "reference_loading": "PASS",
+      "validity": "PASS within the recorded protocol",
+      "model_visible_complete_reference_delivery": "UNKNOWN",
+      "absolute_isolation_beyond_recorded_operations": "UNKNOWN"
+    },
+    {
+      "id": "02",
+      "case": "case-02",
+      "workspace": "/workspace/scratch/3fa7842840f9/ddia-baseline-20261024/review-02",
+      "trace": "/workspace/scratch/3fa7842840f9/ddia-baseline-20261024/evidence/run-02.trace.jsonl",
+      "launch_file": "/workspace/scratch/3fa7842840f9/ddia-baseline-20261024/launch-02.txt",
+      "input_sha256_before": {
+        "guidance/code-review-ddia.md": "355db3a6ce1520d426503f6613a8dbe556e884869d9ce3d56b11f51c0e7b36fd",
+        "project/create-user.cjs": "a9bfc921bccb07d85bbed72443a0c8237fa77677f1f6ceea19f45c2dbe9961d1",
+        "project/requirements.md": "500a079b76d63b9cd5075c763b35600e4d50ec4f906430b64d1ab2451f433ba5",
+        "project/save-user.cjs": "359cc12ef69bc574edee36d6d255b05cb8b248bab74e7f3e9cce57b9040de45d",
+        "task.md": "bf744522d170ab6accfc6e9cf9ca12409e35363930b18b9588e4ed2b09fa572e"
+      },
+      "status": "GRADED",
+      "input_sha256_after": {
+        "guidance/code-review-ddia.md": "355db3a6ce1520d426503f6613a8dbe556e884869d9ce3d56b11f51c0e7b36fd",
+        "project/create-user.cjs": "a9bfc921bccb07d85bbed72443a0c8237fa77677f1f6ceea19f45c2dbe9961d1",
+        "project/requirements.md": "500a079b76d63b9cd5075c763b35600e4d50ec4f906430b64d1ab2451f433ba5",
+        "project/save-user.cjs": "359cc12ef69bc574edee36d6d255b05cb8b248bab74e7f3e9cce57b9040de45d",
+        "task.md": "bf744522d170ab6accfc6e9cf9ca12409e35363930b18b9588e4ed2b09fa572e"
+      },
+      "inputs_unchanged": true,
+      "trace_sha256": "0136a452515970006578b7fcbf652690f347a36c66e9a9074f0315af7d06ccef",
+      "trace_events": 8,
+      "agent": "/root/review_beta",
+      "raw_response_sha256": "de569db4628bb96399a2e9a5b5761578f8b965786989b108f3f03ab556c329eb",
+      "grades": {
+        "Q1": "PASS",
+        "Q2": "PASS",
+        "Q3": "PASS",
+        "Q4": "PASS"
+      },
+      "reference_loading": "PASS",
+      "validity": "PASS within the recorded protocol",
+      "model_visible_complete_reference_delivery": "UNKNOWN",
+      "absolute_isolation_beyond_recorded_operations": "UNKNOWN"
+    }
+  ],
+  "completed_at_utc": "2026-10-25T03:11:09.973556+00:00",
+  "reference_unchanged": true,
+  "independent_audit": {
+    "agent": "/root/audit_ddia_baseline",
+    "primary_grades_supplied": false,
+    "path": "grading-audit.md",
+    "agreement": "Q1-Q4, loading, and recorded-boundary validity for both runs"
+  },
+  "interpretation": "Both direct-DDIA-reference reviews satisfy the existing validation cases; no no-guidance or reformatted-DDIA comparison was run."
+}

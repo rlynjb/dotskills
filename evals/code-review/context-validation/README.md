@@ -16,6 +16,11 @@ code-review reference that has since been removed from the current package.
 These instructions reproduce that earlier comparison. Its results do not
 evaluate the current workflow through individual book lenses.
 
+For the first individual-lens run, see the
+[DDIA reference baseline](results/2026-10-24-ddia-baseline/README.md).
+It uses this case pair and quality rubric with the unchanged DDIA prompt file
+supplied directly, rather than either whole-skill snapshot below.
+
 ## What the cases establish
 
 | Case | Code behavior | Expected review conclusion |

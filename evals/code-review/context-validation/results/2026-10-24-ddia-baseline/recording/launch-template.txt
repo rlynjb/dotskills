@@ -1,0 +1,14 @@
+Perform the review specified in {{WORKSPACE}}/task.md. Your assigned review workspace is {{WORKSPACE}}. Read that task first, then follow it. Return the completed review in your final response.
+
+Local tool access for this session is recorded. Use only functions.exec with tools.exec_command to invoke the command interface below for all source reads, searches, listings, and verification. Do not directly read files, inspect other workspaces, use external connections, or spawn agents. Do not modify supplied files. The recorder may append its log outside the workspace; do not read or edit that log. Runtime libraries used by commands are allowed.
+
+Command prefix (repeat for each operation):
+python3 {{RECORDER}} --root {{WORKSPACE}} --log {{TRACE}}
+
+Append one of these operations:
+- read PATH [--start N --end N] — returns numbered source lines; paths relative to your workspace.
+- list [PATH] — lists files within the workspace.
+- search 'PATTERN' [PATH ...] — runs rg -n with the supplied pattern.
+- run [--cwd PATH] -- COMMAND ARGUMENTS... — runs a local command; keep it within the assigned workspace, without editing files or using the network.
+
+Example first action: append `read task.md` to the prefix. Use enough output budget to see returned evidence; use bounded reads when helpful. This tool-access protocol records local operations and does not add requirements to the reviewed application. No other task context is needed.
