@@ -52,7 +52,7 @@ dotskills/
 ├── source-lock.json
 ├── docs/                      # design, authoring, source ownership, security
 ├── adapters/                  # harness distribution guidance, not an installer yet
-├── evals/                     # future skill-evaluation design
+├── evals/                     # manual skill-evaluation cases and roadmap
 ├── scripts/                   # dependency-free local validation
 └── .github/workflows/         # CI structural/source-integrity checks
 ```
@@ -68,6 +68,10 @@ Every imported Markdown file is copied byte-for-byte and tracked against its ups
 
 ## Next phases
 
-Future work may include tested harness installers, prompt-to-skill migration review, per-skill evals and regression fixtures, a release pipeline, and optional MCP skill discovery/gateway integration. These are not yet implemented.
+The first [manual code-review eval](evals/code-review/context-validation/README.md)
+provides two cases and a rubric for comparing the previous and updated skill.
+The model reviews still need to be run and graded.
+
+Future work may include tested harness installers, prompt-to-skill migration review, broader per-skill evals, automated regression runs, a release pipeline, and optional MCP skill discovery/gateway integration.
 
 Read [architecture](docs/architecture.md), [source policy](docs/sources.md), [authoring](docs/authoring.md), [security](docs/security.md), and [contributing](CONTRIBUTING.md).
