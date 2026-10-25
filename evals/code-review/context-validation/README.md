@@ -4,8 +4,12 @@
 whether invalid input can reach a write?
 
 This is one manual eval with two small synthetic cases. It comes with runnable
-code, a common task, an answer key, and a blank scorecard. Model reviews have
-**not been run** as part of creating this eval.
+code, a common task, an answer key, and a blank scorecard.
+
+The [first recorded comparison](results/2026-10-24-first-run/README.md) contains
+four completed reviews and their evidence. Both skill versions satisfied that
+small pair; no quality gain or regression was demonstrated. The instructions
+below and blank scorecard remain available for future runs.
 
 ## What the cases establish
 

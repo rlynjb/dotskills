@@ -9,9 +9,13 @@ package. It does not yet have an automated model-evaluation harness.
 contains two runnable fixtures, a shared review request, pinned before/after
 skill versions, an evaluator answer key, and a blank four-run scorecard.
 
+The [first recorded comparison](code-review/context-validation/results/2026-10-24-first-run/README.md)
+includes four completed reviews, a graded scorecard, and operation traces.
+Both versions satisfied the initial pair; no quality gain or regression was
+demonstrated on those cases.
+
 The fixture verifier checks that the example code behaves as expected.
-Model review results remain **not run** until the manual reviews are performed
-and graded. Static checks and fixture checks are not skill-quality scores.
+Static checks and fixture checks are not skill-quality scores.
 
 ## Roadmap
 

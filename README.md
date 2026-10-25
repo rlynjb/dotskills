@@ -70,7 +70,9 @@ Every imported Markdown file is copied byte-for-byte and tracked against its ups
 
 The first [manual code-review eval](evals/code-review/context-validation/README.md)
 provides two cases and a rubric for comparing the previous and updated skill.
-The model reviews still need to be run and graded.
+The [first recorded comparison](evals/code-review/context-validation/results/2026-10-24-first-run/README.md)
+includes four completed reviews and their evidence. Both skill versions
+satisfied the initial pair; broader behavior remains to be evaluated.
 
 Future work may include tested harness installers, prompt-to-skill migration review, broader per-skill evals, automated regression runs, a release pipeline, and optional MCP skill discovery/gateway integration.
 
