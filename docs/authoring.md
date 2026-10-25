@@ -1,6 +1,6 @@
 # Authoring portable skills
 
-Start with the [reusable skill template](../templates/README.md). Copy it into
+Start with the [reusable skill template](../templates/skill/SKILL.md). Copy it into
 `skills/<skill-name>/`, replace the placeholders, and follow its checklist to
 register the skill and create its first eval case.
 

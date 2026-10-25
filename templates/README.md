@@ -1,9 +1,17 @@
-# Reusable skill template
+# Reusable templates
 
 Copy [skill/](skill/SKILL.md) to `skills/<skill-name>/` to create a new DotSkills
 package. This is an authoring template, not an installed or cataloged skill.
 
-## Follow this order
+| Template | Use it for |
+| --- | --- |
+| [skill/](skill/SKILL.md) | A new skill with its entry point and supporting references. |
+| [case/](case/README.md) | A new eval case with inputs, expected behavior, grading, and results. |
+
+Keep reusable starting templates here. Put completed skills under `skills/`
+and actual eval cases under `evals/`.
+
+## Create a skill
 
 1. Define one useful task and realistic requests that should trigger the skill.
 2. Copy `templates/skill/` into `skills/<skill-name>/`.
@@ -19,7 +27,7 @@ package. This is an authoring template, not an installed or cataloged skill.
 7. Register the completed skill in `catalog.json`. For imported references,
    follow the [source policy](../docs/sources.md) and record their provenance.
 8. Run `python3 scripts/validate_skills.py` from the repository root.
-9. Copy the [eval case template](../evals/templates/case/README.md), define an
+9. Copy the [eval case template](case/README.md), define an
    expected outcome and grading checks, then run and grade one case. Save the
    result in that case's `results/<run-id>/` folder.
 

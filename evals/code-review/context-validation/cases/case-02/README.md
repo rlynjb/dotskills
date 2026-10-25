@@ -4,7 +4,7 @@
 - Source: mock application, originally recorded in this repository's fixture pair.
 - Scope: complete synchronous entry-point and persistence path; no code diff.
 
-Follow the [case template](../../../../templates/case/README.md): fill inputs,
+Follow the [case template](../../../../../templates/case/README.md): fill inputs,
 establish expected behavior, grade, and retain each attempt.
 
 | Part | Location |

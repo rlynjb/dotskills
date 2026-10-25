@@ -28,7 +28,7 @@ context, broad code-review reliability, or skill triggering.
 
 ## Case layout
 
-Both cases now follow the [shared case template](../../templates/case/README.md):
+Both cases now follow the [shared case template](../../../templates/case/README.md):
 
 - [case-01](cases/case-01/README.md): guarded input-validation path.
 - [case-02](cases/case-02/README.md): reachable invalid write.
