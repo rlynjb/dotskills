@@ -44,6 +44,28 @@ At each gate:
 The human may explicitly opt into a more autonomous mode for a particular session, but
 do not infer that from silence or from approval of a different step.
 
+### Workflow trace — always visible
+
+Keep the human oriented throughout the workflow, including stages that do not require
+input.
+
+For every meaningful stage:
+1. Announce the stage before beginning it, including its purpose and the immediate next
+   action.
+2. When the stage completes, report the concrete result, material finding or limitation,
+   and the next stage.
+3. Mark whether the workflow is continuing automatically or waiting at a `HUMAN GATE`.
+4. Do not require a response to ordinary progress updates.
+5. Do not expose private chain-of-thought, hidden reasoning, raw scratch work, or
+   low-level tool chatter. Report only user-relevant state, evidence, decisions, and
+   outcomes.
+6. Keep updates concise enough to function as a usable execution trace rather than a
+   transcript of every internal action.
+
+A progress update is informational. A `HUMAN GATE` is blocking. If a stage contains
+both, show the completed-stage result first, then present the gate that controls the next
+action.
+
 ### Learning mode — guided by default
 
 Teach the methodology while doing the work. At each meaningful gate, briefly explain:
@@ -289,6 +311,10 @@ The specialist diagnoses the failure; it does not automatically edit the target 
 
 ## Output
 
+Maintain a concise user-visible workflow trace during execution. At any point, the human
+should be able to tell the current stage, the most recent completed result, whether the
+workflow is continuing or blocked, and what comes next.
+
 Return:
 - Target skill/capability and current maturity.
 - Bootstrap / normalization status and approved package changes, if any.
@@ -307,6 +333,12 @@ Return:
 ## Decision rules
 
 - Human-gated mode is the default.
+- Keep the workflow trace visible at every meaningful stage, even when no human input is
+  required.
+- Ordinary trace updates never imply approval is needed; only an explicit `HUMAN GATE`
+  blocks progress.
+- Trace workflow state and evidence, not private chain-of-thought or low-level internal
+  reasoning.
 - A raw prompt or partial draft may be bootstrapped before behavioral evals begin.
 - Bootstrap changes require explicit approval just like later target-skill edits.
 - A failed eval is evidence to investigate, not an automatic prompt rewrite.
