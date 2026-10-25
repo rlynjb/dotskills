@@ -24,6 +24,15 @@ on that individual lens, not a test of the skill wrapper or full DDIA coverage.
 The fixture verifier checks that the example code behaves as expected.
 Static checks and fixture checks are not skill-quality scores.
 
+## Create a case
+
+Copy the [reusable case template](templates/case/README.md) to
+`evals/<skill>/<capability>/cases/<case-id>/`. It separates reviewer inputs and
+requirements from expected behavior, grading criteria, and actual run results.
+Use the same structure for mock examples and real application snapshots; vary the
+materials inside `input/` as needed. The template is for manual authoring and does
+not change the existing suite's preparation commands.
+
 ## Roadmap
 
 Future behavioral evals should cover:

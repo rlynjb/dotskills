@@ -177,6 +177,13 @@ The goal is better judgment across these situations. Fewer findings by itself is
 
 ## Reusable case outline
 
+For a ready-to-copy folder structure, use the
+[case template](../evals/templates/case/README.md). Start with the case goal, fill
+in `input/`, establish `expected.md`, define `grading.md`, then retain actual
+attempts in `results/`. The reviewer receives only `input/` and the selected
+skill guidance. This template applies to code, data, documents, or combinations.
+
+
 This is an authoring outline, not an executable schema or a new runner format. Use Markdown, YAML, JSON, or your runner's supported format. The existing manual package distributes these responsibilities across fixtures, a task, a grader, and a scorecard.
 
 ```yaml
