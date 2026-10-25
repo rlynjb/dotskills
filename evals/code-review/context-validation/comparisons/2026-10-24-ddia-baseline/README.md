@@ -20,8 +20,8 @@ and honest-verification checks. See the [scorecard](scorecard.md) and
 - Guidance: `skills/code-review/references/code-review-ddia.md`, supplied unchanged.
 - Reference Git blob: `758bfa1f0e1f593c597a2d72d8fffbe5bd4c81e1`.
 - Reference SHA-256: `355db3a6ce1520d426503f6613a8dbe556e884869d9ce3d56b11f51c0e7b36fd`.
-- Inputs: the existing [case-01](../../fixtures/case-01/) and
-  [case-02](../../fixtures/case-02/) application snapshots and requirements.
+- Inputs: the existing [case-01](../../cases/case-01/input) and
+  [case-02](../../cases/case-02/input) application snapshots and requirements.
 - One fresh reviewer session per case, created with `fork_turns: none`.
 - Same parent-inherited model, no model override; exact build, sampling settings,
   and reasoning-effort value were not exposed.
@@ -63,8 +63,8 @@ primary grades. Its independent grades agree. No human adjudication is claimed.
 
 | Run | Original response | Recorded operations | Verification observed |
 | --- | --- | --- | --- |
-| 01 / case-01 | [Review](runs/run-01.md), [raw response](runs/run-01.raw.json) | [Trace](runs/run-01.trace.jsonl) | 27 invalid and 10 valid inputs, each with empty and populated arrays, plus repeated-call checks; 232 assertions passed. |
-| 02 / case-02 | [Review](runs/run-02.md), [raw response](runs/run-02.raw.json) | [Trace](runs/run-02.trace.jsonl) | Five valid cases passed; one of 19 invalid cases met the rejection contract; the other 18 appended a record. |
+| 01 / case-01 | [Review](../../cases/case-01/results/2026-10-24-ddia-baseline-run-01/run-01.md), [raw response](../../cases/case-01/results/2026-10-24-ddia-baseline-run-01/run-01.raw.json) | [Trace](../../cases/case-01/results/2026-10-24-ddia-baseline-run-01/run-01.trace.jsonl) | 27 invalid and 10 valid inputs, each with empty and populated arrays, plus repeated-call checks; 232 assertions passed. |
+| 02 / case-02 | [Review](../../cases/case-02/results/2026-10-24-ddia-baseline-run-02/run-02.md), [raw response](../../cases/case-02/results/2026-10-24-ddia-baseline-run-02/run-02.raw.json) | [Trace](../../cases/case-02/results/2026-10-24-ddia-baseline-run-02/run-02.trace.jsonl) | Five valid cases passed; one of 19 invalid cases met the rejection contract; the other 18 appended a record. |
 
 Both local diagnostic processes exited with code 0. Run 02's program printed
 contract failures instead of setting a nonzero exit code. Its review accurately

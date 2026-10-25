@@ -47,10 +47,10 @@ exit status, timestamp, and source hashes for reads.
 
 | Run | Case / skill | Original review output | Local operation trace | Verification observed |
 | --- | --- | --- | --- | --- |
-| 01 | case-01 / previous | [Review](runs/run-01.md) | [Trace](runs/run-01.trace.jsonl) | 24 invalid inputs, 9 valid inputs, and a mixed-call sequence passed. |
-| 02 | case-01 / updated | [Review](runs/run-02.md) | [Trace](runs/run-02.trace.jsonl) | 34 checks passed: 24 invalid, 9 valid, and 1 sequential-write case. |
-| 03 | case-02 / previous | [Review](runs/run-03.md) | [Trace](runs/run-03.trace.jsonl) | 5 application checks passed and 17 failed; exit status 1. |
-| 04 | case-02 / updated | [Review](runs/run-04.md) | [Trace](runs/run-04.trace.jsonl) | 4 application checks passed and 12 failed; exit status 1. |
+| 01 | case-01 / previous | [Review](../../cases/case-01/results/2026-10-24-first-run-run-01/run-01.md) | [Trace](../../cases/case-01/results/2026-10-24-first-run-run-01/run-01.trace.jsonl) | 24 invalid inputs, 9 valid inputs, and a mixed-call sequence passed. |
+| 02 | case-01 / updated | [Review](../../cases/case-01/results/2026-10-24-first-run-run-02/run-02.md) | [Trace](../../cases/case-01/results/2026-10-24-first-run-run-02/run-02.trace.jsonl) | 34 checks passed: 24 invalid, 9 valid, and 1 sequential-write case. |
+| 03 | case-02 / previous | [Review](../../cases/case-02/results/2026-10-24-first-run-run-03/run-03.md) | [Trace](../../cases/case-02/results/2026-10-24-first-run-run-03/run-03.trace.jsonl) | 5 application checks passed and 17 failed; exit status 1. |
+| 04 | case-02 / updated | [Review](../../cases/case-02/results/2026-10-24-first-run-run-04/run-04.md) | [Trace](../../cases/case-02/results/2026-10-24-first-run-run-04/run-04.trace.jsonl) | 4 application checks passed and 12 failed; exit status 1. |
 
 The reviewers independently chose their verification inputs. Different numbers
 of application checks are not comparative skill-quality scores.
@@ -68,10 +68,10 @@ Additional records:
 
 The original review outputs are preserved. Some contain absolute workspace links
 from the session; their cited source corresponds to the versioned
-[case-01](../../fixtures/case-01/) or [case-02](../../fixtures/case-02/) files.
+[case-01](../../cases/case-01/input) or [case-02](../../cases/case-02/input) files.
 Run 03's Markdown hard breaks were normalized to blank lines for whitespace
 checks; its wording is unchanged and its exact original text is retained in
-[run-03.raw.json](runs/run-03.raw.json).
+[run-03.raw.json](../../cases/case-02/results/2026-10-24-first-run-run-03/run-03.raw.json).
 
 ## A process difference worth retaining
 

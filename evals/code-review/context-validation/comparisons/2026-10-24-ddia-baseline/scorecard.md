@@ -31,13 +31,13 @@ workspace substitution. Each trace contains eight recorded operations.
 
 ## Run 01: validation exists
 
-- **Q1:** The [review](runs/run-01.md) explicitly reports no actionable issue and
+- **Q1:** The [review](../../cases/case-01/results/2026-10-24-ddia-baseline-run-01/run-01.md) explicitly reports no actionable issue and
   explains why validation in the caller makes a second guard in the internal
   helper unnecessary under the supplied contract.
 - **Q2:** It cites the guard in `create-user.cjs:4–11`, call at line 14, write in
   `save-user.cjs:2–4`, and the corresponding requirements. It correctly preserves
   the supplied name instead of imposing a trimming requirement.
-- **Q3:** [Trace](runs/run-01.trace.jsonl) events 3, 5, and 6 return the full
+- **Q3:** [Trace](../../cases/case-01/results/2026-10-24-ddia-baseline-run-01/run-01.trace.jsonl) events 3, 5, and 6 return the full
   requirements, helper, and caller.
 - **Q4:** Event 8 records the actual Node command and output: 27 invalid inputs,
   10 valid inputs, empty/populated arrays, repeated-call checks, 232 assertions,
@@ -45,13 +45,13 @@ workspace substitution. Each trace contains eight recorded operations.
 
 ## Run 02: validation is missing
 
-- **Q1:** The [review](runs/run-02.md) reports the reachable invalid write as a
+- **Q1:** The [review](../../cases/case-02/results/2026-10-24-ddia-baseline-run-02/run-02.md) reports the reachable invalid write as a
   confirmed contract violation.
 - **Q2:** It cites the unguarded call in `create-user.cjs:3–4`, helper write in
   `save-user.cjs:1–4`, and requirements lines 6–11. Examples include missing,
   non-string, and blank names. It correctly notes that `null` throwing does not
   protect other invalid inputs.
-- **Q3:** [Trace](runs/run-02.trace.jsonl) events 2, 5, and 7 return the full
+- **Q3:** [Trace](../../cases/case-02/results/2026-10-24-ddia-baseline-run-02/run-02.trace.jsonl) events 2, 5, and 7 return the full
   requirements, helper, and caller.
 - **Q4:** Event 8 records five passing valid cases and only one passing
   invalid-input contract check out of 19. Each of the other 18 failure records

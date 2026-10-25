@@ -2,11 +2,11 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { createUser: guarded } = require('./fixtures/case-01/mock-app/create-user.cjs');
-const { createUser: unguarded } = require('./fixtures/case-02/mock-app/create-user.cjs');
+const { createUser: guarded } = require('./cases/case-01/input/materials/mock-app/create-user.cjs');
+const { createUser: unguarded } = require('./cases/case-02/input/materials/mock-app/create-user.cjs');
 
 for (const filename of ['save-user.cjs', 'requirements.md']) {
-  const read = (id) => fs.readFileSync(path.join(__dirname, 'fixtures', id, 'mock-app', filename));
+  const read = (id) => fs.readFileSync(path.join(__dirname, 'cases', id, 'input', ...(filename === 'requirements.md' ? [filename] : ['materials', 'mock-app', filename])));
   assert.deepEqual(read('case-01'), read('case-02'), filename + ' must match');
 }
 

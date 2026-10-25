@@ -43,18 +43,20 @@ def main() -> None:
     except (OSError, subprocess.CalledProcessError):
         parser.error("cannot read the pinned skill snapshot; use a full Git checkout and run git fetch origin")
 
-    fixture = SUITE / "fixtures" / args.case / "mock-app"
-    fixture_files = sorted(fixture.iterdir())
+    case_input = SUITE / "cases" / args.case / "input"
+    fixture = case_input / "materials" / "mock-app"
+    fixture_files = sorted([*fixture.iterdir(), case_input / "requirements.md"])
     hashes = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in fixture_files}
     fixture_digest = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()
 
     output.mkdir(parents=True)
     shutil.copytree(fixture, output / "project")
+    shutil.copy2(case_input / "requirements.md", output / "project" / "requirements.md")
     for relative, data in skill_files.items():
         destination = output / "skill" / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_bytes(data)
-    prompt = (SUITE / "prompt.md").read_text(encoding="utf-8")
+    prompt = (case_input / "task.md").read_text(encoding="utf-8")
     (output / "task.md").write_text(prompt.replace("{{WORKSPACE}}", str(output)), encoding="utf-8")
 
     # Save this metadata with the evaluator's notes, outside the reviewer workspace.

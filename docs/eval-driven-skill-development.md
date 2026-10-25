@@ -101,7 +101,7 @@ To explore coverage, keep one skill version fixed and run it across different ca
 
 **How this works today:** DotSkills has a [manual code-review eval package](../evals/code-review/context-validation/README.md), preparation and fixture-verification helpers, and recorded results. It does not yet have a general automated model-evaluation runner. A capable coding-agent harness can execute the documented helper commands and coordinate authorized steps, but you must still launch the evaluated agent, capture its result, and grade it. A script that prepares files or verifies a fixture does not perform all those steps automatically.
 
-The existing preparation helper pins historical before/after skill versions. Follow that package's guide to reproduce the historical comparison; do not assume it tests the current skill. The [direct DDIA baseline](../evals/code-review/context-validation/results/2026-10-24-ddia-baseline/README.md) documents a separate reference-level experiment.
+The existing preparation helper pins historical before/after skill versions. Follow that package's guide to reproduce the historical comparison; do not assume it tests the current skill. The [direct DDIA baseline](../evals/code-review/context-validation/comparisons/2026-10-24-ddia-baseline/README.md) documents a separate reference-level experiment.
 
 ## 4. Grade meaning and inspect the evidence
 

@@ -6,7 +6,7 @@ whether invalid input can reach a write?
 This is one manual eval with two small synthetic cases. It comes with runnable
 code, a common task, an answer key, and a blank scorecard.
 
-The [first recorded comparison](results/2026-10-24-first-run/README.md) contains
+The [first recorded comparison](comparisons/2026-10-24-first-run/README.md) contains
 four completed reviews and their evidence. Both skill versions satisfied that
 small pair; no quality gain or regression was demonstrated. The instructions
 below and blank scorecard remain available for future runs.
@@ -17,7 +17,7 @@ These instructions reproduce that earlier comparison. Its results do not
 evaluate the current workflow through individual book lenses.
 
 For the first individual-lens run, see the
-[DDIA reference baseline](results/2026-10-24-ddia-baseline/README.md).
+[DDIA reference baseline](comparisons/2026-10-24-ddia-baseline/README.md).
 It uses this case pair and quality rubric with the unchanged DDIA prompt file
 supplied directly, rather than either whole-skill snapshot below.
 
@@ -40,24 +40,22 @@ This is a small synthetic diagnostic, not the real-change walkthrough from the
 Phase 1 plan. It does not cover distracting, missing, stale, or conflicting
 context, broad code-review reliability, or skill triggering.
 
-## Mock applications and eval cases
+## Case layout
 
-Each synthetic application lives in `fixtures/<case-id>/mock-app/`:
+Both cases now follow the [shared case template](../../templates/case/README.md):
 
-- [case-01 mock app](fixtures/case-01/mock-app/): the guarded implementation.
-- [case-02 mock app](fixtures/case-02/mock-app/): the unguarded implementation.
+- [case-01](cases/case-01/README.md): guarded input-validation path.
+- [case-02](cases/case-02/README.md): reachable invalid write.
 
-Each mock app contains `create-user.cjs`, `save-user.cjs`, and `requirements.md`.
-These are small executable examples for reviews when you are not using an
-existing application. They are intentionally limited to the behavior under test;
-one variant deliberately contains a defect.
+Each case contains `input/task.md`, `input/requirements.md`, application code in
+`input/materials/mock-app/`, `expected.md`, `grading.md`, and `results/`.
+Only input material and the selected skill guidance go to the reviewer.
 
-The application files and public requirements are reviewer inputs. The task,
-[grader](grader.md), and [scorecard](scorecard.md) define the evaluation separately.
-`prepare.py` copies only the selected mock app into the review workspace's
-`project/` directory. The case IDs and fixture contents are unchanged by this
-reorganization. Historical results retain the paths used in their original runs;
-check out their recorded revision to reproduce that original layout.
+[comparisons/](comparisons/README.md) holds cross-case summaries and grading
+records linking to the per-case evidence. It does not duplicate responses or
+traces. Historical manifests retain original paths; the migration map explains
+where those files now live. Case content and fixture digests remain unchanged.
+The preparation commands below still create the same flat review workspace.
 
 ## 1. Verify the cases
 

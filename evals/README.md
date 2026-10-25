@@ -11,12 +11,12 @@ Use [Eval-Driven Skill Development](../docs/eval-driven-skill-development.md) fo
 contains two runnable fixtures, a shared review request, pinned before/after
 skill versions, an evaluator answer key, and a blank four-run scorecard.
 
-The [first recorded comparison](code-review/context-validation/results/2026-10-24-first-run/README.md)
+The [first recorded comparison](code-review/context-validation/comparisons/2026-10-24-first-run/README.md)
 includes four completed reviews, a graded scorecard, and operation traces.
 Both versions satisfied the initial pair; no quality gain or regression was
 demonstrated on those cases.
 
-The [DDIA reference baseline](code-review/context-validation/results/2026-10-24-ddia-baseline/README.md)
+The [DDIA reference baseline](code-review/context-validation/comparisons/2026-10-24-ddia-baseline/README.md)
 uses the same cases with the unchanged DDIA prompt file supplied directly.
 Both reviews passed the four quality checks. It is a starting point for work
 on that individual lens, not a test of the skill wrapper or full DDIA coverage.
@@ -30,8 +30,7 @@ Copy the [reusable case template](templates/case/README.md) to
 `evals/<skill>/<capability>/cases/<case-id>/`. It separates reviewer inputs and
 requirements from expected behavior, grading criteria, and actual run results.
 Use the same structure for mock examples and real application snapshots; vary the
-materials inside `input/` as needed. The template is for manual authoring and does
-not change the existing suite's preparation commands.
+materials inside `input/` as needed. The template is for manual authoring and keeps the migrated suite's preparation commands working.
 
 ## Roadmap
 
