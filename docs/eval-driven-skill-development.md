@@ -4,6 +4,24 @@ A repeatable workflow for building and improving agent skills through clear expe
 
 Use this workflow for any DotSkills skill: code review, requirements refinement, investigation, learning, rehearsal, or decision support. DDIA code review is a worked example below, not a restriction on the workflow.
 
+## Table of contents
+
+- [What you are evaluating](#what-you-are-evaluating)
+- [The ongoing cycle](#the-ongoing-cycle)
+- [1. Understand the skill and choose one capability](#1-understand-the-skill-and-choose-one-capability)
+- [2. Define the cases and the answer key](#2-define-the-cases-and-the-answer-key)
+- [3. Run the evals](#3-run-the-evals)
+  - [Before each run](#before-each-run)
+  - [During each run](#during-each-run)
+  - [After each run](#after-each-run)
+- [4. Grade meaning and inspect the evidence](#4-grade-meaning-and-inspect-the-evidence)
+- [5. Diagnose before changing the skill](#5-diagnose-before-changing-the-skill)
+- [6. Compare, check regressions, and expand coverage](#6-compare-check-regressions-and-expand-coverage)
+- [Worked progression: DDIA review](#worked-progression-ddia-review)
+- [Reusable case outline](#reusable-case-outline)
+- [How much subject knowledge do you need?](#how-much-subject-knowledge-do-you-need)
+- [Where the pieces belong](#where-the-pieces-belong)
+
 ## What you are evaluating
 
 An eval observes an agent performing a task with a particular skill, model, harness, context, and tool setup. Its results describe that combination under the tested conditions. They do not establish that the instruction file alone caused the outcome.
