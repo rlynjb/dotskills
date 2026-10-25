@@ -1,2 +1,0 @@
-PASS: fixture behavior matches the evaluator answer key.
-No model reviews were run; no skill-quality score was produced.

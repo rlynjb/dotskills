@@ -2,8 +2,7 @@
 
 Copy this directory to `evals/<skill>/<capability>/cases/<case-id>/` and fill in
 the placeholders. This is a manual authoring convention, not an automated runner
-schema. The context-validation suite follows this layout, with shared grading guidance
-and cross-case summaries under its `comparisons/` directory.
+schema. The context-validation cases follow this layout, with shared grading guidance.
 
 | Path | What you put here | Who receives it |
 | --- | --- | --- |
@@ -45,7 +44,6 @@ Folder separation alone is not access control: do not give the reviewer this
 whole case directory. Keep evaluator files and prior results outside its
 accessible workspace where the harness supports that restriction.
 
-Cross-case summaries may live in a suite-level `comparisons/` folder and link
-to each case's results. Store each actual response or trace only once.
+Save each attempt and its grade in that case’s `results/<run-id>/` folder.
 
 See the [shared workflow](../../../docs/eval-driven-skill-development.md).

@@ -81,16 +81,9 @@ Every imported Markdown file is copied byte-for-byte and tracked against its ups
 ## Next phases
 
 The first [manual code-review eval](evals/code-review/context-validation/README.md)
-provides two cases and a rubric for comparing the previous and updated skill.
-The [first recorded comparison](evals/code-review/context-validation/comparisons/2026-10-24-first-run/README.md)
-includes four completed reviews and their evidence. Both skill versions
-satisfied the initial pair. Those pinned snapshots predate the switch to
-individual book lenses; the current workflow has not been evaluated by that batch.
-
-The [DDIA reference baseline](evals/code-review/context-validation/comparisons/2026-10-24-ddia-baseline/README.md)
-tests the unchanged DDIA prompt file directly on the same two cases. Both reviews
-passed the four quality checks. This baseline does not test the skill wrapper
-or broader DDIA guarantees such as transactions, replication, and retry safety.
+provides two cases. Each case holds its inputs, expected behavior, grading guidance,
+and recorded attempts. Start with one case, run the reviewer, grade its response,
+and save the result in that case’s `results/` folder.
 
 Future work may include tested harness installers, prompt-to-skill migration review, broader per-skill evals, automated regression runs, a release pipeline, and optional MCP skill discovery/gateway integration.
 

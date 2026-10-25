@@ -8,18 +8,9 @@ package. It does not yet have an automated model-evaluation harness.
 Use [Eval-Driven Skill Development](../docs/eval-driven-skill-development.md) for the shared workflow across skills, including case design, run checklists, grading, failure diagnosis, and regression comparisons.
 
 [Code review: context for input validation](code-review/context-validation/README.md)
-contains two runnable fixtures, a shared review request, pinned before/after
-skill versions, an evaluator answer key, and a blank four-run scorecard.
-
-The [first recorded comparison](code-review/context-validation/comparisons/2026-10-24-first-run/README.md)
-includes four completed reviews, a graded scorecard, and operation traces.
-Both versions satisfied the initial pair; no quality gain or regression was
-demonstrated on those cases.
-
-The [DDIA reference baseline](code-review/context-validation/comparisons/2026-10-24-ddia-baseline/README.md)
-uses the same cases with the unchanged DDIA prompt file supplied directly.
-Both reviews passed the four quality checks. It is a starting point for work
-on that individual lens, not a test of the skill wrapper or full DDIA coverage.
+contains two runnable cases with expected behavior, grading guidance, and recorded
+attempts. Run and grade one case at a time; save each attempt under that case’s
+`results/<run-id>/` directory.
 
 The fixture verifier checks that the example code behaves as expected.
 Static checks and fixture checks are not skill-quality scores.

@@ -3,23 +3,9 @@
 **Question:** Does the code-review skill reach a justified conclusion about
 whether invalid input can reach a write?
 
-This is one manual eval with two small synthetic cases. It comes with runnable
-code, a common task, an answer key, and a blank scorecard.
-
-The [first recorded comparison](comparisons/2026-10-24-first-run/README.md) contains
-four completed reviews and their evidence. Both skill versions satisfied that
-small pair; no quality gain or regression was demonstrated. The instructions
-below and blank scorecard remain available for future runs.
-
-**Historical scope:** The pinned skill versions below include the combined
-code-review reference that has since been removed from the current package.
-These instructions reproduce that earlier comparison. Its results do not
-evaluate the current workflow through individual book lenses.
-
-For the first individual-lens run, see the
-[DDIA reference baseline](comparisons/2026-10-24-ddia-baseline/README.md).
-It uses this case pair and quality rubric with the unchanged DDIA prompt file
-supplied directly, rather than either whole-skill snapshot below.
+This manual eval contains two small synthetic cases. Start with one case:
+prepare its input, run the reviewer, grade the response, and save that attempt.
+There is no required cross-case summary or comparison step.
 
 ## What the cases establish
 
@@ -51,11 +37,9 @@ Each case contains `input/task.md`, `input/requirements.md`, application code in
 `input/materials/mock-app/`, `expected.md`, `grading.md`, and `results/`.
 Only input material and the selected skill guidance go to the reviewer.
 
-[comparisons/](comparisons/README.md) holds cross-case summaries and grading
-records linking to the per-case evidence. It does not duplicate responses or
-traces. Historical manifests retain original paths; the migration map explains
-where those files now live. Case content and fixture digests remain unchanged.
-The preparation commands below still create the same flat review workspace.
+Each case’s `results/` folder contains its recorded reviews, traces, and grades.
+Historical attempts are preserved; they do not establish the current skill’s quality.
+The preparation helper creates a flat review workspace without evaluator answers.
 
 ## 1. Verify the cases
 
@@ -115,45 +99,26 @@ review workspace. If evaluator answers or other variants were accessed, mark
 the run invalid and repeat in a clean workspace. Missing trace evidence should
 be marked unknown, not assumed to show a read or a command.
 
-## 4. Repeat for all four combinations
+## 4. Grade and save this attempt
 
-Use a new output directory and fresh conversation every time:
+Use this case’s `expected.md` and `grading.md` with the shared [grader](grader.md).
+Copy the [single-attempt scorecard](scorecard.md) into this case’s
+`results/<run-id>/grade.md`. Save the actual response, available trace, preparation
+metadata, and run conditions alongside it.
 
-| Review | `--case` | `--skill` | Example `--output` |
-| --- | --- | --- | --- |
-| 1 | case-01 | before | ../dotskills-review-01 |
-| 2 | case-01 | after | ../dotskills-review-02 |
-| 3 | case-02 | before | ../dotskills-review-03 |
-| 4 | case-02 | after | ../dotskills-review-04 |
+Grade Q1–Q4 as **Pass / Fail / Unknown**, with source or trace evidence. Record
+loading diagnostics separately. Invalid attempts should be repeated in a clean
+session; missing evidence remains Unknown.
 
-These are four independent runs, not a conversation containing both versions.
-Within a case, keep the project content and request identical except for the
-workspace path. Only the selected skill package changes.
+## 5. Decide the next step
 
-## 5. Grade, then compare
+If the result fails, inspect the evidence and identify the cause before changing
+the skill. Rerun the same case in a fresh session and save a new attempt. If it
+passes, keep the result and choose another case when ready. You do not need to
+run both cases or both historical skill snapshots for one eval attempt.
 
-Use [grader.md](grader.md) yourself, or in a separate evaluator session after
-the reviews. Record each check and its evidence in a copy of
-[scorecard.md](scorecard.md). Keep all evaluator material outside review sessions.
-
-Grade each output against the known case facts before looking at old versus new.
-The four shared quality checks are:
-
-1. Correct conclusion.
-2. Relevant context established.
-3. Claims grounded in source evidence.
-4. Verification reported honestly.
-
-Use **Pass / Fail / Unknown**, with separate skill-loading diagnostics.
-Reading the new guide does not by itself demonstrate better review quality.
-No model-based judge or aggregate numeric score is needed for this first pass.
-
-An old failure becoming a new pass is an improvement on that case. Both passing
-means no demonstrated gain there; both failing means the problem remains; a new
-failure after an old pass is a regression to inspect. Unknown evidence prevents
-a conclusion on that check. Record inconclusive comparisons as such.
-
-One pair of cases is an initial diagnostic. It cannot prove that the guide caused
-a general improvement. The prior skill already contains evidence-calibration
-guidance and may also pass. Preserve the cases and raw results before expanding
-to a real code change or automating repeated runs.
+The helper’s `before` and `after` options select historical whole-skill snapshots;
+neither tests the current individual-book workflow. To evaluate the current DDIA
+reference, supply its exact file and revision with one case’s input in a fresh
+workspace and record that setup. Mark SKILL.md loading N/A when only a reference
+is supplied. The helper does not run the model or grade its response.

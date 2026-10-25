@@ -9,8 +9,7 @@ Can the code-review skill use surrounding code to distinguish an existing
 validation boundary from a reachable missing-validation defect?
 
 This is a snapshot review, without a before/after code diff. Each case has the
-same requirements and persistence helper. The skill version changes between
-runs; the selected case's code and requirements do not.
+same requirements and persistence helper. Grade each attempt independently against its selected case.
 
 ## Established expectations
 
@@ -39,7 +38,7 @@ would contradict the supplied requirement to preserve the name.
 Record the model, harness, settings, selected fixture, skill revision, and the
 available output/trace in `scorecard.md`.
 
-The compared skill snapshots are:
+The preparation helper offers these historical skill snapshots:
 
 - Previous: `c6565141c5a5923235f80dd16a7ac680d58a1968`.
 - Updated: `14abcdb4afe95c53a26522ab043fe1c0fc507421`.
@@ -48,7 +47,7 @@ A run is invalid if it used the wrong fixture or skill, mixed skill versions,
 modified the implementation, or was exposed to the answer key, private fixture
 checks, other case, another run's answer, or evaluator corrections. Rerun in a
 fresh conversation with the intended inputs; do not treat an invalid run as a
-skill failure or include it in the comparison.
+skill failure.
 
 If setup cannot be verified, record `UNKNOWN` validity and explain the gap. A
 missing trace does not prove that contamination or a setup error occurred.
@@ -69,7 +68,7 @@ quality pass.
 ## 2. Grade each run against its case
 
 Use `PASS`, `FAIL`, or `UNKNOWN` for every check and cite the output or trace
-evidence. Grade each arm independently before comparing them.
+evidence. Grade each attempt independently.
 
 | Check | `PASS` | `FAIL` | `UNKNOWN` |
 |---|---|---|---|
@@ -87,28 +86,13 @@ No finding by itself is not sufficient for `case-01` to pass the eval. The
 reviewer must establish why the permitted path is guarded. Likewise, naming
 "validation" in `case-02` without explaining the invalid write is insufficient.
 
-## 3. Compare the two skill versions
+## 3. Save the case result
 
-Compare the same check on the same case:
-
-| Previous | Updated | Interpretation |
-|---|---|---|
-| `FAIL` | `PASS` | Improvement on this case and check. |
-| `PASS` | `PASS` | Both satisfy this expectation; no gain demonstrated here. |
-| `PASS` | `FAIL` | Regression to investigate. |
-| `FAIL` | `FAIL` | This change did not solve the observed problem. |
-| Either is `UNKNOWN` | Any | Inconclusive for this comparison; identify the missing evidence. |
-
-For a skill version to satisfy this first pair, both valid runs must pass Q1-Q4.
-Any `UNKNOWN` leaves the relevant part unverified. Report loading outcomes
-separately, and report improvements and regressions without combining them into
-a headline percentage. Fewer reads, more findings, and longer answers are not
-quality scores.
-
-The previous references already contain evidence-calibration guidance, so both
-versions may pass. These four runs provide initial evidence on one behavior,
-not a general reliability claim. Missing, distracting, and stale-context cases
-remain separate future checks.
+A valid attempt passes when Q1–Q4 all pass. Any UNKNOWN leaves that criterion
+unverified. Record loading diagnostics separately. Save the response, trace,
+run conditions, and grades together in the selected case’s `results/<run-id>/`.
+Investigate a failure before changing the skill, then record a new attempt.
+A passing case does not establish broad review reliability.
 
 ## Fixture checks are not model results
 
