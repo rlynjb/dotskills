@@ -153,12 +153,6 @@
     },
     {
       "source": "dotfiles",
-      "source_path": "reference/code-review.md",
-      "destination": "skills/code-review/references/code-review.md",
-      "blob_sha": "74244e4104efdd478ce13d478cd35c0a01e47b25"
-    },
-    {
-      "source": "dotfiles",
       "source_path": "reference/investigate-existing-feature.md",
       "destination": "skills/investigate-existing-feature/references/investigate-existing-feature.md",
       "blob_sha": "ed897f1c7de6691aecb67087f907df509e00cadf"

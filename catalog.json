@@ -5,10 +5,10 @@
     {
       "name": "code-review",
       "category": "engineering",
-      "purpose": "Integrated engineering code review with five specialized book lenses.",
+      "purpose": "Engineering code review through individual book lenses.",
       "source": "dotfiles",
       "path": "skills/code-review",
-      "reference_count": 6
+      "reference_count": 5
     },
     {
       "name": "investigate-existing-feature",

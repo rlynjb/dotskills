@@ -65,18 +65,9 @@ they are available.
 
 ## 3. Load review guidance progressively
 
-From references/code-review.md, read:
-- "Evidence and severity calibration (applies to every review prompt)".
-- "Compact daily code-review prompt" for ordinary changes.
-
-Use master or focused sections when the requested scope or investigation
-requires them. Do not combine every prompt variant into one review.
-
-Locate and read relevant sections when bounded reads are supported.
-If a tool loads the entire file, do not claim that only an excerpt
-was loaded.
-
-Load specialized references when they help answer a relevant question:
+Use the book lens requested by the user. If none is specified, select
+the lens most relevant to the review and state the choice. Focus on
+one lens at a time, using its reference directly:
 
 - references/code-review-aposd.md:
   Responsibilities, interfaces, ownership, and design complexity.
@@ -93,14 +84,26 @@ Load specialized references when they help answer a relevant question:
 - references/code-review-sdi.md:
   Service boundaries, system behavior, reliability, and scaling.
 
-Apply basic correctness and design checks to every change.
-Use specialized references for deeper investigation when relevant.
+From the selected reference, read:
+- "Evidence and severity calibration (applies to every review prompt)".
+- Its compact daily prompt for ordinary changes.
+
+Use that reference's master or focused sections when the requested scope
+or investigation requires them. Do not combine every prompt variant
+into one review.
+
+Locate and read relevant sections when bounded reads are supported.
+If a tool loads the entire file, do not claim that only an excerpt
+was loaded.
+
+Apply basic correctness checks to every change. Keep deeper investigation
+focused on the selected lens.
 
 References help identify questions to investigate.
 Findings still require evidence from the implementation, applicable
 requirements, or actual execution.
 
-Do not require a finding from every lens.
+Do not invent findings to satisfy the selected lens.
 
 ## 4. Verify candidate findings
 
@@ -128,8 +131,8 @@ Distinguish tests read from tests actually executed.
 Report execution results only when they are available.
 A passing test supports only the behavior it checks.
 
-Use the existing finding categories and severity guidance in
-references/code-review.md.
+Use the finding categories and severity guidance in the selected book
+reference's evidence-calibration section.
 
 Zero actionable findings is a valid result.
 

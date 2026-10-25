@@ -8,7 +8,7 @@ It is a **skills library**, not an AI harness, MCP server, or duplicate Buffr im
 
 | Skill | Category | Purpose |
 | --- | --- | --- |
-| [code-review](skills/code-review/SKILL.md) | engineering | Integrated engineering code review with five specialized book lenses. |
+| [code-review](skills/code-review/SKILL.md) | engineering | Engineering code review through individual book lenses. |
 | [investigate-existing-feature](skills/investigate-existing-feature/SKILL.md) | engineering | Feature provenance and dependencies investigation. |
 | [investigate-new-feature](skills/investigate-new-feature/SKILL.md) | engineering | Pre-design feature discovery and requirements. |
 | [refine-feature-requirements](skills/refine-feature-requirements/SKILL.md) | engineering | Ticket refinement and Superpowers handoff. |
@@ -57,9 +57,9 @@ dotskills/
 └── .github/workflows/         # CI structural/source-integrity checks
 ```
 
-## Initial source inventory
+## Current source inventory
 
-- **Dotfiles:** all 13 Markdown documents from [dotfiles/reference](https://github.com/rlynjb/dotfiles/tree/master/reference), including five code-review lenses, investigation, requirements, learning, and recruiter call materials. The PNG diagram remains in dotfiles; it is not a reusable prompt.
+- **Dotfiles:** 12 Markdown documents from [dotfiles/reference](https://github.com/rlynjb/dotfiles/tree/master/reference), including five individual code-review lenses, investigation, requirements, learning, and recruiter call materials. The combined code-review prompt is no longer included. The PNG diagram remains in dotfiles; it is not a reusable prompt.
 - **Buffr:** 10 versioned design/prompt documents and 8 runtime prompt snapshots covering shared policy M0 and stages M1–M7. They are **references only**; actual Buffr module execution is not installed here.
 
 Every imported Markdown file is copied byte-for-byte and tracked against its upstream Git blob SHA. Original cross-reference links inside copied documents may point to neighboring source files that reside in another DotSkills package; use [source provenance](docs/sources.md) to locate them.
@@ -72,7 +72,8 @@ The first [manual code-review eval](evals/code-review/context-validation/README.
 provides two cases and a rubric for comparing the previous and updated skill.
 The [first recorded comparison](evals/code-review/context-validation/results/2026-10-24-first-run/README.md)
 includes four completed reviews and their evidence. Both skill versions
-satisfied the initial pair; broader behavior remains to be evaluated.
+satisfied the initial pair. Those pinned snapshots predate the switch to
+individual book lenses; the current workflow has not been evaluated by that batch.
 
 Future work may include tested harness installers, prompt-to-skill migration review, broader per-skill evals, automated regression runs, a release pipeline, and optional MCP skill discovery/gateway integration.
 

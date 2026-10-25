@@ -11,6 +11,11 @@ four completed reviews and their evidence. Both skill versions satisfied that
 small pair; no quality gain or regression was demonstrated. The instructions
 below and blank scorecard remain available for future runs.
 
+**Historical scope:** The pinned skill versions below include the combined
+code-review reference that has since been removed from the current package.
+These instructions reproduce that earlier comparison. Its results do not
+evaluate the current workflow through individual book lenses.
+
 ## What the cases establish
 
 | Case | Code behavior | Expected review conclusion |
