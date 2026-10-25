@@ -33,6 +33,18 @@ python3 scripts/validate_skills.py
 
 Static CI verifies frontmatter, catalog consistency, referenced files, and immutable imported-source hashes; it is **not** an LLM evaluation pipeline.
 
+## Eval-Driven Skill Development
+
+Use [Eval-Driven Skill Development](docs/eval-driven-skill-development.md) to build and improve any DotSkills skill through clear expectations, representative eval cases, evidence-based grading, and regression checks.
+
+1. Define the skill's purpose, required context, and observable success criteria.
+2. Create cases with agent inputs and separate evaluator expectations.
+3. Run the skill in fresh sessions and preserve outputs and available tool evidence.
+4. Grade the results and investigate failures, unknowns, and invalid runs.
+5. Improve the responsible part of the system, then rerun existing and independent cases.
+
+The guide includes a cycle diagram, a practical run checklist, a reusable case outline, and a worked DDIA example. The workflow applies across skills; the existing [manual eval package](evals/README.md) is a starting point for practicing it.
+
 ## Structure
 
 ```text
@@ -50,7 +62,7 @@ dotskills/
 │       └── references/        # module-map.md, runtime/, versioned/
 ├── catalog.json
 ├── source-lock.json
-├── docs/                      # design, authoring, source ownership, security
+├── docs/                      # design, authoring, skill evaluation, sources, security
 ├── adapters/                  # harness distribution guidance, not an installer yet
 ├── evals/                     # manual skill-evaluation cases and roadmap
 ├── scripts/                   # dependency-free local validation

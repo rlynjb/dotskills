@@ -36,3 +36,5 @@ Guidance:
 - Use the source-lock process for byte-for-byte imported references; add adapted content separately rather than silently changing source snapshots.
 
 `scripts/validate_skills.py` checks the repository's supported flat frontmatter convention, catalog, local reference paths, and source hashes. A future pipeline can use the upstream `skills-ref` validator and behavioral evals for broader spec coverage.
+
+For the development cycle after defining a skill, follow [Eval-Driven Skill Development](eval-driven-skill-development.md): establish expected behavior, prepare cases, run and grade the agent, investigate results, and check improvements for regressions.

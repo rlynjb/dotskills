@@ -5,6 +5,8 @@ package. It does not yet have an automated model-evaluation harness.
 
 ## Start here
 
+Use [Eval-Driven Skill Development](../docs/eval-driven-skill-development.md) for the shared workflow across skills, including case design, run checklists, grading, failure diagnosis, and regression comparisons.
+
 [Code review: context for input validation](code-review/context-validation/README.md)
 contains two runnable fixtures, a shared review request, pinned before/after
 skill versions, an evaluator answer key, and a blank four-run scorecard.
