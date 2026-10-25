@@ -14,8 +14,6 @@ It is a **skills library**, not an AI harness, MCP server, or duplicate Buffr im
 | [refine-feature-requirements](skills/refine-feature-requirements/SKILL.md) | engineering | Ticket refinement and Superpowers handoff. |
 | [system-learning-repo](skills/system-learning-repo/SKILL.md) | learning | Learn an unfamiliar repository architecture and data lifecycle. |
 | [system-learning-implementation](skills/system-learning-implementation/SKILL.md) | learning | Learn a specific code implementation, its mechanisms, and trade-offs. |
-| [rehearse-ga-call](skills/rehearse-ga-call/SKILL.md) | career | Golden Analytics recruiter screen rehearsal. |
-| [rehearse-google-call](skills/rehearse-google-call/SKILL.md) | career | Google recruiter call rehearsal. |
 | [buffr-decision-support](skills/buffr-decision-support/SKILL.md) | decision-support | Buffr M0–M7 module reference and execution guidance; engine remains external. |
 
 See [`catalog.json`](catalog.json) for machine-readable discovery metadata and [`source-lock.json`](source-lock.json) for upstream origin paths and pinned blob identities.
@@ -49,15 +47,13 @@ The guide includes a cycle diagram, a practical run checklist, a reusable case o
 
 ```text
 dotskills/
-├── skills/                    # Nine installable Agent Skills packages
+├── skills/                    # Seven installable Agent Skills packages
 │   ├── code-review/
 │   ├── investigate-existing-feature/
 │   ├── investigate-new-feature/
 │   ├── refine-feature-requirements/
 │   ├── system-learning-repo/
 │   ├── system-learning-implementation/
-│   ├── rehearse-ga-call/
-│   ├── rehearse-google-call/
 │   └── buffr-decision-support/
 │       └── references/        # module-map.md, runtime/, versioned/
 ├── catalog.json
@@ -71,12 +67,11 @@ dotskills/
 
 ## Current source inventory
 
-- **Dotfiles:** 12 Markdown documents from [dotfiles/reference](https://github.com/rlynjb/dotfiles/tree/master/reference), including five individual code-review lenses, investigation, requirements, learning, and recruiter call materials. The combined code-review prompt is no longer included. The PNG diagram remains in dotfiles; it is not a reusable prompt.
+- **Dotfiles:** 10 Markdown documents from [dotfiles/reference](https://github.com/rlynjb/dotfiles/tree/master/reference), including five individual code-review lenses, investigation, requirements, and learning. The combined code-review prompt is no longer included. The PNG diagram remains in dotfiles; it is not a reusable prompt.
 - **Buffr:** 10 versioned design/prompt documents and 8 runtime prompt snapshots covering shared policy M0 and stages M1–M7. They are **references only**; actual Buffr module execution is not installed here.
 
 Every imported Markdown file is copied byte-for-byte and tracked against its upstream Git blob SHA. Original cross-reference links inside copied documents may point to neighboring source files that reside in another DotSkills package; use [source provenance](docs/sources.md) to locate them.
 
-**Privacy:** Some recruiter-script examples contain personal career history. Review these public files before installing them in shared contexts.
 
 ## Next phases
 

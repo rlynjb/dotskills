@@ -171,18 +171,6 @@
     },
     {
       "source": "dotfiles",
-      "source_path": "reference/rehearse-ga-call.md",
-      "destination": "skills/rehearse-ga-call/references/rehearse-ga-call.md",
-      "blob_sha": "c94eee72d5fdc077b2a9c1190ebbfbb3adc9cd5b"
-    },
-    {
-      "source": "dotfiles",
-      "source_path": "reference/rehearse-google-call.md",
-      "destination": "skills/rehearse-google-call/references/rehearse-google-call.md",
-      "blob_sha": "5b758de0a58414557fa192b2718d7a74f3c61d3e"
-    },
-    {
-      "source": "dotfiles",
       "source_path": "reference/system-learning-implementation.md",
       "destination": "skills/system-learning-implementation/references/system-learning-implementation.md",
       "blob_sha": "3c4a11bd02d7072c9a76d7ceb874feacff6c35ec"

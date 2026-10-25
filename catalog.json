@@ -51,22 +51,6 @@
       "reference_count": 1
     },
     {
-      "name": "rehearse-ga-call",
-      "category": "career",
-      "purpose": "Golden Analytics recruiter screen rehearsal.",
-      "source": "dotfiles",
-      "path": "skills/rehearse-ga-call",
-      "reference_count": 1
-    },
-    {
-      "name": "rehearse-google-call",
-      "category": "career",
-      "purpose": "Google recruiter call rehearsal.",
-      "source": "dotfiles",
-      "path": "skills/rehearse-google-call",
-      "reference_count": 1
-    },
-    {
       "name": "buffr-decision-support",
       "category": "decision-support",
       "purpose": "Buffr M0–M7 module reference and execution guidance; engine remains external.",
