@@ -1,5 +1,9 @@
 # Authoring portable skills
 
+Start with the [reusable skill template](../templates/README.md). Copy it into
+`skills/<skill-name>/`, replace the placeholders, and follow its checklist to
+register the skill and create its first eval case.
+
 DotSkills follows the [Agent Skills specification](https://agentskills.io/specification), which defines a directory with a required `SKILL.md` entrypoint and optional supporting files.
 
 ```text
