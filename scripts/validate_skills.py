@@ -1,5 +1,35 @@
 #!/usr/bin/env python3
-"""Validate DotSkills packages and exact source imports (Python standard library)."""
+"""Check DotSkills package structure and imported-reference consistency.
+
+Run from the repository root:
+    python3 scripts/validate_skills.py
+
+Uses only the Python standard library and locates the repository relative to
+this script. The same command can run locally or in GitHub Actions.
+
+Checks:
+- Each skill folder has SKILL.md with name and description frontmatter.
+- Skill names match their folders and satisfy naming/length rules.
+- Catalog entries match the skill folders, without duplicate names.
+- references/ links in SKILL.md point to existing files inside that skill.
+- Source-lock entries have a recorded source commit and unique destinations
+  pointing to existing files within skills/.
+- Imported file contents match the Git blob hashes recorded in source-lock.json.
+- Catalog reference counts match the locked imports for each skill.
+
+Reports detected problems as ERROR lines and exits with status 1. On success,
+prints PASS with package/reference counts and exits with status 0.
+
+Limits:
+This is a structural and consistency check, not a prompt-injection or malware
+scanner. It does not execute skills, run behavioral evals, judge instruction
+quality, or enforce runtime permissions. Hash matches establish agreement with
+the local lock file; they do not prove that the source is safe or independently
+verify its contents against the upstream commit.
+
+See TODO_skill_validation_and_runtime_safety.md beside this script for planned
+security review, evaluation, and runtime safeguards.
+"""
 from __future__ import annotations
 
 import hashlib
