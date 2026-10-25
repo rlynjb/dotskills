@@ -1,4 +1,4 @@
-# TODO: Layered skill validation
+# TODO: Skill Validation and Runtime Safety
 
 Documented future work; this file does not implement these controls.
 
