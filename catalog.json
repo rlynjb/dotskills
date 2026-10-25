@@ -3,6 +3,54 @@
   "name": "DotSkills",
   "skills": [
     {
+      "name": "eval-driven-skill-development",
+      "category": "methodology",
+      "purpose": "Entry-point workflow for improving any skill through eval evidence, diagnosis, targeted changes, and regression checks.",
+      "source": "dotskills",
+      "path": "skills/eval-driven-skill-development",
+      "reference_count": 0
+    },
+    {
+      "name": "context-engineering",
+      "category": "methodology",
+      "purpose": "Diagnose and improve how a target skill selects, verifies, expands, and stops using context.",
+      "source": "dotskills",
+      "path": "skills/context-engineering",
+      "reference_count": 0
+    },
+    {
+      "name": "correctness-and-verification",
+      "category": "methodology",
+      "purpose": "Turn requirements into verifiable claims, invariants, checks, and evidence-backed conclusions.",
+      "source": "dotskills",
+      "path": "skills/correctness-and-verification",
+      "reference_count": 0
+    },
+    {
+      "name": "skill-lifecycle-and-release",
+      "category": "methodology",
+      "purpose": "Version, compare, regression-test, review, and release skill changes safely across model and harness changes.",
+      "source": "dotskills",
+      "path": "skills/skill-lifecycle-and-release",
+      "reference_count": 0
+    },
+    {
+      "name": "agent-observability-and-feedback",
+      "category": "methodology",
+      "purpose": "Instrument agent journeys, inspect traces and outcomes, and turn production feedback into actionable eval coverage.",
+      "source": "dotskills",
+      "path": "skills/agent-observability-and-feedback",
+      "reference_count": 0
+    },
+    {
+      "name": "agent-trust-and-governance",
+      "category": "methodology",
+      "purpose": "Apply provenance, authority boundaries, approvals, risk controls, and verification to agent context and actions.",
+      "source": "dotskills",
+      "path": "skills/agent-trust-and-governance",
+      "reference_count": 0
+    },
+    {
       "name": "code-review",
       "category": "engineering",
       "purpose": "Engineering code review through individual book lenses.",
