@@ -3,7 +3,8 @@
   "name": "DotSkills",
   "_comment": [
     "DotSkills repository registry: this file lists first-level skill packages and machine-readable metadata used by repository tooling and validation.",
-    "It does not install, execute, expose, or inject skills into ChatGPT, Codex, Claude Code, or any other harness. Harness-specific adapters or install/package steps are responsible for making a skill available to those systems.",
+    "A skill with exposed=false remains registered in DotSkills for repository integrity but should be treated as hidden/not ready for harness packaging or public discovery. Skills without exposed=false are eligible to be exposed.",
+    "This file does not itself install, execute, expose, or inject skills into ChatGPT, Codex, Claude Code, or any other harness. Harness-specific adapters or install/package steps decide what is actually made available.",
     "The repository validator expects every skills/<name>/ directory to have a matching catalog entry, and every catalog entry to point to an existing skills/<name>/SKILL.md. Add, rename, or remove catalog entries when the corresponding skill package changes."
   ],
   "skills": [
@@ -61,7 +62,8 @@
       "purpose": "Engineering code review through individual book lenses.",
       "source": "dotfiles",
       "path": "skills/code-review",
-      "reference_count": 5
+      "reference_count": 5,
+      "exposed": false
     },
     {
       "name": "code-review-ddia",
@@ -77,7 +79,8 @@
       "purpose": "Feature provenance and dependencies investigation.",
       "source": "dotfiles",
       "path": "skills/investigate-existing-feature",
-      "reference_count": 1
+      "reference_count": 1,
+      "exposed": false
     },
     {
       "name": "investigate-new-feature",
@@ -85,7 +88,8 @@
       "purpose": "Pre-design feature discovery and requirements.",
       "source": "dotfiles",
       "path": "skills/investigate-new-feature",
-      "reference_count": 1
+      "reference_count": 1,
+      "exposed": false
     },
     {
       "name": "refine-feature-requirements",
@@ -117,7 +121,8 @@
       "purpose": "Buffr M0–M7 module reference and execution guidance; engine remains external.",
       "source": "buffr",
       "path": "skills/buffr-decision-support",
-      "reference_count": 18
+      "reference_count": 18,
+      "exposed": false
     }
   ]
 }
