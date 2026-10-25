@@ -30,6 +30,11 @@ description: Explain the task and specifically when to use the skill.
 4. Report evidence, uncertainties, and results.
 ```
 
+For a supporting-reference outline and a filled-in example, see
+[the task-guide template](../templates/skill/references/skill-name.md).
+Keep the package-root `SKILL.md` as the entry point; rename the supporting guide
+for its subject and link to it from that entry point.
+
 Guidance:
 
 - Use lowercase letters, digits, and hyphens; keep `name` aligned with the directory.

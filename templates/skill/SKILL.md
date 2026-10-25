@@ -27,7 +27,7 @@ TODO: Define the useful outcome and the boundaries of the task.
 
 ## Supporting references
 
-Read [the task guide](references/guide.md) when TODO: specify the condition that
+Read [the task guide](references/skill-name.md) when TODO: specify the condition that
 makes its detailed guidance necessary. Load only the relevant sections.
 Remove this section and the reference file if the skill needs no supporting guide.
 

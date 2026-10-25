@@ -20,8 +20,11 @@ and actual eval cases under `evals/`.
 4. Fill in the required context, workflow, output, and tool boundaries.
    Customize `references/context-quality-and-requirements.md` to define needed
    inputs, evidence checks, missing-context handling, and completion conditions.
-5. Replace `references/guide.md` with useful supporting material, or remove it
-   and its link. Keep the entry point short and say when to read each reference.
+5. Customize `references/skill-name.md`, which includes a minimal task-guide
+   template and a filled-in code-review example. Rename it for its subject and
+   update the link in `SKILL.md`; remove irrelevant examples and authoring notes.
+   Remove the file and its link if no supporting guide is needed. Keep the entry
+   point short and say when to read each reference.
 6. Add `scripts/` only for necessary executable helpers and `assets/` only for
    files used in the output. Do not create unused folders.
 7. Register the completed skill in `catalog.json`. For imported references,
