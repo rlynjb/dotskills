@@ -40,6 +40,25 @@ This is a small synthetic diagnostic, not the real-change walkthrough from the
 Phase 1 plan. It does not cover distracting, missing, stale, or conflicting
 context, broad code-review reliability, or skill triggering.
 
+## Mock applications and eval cases
+
+Each synthetic application lives in `fixtures/<case-id>/mock-app/`:
+
+- [case-01 mock app](fixtures/case-01/mock-app/): the guarded implementation.
+- [case-02 mock app](fixtures/case-02/mock-app/): the unguarded implementation.
+
+Each mock app contains `create-user.cjs`, `save-user.cjs`, and `requirements.md`.
+These are small executable examples for reviews when you are not using an
+existing application. They are intentionally limited to the behavior under test;
+one variant deliberately contains a defect.
+
+The application files and public requirements are reviewer inputs. The task,
+[grader](grader.md), and [scorecard](scorecard.md) define the evaluation separately.
+`prepare.py` copies only the selected mock app into the review workspace's
+`project/` directory. The case IDs and fixture contents are unchanged by this
+reorganization. Historical results retain the paths used in their original runs;
+check out their recorded revision to reproduce that original layout.
+
 ## 1. Verify the cases
 
 From the DotSkills root, with Python 3.11+, Git, and Node.js 18+ available:

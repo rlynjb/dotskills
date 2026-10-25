@@ -43,7 +43,7 @@ def main() -> None:
     except (OSError, subprocess.CalledProcessError):
         parser.error("cannot read the pinned skill snapshot; use a full Git checkout and run git fetch origin")
 
-    fixture = SUITE / "fixtures" / args.case
+    fixture = SUITE / "fixtures" / args.case / "mock-app"
     fixture_files = sorted(fixture.iterdir())
     hashes = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in fixture_files}
     fixture_digest = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()
