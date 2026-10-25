@@ -8,6 +8,12 @@ It is a **skills library**, not an AI harness, MCP server, or duplicate Buffr im
 
 | Skill | Category | Purpose |
 | --- | --- | --- |
+| [eval-driven-skill-development](skills/eval-driven-skill-development/SKILL.md) | methodology | Human-gated, guided-learning entry point for improving skills through eval evidence. |
+| [context-engineering](skills/context-engineering/SKILL.md) | methodology | Diagnose and improve context selection, expansion, provenance, freshness, and stopping. |
+| [correctness-and-verification](skills/correctness-and-verification/SKILL.md) | methodology | Turn requirements into verifiable claims, invariants, checks, and evidence. |
+| [skill-lifecycle-and-release](skills/skill-lifecycle-and-release/SKILL.md) | methodology | Version, regression-test, review, and release skill changes safely. |
+| [agent-observability-and-feedback](skills/agent-observability-and-feedback/SKILL.md) | methodology | Inspect agent journeys and turn production feedback into actionable eval coverage. |
+| [agent-trust-and-governance](skills/agent-trust-and-governance/SKILL.md) | methodology | Apply provenance, authority boundaries, approvals, risk controls, and verification. |
 | [code-review](skills/code-review/SKILL.md) | engineering | Engineering code review through individual book lenses. |
 | [investigate-existing-feature](skills/investigate-existing-feature/SKILL.md) | engineering | Feature provenance and dependencies investigation. |
 | [investigate-new-feature](skills/investigate-new-feature/SKILL.md) | engineering | Pre-design feature discovery and requirements. |
@@ -21,7 +27,7 @@ See [`catalog.json`](catalog.json) for machine-readable discovery metadata and [
 ## Quick start
 
 1. Choose a skill above and read its `SKILL.md`.
-2. Install or copy **the whole skill directory**, including `references/`, into a location supported by your chosen harness. See [harness adapters](adapters/README.md).
+2. Install or package **the whole skill directory**, including `references/`, for your chosen harness. For OpenAI harnesses, see the [OpenAI adapter](adapters/openai/README.md); other harness guidance lives under [adapters](adapters/README.md).
 3. Load additional reference documents on demand. A skill is not automatically executable merely because it exists in a Git repository.
 4. Check the library before edits:
 
@@ -47,7 +53,13 @@ The guide includes a cycle diagram, a practical run checklist, a reusable case o
 
 ```text
 dotskills/
-├── skills/                    # Seven installable Agent Skills packages
+├── skills/                    # Thirteen installable Agent Skills packages
+│   ├── eval-driven-skill-development/
+│   ├── context-engineering/
+│   ├── correctness-and-verification/
+│   ├── skill-lifecycle-and-release/
+│   ├── agent-observability-and-feedback/
+│   ├── agent-trust-and-governance/
 │   ├── code-review/
 │   ├── investigate-existing-feature/
 │   ├── investigate-new-feature/
@@ -59,7 +71,8 @@ dotskills/
 ├── catalog.json
 ├── source-lock.json
 ├── docs/                      # design, authoring, skill evaluation, sources, security
-├── adapters/                  # harness distribution guidance, not an installer yet
+├── adapters/                  # harness-specific packaging/install adapters
+│   └── openai/                # Codex repo install + portable OpenAI plugin build
 ├── evals/                     # manual skill-evaluation cases and roadmap
 ├── scripts/                   # dependency-free local validation
 └── .github/workflows/         # CI structural/source-integrity checks
@@ -80,6 +93,6 @@ provides two cases. Each case holds its inputs, expected behavior, grading guida
 and recorded attempts. Start with one case, run the reviewer, grade its response,
 and save the result in that case’s `results/` folder.
 
-Future work may include tested harness installers, prompt-to-skill migration review, broader per-skill evals, automated regression runs, a release pipeline, and optional MCP skill discovery/gateway integration.
+Future work may include additional harness adapters, broader per-skill evals, automated regression runs, a release pipeline, compatibility testing, and optional MCP skill discovery/gateway integration.
 
 Read [architecture](docs/architecture.md), [source policy](docs/sources.md), [authoring](docs/authoring.md), [skill validation and runtime safety](docs/skill-validation-and-runtime-safety.md), and [contributing](CONTRIBUTING.md).
