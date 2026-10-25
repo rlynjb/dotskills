@@ -1,6 +1,11 @@
 {
   "schema_version": 1,
   "name": "DotSkills",
+  "_comment": [
+    "DotSkills repository registry: this file lists first-level skill packages and machine-readable metadata used by repository tooling and validation.",
+    "It does not install, execute, expose, or inject skills into ChatGPT, Codex, Claude Code, or any other harness. Harness-specific adapters or install/package steps are responsible for making a skill available to those systems.",
+    "The repository validator expects every skills/<name>/ directory to have a matching catalog entry, and every catalog entry to point to an existing skills/<name>/SKILL.md. Add, rename, or remove catalog entries when the corresponding skill package changes."
+  ],
   "skills": [
     {
       "name": "eval-driven-skill-development",
