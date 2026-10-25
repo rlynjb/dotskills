@@ -127,3 +127,121 @@ Follow-up for DotSkills and its consuming hosts:
 These five context defenses differ from the five broad validation layers
 earlier in this file. Neither slide deck establishes that running a prompt
 through several agents can certify that it contains no malicious content.
+
+## Additional related-session research (2026-10-25)
+
+A broader search of the user's conference chats found the related sessions below.
+Evidence levels matter: the two sections above retain their previously recorded
+PDF page references; the additions below distinguish retrieved PDF content from
+earlier assistant-written session summaries and research leads. This search did
+not recover every original transcript or slide deck, so it is not a complete
+conference security audit. No new slide numbers or chat URLs are inferred.
+
+### Runtime enforcement: Agntcon26 — Yaron Schneider
+
+**Durability, Guardrails, and Attestation.** Evidence: retrieved session-chat
+summaries dated 2026-10-23, including descriptions of slides 9 and 11 and the
+phrase “The model proposes. The runtime enforces.” These are earlier assistant
+descriptions of the slides, not a fresh inspection of the original deck.
+
+The recorded discussion separates model proposals from authentication,
+authorization, policy enforcement, execution, and execution evidence. It also
+distinguishes observability from attestation. This complements pre-use screening:
+a reviewed skill still needs enforced limits when it executes.
+
+Proposed follow-up (our adaptation, not a verbatim speaker checklist):
+
+- [ ] Specify which checks belong to DotSkills intake and which must be enforced
+  by the consuming harness/MCP runtime. Put authorization, permitted tools,
+  argument validation, file/network access, and execution limits in runtime code.
+- [ ] Record attempted actions, policy decisions, and actual execution outcomes.
+  Keep ordinary logs distinct from cryptographically verifiable attestations;
+  neither establishes that an agent's reasoning or final answer is correct.
+- [ ] Test that disallowed actions remain blocked even when the skill or a tool
+  result explicitly requests them.
+
+### Context failures: Agntcon27 — Drew Breunig
+
+**How Contexts Fail (and How to Fix Them).** Evidence: earlier session/project
+summaries identify poisoning, distraction, confusion, and conflicting context.
+The detailed original transcript/slides were not recovered in this search.
+Treat this as a relevant research lead, not independently verified slide wording.
+
+Proposed follow-up:
+
+- [ ] Extend adversarial fixtures beyond obvious override strings: include
+  plausible false facts, irrelevant but persuasive context, contradictory
+  requirements, and stale summaries. Keep malicious and benign failure cases
+  separately labeled so ordinary context mistakes are not called attacks.
+- [ ] Test whether a corrected fact actually displaces an earlier false claim,
+  including after summarization or memory reuse.
+- [ ] Recover the original session material before attributing specific
+  mitigations or measured effectiveness to the speaker.
+
+### Whole-workflow evaluation: Agntcon24 — EvalBench
+
+**Building an Agentic Eval Pipeline: Battle-Tested Lessons with EvalBench** —
+Kurtis Van Gent / Haoyu Wang.
+
+Evidence: retrieved content from
+`mcpcon-na-26-building-an-agentic-eval-pipeline_-battle-tested-lessons-with-evalbench-agntcon-2026.pdf`.
+The retrieval describes evaluation of Critical User Journeys, trajectory and
+outcome/output measures, regression detection across tools/skills/prompts/models,
+and deterministic checks combined with calibrated, explained LLM judges.
+Page numbers were not supplied by this retrieval.
+
+Proposed follow-up:
+
+- [ ] Grade the execution trace as well as the final answer: an acceptable answer
+  must not hide an unauthorized read, write, tool call, or attempted exfiltration.
+  Record attempted and completed actions separately.
+- [ ] Validate graders against independently reviewed examples of both safe and
+  unsafe behavior, including quoted attacks that the agent correctly rejects.
+  Track false positives and false negatives rather than trusting one pass score.
+- [ ] Use clean, isolated test state and controlled test resources for security
+  cases. Do not expose production credentials or data to malicious fixtures.
+- [ ] Record the skill revision, model, harness, policy configuration, and grader
+  version with each per-case run; rerun affected cases when these change.
+
+### Additional leads: credentials and MCP observability
+
+- **Christian Posta — “DO NOT give AI agents credentials!”** The conference
+  directory identifies this demo and source photo `5748.jpg`. The title and
+  source locator were recovered; the demo's detailed mechanism was not.
+- **Agntcon03 — What Your MCP Server Does When Nobody's Looking (Austin Parker).**
+  Earlier chat summaries discuss MCP observability and tracing. Original slide
+  text/transcript was not recovered, so specific security claims remain
+  unverified.
+- **Stop Vibe-Testing, Beyond Pass/Fail, and agent regression testing** also
+  surfaced as related evaluation sessions. Their original material was not
+  recovered in this pass; do not treat their titles as evidence of a particular
+  security technique.
+
+Proposed follow-up:
+
+- [ ] Investigate credential isolation and narrowly scoped tool access in the
+  runtime; avoid placing secrets in skill text, model context, or eval fixtures.
+  Verify the credentials demo before claiming a specific implementation.
+- [ ] Preserve enough tool-call and policy-decision evidence to investigate
+  failures while redacting secrets and sensitive input from telemetry.
+- [ ] Recover original material for these leads and replace summary-level
+  attribution with precise source references when available.
+
+## Suggested implementation order
+
+This ordering is our proposal, not a conference-prescribed pipeline:
+
+1. Define the intake policy and trust boundaries; preserve provenance and reviewed
+   revisions. External content remains untrusted during inspection.
+2. Add static screening and independent review of the whole skill package.
+   Do not run unreviewed setup steps merely to make scanning possible.
+3. Establish the restricted execution environment before running any behavioral
+   tests. Test both the skill and enforcement of runtime restrictions.
+4. Add independently reviewed adversarial cases and calibrate the graders.
+5. Gate release on recorded evidence; retain runtime limits, monitor execution,
+   and reassess changed skills, dependencies, models, and harnesses.
+
+An AI reviewer is another fallible component exposed to the inspected content.
+Multiple reviewers or a “cleaned” prompt are not proof of safety. Keep reviewer
+permissions restricted and prevent the inspected skill from changing review
+policy, expected outcomes, or grading criteria.
