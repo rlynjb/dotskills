@@ -139,19 +139,23 @@ flowchart TD
     K --> G4[HUMAN GATE: inspect or challenge grade]
     G4 --> L[Diagnose failure or uncertainty]
     L --> M[Scan all methodology layers]
-    M --> R{Evidence supports specialist?}
-    R -->|Context failure| CE[context-engineering]
-    R -->|Correctness or verification failure| CV[correctness-and-verification]
-    R -->|Version, regression, portability, release| LR[skill-lifecycle-and-release]
-    R -->|Trace, telemetry, production feedback| OF[agent-observability-and-feedback]
-    R -->|Authority, provenance, permissions, risk| TG[agent-trust-and-governance]
-    R -->|No specialist needed| N[Develop smallest justified improvement]
-    CE --> G5[HUMAN GATE: approve routing]
+    M --> R{What route does evidence support?}
+    R -->|Context failure| CE[Recommend context-engineering]
+    R -->|Correctness or verification failure| CV[Recommend correctness-and-verification]
+    R -->|Version, regression, portability, release| LR[Recommend skill-lifecycle-and-release]
+    R -->|Trace, telemetry, production feedback| OF[Recommend agent-observability-and-feedback]
+    R -->|Authority, provenance, permissions, risk| TG[Recommend agent-trust-and-governance]
+    R -->|No specialist needed| NS[Recommend no specialist]
+    CE --> G5[HUMAN GATE: approve, revise, or reject routing]
     CV --> G5
     LR --> G5
     OF --> G5
     TG --> G5
-    G5 --> N
+    NS --> G5
+    G5 --> AR{Approved route}
+    AR -->|Specialist| SI[Invoke selected specialist]
+    AR -->|No specialist| N[Develop smallest justified improvement]
+    SI --> N
     N --> G6[HUMAN GATE: approve target-skill change]
     G6 --> O[Apply approved change]
     O --> G7[HUMAN GATE: approve comparable rerun]
@@ -323,20 +327,23 @@ flowchart TD
     A[Eval result + preserved evidence] --> B[Diagnose before editing]
     B --> C[Coverage scan across all five layers]
     C --> D{What does the evidence support?}
-    D -->|Context quality / retrieval / stopping| CE[context-engineering]
-    D -->|Claims / invariants / verification| CV[correctness-and-verification]
-    D -->|Version / regression / portability / release| LR[skill-lifecycle-and-release]
-    D -->|Trace / telemetry / production feedback| OF[agent-observability-and-feedback]
-    D -->|Authority / provenance / permissions / risk| TG[agent-trust-and-governance]
-    D -->|No specialist needed| N[Continue with direct diagnosis]
-    CE --> G[HUMAN GATE: approve specialist routing]
+    D -->|Context quality / retrieval / stopping| CE[Recommend context-engineering]
+    D -->|Claims / invariants / verification| CV[Recommend correctness-and-verification]
+    D -->|Version / regression / portability / release| LR[Recommend skill-lifecycle-and-release]
+    D -->|Trace / telemetry / production feedback| OF[Recommend agent-observability-and-feedback]
+    D -->|Authority / provenance / permissions / risk| TG[Recommend agent-trust-and-governance]
+    D -->|No specialist needed| N[Recommend no specialist]
+    CE --> G[HUMAN GATE: approve, revise, or reject routing]
     CV --> G
     LR --> G
     OF --> G
     TG --> G
-    G --> H[Specialist returns diagnosis + recommendation]
-    N --> I[Develop proposed improvement]
-    H --> I
+    N --> G
+    G --> A{Approved route}
+    A -->|Specialist| H[Invoke selected specialist]
+    A -->|No specialist| I[Develop proposed improvement]
+    H --> R[Specialist returns diagnosis + recommendation]
+    R --> I
     I --> J[HUMAN GATE: approve target-skill change]
 ```
 
