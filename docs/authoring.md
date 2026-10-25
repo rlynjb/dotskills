@@ -1,49 +1,45 @@
 # Authoring portable skills
 
-Start with the [reusable skill template](../templates/skill/SKILL.md). Copy it into
-`skills/<skill-name>/`, replace the placeholders, and follow its checklist to
-register the skill and create its first eval case.
+Use this checklist to create and package a skill. The [templates folder](../templates/README.md)
+contains the reusable starting files and examples; [Eval-Driven Skill Development](eval-driven-skill-development.md)
+covers testing and improving the skill's behavior.
 
-DotSkills follows the [Agent Skills specification](https://agentskills.io/specification), which defines a directory with a required `SKILL.md` entrypoint and optional supporting files.
+## Create a skill
 
-```text
-skills/example-skill/
-├── SKILL.md
-├── references/    # on-demand information
-├── scripts/       # reviewed scripts only when required
-└── assets/        # optional templates and other resources
-```
+1. **Choose one task.** Define its useful outcome, scope, realistic trigger
+   requests, and closely related tasks it should not handle.
+2. **Copy the [skill template](../templates/skill/SKILL.md).** Copy the entire
+   `templates/skill/` folder to `skills/<skill-name>/`.
+3. **Customize the entry point.** In `SKILL.md`, match the frontmatter `name`
+   to the folder using lowercase letters, digits, and hyphens. Write a specific
+   trigger description, concise workflow, output format, and tool boundaries.
+4. **Define the context requirements.** Customize
+   [context quality and requirements](../templates/skill/references/context-quality-and-requirements.md)
+   for required inputs, evidence checks, missing or conflicting information,
+   and completion conditions.
+5. **Add only necessary supporting guidance.** Adapt the
+   [task-guide template and worked example](../templates/skill/references/skill-name.md).
+   Rename it for its subject, update its link in `SKILL.md`, and state when to
+   read it. Remove unused examples, authoring notes, placeholders, and files.
+6. **Keep the package portable.** Use relative links within the package.
+   Add `scripts/` only for reviewed executable helpers and `assets/` only for
+   needed output resources. State required tools and permissions, and check
+   availability at runtime rather than assuming an integration is connected.
+7. **Register and review it.** Add the skill to `catalog.json`. Follow the
+   [source policy](sources.md) for imported references and source-lock records;
+   preserve locked snapshots and put adaptations in separate files. Apply
+   [skill validation and runtime safety guidance](skill-validation-and-runtime-safety.md)
+   before executing external content.
+8. **Validate the package.** From the repository root, run
+   `python3 scripts/validate_skills.py`. Resolve reported structural, catalog,
+   reference-path, and local source-lock consistency errors. Passing does not
+   establish safe or correct behavior.
+9. **Create and run its first eval case.** Start with the
+   [case template](../templates/case/README.md), then follow the
+   [eval development workflow](eval-driven-skill-development.md) to establish
+   expectations, run the agent, grade evidence, and retain results.
 
-Minimal example:
+Keep detailed instructions in references and evaluator-only material under
+`evals/`. The package-root `SKILL.md` remains the entry point.
 
-```markdown
----
-name: example-skill
-description: Explain the task and specifically when to use the skill.
----
-
-# Example skill
-
-1. Determine the user's objective and boundaries.
-2. Inspect authorized context.
-3. Select only necessary references and permitted tools.
-4. Report evidence, uncertainties, and results.
-```
-
-For a supporting-reference outline and a filled-in example, see
-[the task-guide template](../templates/skill/references/skill-name.md).
-Keep the package-root `SKILL.md` as the entry point; rename the supporting guide
-for its subject and link to it from that entry point.
-
-Guidance:
-
-- Use lowercase letters, digits, and hyphens; keep `name` aligned with the directory.
-- Include a useful **when-to-trigger** description and non-goals to prevent wrong activation.
-- Favor progressive disclosure: keep `SKILL.md` concise and place detailed guides in `references/`.
-- Prefer relative links internal to the package. Do not require other skills to be installed.
-- Do not claim external tools or integration are connected; check tool availability at runtime.
-- Use the source-lock process for byte-for-byte imported references; add adapted content separately rather than silently changing source snapshots.
-
-`scripts/validate_skills.py` checks the repository's supported flat frontmatter convention, catalog, local reference paths, and source hashes. A future pipeline can use the upstream `skills-ref` validator and behavioral evals for broader spec coverage.
-
-For the development cycle after defining a skill, follow [Eval-Driven Skill Development](eval-driven-skill-development.md): establish expected behavior, prepare cases, run and grade the agent, investigate results, and check improvements for regressions.
+See [contributing](../CONTRIBUTING.md) for repository requirements.
