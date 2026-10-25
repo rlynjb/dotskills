@@ -1,15 +1,41 @@
-# Harness adapters (planned)
+# Harness adapters
 
-This folder documents distribution boundaries; it does not yet ship installers.
+`skills/` is the canonical, harness-agnostic DotSkills source. Adapters translate that
+source into installation/package layouts expected by particular agent harnesses.
 
-Each directory under `../skills/` is intended to be an independently distributable package. Install **the entire directory**, preserving `SKILL.md` and its `references/`.
+Adapters must not become a second source of skill instructions. They should select,
+copy/link, package, validate, or publish canonical skill directories.
 
-For Codex environments that support repo-local skills, a typical destination is `.agents/skills/<skill-name>/`. For Claude Code, install under the skills directory supported by your current installation. For ChatGPT Work, use its supported skill installation/upload mechanism if enabled. Always confirm current discovery rules and permissions for each harness.
+## Available adapters
 
-Do **not** assume that putting skills in Git, or exposing an MCP server, makes them automatically discoverable in every client.
+### OpenAI
 
-Potential future adapters:
-- Codex/Claude/ChatGPT installation and update commands
-- A tested compatibility matrix with version constraints and capabilities
-- A versioned distribution manifest and rollback support
-- A supported MCP skill discovery/export endpoint when appropriate
+See [`openai/README.md`](openai/README.md).
+
+The OpenAI adapter currently supports:
+
+- installing selected skills into a Codex-compatible repo-local
+  `.agents/skills/<skill-name>/` layout;
+- building a portable OpenAI plugin with root `plugin.json` + `skills/` for supported
+  ChatGPT/Codex plugin workflows.
+
+The default selector is the `methodology` category, which packages
+`eval-driven-skill-development` and its five specialist methodology skills.
+
+## Distribution rule
+
+Each directory under `../skills/` remains an independently distributable package.
+Install the **entire directory**, preserving `SKILL.md`, `references/`, scripts, templates,
+and other skill-local assets.
+
+Do not assume that putting skills in Git, exposing an MCP server, or building a package
+makes them automatically discoverable in every client. Discovery rules, permissions,
+plugin availability, and publication requirements are harness-specific and may change.
+
+## Planned adapters/capabilities
+
+- Claude-specific installation/package adapter
+- tested compatibility matrix with version constraints
+- versioned distribution manifests and rollback support
+- release-time plugin validation and public-directory packaging
+- optional MCP skill discovery/export when appropriate
