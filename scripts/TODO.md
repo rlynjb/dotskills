@@ -2,6 +2,17 @@
 
 Documented future work; this file does not implement these controls.
 
+## Big theme: evaluate behavior, not only the final answer
+
+**Check what the agent actually did, not just whether its final answer passed.**
+
+This is our synthesis of the research below, not a direct speaker quotation.
+A correct-looking answer can conceal reliance on poisoned context, an unauthorized
+action, or a flawed grader. Review the evidence used, tool calls attempted,
+actions completed, and runtime policy decisions alongside the final output.
+Distinguish an unsafe attempt blocked by the runtime from an action that actually
+executed. Passing output checks alone does not establish safe behavior.
+
 ## Current coverage
 
 `validate_skills.py` checks skill structure, metadata, catalog consistency,
