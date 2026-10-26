@@ -10,6 +10,7 @@ The operational source of truth is [`skills/refine-skill/SKILL.md`](../skills/re
 
 - [Current workflow](#current-workflow)
 - [Operating contract](#operating-contract)
+  - [Evaluation action boundary](#evaluation-action-boundary)
   - [Human-gated by default](#human-gated-by-default)
   - [Gate cadence options](#gate-cadence-options)
   - [User-visible workflow trace](#user-visible-workflow-trace)
@@ -48,6 +49,26 @@ The bootstrap stage does **not** create every possible support file. A separate 
 After bootstrap, eval design and execution remain part of the same workflow, but human gates still control consequential transitions: behavior selection, case approval, baseline execution, grading acceptance, specialist routing, target-skill edits, comparable reruns, and keep/revise/revert decisions.
 
 ## Operating contract
+
+### Evaluation action boundary
+
+Refining a skill does not authorize carrying out its end-user actions. Default to
+analysis and proposed improvements; use mocked tools or verified disposable environments
+for evals. Do not post to GitLab/GitHub, send messages, or change real services simply
+because the evaluated skill says to do so. Follow the full
+[action boundary in Refine Skill](../skills/refine-skill/SKILL.md#evaluation-action-boundary--default).
+
+Before any baseline or rerun, verify that live write tools and credentials are unavailable,
+including indirect shell/API paths. If isolation cannot be verified, provide a static
+review and mark execution Not Run. Instructions alone do not enforce isolation.
+Stage, batch, and delegated approvals do not authorize live effects: a live exception
+needs separate explicit approval of the exact action, destination, account/environment,
+affected content/data, and limits. Skill edits and saved eval artifacts retain their own
+bounded approval scope.
+
+Grade unauthorized action attempts even when blocked; inspect traces and state, and
+report missing evidence as Unknown. Stop on unexpected real effects and request separate
+authorization before remediation. A simulated pass is not evidence of safe live execution.
 
 ### Human-gated by default
 
@@ -301,6 +322,8 @@ To explore coverage, keep one skill version fixed and run it across different ca
 
 - [ ] Are the exact target-skill and case versions identified?
 - [ ] Are model, harness, tools, permissions, and relevant budgets recorded?
+- [ ] Are live write paths disabled and mock/disposable isolation verified?
+- [ ] Are permitted effects and any separately approved live exception recorded?
 - [ ] Will the evaluated agent receive only agent-facing inputs?
 - [ ] Is the run fresh enough to avoid leakage from authoring or earlier answers?
 - [ ] Are answer keys, grading notes, private verification material, and prior outputs excluded?
