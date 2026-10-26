@@ -61,7 +61,7 @@ See [`catalog.json`](catalog.json) for machine-readable discovery metadata and [
 ## Quick start
 
 1. Choose a skill above and read its `SKILL.md`.
-2. Install or package **the whole skill directory**, including `references/`, for your chosen harness. For OpenAI harnesses, see the [OpenAI adapter](adapters/openai/README.md); other harness guidance lives under [adapters](adapters/README.md).
+2. Install or package **the whole skill directory**, including `references/`, for your chosen harness. For OpenAI harnesses, see the [OpenAI adapter](adapters/openai/README.md); for the Claude Code CLI, see the [Claude Code adapter](adapters/claude/README.md). Other harness guidance lives under [adapters](adapters/README.md).
 3. Load additional reference documents on demand. A skill is not automatically executable merely because it exists in a Git repository.
 4. Check the library before edits:
 
@@ -139,7 +139,8 @@ dotskills/
 ├── source-lock.json
 ├── docs/                      # design, authoring, skill evaluation, sources, security
 ├── adapters/                  # harness-specific packaging/install adapters
-│   └── openai/                # Codex repo install + portable OpenAI plugin build
+│   ├── openai/                # Codex repo install + portable OpenAI plugin build
+│   └── claude/                # Claude Code project install + plugin build
 ├── evals/                     # manual skill-evaluation cases and roadmap
 ├── scripts/                   # dependency-free local validation
 └── .github/workflows/         # CI structural/source-integrity checks

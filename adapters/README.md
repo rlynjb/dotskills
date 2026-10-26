@@ -22,6 +22,12 @@ The OpenAI adapter currently supports:
 The default selector is the `methodology` category, which packages
 `refine-skill` and its five specialist methodology skills.
 
+### Claude Code
+
+See [`claude/README.md`](claude/README.md) for project-local installation into
+`.claude/skills/` and skills-only plugin builds with `.claude-plugin/plugin.json`.
+The default is the methodology family; hidden catalog entries are excluded.
+
 ## Distribution rule
 
 Each directory under `../skills/` remains an independently distributable package.
@@ -34,7 +40,6 @@ plugin availability, and publication requirements are harness-specific and may c
 
 ## Planned adapters/capabilities
 
-- Claude-specific installation/package adapter
 - tested compatibility matrix with version constraints
 - versioned distribution manifests and rollback support
 - release-time plugin validation and public-directory packaging
