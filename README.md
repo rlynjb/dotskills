@@ -4,6 +4,32 @@
 
 It is a **skills library**, not an AI harness, MCP server, or duplicate Buffr implementation. Codex, Claude Code, ChatGPT Work, and other compatible hosts provide tool access and execution. [Buffr](https://github.com/rlynjb/buffr) remains the authoritative source for decision-support workflow code, contracts, state, and effects.
 
+## Why DotSkills is different
+
+**DotSkills is a methodology-led, human-governed skill library—not a replacement for a skill creator, eval runner, agent harness, or MCP server.** Existing tools can generate, test, and benchmark skills; DotSkills defines how *this library* develops them, evaluates evidence, teaches the method, makes decisions, and preserves reusable results across hosts.
+
+| Design choice | What it means in DotSkills |
+| --- | --- |
+| **Conference-informed methodology, with source attribution** | Methodology skills synthesize selected AGNTCon/MCPCon 2026 session learnings about context, correctness, skill lifecycle, observability, and trust. Recommendations label their basis as **methodology source** (exact talk title when verified), **target-skill source**, **eval/repository evidence**, and/or **model recommendation**. Conference inspiration is not a claim that a speaker endorsed a particular rule or edit. |
+| **Human approval gates by default** | Humans approve consequential stage transitions and changes. The workflow presents evidence, one recommendation, viable alternatives, and space for the human's own solution. Feedback is **not** approval. Per-gate is the default; explicitly bounded batched or delegated modes can reduce interruptions without silently authorizing protected changes or final release decisions. |
+| **Learning while doing** | Guided learning is the default: explain the current concept, the case-specific evidence, and why a recommendation follows. **Deep dive** adds theory and trade-offs; **Fast** minimizes teaching. Learning notes and evaluator answer keys stay outside the target agent's eval input. |
+| **Diagnosis before edits; evidence-based specialist routing** | A failed eval does not automatically imply a bad prompt. First distinguish case, grader, context, harness, model, trace, trust, or target-skill problems. Route only when evidence warrants it to [context engineering](skills/context-engineering/SKILL.md), [correctness and verification](skills/correctness-and-verification/SKILL.md), [skill lifecycle and release](skills/skill-lifecycle-and-release/SKILL.md), [observability and feedback](skills/agent-observability-and-feedback/SKILL.md), or [trust and governance](skills/agent-trust-and-governance/SKILL.md). |
+| **Evidence-first evaluation** | Define observable behavior, neutral cases, separately held evaluator expectations, and an unchanged baseline; retain outputs and available tool traces. Grade **Pass / Fail / Unknown / Invalid / Error / Incomplete** as warranted, then compare revisions and check regressions rather than assuming a fluent result is correct. |
+| **Portable canonical ownership** | Version-control skill packages, a [catalog](catalog.json), [source-locked upstream references](docs/sources.md), and [harness adapters](adapters/README.md) without equating instructions to an executable engine. DotSkills owns packaged skill guidance; [Buffr](https://github.com/rlynjb/buffr) owns its decision-support runtime. |
+| **Separate quality and safety layers** | [Repository integrity checks](docs/skill-repository-integrity-and-runtime-safety.md) validate structure and local source-lock consistency; behavioral evals test actual behavior; sensitive permissions and actions require enforcement by the consuming harness/runtime. None of these layers alone certifies a skill as safe or correct. |
+
+The operating workflow is [Eval-Driven Skill Development](skills/eval-driven-skill-development/SKILL.md), with a [step-by-step guide](docs/eval-driven-skill-development.md) and [eval cases](evals/README.md).
+
+### How it relates to other skill-creation and evaluation tools
+
+| Tool | What it primarily contributes | How DotSkills complements it |
+| --- | --- | --- |
+| [Anthropic Skill Creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator) | Skill authoring, tests, feedback, performance benchmarks, and trigger optimization. | A library-wide, conference-informed methodology; explicitly defined approval cadence, guided learning, source labels, and diagnosis-first specialist routing. These are **emphases and local rules**, not claims that Skill Creator lacks human review. |
+| [OpenAI Plugin Eval](https://github.com/openai/plugins/tree/main/plugins/plugin-eval) | Local Codex skill/plugin analysis, measurement plans, reports, and comparison workflows. | A canonical skill-development process, context/trust/lifecycle methodologies, and decisions about when a test result actually justifies a change. |
+| [Google Cloud EvalBench](https://github.com/GoogleCloudPlatform/evalbench) and [Promptfoo](https://www.promptfoo.dev/docs/guides/test-agent-skills/) | Execution and scoring of agent/skill evaluations, including supported cross-harness comparisons. | Requirements, evaluator boundaries, human decisions, provenance, and reusable skill packages; these runners are potential integrations, **not** currently wired into DotSkills. |
+
+**Current boundary:** DotSkills has methodology skills, an explicit human-gated operating contract, static repository validation, templates, and a starter **manual** evaluation package. It **does not yet** provide an automated LLM eval pipeline, universal cross-harness guarantees, a deployed MCP gateway, or runtime-enforced approvals. Adapters, automated evals, and MCP integration are development directions, not shipped capabilities. See [architecture](docs/architecture.md) and [evaluation roadmap](evals/README.md).
+
 ## Skill catalog
 
 | Skill | Category | Purpose |
