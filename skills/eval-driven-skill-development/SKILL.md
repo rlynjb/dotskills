@@ -41,8 +41,31 @@ At each gate:
    relevant trade-offs, revise the proposal when warranted, and present the gate again.
 8. Proceed only after explicit approval of the action currently gated.
 
-The human may explicitly opt into a more autonomous mode for a particular session, but
-do not infer that from silence or from approval of a different step.
+The human may explicitly choose a different gate cadence for a particular session. Never
+infer a less restrictive cadence from silence or from approval of a different step.
+
+#### Gate cadence options
+
+- **Per-gate — default.** Pause at every labeled human gate.
+- **Batched approval.** The human may explicitly approve a named sequence of adjacent
+  stages or gates in one decision. Continue through only that approved sequence while
+  keeping the workflow trace visible. If evidence, scope, files affected, permissions,
+  or the proposed action changes materially, the batch approval no longer covers the
+  changed step and a new gate is required.
+- **Delegated / fast.** The human may explicitly authorize the methodology to continue
+  through non-mutating analysis, case drafting, eval execution, grading, diagnosis, and
+  specialist routing without stopping at each ordinary gate. Keep the workflow trace
+  visible and stop when the authorization boundary is reached.
+
+Protected actions still require explicit approval unless the human has specifically
+pre-approved that exact bounded action:
+- creating, deleting, moving, or materially rewriting target-skill files;
+- expanding tool permissions, workspace scope, or external side effects;
+- accepting a materially different diagnosis or change than the one already authorized;
+- making the final keep / revise / revert / release decision.
+
+A broad statement such as "continue" does not authorize an unbounded set of future
+mutations. State the currently active gate cadence in the workflow trace when it changes.
 
 ### Workflow trace — always visible
 
@@ -152,6 +175,17 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    **Human gate:** present the proposed case and what it tests. Let the human approve,
    revise, replace, or contribute their own case before execution.
 
+   Use this review checklist unless the active gate cadence explicitly batches it:
+   - Is the behavior being tested clear and observable?
+   - Is the task neutral rather than revealing the diagnosis?
+   - Is the expected answer established by requirements, source evidence, execution,
+     contract, or another reliable answer-key basis?
+   - Does the expected answer match the context and tools the evaluated agent will
+     actually receive?
+   - Does the rubric grade essential meaning rather than exact wording?
+   - Can a critical error fail the relevant criterion instead of being averaged away?
+   - Is evaluator-only material isolated from the evaluated task context?
+
 3. **Run the unchanged baseline.**
    For an existing skill, run the unchanged target skill on the approved case in a fresh
    task context. For a new or bootstrapped skill, establish an appropriate baseline such
@@ -161,6 +195,15 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    **Human gate before execution:** confirm the run configuration and that no hidden
    teaching or evaluator information will enter the task context.
 
+   Execution review checklist:
+   - Are the exact target-skill and case versions identified?
+   - Are model, harness, tools, permissions, and relevant budgets recorded?
+   - Will the evaluated agent receive only agent-facing inputs?
+   - Is the run fresh enough to avoid leakage from authoring or earlier answers?
+   - Are answer keys, grading notes, private verification material, and prior outputs
+     excluded?
+   - Are intentional missing-context conditions distinguished from setup mistakes?
+
 4. **Preserve and grade the evidence.**
    Preserve output, trace, configuration, errors, and limitations. Grade without forcing
    certainty: Pass, Fail, Unknown, Invalid, Error, or Incomplete are valid outcomes.
@@ -169,10 +212,36 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    Let the human challenge the grade, add observations, or request more evidence before
    diagnosis proceeds.
 
+   Result review checklist:
+   - Did the agent answer the intended task?
+   - Does the conclusion match the established answer-key evidence?
+   - Does the explanation connect concrete evidence to the requirement or expected
+     behavior?
+   - Are any claims unsupported or outside the supplied evidence?
+   - Are claims about files, tools, commands, or reads supported by trace evidence when
+     that process claim matters?
+   - Did the agent preserve uncertainty when decisive evidence was unavailable?
+   - Was the run contaminated by answer-key material, hints, or prior results?
+   - Did harness, tool, timeout, or setup failures materially affect the result?
+   - Does the assigned grade actually follow from the rubric?
+   - Would the same meaning receive the same grade if phrased differently?
+
 5. **Diagnose before editing.**
-   Determine whether the cause is the case, rubric, missing context, harness/tooling,
-   model variability, package structure, or target-skill guidance. A failed eval is not
-   permission to edit.
+   Ask **"What actually failed?"** before changing anything. Classify the evidence as one
+   or more of:
+   - case / answer-key problem;
+   - grading / rubric problem;
+   - missing, stale, conflicting, excessive, or otherwise bad context;
+   - harness, tool, timeout, or environment problem;
+   - model variability;
+   - package / adapter structure problem;
+   - observability or missing-trace problem;
+   - trust, provenance, permission, approval, or governance problem;
+   - actual target-skill guidance problem.
+
+   A failed eval is not permission to edit. Only edit the target skill when the evidence
+   supports that diagnosis or when the human explicitly approves a different bounded
+   experiment.
 
 6. **Perform a methodology coverage scan and recommend specialist routing when needed.**
 
@@ -332,7 +401,8 @@ Return:
 
 ## Decision rules
 
-- Human-gated mode is the default.
+- Human-gated per-gate mode is the default; batched and delegated/fast cadences require
+  explicit opt-in and a clear authorization boundary.
 - Keep the workflow trace visible at every meaningful stage, even when no human input is
   required.
 - Ordinary trace updates never imply approval is needed; only an explicit `HUMAN GATE`
