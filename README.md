@@ -9,6 +9,7 @@
 - [Skill catalog](#skill-catalog)
 - [Quick start](#quick-start)
 - [Refine Skill](#refine-skill)
+  - [Why a passing eval is not enough](#why-a-passing-eval-is-not-enough)
 - [Structure](#structure)
 - [Current source inventory](#current-source-inventory)
 - [Next phases](#next-phases)
@@ -81,6 +82,38 @@ Invoke [`refine-skill`](skills/refine-skill/SKILL.md) to refine an existing skil
 5. Improve the responsible part of the system, then rerun existing and independent cases.
 
 The guide includes a cycle diagram, a practical run checklist, a reusable case outline, and a worked DDIA example. The workflow applies across skills; the existing [manual eval package](evals/README.md) is a starting point for practicing it.
+
+### Why a passing eval is not enough
+
+Beyond its learning modes and human approval gates, `refine-skill` guides an
+**evidence-based review of both the target skill and the evaluation itself**.
+A **false pass** occurs when a run is graded as successful even though a relevant
+requirement or safety boundary was violated. This can happen when the rubric
+checks the wrong thing, the grader is mistaken or misled by untrusted content,
+or an acceptable-looking answer hides unsupported claims or unsafe actions.
+
+The workflow asks the reviewer to inspect:
+
+- **The grading basis:** independently supported expectations, meaningful criteria,
+  grader errors, and contamination from answer keys or injected instructions.
+- **The actual behavior:** available tool-call traces, attempted versus completed
+  actions, resulting state, and the final answer. Missing evidence remains unknown.
+- **The responsible cause:** a case, rubric, context, harness, trust boundary, or
+  skill problem. More than one can need correction. If the rubric changes, regrade
+  preserved baseline evidence where sufficient, or rerun as needed, before claiming
+  that a skill edit improved behavior.
+
+**Methodology sources:** *Trustworthy Context Is Untrusted by Default* informs
+the concern about poisoned context and fallible graders; *Building an Agentic
+Eval Pipeline: Battle-Tested Lessons with EvalBench* informs trajectory, outcome,
+and output evaluation and grader calibration. This description is our synthesis
+of those lessons, not a claim that either talk prescribed this exact workflow.
+
+These are review and diagnosis instructions, **not an automatic malicious-content
+detector or safety certification**. Pre-use content review and restricted execution
+remain complementary safeguards; the consuming harness/runtime must enforce
+permissions and isolation. See [skill repository integrity and runtime safety](docs/skill-repository-integrity-and-runtime-safety.md)
+for existing coverage and planned controls.
 
 ## Structure
 
