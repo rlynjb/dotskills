@@ -4,6 +4,17 @@
 
 It is a **skills library**, not an AI harness, MCP server, or duplicate Buffr implementation. Codex, Claude Code, ChatGPT Work, and other compatible hosts provide tool access and execution. [Buffr](https://github.com/rlynjb/buffr) remains the authoritative source for decision-support workflow code, contracts, state, and effects.
 
+## Table of contents
+
+- [Why DotSkills is different](#why-dotskills-is-different)
+  - [How it relates to other skill-creation and evaluation tools](#how-it-relates-to-other-skill-creation-and-evaluation-tools)
+- [Skill catalog](#skill-catalog)
+- [Quick start](#quick-start)
+- [Eval-Driven Skill Development](#eval-driven-skill-development)
+- [Structure](#structure)
+- [Current source inventory](#current-source-inventory)
+- [Next phases](#next-phases)
+
 ## Why DotSkills is different
 
 **DotSkills is a methodology-led, human-governed skill library—not a replacement for a skill creator, eval runner, agent harness, or MCP server.** Existing tools can generate, test, and benchmark skills; DotSkills defines how *this library* develops them, evaluates evidence, teaches the method, makes decisions, and preserves reusable results across hosts.
