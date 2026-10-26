@@ -11,6 +11,7 @@ The operational source of truth is [`skills/eval-driven-skill-development/SKILL.
 - [Current workflow](#current-workflow)
 - [Operating contract](#operating-contract)
   - [Human-gated by default](#human-gated-by-default)
+  - [Gate cadence options](#gate-cadence-options)
   - [User-visible workflow trace](#user-visible-workflow-trace)
   - [Guided learning](#guided-learning)
 - [What you are evaluating](#what-you-are-evaluating)
@@ -60,6 +61,27 @@ The methodology is an operating workflow, not an autonomous batch process. At ea
 7. proceed only after explicit approval of the action currently gated.
 
 Ordinary analysis and preparation can continue without a response when no human gate is defined.
+
+### Gate cadence options
+
+The human gates are deliberately explicit, but you do not have to use the same pause
+cadence for every session.
+
+| Mode | Behavior | Best when |
+| --- | --- | --- |
+| **Per-gate — default** | Pause at every labeled human gate. | Learning the methodology, working on a new skill, or making consequential changes. |
+| **Batched approval** | Explicitly approve a named sequence of adjacent stages or gates at once; the workflow continues through that approved sequence while still showing the trace. | The next few decisions are predictable and you want fewer interruptions. |
+| **Delegated / fast** | Explicitly authorize non-mutating analysis, case drafting, eval execution, grading, diagnosis, and specialist routing to continue without pausing at each ordinary gate. | You already understand the method and want faster iteration. |
+
+Batched or delegated authorization is bounded. If the evidence, scope, files affected,
+permissions, or proposed action changes materially, the workflow stops and asks again.
+
+Protected actions still need explicit approval unless that exact bounded action was
+pre-approved: target-skill file creation/deletion/moves/material rewrites, permission or
+scope expansion, a materially different diagnosis or change, and the final
+keep/revise/revert/release decision.
+
+The active cadence should be stated in the workflow trace whenever it changes.
 
 ### User-visible workflow trace
 
@@ -234,6 +256,18 @@ Keep task wording neutral. “Review this transfer against its requirements” g
 
 **HUMAN GATE:** present the proposed case, what it tests, and the evaluator-only grading intent. The human can approve, revise, replace, or contribute a different case before execution.
 
+### Human review checklist — eval design
+
+Use these questions at the Step 2 gate, or include them in an explicitly approved batch:
+
+- [ ] Is the behavior being tested clear and observable?
+- [ ] Is the task neutral rather than revealing the diagnosis?
+- [ ] Is the expected answer established by requirements, source evidence, execution, contract, or another reliable answer-key basis?
+- [ ] Does the expected answer match the context and tools the evaluated agent will actually receive?
+- [ ] Does the rubric grade essential meaning rather than exact wording?
+- [ ] Can a critical error fail the relevant criterion instead of being averaged away?
+- [ ] Is evaluator-only material isolated from the evaluated task context?
+
 ## 3. Run the baseline eval
 
 For an existing skill, run the unchanged target on the approved case. For a new or newly bootstrapped skill, choose an explicit baseline such as no skill, the raw source prompt, the pre-normalization instructions, or the approved normalized draft. Make the baseline choice explicit so the later comparison has a clear meaning.
@@ -241,6 +275,15 @@ For an existing skill, run the unchanged target on the approved case. For a new 
 To explore coverage, keep one skill version fixed and run it across different cases. To compare a skill change, hold each case and its rubric fixed and run both skill versions under comparable conditions. If you correct a case or rubric, version the correction and reassess both sides before claiming improvement.
 
 **HUMAN GATE before execution:** confirm the baseline, run configuration, and that hidden teaching or evaluator-only information will not enter the evaluated task context.
+
+### Human review checklist — execution setup
+
+- [ ] Are the exact target-skill and case versions identified?
+- [ ] Are model, harness, tools, permissions, and relevant budgets recorded?
+- [ ] Will the evaluated agent receive only agent-facing inputs?
+- [ ] Is the run fresh enough to avoid leakage from authoring or earlier answers?
+- [ ] Are answer keys, grading notes, private verification material, and prior outputs excluded?
+- [ ] Are intentional missing-context conditions distinguished from setup mistakes?
 
 ### Before each run
 
@@ -291,9 +334,40 @@ Execution reliability may be a separate measured objective. Record those failure
 
 **HUMAN GATE:** show the evidence-backed grade, uncertainty, and what was observed. The human can challenge the grade, add observations, or request more evidence before diagnosis proceeds.
 
+### Human review checklist — result and grade
+
+- [ ] Did the agent answer the intended task?
+- [ ] Does the conclusion match the established answer-key evidence?
+- [ ] Does the explanation connect concrete evidence to the requirement or expected behavior?
+- [ ] Are any claims unsupported or outside the supplied evidence?
+- [ ] Are claims about files, tools, commands, or reads supported by trace evidence when that process claim matters?
+- [ ] Did the agent preserve uncertainty when decisive evidence was unavailable?
+- [ ] Was the run contaminated by answer-key material, hints, or prior results?
+- [ ] Did harness, tool, timeout, or setup failures materially affect the result?
+- [ ] Does the assigned grade actually follow from the rubric?
+- [ ] Would the same meaning receive the same grade if phrased differently?
+
 ## 5. Diagnose before changing the skill
 
 A failed check is evidence to investigate, not an automatic instruction to rewrite the prompt.
+
+Before changing anything, ask **"What actually failed?"**
+
+Use this diagnostic checklist:
+
+- [ ] Case / answer-key problem
+- [ ] Grading / rubric problem
+- [ ] Missing, stale, conflicting, excessive, or otherwise bad context
+- [ ] Harness, tool, timeout, or environment problem
+- [ ] Model variability
+- [ ] Package / adapter structure problem
+- [ ] Observability or missing-trace problem
+- [ ] Trust, provenance, permission, approval, or governance problem
+- [ ] Actual target-skill guidance problem
+
+Only the last category directly points toward changing the target skill. Other categories
+should be repaired or investigated at their own layer first, unless the human deliberately
+approves a bounded experiment.
 
 | Possible cause | Next action |
 | --- | --- |
