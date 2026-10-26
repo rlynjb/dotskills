@@ -89,6 +89,28 @@ A progress update is informational. A `HUMAN GATE` is blocking. If a stage conta
 both, show the completed-stage result first, then present the gate that controls the next
 action.
 
+### Recommendation source labels — always visible
+
+For every substantive recommendation, proposed behavior, diagnosis, specialist route, or
+target-skill change, identify the basis using the applicable labels:
+
+- **Methodology source:** use the exact conference-talk title when applying a
+  conference-derived methodology principle. If multiple talks materially contribute,
+  list each exact title. Do not substitute only the methodology skill name for the talk
+  title.
+- **Target-skill source:** name the target skill, reference, requirement, contract, or
+  other domain material supplying task-specific guidance.
+- **Eval / repository evidence:** name the case, run, trace, file, command result, or
+  other observed evidence supporting a factual claim.
+- **Model recommendation:** identify a choice, prioritization, or synthesis that the
+  model is making rather than attributing it to a conference source or target skill.
+
+A recommendation may use more than one label. Never imply that a conference talk
+prescribed a specific eval case, diagnosis, or edit when that choice is model synthesis.
+If the exact conference-talk title cannot be verified, mark the source title as
+unverified rather than inventing one. Source labels are concise provenance summaries;
+they do not expose private chain-of-thought.
+
 ### Learning mode — guided by default
 
 Teach the methodology while doing the work. At each meaningful gate, briefly explain:
@@ -165,8 +187,9 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    Define one observable expected behavior for the target skill. For a new or newly
    bootstrapped skill, define the intended capability before optimizing its instructions.
 
-   **Human gate:** present the target, behavior, recommendation, alternatives, and an open
-   feedback path. Obtain approval before finalizing the evaluation direction.
+   **Human gate:** present the target, behavior, recommendation, applicable source
+   labels, alternatives, and an open feedback path. Obtain approval before finalizing
+   the evaluation direction.
 
 2. **Design the eval case.**
    Draft a neutral case plus evaluator-only expected behavior and grading criteria. Do not
@@ -333,6 +356,12 @@ Concept in use:
 My recommendation:
 <one preferred option and why>
 
+Recommendation sources:
+Methodology source: <exact conference-talk title when applicable>
+Target-skill source: <target skill/reference/requirement when applicable>
+Eval / repository evidence: <case/run/trace/file evidence when applicable>
+Model recommendation: <model synthesis or prioritization when applicable>
+
 Other viable options:
 A. <materially different alternative>
 B. <materially different alternative>
@@ -394,7 +423,7 @@ Return:
   trust/governance.
 - Relevant learning concept and explanation depth used.
 - Specialist methodology used, if any.
-- Recommendation, alternatives considered, and human feedback that changed the plan.
+- Recommendation, its applicable source labels, alternatives considered, and human feedback that changed the plan.
 - Targeted change proposed or made, including affected files.
 - Before/after result and regression status.
 - Remaining uncertainty and next independent case.
@@ -405,6 +434,9 @@ Return:
   explicit opt-in and a clear authorization boundary.
 - Keep the workflow trace visible at every meaningful stage, even when no human input is
   required.
+- Label substantive recommendations by source; when a methodology recommendation is
+  conference-derived, use the exact conference-talk title and keep model synthesis
+  explicitly separate.
 - Ordinary trace updates never imply approval is needed; only an explicit `HUMAN GATE`
   blocks progress.
 - Trace workflow state and evidence, not private chain-of-thought or low-level internal

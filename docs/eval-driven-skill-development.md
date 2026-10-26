@@ -13,6 +13,7 @@ The operational source of truth is [`skills/eval-driven-skill-development/SKILL.
   - [Human-gated by default](#human-gated-by-default)
   - [Gate cadence options](#gate-cadence-options)
   - [User-visible workflow trace](#user-visible-workflow-trace)
+  - [Recommendation source labels](#recommendation-source-labels)
   - [Guided learning](#guided-learning)
 - [What you are evaluating](#what-you-are-evaluating)
 - [End-to-end workflow](#end-to-end-workflow)
@@ -109,6 +110,26 @@ HUMAN GATE — approve or revise the proposed structure.
 
 Approved normalization applied; structural validation passed.
 Next: define one observable behavior to evaluate. Continuing.
+```
+
+### Recommendation source labels
+
+Every substantive recommendation, proposed behavior, diagnosis, specialist route, or target-skill change should identify what it is based on. Use the applicable labels:
+
+- **Methodology source:** the exact conference-talk title when the recommendation applies a conference-derived methodology principle. If multiple talks materially contribute, list each exact title. Do not substitute only the methodology skill name for the conference title.
+- **Target-skill source:** the target skill, reference, requirement, contract, or other domain material supplying task-specific guidance.
+- **Eval / repository evidence:** the case, run, trace, file, command result, or other observed evidence supporting a factual claim.
+- **Model recommendation:** a choice, prioritization, or synthesis made by the model that is not directly prescribed by a conference source or the target skill.
+
+A recommendation may carry more than one label. Do not imply that a conference talk prescribed a specific eval case, diagnosis, or edit when that choice was model synthesis. If an exact conference-talk title cannot be verified, mark it as unverified rather than inventing one. These labels summarize provenance; they do not expose private chain-of-thought.
+
+Example:
+
+```text
+Methodology source: "Building an Agentic Eval Pipeline: Battle-Tested Lessons with EvalBench"
+  - inspect what the agent actually did across the run, not just the final answer.
+Target-skill source: DDIA transaction / atomicity guidance.
+Model recommendation: start with the protected-transaction false-positive scenario as Eval Case 1.
 ```
 
 ### Guided learning
@@ -234,7 +255,7 @@ Define success as behavior you can inspect. For example, “explain which mutati
 
 Decide whether you are testing a reference directly, the whole skill package, skill selection, or an end-to-end workflow. A direct reference test does not also test whether the harness selects and loads the right skill.
 
-**HUMAN GATE:** present the target behavior, recommendation, alternatives, and open feedback path. Obtain approval before finalizing the evaluation direction.
+**HUMAN GATE:** present the target behavior, recommendation, applicable source labels, alternatives, and open feedback path. Obtain approval before finalizing the evaluation direction.
 
 ## 2. Define the cases and the answer key
 
