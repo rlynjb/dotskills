@@ -38,4 +38,4 @@ Repository validation checks structure and source integrity; it does not prove
 that the skill behaves correctly. Start with one case and add cases as needed.
 
 See [authoring guidance](../docs/authoring.md) and the
-[development workflow](../docs/eval-driven-skill-development.md).
+[development workflow](../docs/refine-skill.md).

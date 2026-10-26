@@ -81,7 +81,7 @@ Structural validation is a repository-health prerequisite, not behavioral or saf
 certification.
 
 For behavioral quality, follow
-[Eval-Driven Skill Development](eval-driven-skill-development.md).
+[Refine Skill](refine-skill.md).
 
 ## External skill and prompt intake
 
@@ -138,7 +138,7 @@ in this document.
 
 | Need | Methodology owner |
 | --- | --- |
-| Build or improve a skill through reviewed eval cases, preserved evidence, diagnosis, and regression checks | [`eval-driven-skill-development`](../skills/eval-driven-skill-development/SKILL.md) |
+| Build or improve a skill through reviewed eval cases, preserved evidence, diagnosis, and regression checks | [`refine-skill`](../skills/refine-skill/SKILL.md) |
 | Diagnose missing, stale, conflicting, excessive, distracting, or prematurely stopped context | [`context-engineering`](../skills/context-engineering/SKILL.md) |
 | Verify claims, requirements, invariants, failure paths, and evidence-backed conclusions | [`correctness-and-verification`](../skills/correctness-and-verification/SKILL.md) |
 | Compare versions, detect regressions, test portability, and make release/rollback decisions | [`skill-lifecycle-and-release`](../skills/skill-lifecycle-and-release/SKILL.md) |

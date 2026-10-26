@@ -1,10 +1,10 @@
-# Eval-Driven Skill Development
+# Refine Skill
 
-A repeatable, human-gated workflow for turning rough skill material into a valid skill package and then improving that skill through representative evals, preserved evidence, targeted methodology diagnosis, and regression checks.
+An evidence-driven, conference-informed, human-gated workflow for learning, evaluating, and continuously refining agent skills. It can first normalize rough source material into a minimal evaluable skill package, then improve behavior through representative evals, preserved evidence, specialist diagnosis, approved changes, and regression checks.
 
 Use this workflow for any DotSkills skill: code review, requirements refinement, investigation, learning, rehearsal, or decision support. DDIA code review is a worked example below, not a restriction on the workflow.
 
-The operational source of truth is [`skills/eval-driven-skill-development/SKILL.md`](../skills/eval-driven-skill-development/SKILL.md). This guide explains the workflow in practical terms.
+The operational source of truth is [`skills/refine-skill/SKILL.md`](../skills/refine-skill/SKILL.md). This guide explains the workflow in practical terms.
 
 ## Table of contents
 
@@ -36,7 +36,7 @@ The operational source of truth is [`skills/eval-driven-skill-development/SKILL.
 
 ## Current workflow
 
-Eval-driven skill development now covers two connected activities:
+Refine Skill now covers two connected activities:
 
 1. **Bootstrap / normalize** a raw prompt, source material, or partial draft into the smallest valid skill package needed for evaluation.
 2. **Refine behavior through eval evidence** after the target can be run and compared.
@@ -442,7 +442,7 @@ flowchart TD
     I --> J[HUMAN GATE: approve target-skill change]
 ```
 
-A specialist normally returns evidence, diagnosis, teaching, recommendations, alternatives, and unresolved questions to `eval-driven-skill-development`. It does **not** independently edit the target skill, run a gated comparison, or make the final keep/release decision.
+A specialist normally returns evidence, diagnosis, teaching, recommendations, alternatives, and unresolved questions to `refine-skill`. It does **not** independently edit the target skill, run a gated comparison, or make the final keep/release decision.
 
 Useful specialist handoff:
 

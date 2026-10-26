@@ -1,14 +1,16 @@
 ---
-name: eval-driven-skill-development
-description: "Develop or improve any agent skill from a raw prompt, partial draft, or existing skill package using human-gated normalization, representative eval cases, preserved run evidence, diagnosis before editing, methodology coverage checks, targeted specialist routing, approved changes, and regression checks. Use when creating a new skill, structuring a rough prompt into a skill, improving an existing skill, investigating a failed eval, or deciding which methodology should diagnose a weakness. Do not use it as the task skill that performs the end-user job itself."
+name: refine-skill
+description: "Refine agent skills through an evidence-driven, conference-informed, human-gated workflow with guided learning, representative eval cases, preserved run evidence, diagnosis before editing, specialist routing, approved changes, and regression checks. Use to refine, evaluate, or learn how to improve an existing skill, or to bootstrap a raw prompt or partial draft into the smallest evaluable package. Keep evaluator-only material separate and do not use this as the task skill that performs the end-user job itself."
 ---
 
-# Eval-Driven Skill Development
+# Refine Skill
 
 ## Objective
 
-Develop or improve a target skill through evidence from actual eval runs rather than
-adding instructions speculatively. The target may begin as a raw prompt, a partial
+Refine agent skills using evidence from actual eval runs and relevant conference-informed
+methodologies rather than editing instructions speculatively. Teach the methodology in
+learning mode, preserve uncertainty where evidence is incomplete, and require explicit
+human decisions at the defined gates. The target may begin as a raw prompt, a partial
 draft, or a structurally complete skill package.
 
 This methodology owns two related activities:

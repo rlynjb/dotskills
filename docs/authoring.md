@@ -1,7 +1,7 @@
 # Authoring portable skills
 
 Use this checklist to create and package a skill. The [templates folder](../templates/README.md)
-contains the reusable starting files and examples; [Eval-Driven Skill Development](eval-driven-skill-development.md)
+contains the reusable starting files and examples; [Refine Skill](refine-skill.md)
 covers testing and improving the skill's behavior.
 
 ## Create a skill
@@ -36,7 +36,7 @@ covers testing and improving the skill's behavior.
    does not establish safe or correct behavior.
 9. **Create and run its first eval case.** Start with the
    [case template](../templates/case/README.md), then follow the
-   [eval development workflow](eval-driven-skill-development.md) to establish
+   [eval development workflow](refine-skill.md) to establish
    expectations, run the agent, grade evidence, and retain results.
 
 Keep detailed instructions in references and evaluator-only material under

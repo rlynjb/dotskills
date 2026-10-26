@@ -27,7 +27,7 @@ The default selector is `category=methodology`, so the result is:
 ../my-project/
 └── .agents/
     └── skills/
-        ├── eval-driven-skill-development/
+        ├── refine-skill/
         ├── context-engineering/
         ├── correctness-and-verification/
         ├── skill-lifecycle-and-release/
@@ -78,7 +78,7 @@ Default output:
 dist/openai/dotskills-methodology/
 ├── plugin.json
 └── skills/
-    ├── eval-driven-skill-development/
+    ├── refine-skill/
     ├── context-engineering/
     ├── correctness-and-verification/
     ├── skill-lifecycle-and-release/
@@ -97,7 +97,7 @@ Other selectors:
 ```bash
 # One or more named skills
 python3 adapters/openai/build_plugin.py \
-  --skill eval-driven-skill-development \
+  --skill refine-skill \
   --skill context-engineering
 
 # Another category

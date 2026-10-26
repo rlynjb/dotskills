@@ -10,48 +10,49 @@ It is a **skills library**, not an AI harness, MCP server, or duplicate Buffr im
   - [How it relates to other skill-creation and evaluation tools](#how-it-relates-to-other-skill-creation-and-evaluation-tools)
 - [Skill catalog](#skill-catalog)
 - [Quick start](#quick-start)
-- [Eval-Driven Skill Development](#eval-driven-skill-development)
+- [Refine Skill](#refine-skill)
 - [Structure](#structure)
 - [Current source inventory](#current-source-inventory)
 - [Next phases](#next-phases)
 
 ## Why DotSkills is different
 
-**DotSkills is a methodology-led, human-governed skill library—not a replacement for a skill creator, eval runner, agent harness, or MCP server.** Existing tools can generate, test, and benchmark skills; DotSkills defines how *this library* develops them, evaluates evidence, teaches the method, makes decisions, and preserves reusable results across hosts.
+**DotSkills is a canonical, portable skill library—not a replacement for a skill creator, eval runner, agent harness, or MCP server.** Its **`refine-skill`** methodology provides an optional, conference-informed, human-gated workflow for learning, evaluating, and refining skills. These operating rules apply to that methodology skill, **not automatically to every DotSkills package**.
 
-| Design choice | What it means in DotSkills |
+| Design choice | Where it applies |
 | --- | --- |
-| **Conference-informed methodology, with source attribution** | Methodology skills synthesize selected AGNTCon/MCPCon 2026 session learnings about context, correctness, skill lifecycle, observability, and trust. Recommendations label their basis as **methodology source** (exact talk title when verified), **target-skill source**, **eval/repository evidence**, and/or **model recommendation**. Conference inspiration is not a claim that a speaker endorsed a particular rule or edit. |
-| **Human approval gates by default** | Humans approve consequential stage transitions and changes. The workflow presents evidence, one recommendation, viable alternatives, and space for the human's own solution. Feedback is **not** approval. Per-gate is the default; explicitly bounded batched or delegated modes can reduce interruptions without silently authorizing protected changes or final release decisions. |
-| **Learning while doing** | Guided learning is the default: explain the current concept, the case-specific evidence, and why a recommendation follows. **Deep dive** adds theory and trade-offs; **Fast** minimizes teaching. Learning notes and evaluator answer keys stay outside the target agent's eval input. |
-| **Diagnosis before edits; evidence-based specialist routing** | A failed eval does not automatically imply a bad prompt. First distinguish case, grader, context, harness, model, trace, trust, or target-skill problems. Route only when evidence warrants it to [context engineering](skills/context-engineering/SKILL.md), [correctness and verification](skills/correctness-and-verification/SKILL.md), [skill lifecycle and release](skills/skill-lifecycle-and-release/SKILL.md), [observability and feedback](skills/agent-observability-and-feedback/SKILL.md), or [trust and governance](skills/agent-trust-and-governance/SKILL.md). |
-| **Evidence-first evaluation** | Define observable behavior, neutral cases, separately held evaluator expectations, and an unchanged baseline; retain outputs and available tool traces. Grade **Pass / Fail / Unknown / Invalid / Error / Incomplete** as warranted, then compare revisions and check regressions rather than assuming a fluent result is correct. |
+| **Conference-informed methodology, with source attribution** | Methodology skills synthesize selected AGNTCon/MCPCon 2026 session learnings about context, correctness, skill lifecycle, observability, and trust. When `refine-skill` makes recommendations, it labels their basis as **methodology source** (exact talk title when verified), **target-skill source**, **eval/repository evidence**, and/or **model recommendation**. Conference inspiration is not a claim that a speaker endorsed a particular rule or edit. |
+| **Human approval gates in `refine-skill`** | When invoking `refine-skill`, the human approves consequential stage transitions and changes. The workflow presents evidence, one recommendation, viable alternatives, and space for the human's own solution. Feedback is **not** approval. Per-gate is the default; explicitly bounded batched or delegated modes can reduce interruptions without silently authorizing protected changes or final release decisions. |
+| **Learning while doing in `refine-skill`** | Guided learning is that skill's default: explain the current concept, the case-specific evidence, and why a recommendation follows. **Deep dive** adds theory and trade-offs; **Fast** minimizes teaching. Learning notes and evaluator answer keys stay outside the target agent's eval input. |
+| **Diagnosis before edits; evidence-based specialist routing in `refine-skill`** | A failed eval does not automatically imply a bad prompt. First distinguish case, grader, context, harness, model, trace, trust, or target-skill problems. Route only when evidence warrants it to [context engineering](skills/context-engineering/SKILL.md), [correctness and verification](skills/correctness-and-verification/SKILL.md), [skill lifecycle and release](skills/skill-lifecycle-and-release/SKILL.md), [observability and feedback](skills/agent-observability-and-feedback/SKILL.md), or [trust and governance](skills/agent-trust-and-governance/SKILL.md). |
+| **Evidence-first evaluation in `refine-skill`** | Define observable behavior, neutral cases, separately held evaluator expectations, and an unchanged baseline; retain outputs and available tool traces. Grade **Pass / Fail / Unknown / Invalid / Error / Incomplete** as warranted, then compare revisions and check regressions rather than assuming a fluent result is correct. |
 | **Portable canonical ownership** | Version-control skill packages, a [catalog](catalog.json), [source-locked upstream references](docs/sources.md), and [harness adapters](adapters/README.md) without equating instructions to an executable engine. DotSkills owns packaged skill guidance; [Buffr](https://github.com/rlynjb/buffr) owns its decision-support runtime. |
 | **Separate quality and safety layers** | [Repository integrity checks](docs/skill-repository-integrity-and-runtime-safety.md) validate structure and local source-lock consistency; behavioral evals test actual behavior; sensitive permissions and actions require enforcement by the consuming harness/runtime. None of these layers alone certifies a skill as safe or correct. |
 
-The operating workflow is [Eval-Driven Skill Development](skills/eval-driven-skill-development/SKILL.md), with a [step-by-step guide](docs/eval-driven-skill-development.md) and [eval cases](evals/README.md).
+Use [Refine Skill](skills/refine-skill/SKILL.md) when you want this optional methodology workflow; it has a [step-by-step guide](docs/refine-skill.md) and [eval cases](evals/README.md). Other DotSkills skills remain independent.
 
 ### How it relates to other skill-creation and evaluation tools
 
-| Tool | What it primarily contributes | How DotSkills complements it |
+| Tool | What it primarily contributes | How DotSkills / Refine Skill complements it |
 | --- | --- | --- |
-| [Anthropic Skill Creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator) | Skill authoring, tests, feedback, performance benchmarks, and trigger optimization. | A library-wide, conference-informed methodology; explicitly defined approval cadence, guided learning, source labels, and diagnosis-first specialist routing. These are **emphases and local rules**, not claims that Skill Creator lacks human review. |
-| [OpenAI Plugin Eval](https://github.com/openai/plugins/tree/main/plugins/plugin-eval) | Local Codex skill/plugin analysis, measurement plans, reports, and comparison workflows. | A canonical skill-development process, context/trust/lifecycle methodologies, and decisions about when a test result actually justifies a change. |
+| [Anthropic Skill Creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator) | Skill authoring, tests, feedback, performance benchmarks, and trigger optimization. | An optional, conference-informed `refine-skill` workflow with explicit approval cadence, guided learning, source labels, and diagnosis-first specialist routing. These are **emphases and local rules**, not claims that Skill Creator lacks human review. |
+| [OpenAI Plugin Eval](https://github.com/openai/plugins/tree/main/plugins/plugin-eval) | Local Codex skill/plugin analysis, measurement plans, reports, and comparison workflows. | A canonical skill library; `refine-skill` provides the human-gated refinement process, context/trust/lifecycle methodologies, and decisions about when eval evidence justifies a change. |
 | [Google Cloud EvalBench](https://github.com/GoogleCloudPlatform/evalbench) and [Promptfoo](https://www.promptfoo.dev/docs/guides/test-agent-skills/) | Execution and scoring of agent/skill evaluations, including supported cross-harness comparisons. | Requirements, evaluator boundaries, human decisions, provenance, and reusable skill packages; these runners are potential integrations, **not** currently wired into DotSkills. |
 
-**Current boundary:** DotSkills has methodology skills, an explicit human-gated operating contract, static repository validation, templates, and a starter **manual** evaluation package. It **does not yet** provide an automated LLM eval pipeline, universal cross-harness guarantees, a deployed MCP gateway, or runtime-enforced approvals. Adapters, automated evals, and MCP integration are development directions, not shipped capabilities. See [architecture](docs/architecture.md) and [evaluation roadmap](evals/README.md).
+**Current boundary:** DotSkills has methodology skills (including the human-gated operating contract in `refine-skill`), static repository validation, templates, and a starter **manual** evaluation package. It **does not yet** provide an automated LLM eval pipeline, universal cross-harness guarantees, a deployed MCP gateway, or runtime-enforced approvals. Adapters, automated evals, and MCP integration are development directions, not shipped capabilities. See [architecture](docs/architecture.md) and [evaluation roadmap](evals/README.md).
 
 ## Skill catalog
 
 | Skill | Category | Purpose |
 | --- | --- | --- |
-| [eval-driven-skill-development](skills/eval-driven-skill-development/SKILL.md) | methodology | Human-gated, guided-learning entry point for improving skills through eval evidence. |
+| [refine-skill](skills/refine-skill/SKILL.md) | methodology | Optional evidence-driven, conference-informed, human-gated workflow to learn, evaluate, and refine skills. |
 | [context-engineering](skills/context-engineering/SKILL.md) | methodology | Diagnose and improve context selection, expansion, provenance, freshness, and stopping. |
 | [correctness-and-verification](skills/correctness-and-verification/SKILL.md) | methodology | Turn requirements into verifiable claims, invariants, checks, and evidence. |
 | [skill-lifecycle-and-release](skills/skill-lifecycle-and-release/SKILL.md) | methodology | Version, regression-test, review, and release skill changes safely. |
 | [agent-observability-and-feedback](skills/agent-observability-and-feedback/SKILL.md) | methodology | Inspect agent journeys and turn production feedback into actionable eval coverage. |
 | [agent-trust-and-governance](skills/agent-trust-and-governance/SKILL.md) | methodology | Apply provenance, authority boundaries, approvals, risk controls, and verification. |
 | [code-review](skills/code-review/SKILL.md) | engineering | Engineering code review through individual book lenses. |
+| [code-review-ddia](skills/code-review-ddia/SKILL.md) | engineering | Standalone DDIA review with an evidence-calibrated rubric. |
 | [investigate-existing-feature](skills/investigate-existing-feature/SKILL.md) | engineering | Feature provenance and dependencies investigation. |
 | [investigate-new-feature](skills/investigate-new-feature/SKILL.md) | engineering | Pre-design feature discovery and requirements. |
 | [refine-feature-requirements](skills/refine-feature-requirements/SKILL.md) | engineering | Ticket refinement and Superpowers handoff. |
@@ -74,9 +75,9 @@ python3 scripts/validate_skill_repository_integrity.py
 
 Static CI verifies frontmatter, catalog consistency, referenced files, and immutable imported-source hashes; it is **not** an LLM evaluation pipeline.
 
-## Eval-Driven Skill Development
+## Refine Skill
 
-Use [Eval-Driven Skill Development](docs/eval-driven-skill-development.md) to build and improve any DotSkills skill through clear expectations, representative eval cases, evidence-based grading, and regression checks.
+Use the optional [Refine Skill](docs/refine-skill.md) methodology to learn how to improve a target skill through relevant conference-derived principles, human approval, representative eval cases, evidence-based grading, targeted specialist routing, and regression checks. It can also bootstrap rough source material when needed.
 
 1. Define the skill's purpose, required context, and observable success criteria.
 2. Create cases with agent inputs and separate evaluator expectations.
@@ -90,14 +91,15 @@ The guide includes a cycle diagram, a practical run checklist, a reusable case o
 
 ```text
 dotskills/
-├── skills/                    # Thirteen installable Agent Skills packages
-│   ├── eval-driven-skill-development/
+├── skills/                    # Fourteen skill packages (some hidden by default)
+│   ├── refine-skill/
 │   ├── context-engineering/
 │   ├── correctness-and-verification/
 │   ├── skill-lifecycle-and-release/
 │   ├── agent-observability-and-feedback/
 │   ├── agent-trust-and-governance/
 │   ├── code-review/
+│   ├── code-review-ddia/
 │   ├── investigate-existing-feature/
 │   ├── investigate-new-feature/
 │   ├── refine-feature-requirements/

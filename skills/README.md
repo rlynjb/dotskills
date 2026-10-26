@@ -10,7 +10,7 @@ Use these to develop, diagnose, and improve other skills.
 
 | Skill | Role | Source session / resource |
 | --- | --- | --- |
-| `eval-driven-skill-development` | Entry point. Defines the human-gated improvement loop, teaches relevant methodology concepts, and routes confirmed failures to the relevant specialist methodology. | Agntcon02 — **Stop Vibe Testing**; Agntcon04 — **Beyond Pass/Fail**; Agntcon05 — **Building Production-Ready Agents with a Regression Test Suite**; Agntcon24 — **Building an Agentic Eval Pipeline with EvalBench**. |
+| `refine-skill` | Optional refinement entry point. Human-gated learning and evidence-based evaluations guide diagnosis, approved improvements, and specialist routing. | Agntcon02 — **Stop Vibe Testing**; Agntcon04 — **Beyond Pass/Fail**; Agntcon05 — **Building Production-Ready Agents with a Regression Test Suite**; Agntcon24 — **Building an Agentic Eval Pipeline with EvalBench**. |
 | `context-engineering` | Context selection, progressive retrieval, provenance, freshness, conflict handling, and stopping conditions. | Agntcon27 — **How Contexts Fail (and How to Fix Them)**; Agntcon06 — **Trustworthy Context Is Untrusted by Default**. |
 | `correctness-and-verification` | Requirements, invariants, evidence, deterministic checks, and uncertainty. | Agntcon07 — **Cut the Noise: Building a Code Reviewer You Can Trust**; correctness / universal-properties material; Agntcon25 — **Shipping Agent Skills Safely** for verification and guardrail practices. |
 | `skill-lifecycle-and-release` | Versioning, paired evals, regression coverage, portability checks, and release decisions. | Agntcon25 — **Shipping Agent Skills Safely**; Agntcon28 — **Declarative Agent Architecture**. |
@@ -21,13 +21,13 @@ The source column records the primary conference sessions/resources that informe
 methodology skill. Most methodology skills are syntheses rather than one-to-one
 transcriptions of a single session.
 
-Start with `eval-driven-skill-development`. Invoke a specialist methodology only
+Start with `refine-skill`. Invoke a specialist methodology only
 when the observed evidence points to that failure class. A failed eval does not
 automatically mean the target skill should be edited.
 
 ### Default interaction
 
-`eval-driven-skill-development` is human-gated by default. It should make a
+`refine-skill` is human-gated by default. It should make a
 recommendation, explain why, show materially different alternatives when useful, and
 give the human an open path to contribute their own solution, constraints, concerns, or
 opinion.
@@ -44,7 +44,7 @@ evaluated target skill's task context.
 Typical harness invocation:
 
 ```text
-Use eval-driven-skill-development to improve <target-skill>.
+Use refine-skill to improve <target-skill>.
 
 Work in the default human-gated, guided-learning mode.
 Walk me through the methodology one gate at a time.
@@ -54,8 +54,9 @@ At each gate, make a recommendation, show useful alternatives,
 and let me contribute my own solution or feedback.
 ```
 
-The same entry point can be used for either refining an existing skill or developing a
-new one. For a new skill, define the intended capability and eval behavior before drafting
+This entry point refines existing skills and can bootstrap a raw prompt or draft into
+an evaluable package when needed. Other DotSkills skills do not inherit its operating
+modes unless explicitly invoked. For a new skill, define the intended capability and eval behavior before drafting
 the implementation.
 
 ## Task skills

@@ -9,11 +9,11 @@
   ],
   "skills": [
     {
-      "name": "eval-driven-skill-development",
+      "name": "refine-skill",
       "category": "methodology",
-      "purpose": "Human-gated, guided-learning entry point for improving any skill through eval evidence, diagnosis, specialist routing, approved changes, and regression checks.",
+      "purpose": "Optional evidence-driven, conference-informed, human-gated workflow for learning, evaluating, and refining agent skills, with diagnosis-first specialist routing and regression checks.",
       "source": "dotskills",
-      "path": "skills/eval-driven-skill-development",
+      "path": "skills/refine-skill",
       "reference_count": 0
     },
     {

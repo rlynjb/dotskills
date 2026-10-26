@@ -20,7 +20,7 @@ The OpenAI adapter currently supports:
   ChatGPT/Codex plugin workflows.
 
 The default selector is the `methodology` category, which packages
-`eval-driven-skill-development` and its five specialist methodology skills.
+`refine-skill` and its five specialist methodology skills.
 
 ## Distribution rule
 

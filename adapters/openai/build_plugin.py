@@ -74,7 +74,7 @@ def build_manifest(name: str, version: str, description: str) -> dict:
             "com.openai": {
                 "interface": {
                     "displayName": display_name,
-                    "shortDescription": "Human-gated, eval-driven skill development workflows.",
+                    "shortDescription": "Human-gated, evidence-driven skill refinement workflows.",
                     "longDescription": (
                         "Reusable DotSkills methodology for evaluating, diagnosing, "
                         "improving, and regression-testing agent skills."
@@ -82,7 +82,7 @@ def build_manifest(name: str, version: str, description: str) -> dict:
                     "developerName": "DotSkills",
                     "category": "Productivity",
                     "defaultPrompt": [
-                        "Use eval-driven-skill-development to improve this skill.",
+                        "Use refine-skill to improve this skill.",
                         "Start at the first human gate and use guided learning.",
                     ],
                 }
@@ -127,7 +127,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--version", default="0.1.0", help="Plugin version.")
     parser.add_argument(
         "--description",
-        default="Human-gated, eval-driven methodology skills from DotSkills.",
+        default="Human-gated methodology and skill refinement tools from DotSkills.",
         help="Portable plugin description.",
     )
     parser.add_argument(

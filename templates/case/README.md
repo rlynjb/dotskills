@@ -46,4 +46,4 @@ accessible workspace where the harness supports that restriction.
 
 Save each attempt and its grade in that case’s `results/<run-id>/` folder.
 
-See the [shared workflow](../../docs/eval-driven-skill-development.md).
+See the [shared workflow](../../docs/refine-skill.md).
