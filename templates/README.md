@@ -29,7 +29,7 @@ and actual eval cases under `evals/`.
    files used in the output. Do not create unused folders.
 7. Register the completed skill in `catalog.json`. For imported references,
    follow the [source policy](../docs/sources.md) and record their provenance.
-8. Run `python3 scripts/validate_skills.py` from the repository root.
+8. Run `python3 scripts/validate_skill_repository_integrity.py` from the repository root.
 9. Copy the [eval case template](case/README.md), define an
    expected outcome and grading checks, then run and grade one case. Save the
    result in that case's `results/<run-id>/` folder.

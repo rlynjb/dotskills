@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Check DotSkills package structure and imported-reference consistency.
+"""Check DotSkills repository structure and imported-reference integrity.
 
 Run from the repository root:
-    python3 scripts/validate_skills.py
+    python3 scripts/validate_skill_repository_integrity.py
 
 Uses only the Python standard library and locates the repository relative to
 this script. The same command can run locally or in GitHub Actions.
@@ -21,14 +21,14 @@ Reports detected problems as ERROR lines and exits with status 1. On success,
 prints PASS with package/reference counts and exits with status 0.
 
 Limits:
-This is a structural and consistency check, not a prompt-injection or malware
-scanner. It does not execute skills, run behavioral evals, judge instruction
-quality, or enforce runtime permissions. Hash matches establish agreement with
-the local lock file; they do not prove that the source is safe or independently
-verify its contents against the upstream commit.
+This is a repository structural and consistency check, not a prompt-injection
+or malware scanner. It does not execute skills, run behavioral evals, judge
+instruction quality, or enforce runtime permissions. Hash matches establish
+agreement with the local lock file; they do not prove that the source is safe
+or independently verify its contents against the upstream commit.
 
-See docs/skill-validation-and-runtime-safety.md (relative to the repository root) for security guidance,
-planned review and evaluation improvements, and runtime safeguards.
+See docs/skill-validation-and-runtime-safety.md (relative to the repository root)
+for repository validation boundaries and runtime-safety guidance.
 """
 from __future__ import annotations
 

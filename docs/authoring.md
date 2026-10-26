@@ -31,9 +31,9 @@ covers testing and improving the skill's behavior.
    [skill validation and runtime safety guidance](skill-validation-and-runtime-safety.md)
    before executing external content.
 8. **Validate the package.** From the repository root, run
-   `python3 scripts/validate_skills.py`. Resolve reported structural, catalog,
-   reference-path, and local source-lock consistency errors. Passing does not
-   establish safe or correct behavior.
+   `python3 scripts/validate_skill_repository_integrity.py`. Resolve reported structural,
+   catalog, reference-path, and local source-lock consistency errors. Passing
+   does not establish safe or correct behavior.
 9. **Create and run its first eval case.** Start with the
    [case template](../templates/case/README.md), then follow the
    [eval development workflow](eval-driven-skill-development.md) to establish

@@ -44,7 +44,7 @@ The repository follows these boundaries:
 
 ## Current validator coverage
 
-[`scripts/validate_skills.py`](../scripts/validate_skills.py) currently checks:
+[`scripts/validate_skill_repository_integrity.py`](../scripts/validate_skill_repository_integrity.py) currently checks:
 
 - every first-level `skills/<name>/` directory has a `SKILL.md`;
 - required `name` and `description` frontmatter exists;

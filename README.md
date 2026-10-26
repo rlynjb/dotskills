@@ -32,7 +32,7 @@ See [`catalog.json`](catalog.json) for machine-readable discovery metadata and [
 4. Check the library before edits:
 
 ```bash
-python3 scripts/validate_skills.py
+python3 scripts/validate_skill_repository_integrity.py
 ```
 
 Static CI verifies frontmatter, catalog consistency, referenced files, and immutable imported-source hashes; it is **not** an LLM evaluation pipeline.
