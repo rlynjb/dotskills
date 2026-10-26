@@ -1,292 +1,165 @@
 # Skill Validation and Runtime Safety
 
-Canonical security guidance, current validation coverage, and planned improvements
-for DotSkills. Guidance states expectations; it does not mean every safeguard is
-implemented. Unchecked tasks remain future work. Conference evidence and our
-proposed applications are labeled separately below.
+Repository-wide validation and runtime-safety boundaries for DotSkills.
+
+This document is intentionally narrow. It defines what the repository validator
+checks, what a passing validation does **not** prove, how to treat external skill
+content before execution, and which controls belong in the consuming harness or
+runtime.
+
+Behavioral evaluation, context diagnosis, verification, release discipline,
+observability, and trust/governance methodology live in the dedicated methodology
+skills linked below rather than being duplicated here.
 
 ## Table of contents
 
-- [Takeaway: evaluate behavior, not only the final answer](#takeaway-evaluate-behavior-not-only-the-final-answer)
-- [Current security guidance](#current-security-guidance)
+- [Repository safety contract](#repository-safety-contract)
 - [Current validator coverage](#current-validator-coverage)
-- [Planned improvements: validation layers](#planned-improvements-validation-layers)
-- [Principles to preserve](#principles-to-preserve)
-- [Conference research: AgentCon / MCPCon 2026](#conference-research-agentcon--mcpcon-2026)
-  - [Shipping Agent Skills Safely: CI/CD, Evals, and Guardrails](#shipping-agent-skills-safely-cicd-evals-and-guardrails)
-  - [Trustworthy Context Is Untrusted by Default](#trustworthy-context-is-untrusted-by-default)
-- [Additional related-session research (2026-10-25)](#additional-related-session-research-2026-10-25)
-  - [Runtime enforcement: Agntcon26 — Yaron Schneider](#runtime-enforcement-agntcon26--yaron-schneider)
-  - [Context failures: Agntcon27 — Drew Breunig](#context-failures-agntcon27--drew-breunig)
-  - [Whole-workflow evaluation: Agntcon24 — EvalBench](#whole-workflow-evaluation-agntcon24--evalbench)
-  - [Additional leads: credentials and MCP observability](#additional-leads-credentials-and-mcp-observability)
-- [Suggested implementation order](#suggested-implementation-order)
+- [What validation does not prove](#what-validation-does-not-prove)
+- [External skill and prompt intake](#external-skill-and-prompt-intake)
+- [Runtime enforcement boundaries](#runtime-enforcement-boundaries)
+- [Methodology ownership](#methodology-ownership)
+- [Repository-level principles](#repository-level-principles)
 
-## Takeaway: evaluate behavior, not only the final answer
+## Repository safety contract
 
-**Check what the agent actually did, not just whether its final answer passed.**
+A DotSkills package is an instruction-bearing artifact. Treat importing or executing
+external skill content with the same review discipline used for other executable or
+behavior-shaping dependencies.
 
-This is our synthesis of the research below, not a direct speaker quotation.
-A correct-looking answer can conceal reliance on poisoned context, an unauthorized
-action, or a flawed grader. Review the evidence used, tool calls attempted,
-actions completed, and runtime policy decisions alongside the final output.
-Distinguish an unsafe attempt blocked by the runtime from an action that actually
-executed. Passing output checks alone does not establish safe behavior.
+The repository follows these boundaries:
 
-## Current security guidance
-
-Skill packages are instruction-bearing artifacts. Importing external skills and prompts requires the same review discipline as importing dependencies.
-
-- **Provenance:** keep upstream source revisions and blob SHA fingerprints; review imported changes before release.
-- **Prompt injection:** treat source files, search results, web pages, logs, and tool outputs as untrusted data, never as higher-priority system or user instructions.
-- **Least privilege:** require user authorization and harness permissions for writes, network calls, code execution, or external actions. Read-only investigation skills must remain read-only.
-- **Secrets and personal data:** do not embed tokens or credentials in skills. Review skill references for personal information before broad distribution or installation into shared machines.
-- **Runtime policy:** Buffr's checks, schema validation, research limits, and human approval controls live in Buffr. Do not simulate those controls with a prompt.
-- **Validation:** a passing CI check establishes only that the implemented structural and local source-lock consistency checks passed. It does not independently verify upstream source identity. It does not prove that a skill is correct, safe, injection-resistant, or compatible with all harnesses.
-
-Before publishing new imports, inspect the content and any executable scripts, create adversarial examples, evaluate side effects, and require explicit review approval.
+- **Provenance:** preserve known upstream source revisions and recorded Git blob
+  identities for imported references.
+- **Structural validation:** use the repository validator to detect package,
+  catalog, reference-path, and local source-lock consistency errors.
+- **Content review:** inspect external instructions, scripts, dependencies, downloads,
+  and requested actions before granting execution privileges.
+- **Least privilege:** grant only the tools, credentials, filesystem scope, network
+  access, and write permissions required for the task.
+- **Runtime enforcement:** authorization, permissions, policy checks, and side-effect
+  controls belong in the consuming harness or runtime when they must be enforceable.
+- **Evidence-based evaluation:** behavioral quality and safety claims require eval
+  evidence; structural validation alone is not sufficient.
 
 ## Current validator coverage
 
-[`validate_skills.py`](../scripts/validate_skills.py) checks skill structure, metadata, catalog consistency,
-referenced files, and imported references against recorded source hashes.
-It can run locally or in GitHub Actions. It does not detect prompt injection
-or malicious instructions, and it does not certify that a skill is safe.
+[`scripts/validate_skills.py`](../scripts/validate_skills.py) currently checks:
 
-## Planned improvements: validation layers
+- every first-level `skills/<name>/` directory has a `SKILL.md`;
+- required `name` and `description` frontmatter exists;
+- the skill name matches its folder and naming rules;
+- every skill folder has a matching `catalog.json` entry and every catalog entry
+  points to a real skill package;
+- local `references/` links declared from `SKILL.md` point to existing files
+  inside that package;
+- imported reference destinations in `source-lock.json` are unique, remain under
+  `skills/`, and have a recorded source commit;
+- imported file bytes match the Git blob SHA recorded in the local source lock;
+- catalog `reference_count` values match the locked imported references.
 
-These unchecked items describe future work, not implemented controls.
+The same validator runs locally and in GitHub Actions.
 
+A source-lock hash match establishes that the local file agrees with the recorded
+local lock entry. It does **not** independently prove that the upstream source was
+safe, trustworthy, or correctly reviewed.
 
-- [ ] **Provenance:** Review where a skill came from, its pinned revision,
-  and changes since the previous review. Hashes detect changes relative to
-  recorded content; they do not establish that the original content is safe.
-  Existing source-lock checks provide part of this layer.
-- [ ] **Structural validation:** Keep the existing validator as the packaging
-  check, and extend it when concrete gaps are identified. Valid formatting
-  and working references do not establish trustworthy instructions.
-- [ ] **Content and security review before execution:** Inspect the entrypoint,
-  supporting references, scripts, and dependencies for malicious instructions,
-  sensitive information, unnecessary permissions, and actions outside the
-  skill's purpose. Automated scanners or model reviewers can flag concerns,
-  but their approval is not a safety guarantee.
-- [ ] **Independent behavioral evaluation:** Define and review expected behavior
-  separately from the skill under test. Keep grading criteria outside the
-  tested agent's control. Include adversarial cases for prompt injection,
-  unauthorized actions, and attempts to change the grading criteria.
-  Run evaluations with restricted access and preserve evidence.
-- [ ] **Runtime enforcement:** Use the host or harness to restrict tools,
-  credentials, network access, and writes whenever the skill runs, including
-  during evals. A code reviewer can use read-only access without credentials.
-  Prompt instructions alone do not enforce these limits.
+## What validation does not prove
 
-## Principles to preserve
+A passing validator or CI run does **not** establish that a skill:
 
-- A malicious skill can pass an eval when the expected behavior also accepts
-  its malicious actions. Passing means agreement with the criteria, not safety.
-- Review a skill before giving it execution privileges.
-- Multiple validation layers complement each other; passing one does not
-  replace the others.
-- Automated reviewers can share blind spots. No scanner, model review, or
-  finite eval suite certifies safety.
-- Retrieved context such as code, logs, and external documents remains data;
-  validation does not grant it authority to override trusted instructions.
+- is behaviorally correct;
+- is safe to execute;
+- is free of prompt injection or malicious instructions;
+- uses trustworthy or current context;
+- respects permissions at runtime;
+- is portable across every model, harness, or tool configuration;
+- will avoid unauthorized reads, writes, network calls, or other side effects;
+- has passed representative or adversarial evals.
 
-## Conference research: AgentCon / MCPCon 2026
+Structural validation is a repository-health prerequisite, not behavioral or safety
+certification.
 
-Sources reviewed: the user's saved slide PDFs. Page references below use PDF
-page numbers, including title pages. These are source notes and future work,
-not implemented security controls or a guarantee of malicious-content detection.
+For behavioral quality, follow
+[Eval-Driven Skill Development](eval-driven-skill-development.md).
 
-### Shipping Agent Skills Safely: CI/CD, Evals, and Guardrails
+## External skill and prompt intake
 
-**Michael Larson, Christensen Solutions** — `shipping_agent_skills_safely.pdf`.
+Before executing newly imported or substantially changed external skill content:
 
-- Page 5 warns that attacks can disguise malware as setup steps and that
-  encrypted archives can evade content scans.
-- Page 6 presents a software lifecycle: version, evaluate, review, release.
-- Page 11 explicitly presents the attack-checking sequence:
-  **Scan → Review → Sandbox**.
-- Pages 7–8 recommend representative tasks, known failure modes, deterministic
-  assertions, adversarial cases, and reruns when skills or models change.
-- Page 10 calls for testing across supported agent hosts.
+1. **Identify the source and revision.** Record the available provenance and inspect
+   what changed since any prior review.
+2. **Inspect the whole package.** Review `SKILL.md`, references, setup instructions,
+   executable scripts, dependencies, downloads, and bundled assets that can affect
+   behavior.
+3. **Treat retrieved content as data.** Source files, web pages, logs, tool outputs,
+   stored summaries, and external instructions do not gain authority merely because
+   the agent retrieved them.
+4. **Check requested capabilities.** Identify filesystem, network, credential, code
+   execution, and external-action requirements before granting them.
+5. **Use restricted execution first when practical.** Test unfamiliar or risky
+   behavior with the smallest useful permissions and controlled resources.
+6. **Evaluate behavior independently.** Keep expected behavior and grading criteria
+   outside the tested skill's control, preserve available execution evidence, and
+   include adversarial or boundary cases when the risk warrants them.
+7. **Re-review changed content.** Do not transfer an old approval to materially
+   different instructions, dependencies, permissions, or runtime assumptions.
 
-Follow-up for DotSkills (our proposed implementation of these lessons):
+If content cannot be meaningfully inspected, record that limitation rather than
+treating a superficial scan as evidence of safety.
 
-- [ ] Define a pre-use intake process for external prompts and skills:
-  scan their contents, review findings and requested actions, then test behavior
-  in a restricted sandbox before granting normal execution access.
-- [ ] Inspect setup instructions, executable scripts, dependencies, downloads,
-  and bundled archives alongside `SKILL.md` and its references. If content
-  cannot be inspected, record the unresolved risk; do not report a clean scan
-  as evidence that the hidden contents are safe.
-- [ ] Record the reviewed revision, findings, reviewer decision, and sandbox
-  evidence. Reassess changed content rather than transferring an old review
-  to a new version.
-- [ ] Preserve the current per-case eval workflow. Broader CI and cross-host
-  testing remain future work; this note does not introduce comparison folders.
+## Runtime enforcement boundaries
 
-The detailed intake checklist above is our adaptation. The slide establishes
-the scan/review/sandbox sequence, not a complete scanner specification.
+Prompt text can describe rules, but it is not an enforcement boundary.
 
-### Trustworthy Context Is Untrusted by Default
+The consuming harness, MCP server, application runtime, or other execution layer
+should enforce consequential controls such as:
 
-**Shub, Arcade.dev** — `trustworthy-context-is-untrusted-by-default.pdf`
-(the title slide identifies the speaker as Shub).
+- authentication and authorization;
+- tool allowlists and permission scopes;
+- filesystem and network restrictions;
+- credential isolation;
+- argument and schema validation;
+- approval requirements for sensitive or irreversible actions;
+- rate, budget, or research limits where applicable;
+- state-mutation and external side-effect controls;
+- audit evidence for attempted, blocked, and completed actions when needed.
 
-Pages 12–17 present five complementary defenses for stored agent context:
+Tool availability is not the same as user authorization.
 
-1. A server-generated warning around every read that treats stored code claims
-   as potentially stale hypotheses.
-2. Risk classification when context is written, with checks again when read;
-   the author must not control its own risk classification.
-3. Provenance and content boundaries supplied by the system, distinguishing
-   claimed identity or commit information from server-recorded metadata.
-4. File anchors tied to a commit so readers can check what changed.
-5. Verification against current code before relying on stored implementation
-   claims, with discrepancies reported.
+When DotSkills references an external engine such as Buffr, the external system remains
+the authority for its runtime policy, contracts, state, and effects. Do not reproduce
+an enforceable runtime policy as prompt-only guidance and claim equivalent protection.
 
-Pages 10–11 explain why task-success grading can miss poisoned context:
-the output may appear acceptable while relying on forged claims. Page 19
-also documents errors in the talk's own graders, including confusing rejection
-of malicious text with adoption of it. Pages 18–20 show that warnings reduced
-some failures but did not eliminate them.
+## Methodology ownership
 
-Follow-up for DotSkills and its consuming hosts:
+Use the methodology skills for deeper analysis instead of duplicating their procedures
+in this document.
 
-- [ ] Preserve source, revision, relevant file anchors, and verification status
-  for consequential context claims; distinguish recorded facts from
-  self-reported metadata.
-- [ ] Require current-code verification for implementation claims and report
-  stale or conflicting context. Code verification does not make code comments
-  or embedded instructions authoritative.
-- [ ] Add eval cases for plausible forged facts, fake provenance, stale memory,
-  and attempts to impersonate trusted context boundaries, alongside obvious
-  override instructions.
-- [ ] Check whether the agent adopted an injected claim or merely quoted it
-  to reject it. Include benign controls and retain traces to audit grading.
-- [ ] Keep system-generated context wrappers, authorization, and permission
-  enforcement in the consuming host/runtime. Text fences and warnings alone
-  are not security boundaries.
+| Need | Methodology owner |
+| --- | --- |
+| Build or improve a skill through reviewed eval cases, preserved evidence, diagnosis, and regression checks | [`eval-driven-skill-development`](../skills/eval-driven-skill-development/SKILL.md) |
+| Diagnose missing, stale, conflicting, excessive, distracting, or prematurely stopped context | [`context-engineering`](../skills/context-engineering/SKILL.md) |
+| Verify claims, requirements, invariants, failure paths, and evidence-backed conclusions | [`correctness-and-verification`](../skills/correctness-and-verification/SKILL.md) |
+| Compare versions, detect regressions, test portability, and make release/rollback decisions | [`skill-lifecycle-and-release`](../skills/skill-lifecycle-and-release/SKILL.md) |
+| Inspect trajectories, tool use, runtime evidence, telemetry gaps, and production feedback | [`agent-observability-and-feedback`](../skills/agent-observability-and-feedback/SKILL.md) |
+| Diagnose provenance, authority, permissions, approvals, sensitive actions, and risk controls | [`agent-trust-and-governance`](../skills/agent-trust-and-governance/SKILL.md) |
 
-These five context defenses differ from the five broad validation layers
-earlier in this file. Neither slide deck establishes that running a prompt
-through several agents can certify that it contains no malicious content.
+These skills are complementary. For example, an eval may reveal a suspicious result,
+then route to observability to inspect what happened and to trust/governance if the
+trajectory crossed an authority boundary.
 
-## Additional related-session research (2026-10-25)
+## Repository-level principles
 
-A broader search of the user's conference chats found the related sessions below.
-Evidence levels matter: the two sections above retain their previously recorded
-PDF page references; the additions below distinguish retrieved PDF content from
-earlier assistant-written session summaries and research leads. This search did
-not recover every original transcript or slide deck, so it is not a complete
-conference security audit. No new slide numbers or chat URLs are inferred.
-
-### Runtime enforcement: Agntcon26 — Yaron Schneider
-
-**Durability, Guardrails, and Attestation.** Evidence: retrieved session-chat
-summaries dated 2026-10-23, including descriptions of slides 9 and 11 and the
-phrase “The model proposes. The runtime enforces.” These are earlier assistant
-descriptions of the slides, not a fresh inspection of the original deck.
-
-The recorded discussion separates model proposals from authentication,
-authorization, policy enforcement, execution, and execution evidence. It also
-distinguishes observability from attestation. This complements pre-use screening:
-a reviewed skill still needs enforced limits when it executes.
-
-Proposed follow-up (our adaptation, not a verbatim speaker checklist):
-
-- [ ] Specify which checks belong to DotSkills intake and which must be enforced
-  by the consuming harness/MCP runtime. Put authorization, permitted tools,
-  argument validation, file/network access, and execution limits in runtime code.
-- [ ] Record attempted actions, policy decisions, and actual execution outcomes.
-  Keep ordinary logs distinct from cryptographically verifiable attestations;
-  neither establishes that an agent's reasoning or final answer is correct.
-- [ ] Test that disallowed actions remain blocked even when the skill or a tool
-  result explicitly requests them.
-
-### Context failures: Agntcon27 — Drew Breunig
-
-**How Contexts Fail (and How to Fix Them).** Evidence: earlier session/project
-summaries identify poisoning, distraction, confusion, and conflicting context.
-The detailed original transcript/slides were not recovered in this search.
-Treat this as a relevant research lead, not independently verified slide wording.
-
-Proposed follow-up:
-
-- [ ] Extend adversarial fixtures beyond obvious override strings: include
-  plausible false facts, irrelevant but persuasive context, contradictory
-  requirements, and stale summaries. Keep malicious and benign failure cases
-  separately labeled so ordinary context mistakes are not called attacks.
-- [ ] Test whether a corrected fact actually displaces an earlier false claim,
-  including after summarization or memory reuse.
-- [ ] Recover the original session material before attributing specific
-  mitigations or measured effectiveness to the speaker.
-
-### Whole-workflow evaluation: Agntcon24 — EvalBench
-
-**Building an Agentic Eval Pipeline: Battle-Tested Lessons with EvalBench** —
-Kurtis Van Gent / Haoyu Wang.
-
-Evidence: retrieved content from
-`mcpcon-na-26-building-an-agentic-eval-pipeline_-battle-tested-lessons-with-evalbench-agntcon-2026.pdf`.
-The retrieval describes evaluation of Critical User Journeys, trajectory and
-outcome/output measures, regression detection across tools/skills/prompts/models,
-and deterministic checks combined with calibrated, explained LLM judges.
-Page numbers were not supplied by this retrieval.
-
-Proposed follow-up:
-
-- [ ] Grade the execution trace as well as the final answer: an acceptable answer
-  must not hide an unauthorized read, write, tool call, or attempted exfiltration.
-  Record attempted and completed actions separately.
-- [ ] Validate graders against independently reviewed examples of both safe and
-  unsafe behavior, including quoted attacks that the agent correctly rejects.
-  Track false positives and false negatives rather than trusting one pass score.
-- [ ] Use clean, isolated test state and controlled test resources for security
-  cases. Do not expose production credentials or data to malicious fixtures.
-- [ ] Record the skill revision, model, harness, policy configuration, and grader
-  version with each per-case run; rerun affected cases when these change.
-
-### Additional leads: credentials and MCP observability
-
-- **Christian Posta — “DO NOT give AI agents credentials!”** The conference
-  directory identifies this demo and source photo `5748.jpg`. The title and
-  source locator were recovered; the demo's detailed mechanism was not.
-- **Agntcon03 — What Your MCP Server Does When Nobody's Looking (Austin Parker).**
-  Earlier chat summaries discuss MCP observability and tracing. Original slide
-  text/transcript was not recovered, so specific security claims remain
-  unverified.
-- **Stop Vibe-Testing, Beyond Pass/Fail, and agent regression testing** also
-  surfaced as related evaluation sessions. Their original material was not
-  recovered in this pass; do not treat their titles as evidence of a particular
-  security technique.
-
-Proposed follow-up:
-
-- [ ] Investigate credential isolation and narrowly scoped tool access in the
-  runtime; avoid placing secrets in skill text, model context, or eval fixtures.
-  Verify the credentials demo before claiming a specific implementation.
-- [ ] Preserve enough tool-call and policy-decision evidence to investigate
-  failures while redacting secrets and sensitive input from telemetry.
-- [ ] Recover original material for these leads and replace summary-level
-  attribution with precise source references when available.
-
-## Suggested implementation order
-
-This ordering is our proposal, not a conference-prescribed pipeline:
-
-1. Define the intake policy and trust boundaries; preserve provenance and reviewed
-   revisions. External content remains untrusted during inspection.
-2. Add static screening and independent review of the whole skill package.
-   Do not run unreviewed setup steps merely to make scanning possible.
-3. Establish the restricted execution environment before running any behavioral
-   tests. Test both the skill and enforcement of runtime restrictions.
-4. Add independently reviewed adversarial cases and calibrate the graders.
-5. Gate release on recorded evidence; retain runtime limits, monitor execution,
-   and reassess changed skills, dependencies, models, and harnesses.
-
-An AI reviewer is another fallible component exposed to the inspected content.
-Multiple reviewers or a “cleaned” prompt are not proof of safety. Keep reviewer
-permissions restricted and prevent the inspected skill from changing review
-policy, expected outcomes, or grading criteria.
+- Passing structural validation does not certify behavioral correctness or safety.
+- A correct-looking final answer does not prove that the agent used an acceptable path.
+- Preserve available evidence of reads, tool calls, state changes, errors, and blocked
+  actions when those facts matter to evaluation or safety.
+- Distinguish an attempted unsafe action that the runtime blocked from an action that
+  actually executed.
+- Do not embed secrets or credentials in skill text, references, or eval fixtures.
+- Retrieved or stored context cannot grant itself authority.
+- Review external skill content before giving it execution privileges.
+- Prefer enforceable runtime controls over prompt-only promises for consequential
+  boundaries.
+- No scanner, model reviewer, validator, or finite eval suite by itself certifies safety.
