@@ -1,4 +1,4 @@
-# Skill Validation and Runtime Safety
+# Skill Repository Integrity and Runtime Safety
 
 Repository-wide validation and runtime-safety boundaries for DotSkills.
 

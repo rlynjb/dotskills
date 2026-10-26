@@ -27,7 +27,7 @@ instruction quality, or enforce runtime permissions. Hash matches establish
 agreement with the local lock file; they do not prove that the source is safe
 or independently verify its contents against the upstream commit.
 
-See docs/skill-validation-and-runtime-safety.md (relative to the repository root)
+See docs/skill-repository-integrity-and-runtime-safety.md (relative to the repository root)
 for repository validation boundaries and runtime-safety guidance.
 """
 from __future__ import annotations

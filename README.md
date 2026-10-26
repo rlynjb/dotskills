@@ -95,4 +95,4 @@ and save the result in that case’s `results/` folder.
 
 Future work may include additional harness adapters, broader per-skill evals, automated regression runs, a release pipeline, compatibility testing, and optional MCP skill discovery/gateway integration.
 
-Read [architecture](docs/architecture.md), [source policy](docs/sources.md), [authoring](docs/authoring.md), [skill validation and runtime safety](docs/skill-validation-and-runtime-safety.md), and [contributing](CONTRIBUTING.md).
+Read [architecture](docs/architecture.md), [source policy](docs/sources.md), [authoring](docs/authoring.md), [skill repository integrity and runtime safety](docs/skill-repository-integrity-and-runtime-safety.md), and [contributing](CONTRIBUTING.md).

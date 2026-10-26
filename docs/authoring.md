@@ -28,7 +28,7 @@ covers testing and improving the skill's behavior.
 7. **Register and review it.** Add the skill to `catalog.json`. Follow the
    [source policy](sources.md) for imported references and source-lock records;
    preserve locked snapshots and put adaptations in separate files. Apply
-   [skill validation and runtime safety guidance](skill-validation-and-runtime-safety.md)
+   [skill repository integrity and runtime safety guidance](skill-repository-integrity-and-runtime-safety.md)
    before executing external content.
 8. **Validate the package.** From the repository root, run
    `python3 scripts/validate_skill_repository_integrity.py`. Resolve reported structural,
