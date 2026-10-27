@@ -2,7 +2,7 @@
 
 **`refine-requirements`** is a codebase-first, interview-led engineering skill for turning a new feature request or a change to an existing feature into clear, evidence-backed requirements **before technical design begins**.
 
-It serves two purposes: (1) refine real tickets into functional requirements (FRs), non-functional requirements (NFRs), testable acceptance criteria, and stakeholder decisions; and (2) practice the reasoning used in **system-design and DSA interviews**. Its teaching style is inspired by the DotSkills Code Review skill: one concrete problem question at a time, a worked example, a scenario walkthrough, a trade-off, and a learning checkpoint.
+It serves two purposes: (1) refine real tickets into functional requirements (FRs), non-functional requirements (NFRs), testable acceptance criteria, and stakeholder decisions; and (2) practice the reasoning used in **system-design and DSA interviews**. The default experience is **overview first, selective deep dives second**: review an evidence and pattern map plus all material FR/NFR findings, then choose a requirement to explore through Code Review-inspired questions, scenarios, trade-offs, and learning checkpoints.
 
 **Outcome:** a requirements brief that can be handed to **Superpowers** for design and implementation *later*. This skill does not choose an architecture, implement code, or answer business questions on behalf of stakeholders.
 
@@ -10,6 +10,7 @@ It serves two purposes: (1) refine real tickets into functional requirements (FR
 
 - [When to use it](#when-to-use-it)
 - [Workflow](#workflow)
+- [Initial Findings Overview](#initial-findings-overview)
 - [The interview learning loop](#the-interview-learning-loop)
 - [Modes](#modes)
 - [What the skill refines](#what-the-skill-refines)
@@ -31,31 +32,28 @@ The process borrows **clarification, scenarios, and edge-case reasoning** from D
 
 ```mermaid
 flowchart TD
-    A["Feature ticket or idea<br/>+ approved specs and decisions"]
-    B["Inspect relevant code, tests,<br/>contracts and existing patterns"]
-    C{"Relevant behavior verified?"}
-    D["Compare ticket with existing behavior<br/>FOLLOW / ADAPT / NO SUITABLE PATTERN"]
-    E["Mark NOT VERIFIED<br/>Proceed with provisional questions"]
-    F["Interview: clarify actors,<br/>goals, scope and assumptions"]
-    G["Refine functional requirements<br/>and Given/When/Then acceptance"]
-    H["Walk through normal, edge,<br/>failure and recovery scenarios"]
-    I["Refine non-functional requirements<br/>and confirm or flag targets"]
-    J["Capture system-design inputs:<br/>data, interfaces, scale, security, trade-offs"]
-    K["Challenge assumptions, refine<br/>and check coverage/testability"]
-    L{"Readiness?"}
-    M["READY / CONDITIONAL / BLOCKED<br/>Requirements and Superpowers handoff"]
-    N["Post-interview: questions to ask stakeholders<br/>Final section; drafts only"]
-    A --> B --> C
-    C -->|Yes| D --> F
-    C -->|No or limited access| E --> F
-    F --> G --> H --> I --> J --> K --> L --> M --> N
+    A["Feature ticket, idea, decisions"] --> B["Inspect relevant code, tests,<br/>contracts, and existing patterns"]
+    B --> C["Evidence & pattern map<br/>or explicit NOT VERIFIED"]
+    C --> D["Findings Overview<br/>all material FRs + NFRs"]
+    D --> E["Summarize edge cases, dependencies,<br/>system-design gaps, readiness"]
+    E --> F["Review choices: select FR/NFR/gap"]
+    F --> G["Stakeholder questions<br/>one concise section at bottom"]
+    G --> H{"User selects next action"}
+    H -->|"Explore item"| I["Guided or Practice<br/>one chosen requirement at a time"]
+    I --> J["Refine evidence, acceptance,<br/>and requirements register"]
+    J --> H
+    H -->|"Refresh inputs"| B
+    H -->|"Complete / request handoff"| K["Consolidated requirements<br/>+ Superpowers handoff"]
+    K --> L["Stakeholder questions<br/>last section"]
 ```
 
 **Codebase first** means locating relevant existing behavior before recommending new requirements or asking stakeholders questions that code or approved documents might already answer. Code is evidence of **observed behavior**, not automatic proof of a **confirmed product requirement**.
 
 ### How a topic progresses
 
-1. **Clarify the problem:** who needs the feature, the triggering action, expected outcome, in/out-of-scope boundaries, and unresolved assumptions.
+First, inspect code and present the **entire concise findings overview**, including the evidence map. Only **after you select an item** does the skill use these interview steps:
+
+1. **Clarify the selected problem:** who needs this specific behavior, its trigger/outcome, boundaries, and unresolved assumptions.
 2. **Check existing patterns:** inspect a close analogue, note reusable business rules/contracts, and distinguish follow/adapt/no suitable pattern/not verified.
 3. **Write functional requirements:** observable behavior, actors, permissions, priority, and verifiable acceptance criteria.
 4. **Stress-test with examples:** normal paths, invalid/empty input, duplicates, retries, concurrent actions, permission denial, partial failure, and recovery when relevant.
@@ -64,31 +62,50 @@ flowchart TD
 7. **Challenge and revise:** change a constraint, explain how requirements and acceptance might change, record remaining unknowns, and check coverage.
 8. **Assess readiness and hand off:** produce **READY**, **CONDITIONAL**, or **BLOCKED** with reasons; end with only the consequential **Questions to ask stakeholders**.
 
+## Initial Findings Overview
+
+**This is the default first output, not Problem question 1.** The skill searches the relevant existing code first and then shows the full *initial* findings in a compact register. You can scan the big picture and choose which IDs to discuss without reading a separate explanation for every requirement.
+
+| Section (in order) | What appears |
+| --- | --- |
+| **1. Feature snapshot** | Goal, actors, scope, inspected branch/revision, and evidence limits. |
+| **2. Evidence & pattern map** | Comparable features, code/test/path evidence, observable behavior, differences, FOLLOW / ADAPT / NO SUITABLE PATTERN FOUND / NOT VERIFIED. This section is **always present**. |
+| **3. Functional requirements** | All material `FR-xx` rows: concise behavior, priority, confirmed/proposed/assumed/unknown, source/pattern link, open question. |
+| **4. Non-functional requirements** | All material `NFR-xx` rows: linked FR/journey, quality and grounded target (or **target requires confirmation**), priority/status, evidence/owner. |
+| **5. Bigger picture** | Short edge/failure scenarios, dependencies, permissions, data ownership, contracts, scale/reliability/security and other system-design inputs. |
+| **6. Readiness and review choices** | Provisional readiness/blockers and an invitation to pick a requirement or gap to drill into. |
+| **7. Post-interview — Questions to ask stakeholders** | **Always at the bottom:** a concise deduplicated list with Q-ID, owner, exact question, linked FR/NFR, priority and handoff-blocking flag. No extensive per-question explanations. |
+
+The overview is **not** the full nine-part Superpowers handoff, and no initial findings should be misrepresented as approved decisions. If source code cannot be accessed, the pattern map says **NOT VERIFIED** and FR/NFR tables remain clearly provisional. When you provide new ticket details, decisions, or code changes, the skill **refreshes affected evidence and the pattern map** and summarizes changes instead of assuming previous findings are current.
+
 ## The interview learning loop
 
-In default **Guided** mode, a single response covers **one high-value feature-specific problem question**, rather than dumping a full requirements report:
+After the Findings Overview and **your selection** (for example, `FR-02` or `NFR-01`), Guided mode explores **one selected requirement at a time**, rather than interrogating each finding automatically:
 
 ```mermaid
 flowchart LR
-    A["What and why"] --> B["Problem question N"]
-    B --> C["How to reason"]
-    C --> D["Worked answer + scenario walkthrough"]
-    D --> E["Trade-off / changed constraint"]
-    E --> F["Refined FR, NFR or acceptance"]
-    F --> G["Takeaway + learning checkpoint"]
-    G --> H["Unresolved stakeholder questions"]
+    A["Choose FR / NFR / gap"] --> B["Problem question on chosen item"]
+    B --> C["How to reason + worked answer"]
+    C --> D["Scenario and changed constraint"]
+    D --> E["Refine requirement / acceptance"]
+    E --> F["Takeaway + learning checkpoint"]
+    F --> G["Stakeholder questions<br/>consolidated at bottom"]
+    G --> H{"Explore another or refresh?"}
+    H -->|"Another"| A
+    H -->|"New evidence"| I["Refresh pattern map + overview"]
+    I --> A
 ```
 
-At the learning checkpoint the learner can explore the current question or continue to the next. **Practice** mode instead starts with the question and waits for the candidate before showing the answer, critique, and stakeholder questions. A question is not automatically a finished interview; completion also requires coverage and readiness checks.
+At the checkpoint you can explore the same item, choose another FR/NFR ID, or refresh the overview. **Practice** mode also starts with the overview, then asks one selected-item question and waits for your answer before revealing worked reasoning and critique. A question is not automatically a finished interview; completion also requires coverage and readiness checks.
 
 ## Modes
 
 | Mode | Interaction | Best for |
 | --- | --- | --- |
-| **Guided (default)** | One question at a time; explanation, worked answer, walkthrough, follow-up, takeaway, and checkpoint. | Learning on a real ticket. |
-| **Practice (on request)** | Ask one question, wait for your response, then offer hints/feedback and show the supported answer. | Mock DSA/system-design-style interview practice. |
-| **Full walkthrough (on request)** | Cover relevant questions and provide a consolidated report in one pass. | A complete ticket-refinement exercise. |
-| **Concise / refinement-only (on request)** | Skip teaching but keep codebase-first evidence, FRs, NFRs, acceptance, and handoff. | Fast, work-focused requirements refinement. |
+| **Guided (default)** | **Findings Overview first**; you choose an FR/NFR/gap, then get one worked interview question, scenario, trade-off, takeaway, and checkpoint. | Review the big picture, then learn selectively. |
+| **Practice (on request)** | Same overview first; choose an item, answer one interview question before critique/hints. | Mock DSA/system-design-style interview practice. |
+| **Full walkthrough (on request)** | Overview first, then cover relevant questions and a consolidated report in one pass. | A complete ticket-refinement exercise. |
+| **Concise / refinement-only (on request)** | Overview-first evidence/FR/NFR tables and concise handoff; skip teaching. | Fast, work-focused requirements refinement. |
 
 ## What the skill refines
 
@@ -105,7 +122,7 @@ Statements are classified as **CONFIRMED REQUIREMENT**, **OBSERVED BEHAVIOR**, *
 
 ## Final deliverables
 
-On interview completion, or when a consolidated report is requested, the skill provides:
+On interview completion, or when a consolidated report is requested, the skill **expands the maintained overview** into a complete handoff rather than repeating each problem question:
 
 1. **Feature brief:** goal, actors, scope/exclusions, sources, assumptions, and evidence limits.
 2. **Pattern and alignment map:** existing behavior and reusable conventions, with verification status.
@@ -122,7 +139,9 @@ On interview completion, or when a consolidated report is requested, the skill p
 
 > **Illustrative ticket:** “Allow signed-in users to update notification preferences.” This is a hypothetical exercise; no product policy or codebase behavior is being asserted.
 
-**Problem question 1 — What should happen when preferences change on one device?**
+**Initial Findings Overview (abbreviated):** Evidence & pattern map = **NOT VERIFIED** (no repository provided). **FR-01 (PROPOSED)** = save and read preferences; **NFR-01 (UNKNOWN)** = cross-device freshness, **target requires confirmation**. System-design gap = data ownership and freshness expectations. **Q-01 / Product owner:** acceptable cross-device delay? The skill stops here for you to pick an ID.
+
+**After selecting NFR-01: Problem question 1 — What should happen when preferences change on one device?**
 
 - **Reasoning:** inspect any existing settings flow; distinguish successful save behavior (FR) from how quickly a second device sees that change (NFR). If the code was not inspected, mark its baseline **NOT VERIFIED**.
 - **FR-01 (PROPOSED):** a signed-in user can save a supported notification preference and later read the saved choice. A suitable Given/When/Then scenario would check the saved value is returned on a successful read; stakeholders must approve the exact guarantee.
@@ -140,10 +159,13 @@ Use a compatible DotSkills installation, or point your assistant to [`SKILL.md`]
 
 ```text
 Use the refine-requirements skill on this feature ticket: <ticket or description>.
-Inspect relevant existing code and tests first when available.
-Walk me through one problem question at a time, with a worked answer,
-scenario, trade-off, refined FR/NFR, takeaway, and learning checkpoint.
-Finish each completed question with unresolved stakeholder questions.
+Inspect relevant code and tests first. Start with a compact Findings Overview:
+evidence & pattern map, all material FRs and NFRs, design-input gaps,
+readiness, and stakeholder questions grouped at the very bottom.
+Pause so I can review the big picture and choose an FR/NFR/gap.
+Then work through just that item with an interview-style question,
+scenario, trade-off, refined acceptance, takeaway, and checkpoint.
+Refresh the pattern map if I provide new code or changed requirements.
 Do not edit code, contact stakeholders, or invoke Superpowers.
 ```
 
@@ -151,9 +173,9 @@ Do not edit code, contact stakeholders, or invoke Superpowers.
 
 ```text
 Use refine-requirements in Practice mode for <ticket or feature>.
-Act as my system-design/requirements interviewer.
-Ask one question, wait for my answer, then critique it and help me
-refine the FRs, NFRs, acceptance, and stakeholder questions.
+Show the evidence map and complete brief FR/NFR Findings Overview first.
+Let me choose an ID. Ask one interview question about that item,
+wait for my answer, then critique it and help refine its requirements.
 ```
 
 **For a one-pass brief**, request **Full walkthrough** or **Concise / refinement-only** mode explicitly.
