@@ -69,28 +69,26 @@ Use the book lens requested by the user. If none is specified, select
 the lens most relevant to the review and state the choice. Focus on
 one lens at a time, using its reference directly:
 
-- references/code-review-aposd.md:
+- references/master-aposd.md:
   Responsibilities, interfaces, ownership, and design complexity.
 
-- references/code-review-at.md:
+- references/master-at.md:
   Algorithm correctness, invariants, boundary cases, and computational cost.
 
-- references/code-review-ddia.md:
+- references/master-ddia.md:
   Persistence, transactions, concurrency, retries, and consistency.
 
-- references/code-review-fode.md:
+- references/master-fode.md:
   Data ingestion, transformations, quality, and consumer contracts.
 
-- references/code-review-sdi.md:
+- references/master-sdi.md:
   Service boundaries, system behavior, reliability, and scaling.
 
-From the selected reference, read:
-- "Evidence and severity calibration (applies to every review prompt)".
-- Its compact daily prompt for ordinary changes.
-
-Use that reference's master or focused sections when the requested scope
-or investigation requires them. Do not combine every prompt variant
-into one review.
+Read the selected master reference in full, including its embedded evidence
+calibration and reporting requirements. Use the master as the technical checklist
+for every review size; mark irrelevant dimensions not applicable with a reason.
+Do not load compact daily or focused prompt variants. The original imported
+references remain source records, not additional runtime review guidance.
 
 Locate and read relevant sections when bounded reads are supported.
 If a tool loads the entire file, do not claim that only an excerpt
@@ -132,7 +130,7 @@ Report execution results only when they are available.
 A passing test supports only the behavior it checks.
 
 Use the finding categories and severity guidance in the selected book
-reference's evidence-calibration section.
+master reference, including its evidence-calibration instructions.
 
 Zero actionable findings is a valid result.
 
