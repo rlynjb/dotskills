@@ -64,6 +64,8 @@ def install_one(
     link: bool,
     dry_run: bool,
 ) -> None:
+    if link and (source / 'evals').exists():
+        raise ValueError('Refusing --link: source contains evaluator-only evals/; use copy mode')
     if destination.exists() or destination.is_symlink():
         if not force:
             raise ValueError(
@@ -74,9 +76,6 @@ def install_one(
                 shutil.rmtree(destination)
             else:
                 destination.unlink()
-
-    if link and (source / 'evals').exists():
-        raise ValueError('Refusing --link: source contains evaluator-only evals/; use copy mode')
 
     if dry_run:
         action = "link" if link else "copy"
@@ -151,6 +150,18 @@ def main() -> int:
             all_skills=args.all,
         )
         destination_root = target / ".agents" / "skills"
+        # Preflight the entire selection; a late refusal must not leave a
+        # partial install or delete an existing copy when --force was given.
+        if args.link:
+            unsafe = [
+                item["name"] for item in selected
+                if (source_for(item) / "evals").exists()
+            ]
+            if unsafe:
+                raise ValueError(
+                    "Refusing --link for skills with evaluator-only evals/: "
+                    + ", ".join(unsafe) + ". Use copy mode."
+                )
 
         installed: list[str] = []
         for item in selected:

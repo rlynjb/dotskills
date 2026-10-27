@@ -43,6 +43,18 @@ class OpenAIRuntimeCopyTests(unittest.TestCase):
         )
         self.assertFalse((self.root / ".agents" / "skills" / "refine-skill").exists())
 
+    def test_failed_link_force_does_not_delete_installed_copy(self):
+        self.cli("install_codex.py", "--target", self.root, "--skill", "refine-skill")
+        installed = self.root / ".agents" / "skills" / "refine-skill"
+        marker = installed / "keep.txt"
+        marker.write_text("do not erase")
+        self.cli(
+            "install_codex.py", "--target", self.root, "--skill", "refine-skill",
+            "--link", "--force", success=False
+        )
+        self.assertTrue((installed / "SKILL.md").is_file())
+        self.assertEqual(marker.read_text(), "do not erase")
+
     def test_plugin_excludes_evals(self):
         output = self.root / "plugin"
         self.cli("build_plugin.py", "--skill", "refine-skill", "--output", output)

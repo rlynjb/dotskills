@@ -109,7 +109,7 @@ them. The newly added `refine-skill/evals/evals.json` contains
 The evaluator must stage agent-facing inputs separately and keep
 answer keys and earlier runs inaccessible; simply putting them in
 another folder is insufficient. The Claude/OpenAI adapter copy/build
-paths should exclude skill-local `evals/`; linking a canonical folder
+paths exclude skill-local `evals/`; linking a canonical folder
 that includes evals must not be treated as isolated. Harness
 permissions, not prompt prose, enforce write restrictions.
 
