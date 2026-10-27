@@ -1,32 +1,33 @@
-# DDIA Review Using Microsoft's Engineering Lifecycle
+# Codebase Problem Questions Using Technical Excellence and DDIA
 
 ## Contents
 
 - [Purpose and source boundaries](#purpose-and-source-boundaries)
 - [Technical excellence topics](#technical-excellence-topics)
 - [The repeated teaching format](#the-repeated-teaching-format)
-- [Stage 1 — Problem solving](#stage-1--problem-solving)
-- [Stage 2 — Design](#stage-2--design)
-- [Stage 3 — Coding](#stage-3--coding)
-- [Stage 4 — Testing](#stage-4--testing)
+- [Choosing problem questions](#choosing-problem-questions)
+- [Requirements and behavior](#requirements-and-behavior)
+- [Data ownership and design](#data-ownership-and-design)
+- [Implementation, algorithms, and guarantees](#implementation-algorithms-and-guarantees)
+- [Verification questions](#verification-questions)
 - [Worked miniature](#worked-miniature)
 - [Coverage of the Master DDIA rubric](#coverage-of-the-master-ddia-rubric)
 - [Research sources](#research-sources)
 
 ## Purpose and source boundaries
 
-Use Microsoft's **Engineering lifecycle** areas as the primary teaching structure:
-Problem solving, Design, Coding, and Testing. Use its **Technical excellence** areas
-to select relevant subjects within that structure. Microsoft's page describes
-assessment areas, not a mandatory four-round interview sequence; the numbered stages
-here are a DotSkills teaching adaptation.
+Use Microsoft's **Technical excellence** areas as topic inspiration and DDIA as
+the review lens. Explore the authorized codebase and select useful, varied questions
+from real implementation details. Do not require Engineering lifecycle stages,
+a fixed topic order, or a question from every topic. This question-led flow is a
+DotSkills teaching adaptation, not an official Microsoft interview sequence.
 
-Keep DDIA as the technical review lens throughout all four stages. Start from the
+Keep DDIA as the technical review lens throughout the questions. Start from the
 actual implementation and requirements, not an imagined greenfield system. Explain
 existing protections as well as supported issues. Zero findings is a valid outcome.
 
 This remains a code-review skill with guided learning and optional interview practice.
-A Coding stage means inspecting and explaining existing code by default. It does not
+Discussing implementation means inspecting and explaining existing code by default. It does not
 authorize writing code, editing files, or executing a target skill against real services.
 Hands-on coding requires a separate user request and a bounded local/synthetic scope.
 An explanation of code does not establish the learner's ability to implement it.
@@ -56,9 +57,9 @@ If the user wants a broader exercise outside this skill's scope, explain the bou
 
 ## The repeated teaching format
 
-For each stage, use a small, relevant selection of the following:
+For each problem question, use the following teaching scaffold:
 
-1. **What and why:** explain the stage's goal and why it matters.
+1. **What and why:** explain the question's learning goal and why it matters.
 2. **Problem question:** state the concrete behavior, concern, or decision to examine
    in the target code. Use this label in Guided and Practice mode, rather than
    “Interview-style question.” For example: “What happens if this request is retried
@@ -81,14 +82,33 @@ chain-of-thought. Do not fill every slot mechanically when it adds no teaching v
 In Guided mode, provide the worked answer rather than requiring the user to guess.
 In Practice mode, hold back the worked answer until the user responds or requests
 help; ask one question at a time. Give feedback on correctness, evidence, clarity,
-and trade-offs without inventing a company hiring score. Resume the same stage after
+and trade-offs without inventing a company hiring score. Resume the same question after
 a clarification or explanation request.
 
 Keep teaching examples labeled hypothetical and separate from findings about actual
 code. Link the source title when using a research-derived preparation principle;
 label target-code evidence and model-proposed recommendations separately.
 
-## Stage 1 — Problem solving
+## Choosing problem questions
+
+Inspect the authorized repository or change scope before choosing questions. Sample
+relevant entry points, data paths, tests, and callers; state what was inspected and
+do not describe a sample as an exhaustive codebase search. Prioritize consequential
+behavior, surprising safeguards, and useful trade-offs. A question may teach why
+correct code works; it need not expose a bug.
+
+Default to one `Problem question N — Concrete question` at a time. Number questions
+for navigation, not lifecycle stages. Vary code paths and topics to build breadth.
+If random questions are requested, shuffle relevant candidates after inspection;
+never substitute generic puzzles for the target code or fabricate defects.
+Offer a next question from a different relevant topic when useful.
+
+The sections below are an optional question pool, not sequential stages. Choose
+and combine them freely. For example, start with a real lookup's complexity, then
+examine retry safety elsewhere, then a model pipeline's data-version handling if
+such a pipeline exists. Do not force AI/ML into a repository that has none.
+
+## Requirements and behavior
 
 Inspect the target change, surrounding behavior, and available requirements first.
 Then state scope, revision, user goal, and exclusions. If no target is identifiable,
@@ -112,7 +132,7 @@ Example questions:
 Answer scaffold: “The required behavior is X, established by Y. The invariant is Z.
 We know A about the workload; B is unknown, so I will not assume a scale problem.”
 
-## Stage 2 — Design
+## Data ownership and design
 
 Identify actual entry points, API or function contracts, entities, authoritative
 stores, and read/write paths. Explain how a request passes through the implementation.
@@ -130,17 +150,17 @@ Explain the difference between intended architecture and observed implementation
 
 ### Compare design choices through DDIA
 
-Connect the proposed or existing design to Stage 1's requirements. Discuss ownership,
+Connect the proposed or existing design to the established requirements. Discuss ownership,
 transaction boundaries, consistency, schema evolution, replication, and recovery only
 where applicable. Explain which properties come from a design contract and which still
-need implementation verification in Stage 3.
+need implementation verification.
 
 Ask: “What alternative would you consider, and which constraint changes your choice?”
 Model an answer that names the invariant, benefit, cost, and evidence needed. Keep
 capacity estimates hypothetical unless sourced; use them only when they affect a
 decision. Prefer the smallest justified change over an unnecessary redesign.
 
-## Stage 3 — Coding
+## Implementation, algorithms, and guarantees
 
 ### Inspect implementation and guarantees
 
@@ -191,10 +211,10 @@ For an explicitly requested coding exercise, help the learner choose a familiar
 language, propose a small implementation task, and let them write it before showing
 a worked solution when in Practice mode. Prefer runnable code for the exercise;
 label pseudocode as explanatory rather than a tested implementation. Stay within
-authorized local fixtures and carry the result into Stage 4. Do not silently modify
+authorized local fixtures and verify the result with safe checks. Do not silently modify
 the repository during a review or treat a learning checkpoint as write authorization.
 
-## Stage 4 — Testing
+## Verification questions
 
 Recommend a small normal case, boundary case, and relevant failure/concurrency case.
 For each, state input/setup, expected behavior and its source, what would be observed,
@@ -216,7 +236,7 @@ Report tests actually executed, tests only inspected, and proposed tests separat
 
 ### Review report and interview recap
 
-Deliver the original review categories: correctness/invariants, data model/consistency,
+When the scoped review is complete or the user requests a recap, deliver the original review categories: correctness/invariants, data model/consistency,
 reliability/operability, testing gaps, and optional improvements. Deduplicate root
 causes. Every finding needs inspected evidence, conditions, consequence, smallest
 reasonable improvement, claim class, and calibrated severity.
@@ -225,6 +245,7 @@ Use confirmed defect, plausible risk, verification gap, and optional improvement
 accurately. Explain existing safeguards as well as supported problems. Zero findings
 is valid. End with scope, verification limits, and a compact coverage summary.
 
+For an early recap, clearly label partial coverage and outstanding checks.
 Then model a short interview recap:
 “Here is the goal and invariant; here is the path I inspected; here is the main
 supported finding or safeguard; here is the trade-off; here is what I tested and
@@ -240,10 +261,10 @@ Suppose a batch function keeps the first record for each ID in input order. It s
 an ever-growing list of accepted IDs for every input item. Requirements specify
 integer IDs and a maximum batch of 1,000 records; no measured latency is supplied.
 
-- **Stage 1 — Problem solving:** “Must we preserve order and which duplicate wins?” The supplied
+- **Problem question:** “Must we preserve order and which duplicate wins?” The supplied
   contract says first occurrence wins. Faster code must preserve that behavior.
-- **Stage 2 — Design:** Input IDs [7, 2, 7] yields [7, 2]. The third item is skipped.
-- **Stage 3 — Coding:** For n distinct records, repeated linear membership scans take O(n²)
+- **Walkthrough:** Input IDs [7, 2, 7] yields [7, 2]. The third item is skipped.
+- **Worked answer:** For n distinct records, repeated linear membership scans take O(n²)
   comparisons overall and O(n) storage. A hash set alongside the ordered output
   can give expected O(n) processing and O(n) space, assuming expected O(1) membership.
   It does not guarantee constant-time lookup in every worst case.
@@ -253,7 +274,7 @@ integer IDs and a maximum batch of 1,000 records; no measured latency is supplie
 - **DDIA connection:** In-memory deduplication within one batch does not establish
   idempotency across retried requests or multiple workers. Inspect persistence and
   transaction semantics before claiming either a duplicate-write bug or protection.
-- **Stage 4 — Testing:** Propose empty input, repeated IDs, distinct IDs, and first-occurrence/order
+- **Verification:** Propose empty input, repeated IDs, distinct IDs, and first-occurrence/order
   checks. Separately test any established retry contract in isolation. None has run
   merely because this walkthrough described it.
 
@@ -267,29 +288,29 @@ Keep all 15 dimensions even when the tutorial spotlights only a few. Track each 
 reviewed (with result), not applicable (why), or not verified (missing evidence).
 Do not force irrelevant dimensions into findings.
 
-| Master rubric dimension | Main tutorial stage |
+| Master rubric dimension | Related question topics |
 | --- | --- |
-| 1. Changed behavior; 2. Match to intent | 1 and 3 |
-| 3. Entities/stores/flows; 4. Authoritative values | 2 |
-| 5. Access patterns, storage, indexes | 2 and 3 |
-| 6. Transactions/invariants; 7. Concurrency; 8. Consistency/ordering | 3 |
-| 9. Retries/duplicates; 10. Events/caches/derived views | 3 |
-| 11. Schema/encoding compatibility | 3 |
-| 12. Replication/partitioning/failover | 2 and 3 |
-| 13. Partial failures/recovery | 3 |
-| 14. Scale and operability | 2 and 3 |
-| 15. Tests of guarantees/failures | 4 |
+| 1. Changed behavior; 2. Match to intent | Requirements and observed behavior |
+| 3. Entities/stores/flows; 4. Authoritative values | Data ownership and flows |
+| 5. Access patterns, storage, indexes | Design choices and implementation guarantees |
+| 6. Transactions/invariants; 7. Concurrency; 8. Consistency/ordering | Implementation and failure scenarios |
+| 9. Retries/duplicates; 10. Events/caches/derived views | Implementation and failure scenarios |
+| 11. Schema/encoding compatibility | Implementation and failure scenarios |
+| 12. Replication/partitioning/failover | Design choices and implementation guarantees |
+| 13. Partial failures/recovery | Implementation and failure scenarios |
+| 14. Scale and operability | Design choices and implementation guarantees |
+| 15. Tests of guarantees/failures | Verification |
 
 ## Research sources
 
 Checked 2026-10-26. These are preparation sources, not guarantees of interview content.
 
 - [Microsoft — Technical interviewing](https://careers.microsoft.com/v2/global/en/hiring-tips/technical-interviewing.html):
-  **primary framework**: Engineering lifecycle provides the four teaching areas;
-  Technical excellence supplies role-relevant topic choices. Numbering these areas
-  as tutorial stages and embedding DDIA are DotSkills adaptations.
-Supplementary sources below inform examples and techniques; they do not define the
-primary stage structure.
+  **primary topic reference**: Technical excellence supplies role-relevant topic
+  choices. Its Engineering lifecycle areas remain useful preparation context but
+  do not prescribe this tutorial's structure.
+Supplementary sources below inform examples and techniques; they do not impose
+a question sequence.
 
 - [Amazon — Software development interview topics](https://amazon.jobs/content/en-gb/how-we-hire/interview-prep/software-development-topics):
   lists coding, algorithms, data structures, databases, and distributed computing;
@@ -301,5 +322,5 @@ primary stage structure.
   proposes requirements, entities/interfaces, high-level design, and deep dives,
   with estimates when they influence a design decision.
 
-The DDIA mapping, stage numbering, questions, and worked miniature are original
+The DDIA mapping, question-led format, questions, and worked miniature are original
 model-proposed adaptations for DotSkills. They are not copied company questions or conference methods.
