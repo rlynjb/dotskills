@@ -86,7 +86,7 @@
     {
       "name": "refine-feature-requirements",
       "category": "engineering",
-      "purpose": "Ticket refinement and Superpowers handoff.",
+      "purpose": "Codebase-first guided/practice interview for functional and non-functional requirements, edge cases, stakeholder questions, and a system-design-ready Superpowers handoff.",
       "source": "dotfiles",
       "path": "skills/refine-feature-requirements",
       "reference_count": 1
