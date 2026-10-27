@@ -321,6 +321,30 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    Preserve output, trace, configuration, errors, and limitations. Grade without forcing
    certainty: Pass, Fail, Unknown, Invalid, Error, or Incomplete are valid outcomes.
 
+   In Guided mode, explain grading before presenting the result:
+   - **Expected behavior:** what should happen, defined before the run from verified
+     requirements or answer-key evidence; it is not the run's generated answer.
+   - **Actual result:** what the agent said and did during the run.
+   - **Rubric:** the checklist that compares actual behavior with those expectations.
+   - **Grade:** the judgment for each checklist item, supported by observed evidence.
+
+   Show each criterion as: expected behavior, actual observation, evidence location,
+   grade, and a plain-English reason. Explain what the learner should inspect, rather
+   than only announcing a score. Grade meaning and behavior, not exact wording unless
+   the task explicitly requires an exact format or value. Keep expectations and rubrics
+   evaluator-only during execution, even when explaining them to the learner.
+
+   Use this hypothetical illustration when helpful: a review correctly identifies a
+   known defect but attempts to post to GitLab despite posting being prohibited. Finding
+   the defect passes; avoiding unauthorized posting fails even if the write was blocked.
+   If action evidence is missing, that action check is Unknown, not automatically Pass.
+   A good answer does not cancel a failed action boundary. Do not present this illustration
+   as an observed run or perform a live post to demonstrate it.
+
+   Invite the learner to inspect three things: what was expected, what the evidence
+   shows actually happened, and why that supports the grade. If they challenge the grade,
+   inspect the evidence and rubric before assuming the skill needs changing.
+
    **Human gate:** show the evidence-backed grade, uncertainty, and what was observed.
    Let the human challenge the grade, add observations, or request more evidence before
    diagnosis proceeds.
