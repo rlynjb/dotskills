@@ -169,6 +169,53 @@ Learning content, human feedback, answer keys, grading criteria, and recommendat
 remain outside the evaluated target skill's task context unless they are intentionally
 part of the target skill's required input.
 
+#### Beginner tutorial and case recommendations
+
+When the human is new to evals or requests a tutorial, make Guided mode a hands-on,
+plain-English tutorial. Do not assume unit-testing or eval experience. Explain an eval
+as a structured check of whether an agent behaves as needed on a particular task.
+Introduce terms when first needed: a case is one test situation; a baseline is the
+starting result; a rubric is the checklist used to judge the result; a regression is
+behavior that worked before but breaks after a change.
+
+At each stage, teach one small step before requesting a decision:
+1. **What:** explain what we are doing in everyday language.
+2. **Why:** explain what question this step answers and why it matters for this skill.
+3. **How:** show the concrete input, proposed action, or evidence to inspect.
+4. **Example:** use a small example tied to the actual target; label invented examples
+   as hypothetical and do not assume missing target details.
+5. **Your decision:** recommend the next bounded step and explain what approval allows.
+
+Proactively recommend cases instead of asking the beginner to invent tests from scratch.
+Inspect the target's intended behavior, requirements, and available failure evidence.
+Offer one recommended first case and at most two useful alternatives, with a brief
+reason for the priority. Prefer one observable behavior and a small synthetic fixture.
+Consider normal behavior, a boundary/failure situation, missing information, and
+unauthorized-action handling as coverage grows; do not require all cases at once.
+
+For each proposed case, explain:
+- the situation and exact neutral task/input the evaluated agent would receive;
+- what good behavior looks like and which requirement establishes it;
+- why this case is useful, what it tests, and what it cannot establish;
+- how it would run safely using mocks or verified isolation;
+- how to compare the output, attempted actions, and resulting state with expectations;
+- what would count as Pass, Fail, or Unknown, with a short concrete example;
+- the applicable recommendation source labels, distinguishing model-proposed cases
+  from conference principles and observed evidence.
+
+Show the learner the expectations and grading explanation, but keep them separate from
+the evaluated agent's inputs. If essential context is missing, ask a focused question
+or propose an explicitly provisional case; do not invent an authoritative answer key.
+Obtain the existing case and execution approvals before running anything. A tutorial
+request does not override the evaluation action boundary or authorize live actions.
+
+After a run, walk through one actual observation against one expected behavior before
+summarizing the grade. Explain whether the evidence points to the skill, the case,
+the grader, or the environment, and why. Distinguish structural checks, hypothetical
+walkthroughs, simulated runs, and observed agent runs; never present a teaching example
+as executed evidence. Offer a gentle understanding check when useful, not a mandatory
+quiz. Continue at the learner's pace and avoid dumping the whole methodology at once.
+
 ## Required context
 
 Establish:
@@ -229,6 +276,8 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    the evaluation direction.
 
 2. **Design the eval case.**
+   Proactively recommend a first case using the tutorial and case-recommendation guidance
+   above; explain the what, why, and how before asking the human to approve it.
    Draft a neutral case plus evaluator-only expected behavior and grading criteria. Do not
    encode the answer into the evaluated agent's input.
 

@@ -157,6 +157,28 @@ Model recommendation: start with the protected-transaction false-positive scenar
 
 The default interaction teaches the methodology while doing the work. At meaningful gates, briefly explain the concept in use, what it means for the current skill, which evidence matters, and why the recommendation follows.
 
+For beginners, Guided mode is a hands-on tutorial: explain **what** the current step
+does, **why** it matters, and **how** to do it in plain English, using one small example
+from the target skill. Define terms such as case, baseline, rubric, and regression when
+they first appear. Do not assume prior unit-testing experience.
+
+Refine Skill should recommend one useful first case, with at most two alternatives,
+rather than expect you to invent tests. Each recommendation explains the input,
+expected behavior, reason for choosing it, safe setup, and how to judge Pass, Fail, or
+Unknown. Cases come from the skill's requirements and available evidence; model
+suggestions remain labeled as suggestions. Start with one observable behavior and
+expand coverage as you learn.
+
+For example, if a review skill previously posted unexpectedly, a hypothetical first
+case could provide a synthetic change and request a review in the conversation with
+posting disabled. Judge both the review and whether it attempted an unauthorized write.
+Explain the expectations to the learner without leaking the answer key to the tested
+agent. Use mocks or verified isolation, and retain case and execution approval gates.
+
+After execution, compare one actual observation with its expectation and explain the
+grade before deciding what to change. A hypothetical walkthrough is not an executed
+eval, and a simulated pass does not establish safe live behavior.
+
 Supported learning depths:
 
 - **Guided** — concise explanation at relevant gates.
