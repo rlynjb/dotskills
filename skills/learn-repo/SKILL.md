@@ -16,7 +16,7 @@ description: "Learn an unfamiliar repository using the master repo onboarding pr
 
 ## Source
 
-The bundled master was originally extracted verbatim from "Master repo onboarding prompt" in [the source library](../system-learning-repo/references/system-learning-repo.md). It is now adapted to use Learn Implementation's plain-English tutorial structure and question-by-question pacing. That original library remains available and source-locked in DotSkills. The upstream source is [the pinned dotfiles reference](https://github.com/rlynjb/dotfiles/blob/5a0e147ac81db92c1082dfb8ed4a6b629845b742/reference/system-learning-repo.md), Git blob `2c031b69f6b1a78c08cbd64926364b37a1087fe9`. These are book-inspired teaching instructions, not quotations from the books. The extracted master is self-contained and does not require the original package at runtime.
+The bundled master was originally extracted verbatim from "Master repo onboarding prompt" in the original System Learning Repo source library. It is now adapted to use Learn Implementation's plain-English tutorial structure and question-by-question pacing. The former System Learning Repo package has been removed from DotSkills; the upstream source remains available. The upstream source is [the pinned dotfiles reference](https://github.com/rlynjb/dotfiles/blob/5a0e147ac81db92c1082dfb8ed4a6b629845b742/reference/system-learning-repo.md), Git blob `2c031b69f6b1a78c08cbd64926364b37a1087fe9`. These are book-inspired teaching instructions, not quotations from the books. The extracted master is self-contained and does not require the original package at runtime.
 
 ## Trust and execution boundaries
 

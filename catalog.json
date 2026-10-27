@@ -92,14 +92,6 @@
       "reference_count": 1
     },
     {
-      "name": "system-learning-repo",
-      "category": "learning",
-      "purpose": "Learn an unfamiliar repository architecture and data lifecycle.",
-      "source": "dotfiles",
-      "path": "skills/system-learning-repo",
-      "reference_count": 1
-    },
-    {
       "name": "learn-repo",
       "category": "learning",
       "purpose": "Learn a whole repository using the extracted master onboarding prompt and staged teaching workflow.",

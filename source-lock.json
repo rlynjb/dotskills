@@ -168,12 +168,6 @@
       "source_path": "reference/refine-feature-requirements.md",
       "destination": "skills/refine-feature-requirements/references/refine-feature-requirements.md",
       "blob_sha": "ea2e7c29c4540fe66c7a64aa4915e07832ecbd1b"
-    },
-    {
-      "source": "dotfiles",
-      "source_path": "reference/system-learning-repo.md",
-      "destination": "skills/system-learning-repo/references/system-learning-repo.md",
-      "blob_sha": "2c031b69f6b1a78c08cbd64926364b37a1087fe9"
     }
   ]
 }
