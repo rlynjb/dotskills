@@ -1,6 +1,6 @@
 # Requirements Refinement Interview Playbook
 
-This is the interactive teaching and practice format for the Refine Feature Requirements skill. Pair it with the preserved source reference, [refine-feature-requirements.md](refine-feature-requirements.md). That source is the requirements checklist and final-handoff contract; this playbook controls the interview experience. Neither document authorizes code changes, external communications, or running Superpowers.
+This is the interactive teaching and practice format for the Refine Requirements skill. Pair it with the preserved source reference, [refine-requirements.md](refine-requirements.md). That source is the requirements checklist and final-handoff contract; this playbook controls the interview experience. Neither document authorizes code changes, external communications, or running Superpowers.
 
 ## Why these interview techniques apply
 

@@ -84,11 +84,11 @@
       "exposed": false
     },
     {
-      "name": "refine-feature-requirements",
+      "name": "refine-requirements",
       "category": "engineering",
       "purpose": "Codebase-first guided/practice interview for functional and non-functional requirements, edge cases, stakeholder questions, and a system-design-ready Superpowers handoff.",
       "source": "dotfiles",
-      "path": "skills/refine-feature-requirements",
+      "path": "skills/refine-requirements",
       "reference_count": 1
     },
     {

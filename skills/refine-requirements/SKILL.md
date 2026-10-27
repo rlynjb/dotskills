@@ -1,9 +1,9 @@
 ---
-name: refine-feature-requirements
+name: refine-requirements
 description: "Refine new or existing feature tickets using a codebase-first, system-design/DSA-inspired requirements interview. Guided tutorial by default: one Problem question at a time, worked answers, scenario walkthroughs, trade-offs, functional and non-functional requirements, and stakeholder questions. Produce evidence-backed acceptance criteria and a design-ready Superpowers handoff without implementing."
 ---
 
-# Refine Feature Requirements
+# Refine Requirements
 
 ## Objective
 
@@ -13,7 +13,7 @@ Borrow the problem-clarification and edge-case reasoning of DSA interviews and t
 
 ## Read these two references
 
-1. Read the complete [Master feature requirements reference](references/refine-feature-requirements.md). It is the authoritative requirements-analysis checklist and final Superpowers-handoff content. Keep the imported, source-locked reference unchanged.
+1. Read the complete [Master feature requirements reference](references/refine-requirements.md). It is the authoritative requirements-analysis checklist and final Superpowers-handoff content. Keep the imported, source-locked reference unchanged.
 2. Read the [Interview playbook](references/interview-playbook.md). It controls interview roles, modes, order, learning sections, coverage, FR/NFR structure, and stakeholder-question wording.
 
 Treat the master's nine-item REQUIRED OUTPUT as the **completion/on-request report**, not nine sections to dump into every single interview response. Use the interview playbook's one-question format during Guided or Practice mode. Where the references describe similar steps, preserve the master's **codebase-first** and **read-only** constraints.

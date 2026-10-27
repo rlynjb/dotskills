@@ -50,7 +50,7 @@ DotSkills is **not another skill creator or evaluation engine**. It keeps the li
 | [code-review](skills/code-review/SKILL.md) | engineering | Engineering code review through individual book lenses. |
 | [investigate-existing-feature](skills/investigate-existing-feature/SKILL.md) | engineering | Feature provenance and dependencies investigation. |
 | [investigate-new-feature](skills/investigate-new-feature/SKILL.md) | engineering | Pre-design feature discovery and requirements. |
-| [refine-feature-requirements](skills/refine-feature-requirements/SKILL.md) | engineering | Codebase-first guided/practice interview for FRs, NFRs, edge cases, and system-design-ready Superpowers handoff. |
+| [refine-requirements](skills/refine-requirements/SKILL.md) | engineering | Codebase-first guided/practice interview for FRs, NFRs, edge cases, and system-design-ready Superpowers handoff. |
 | [learn-repo](skills/learn-repo/SKILL.md) | learning | Learn a whole repository through the extracted master onboarding prompt. |
 | [learn-implementation](skills/learn-implementation/SKILL.md) | learning | Learn an implementation using the extracted master prompt and five book lenses. |
 | [buffr-decision-support](skills/buffr-decision-support/SKILL.md) | decision-support | Buffr M0–M7 module reference and execution guidance; engine remains external. |
@@ -131,7 +131,7 @@ dotskills/
 │   ├── code-review/
 │   ├── investigate-existing-feature/
 │   ├── investigate-new-feature/
-│   ├── refine-feature-requirements/
+│   ├── refine-requirements/
 │   ├── learn-repo/
 │   ├── learn-implementation/
 │   └── buffr-decision-support/

@@ -166,7 +166,7 @@
     {
       "source": "dotfiles",
       "source_path": "reference/refine-feature-requirements.md",
-      "destination": "skills/refine-feature-requirements/references/refine-feature-requirements.md",
+      "destination": "skills/refine-requirements/references/refine-requirements.md",
       "blob_sha": "ea2e7c29c4540fe66c7a64aa4915e07832ecbd1b"
     }
   ]
