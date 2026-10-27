@@ -108,6 +108,14 @@
       "reference_count": 1
     },
     {
+      "name": "learn-implementation",
+      "category": "learning",
+      "purpose": "Learn an implementation through the extracted master prompt and four relevant book lenses.",
+      "source": "dotfiles",
+      "path": "skills/learn-implementation",
+      "reference_count": 0
+    },
+    {
       "name": "buffr-decision-support",
       "category": "decision-support",
       "purpose": "Buffr M0–M7 module reference and execution guidance; engine remains external.",

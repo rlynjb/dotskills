@@ -53,6 +53,7 @@ DotSkills is **not another skill creator or evaluation engine**. It keeps the li
 | [refine-feature-requirements](skills/refine-feature-requirements/SKILL.md) | engineering | Ticket refinement and Superpowers handoff. |
 | [system-learning-repo](skills/system-learning-repo/SKILL.md) | learning | Learn an unfamiliar repository architecture and data lifecycle. |
 | [system-learning-implementation](skills/system-learning-implementation/SKILL.md) | learning | Learn a specific code implementation, its mechanisms, and trade-offs. |
+| [learn-implementation](skills/learn-implementation/SKILL.md) | learning | Learn an implementation using the extracted master prompt and four book lenses. |
 | [buffr-decision-support](skills/buffr-decision-support/SKILL.md) | decision-support | Buffr M0–M7 module reference and execution guidance; engine remains external. |
 
 See [`catalog.json`](catalog.json) for machine-readable discovery metadata and [`source-lock.json`](source-lock.json) for upstream origin paths and pinned blob identities.
@@ -131,6 +132,7 @@ dotskills/
 │   ├── refine-feature-requirements/
 │   ├── system-learning-repo/
 │   ├── system-learning-implementation/
+│   ├── learn-implementation/
 │   └── buffr-decision-support/
 │       └── references/        # module-map.md, runtime/, versioned/
 ├── catalog.json
