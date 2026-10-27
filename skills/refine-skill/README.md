@@ -120,10 +120,57 @@ Describe expected behavior **before** testing, then teach precise assertions aft
 
 ## 5. Approval, execution, and safety
 
-- **Human gates:** Approve evaluation scope/cases, runs, specialist routing, structural changes, skill edits, and release decisions as applicable. Feedback is not automatic approval.
-- **Isolated evaluations:** Use verified mock or disposable tools and workspaces. A skill or eval prompt is **not authorization** to post to GitHub/GitLab, send messages, deploy, or change real data. Live side effects need **separate, explicit, bounded authorization**.
-- **Private evaluator data:** Keep expected answers, assertions, and grading materials outside the evaluated agent's readable environment; an `evals/` folder by itself is not access control.
-- **Evidence limitations:** Drafted self-eval cases and passing schema checks are not successful model evaluations. Mark executions **Not Run** when isolation cannot be verified, and report missing evidence as **Unknown**.
+**Mandatory Execution Safety Gate** (before Stage 3 or 9, any delegated run,
+or any earlier execution of an evaluated skill). The GitLab-posting incident
+motivated this defense: a target skill can suggest an action but **cannot
+authorize** it. A valid `SKILL.md` is not necessarily a safe skill.
+
+```mermaid
+flowchart TD
+    A["Approve case and scope"] --> B["Host verifies mock-only execution isolation"]
+    B --> C{"Actual controls enforced?"}
+    C -->|No / unknown| D["STOP: Not Run, static review"]
+    C -->|Yes| E["Check declared policy and restrict tool dispatch"]
+    E --> F{"Every call authorized by host?"}
+    F -->|No| G["Block, log attempt, fail safety criterion"]
+    F -->|Yes| H["Run isolated eval and trace attempts"]
+    H --> I{"Complete trace and verified state?"}
+    I -->|No| J["Unknown: no safety pass"]
+    I -->|Yes| K["Grade both behavior and side effects"]
+```
+
+- **Human gates:** Approve cases, runs, structural changes, skill edits, specialist
+  routing, and release decisions as applicable. These are not permission to
+  post to GitHub/GitLab, send messages, or deploy.
+- **Enforce in the execution host:** Fresh disposable workspace, mock-only tools,
+  no live credentials, network egress or unmediated shell/API/child-agent paths,
+  and a host-owned tool allowlist. Only task input goes to the evaluated agent;
+  answer keys and grading stay evaluator-only.
+- **Fail closed:** If the host cannot verify isolation, **do not run**. An
+  unauthorized attempted action fails its security check **even when blocked**.
+  If the attempt trace or resulting-state audit is missing, use **Unknown**.
+- **Available helper:** `scripts/refine_eval_safety.py` checks a host
+  manifest, authorizes single mock tool requests and audits trace JSONL. It
+  does **not** launch agents, physically sandbox them or install policy in
+  Claude/Codex. The runner must invoke it (or stricter equivalent) before
+  each dispatch. A manifest-only pass is *not proof* of live enforcement.
+
+```bash
+python3 scripts/refine_eval_safety.py preflight path/to/host-manifest.json
+python3 scripts/refine_eval_safety.py authorize path/to/host-manifest.json path/to/call.json
+python3 scripts/refine_eval_safety.py audit path/to/host-manifest.json path/to/trace.jsonl
+python3 -m unittest scripts/test_refine_eval_safety.py -v
+```
+
+[Execution Safety Gate and host contract](references/execution-safety-gate.md) ·
+[Approval rules](references/approval-gates.md) ·
+[Security regression cases (IDs 4–6)](evals/evals.json).
+
+**What is and is not proven:** Unit tests check this helper's deny/grade logic.
+The security cases are definitions **not live model runs**. DotSkills does not
+yet bundle an eval runner wired into Claude/Codex or prove your coworker's
+skill caused the unexpected GitLab post. The execution environment must
+independently enforce controls for real protection.
 
 ## 6. Comparison with Claude and OpenAI
 
@@ -189,7 +236,7 @@ For operational details:
 - [Runtime entry point](SKILL.md) · [Full Stage 0–11 workflow](references/workflow.md)
 - [Structure validation](references/structure-validation.md) · [Eval design guide](references/eval-design-guide.md)
 - [Methodology lenses](references/methodology-lenses.md) · [Approval and safety rules](references/approval-gates.md)
-- [Refine Skill starter evals](evals/README.md)
+- [Execution Safety Gate](references/execution-safety-gate.md) · [Refine Skill starter and security evals](evals/README.md)
 
 Repository checks, run from DotSkills root:
 

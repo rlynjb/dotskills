@@ -194,6 +194,8 @@ Establish:
 - One observable capability or failure to evaluate.
 - The eval case and evaluator-only expected behavior when the eval stage begins.
 - Model, harness, tools, permissions, and relevant limits.
+- Explicitly allowed and prohibited external effects; who authorizes each effect,
+  and which host restrictions stop bypasses.
 - Original output plus available read/search/tool/command evidence when a run exists.
 - The current human-gate decision and any human feedback that constrains the next step.
 
@@ -248,8 +250,9 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
      This priority is a model recommendation unless an inspected source prescribes it.
    - What we will inspect later: whether the response names the missing diff, requests
      it, and avoids unsupported findings. These are proposed observations, not results.
-   - Stage 1 output: the target/version, one proposed behavior, why it matters, and
-     scope/exclusions. Stage 2 will supply the concrete fixture and grading checklist.
+   - Stage 1 output: the target/version, one proposed behavior, why it matters,
+     scope/exclusions, and an inventory of allowed vs. forbidden tool actions.
+     Stage 2 will supply the concrete fixture and grading checklist.
    Adapt the example to the actual target and its established requirements; do not
    assume every skill needs an MR diff. Approval here selects the evaluation direction,
    not a live execution or an edit to the target skill.
@@ -270,6 +273,9 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    example; offer assisted mode on request. Start with observable expectations
    and any non-negotiable safety criteria. Add or refine detailed `assertions`
    after inspecting the first outputs, as the official guide recommends.
+   When the target has external tools or side effects, include security regression
+   coverage for unauthorized actions, injected authority, indirect CLI/API bypass,
+   and missing trace evidence as appropriate; require no real service writes.
    Validate the JSON structure, paths and evaluator isolation before execution.
    See [eval design](eval-design-guide.md). Do not encode the answer into the
    evaluated agent's task input.
@@ -304,7 +310,15 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    **Human gate before execution:** confirm the run configuration and that no hidden
    teaching or evaluator information will enter the task context.
 
-   Enforce the Evaluation action boundary above before launching any evaluated agent.
+   **MANDATORY Execution Safety Gate** (not a new numbered stage): load
+   [execution-safety-gate.md](execution-safety-gate.md). Obtain case/run approval
+   and independent host evidence of mock-only isolation, denied live credentials,
+   network, shell/API and child-agent bypasses, restricted evaluator material,
+   interposed tool authorization, and complete trace/state verification.
+   When available, run `python3 scripts/refine_eval_safety.py preflight
+   <host-manifest.json>`. `MANIFEST_VALID` alone is not proof of enforcement.
+   If controls cannot actually be verified, do **not** launch: mark **Not Run**,
+   document gaps, and continue with static analysis.
 
    Execution review checklist:
    - Are live write paths disabled and the mock/disposable environment verified?
@@ -362,6 +376,8 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
 
    Result review checklist:
    - Were unauthorized actions attempted or performed, including through scripts or child agents?
+   - Does the host evidence include every blocked/allowed call and verified
+     unchanged external state, or must the security result be Unknown?
    - Did the agent answer the intended task?
    - Does the conclusion match the established answer-key evidence?
    - Does the explanation connect concrete evidence to the requirement or expected
@@ -448,6 +464,9 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
     Treat multiple runs as required for reliability/variance claims; do not
     invent averages or standard deviation for one attempt. A correct answer
     with an unauthorized attempted action still fails its safety criterion.
+    Keep the GitLab write, indirect API/shell, and missing-evidence cases from
+    Refine Skill's self-evals as regressions when relevant; do not interpret
+    a mocked safety pass as proof about live connectors.
 
     **Human gate:** present before/after evidence, regressions, remaining uncertainty, and
     a recommendation about whether to keep, revise, revert, or investigate further.
