@@ -1,6 +1,6 @@
 ---
 name: code-review-ddia
-description: "Review a code change with the full Designing Data-Intensive Applications (DDIA) lens using inspected evidence. Use for broad or higher-risk data-affecting changes that need the master 15-point review. Do not use for other book lenses, style-only review, or a narrowly scoped DDIA drill-down."
+description: "Review a code change with the full Designing Data-Intensive Applications (DDIA) lens using inspected evidence. Default to a beginner-friendly technical-interview tutorial with system-design and relevant DSA questions, worked answers, and trade-offs. Use for broad or higher-risk data-affecting changes that need the master 15-point review, or learning to explain such a review. Do not use for other book lenses, style-only review, or a narrowly scoped DDIA drill-down."
 ---
 
 # Code Review DDIA
@@ -24,6 +24,37 @@ separate skills later; they are not dependencies of this skill.
 - Do not treat missing production metrics, unrun tests, or inaccessible context
   as proof of a defect. State the resulting verification gap.
 
+## Teaching format — default
+
+Use the [interview walkthrough](references/interview-walkthrough.md) for every
+tutorial or practice review. This adapts common system-design and coding-interview
+habits to existing code; it is not an official company interview script.
+Preserve all 15 Master DDIA checks and the evidence rules below.
+
+- **Guided tutorial (default):** explain in plain English, show a relevant interview
+  question, demonstrate how to answer using inspected evidence, and explain why the
+  answer is justified. Do not make the beginner invent the questions or answers.
+- **Practice (on request):** ask one question at a time, wait for the learner's answer,
+  then provide evidence-based feedback, a hint or worked answer, and a follow-up.
+  A request to explain switches to teaching without restarting the review.
+- **Concise review (on request):** omit the teaching scaffold, preserving the original
+  review categories, coverage, and evidence requirements.
+
+Open with the review target, mode, and read-only action boundary. Use stable
+`Stage N — Step name` headings (1–6) from the walkthrough, with small steps inside
+a stage when useful. In Guided mode, default to one stage per response and a
+`LEARNING CHECKPOINT — Continue or explore this stage?` at its end. Offer a complete
+walkthrough in one response when requested. A checkpoint controls teaching pace, not
+permission to mutate anything; it is not a Refine Skill human approval gate.
+
+Inspect available code and requirements before asking questions the repository can
+answer. Distinguish confirmed requirements, inferred behavior, proposed assumptions,
+and open questions. Do not fabricate traffic, latency targets, production topology,
+interview questions attributed to a company, or defects to fill the tutorial.
+Use system-design reasoning as the core DDIA lens; add DSA analysis only where an
+actual data structure, traversal, lookup, sorting, batching, or algorithm warrants it.
+Do not turn a DDIA review into an unrelated algorithm quiz or a greenfield redesign.
+
 ## Workflow
 
 1. Establish the review target and boundary: diff, pull request, feature path,
@@ -40,10 +71,17 @@ separate skills later; they are not dependencies of this skill.
 
 ## Supporting references
 
+- [Interview walkthrough, examples, and research sources](references/interview-walkthrough.md)
+
 - [Context quality and requirements](references/context-quality-and-requirements.md)
 - [Master DDIA code-review rubric](references/master-ddia-code-review.md)
 
 ## Output
+
+In Guided or Practice mode, present the stage walkthrough first and deliver the
+following review report at Stage 6. Label interim findings provisional until the
+necessary evidence has been checked. In Concise mode, deliver the report directly.
+Do not claim a complete review before all relevant dimensions have been considered.
 
 Organize findings into:
 
