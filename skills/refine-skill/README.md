@@ -4,6 +4,19 @@
 
 Refine Skill is **not a full skill creator**: Claude/Codex Skill Creator can handle richer authoring. Refine Skill does only the *minimum* structural conversion when needed, then focuses on output quality. DotSkills does not bundle a live model-evaluation runner.
 
+
+## Table of contents
+
+- [1. Workflow at a glance](#1-workflow-at-a-glance)
+  - [Minimum valid skill](#minimum-valid-skill)
+- [2. The 12 stages](#2-the-12-stages)
+  - [Evaluation and refinement loop](#evaluation-and-refinement-loop)
+- [3. Five conference-informed methodology lenses](#3-five-conference-informed-methodology-lenses)
+- [4. File and evaluation structure](#4-file-and-evaluation-structure)
+- [5. Approval, execution, and safety](#5-approval-execution-and-safety)
+- [6. Comparison with Claude and OpenAI](#6-comparison-with-claude-and-openai)
+- [7. Try it](#7-try-it)
+
 ## 1. Workflow at a glance
 
 Every invocation starts with **Stage 0**, a check against the [Agent Skills Quickstart](https://agentskills.io/skill-creation/quickstart). Valid skills proceed unchanged to Stage 1. Invalid skills and raw prompts get a minimal formatting proposal, subject to human approval.
