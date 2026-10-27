@@ -172,6 +172,29 @@ If the exact conference-talk title cannot be verified, mark the source title as
 unverified rather than inventing one. Source labels are concise provenance summaries;
 they do not expose private chain-of-thought.
 
+Before making a methodology attribution, inspect the available source mapping,
+relevant reference, or session notes and identify the specific principle it supports.
+In a full DotSkills checkout, consult the methodology source table in skills/README.md
+and relevant README/doc references when available. In an isolated installation, use
+packaged sources or authorized retrieval; do not assume repository-only files exist.
+A broad “session-derived principles” paragraph is not verification of an exact talk.
+
+For each source label, add one plain-English sentence explaining its contribution:
+- Target-skill source: what task requirement or behavior this source establishes.
+- Eval / repository evidence: what was actually observed and where.
+- Methodology source: which general evaluation principle the inspected source supports.
+- Model recommendation: what the model chose or prioritized and why.
+
+If provenance cannot be verified, say “Methodology attribution unverified” and name
+the missing evidence and sources actually checked. Do not claim a search was performed
+unless it was. Distinguish a title recorded in repository documentation from a claim
+verified against original session material. Do not use “AGNTCon/MCPCon sessions” as a
+substitute verified citation, or attach a known talk title solely because it sounds
+relevant. Keep the proposed case or priority labeled Model recommendation when it is
+model synthesis. If no methodology attribution is needed, say not applicable instead
+of inventing one. Continue supported analysis unless the missing source is essential
+to the decision; do not repeatedly ask for notes just to fill a label.
+
 ### Learning mode — guided by default
 
 Teach the methodology while doing the work. At each meaningful gate, briefly explain:
@@ -201,6 +224,15 @@ as a structured check of whether an agent behaves as needed on a particular task
 Introduce terms when first needed: a case is one test situation; a baseline is the
 starting result; a rubric is the checklist used to judge the result; a regression is
 behavior that worked before but breaks after a change.
+
+A stage title and source list alone do not satisfy the tutorial requirement.
+Immediately below each stage heading, explain in plain English:
+- **What we are doing:** the concrete activity and what we are not yet doing.
+- **Why now:** the decision or uncertainty this stage resolves.
+- **Example for this target:** a small illustration, labeled hypothetical if unobserved.
+- **What this stage produces:** the artifact or decision the human will review.
+Then give the recommendation and source explanations, followed by the existing gate.
+Keep this compact; examples supplement evidence and never count as an executed eval.
 
 At each stage, teach one small step before requesting a decision:
 1. **What:** explain what we are doing in everyday language.
@@ -294,6 +326,25 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
 1. **Frame the target and behavior.**
    Define one observable expected behavior for the target skill. For a new or newly
    bootstrapped skill, define the intended capability before optimizing its instructions.
+
+   In beginner mode, explain that the target is the skill being evaluated, while the
+   behavior is one observable thing we want it to do. Translate a broad goal into a
+   focused statement before designing files, running a case, or assigning a grade.
+
+   Hypothetical teaching example:
+   - Broad goal: “Make Review Remote MR better.”
+   - Focused behavior: “When the supplied mock MR context is missing a required diff,
+     the reviewer identifies that gap and requests the needed information rather
+     than inventing code-specific findings.”
+   - Why start here: missing evidence can make every later conclusion unreliable.
+     This priority is a model recommendation unless an inspected source prescribes it.
+   - What we will inspect later: whether the response names the missing diff, requests
+     it, and avoids unsupported findings. These are proposed observations, not results.
+   - Stage 1 output: the target/version, one proposed behavior, why it matters, and
+     scope/exclusions. Stage 2 will supply the concrete fixture and grading checklist.
+   Adapt the example to the actual target and its established requirements; do not
+   assume every skill needs an MR diff. Approval here selects the evaluation direction,
+   not a live execution or an edit to the target skill.
 
    **Human gate:** present the target, behavior, recommendation, applicable source
    labels, alternatives, and an open feedback path. Obtain approval before finalizing

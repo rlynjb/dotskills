@@ -170,6 +170,18 @@ Target-skill source: DDIA transaction / atomicity guidance.
 Model recommendation: start with the protected-transaction false-positive scenario as Eval Case 1.
 ```
 
+A source label should explain its contribution, not merely name a file or conference.
+The target-skill source supplies task requirements; run/repository evidence supplies
+observations; methodology sources supply evaluation principles; model recommendations
+identify choices made by the model.
+
+Before attributing a recommendation to a talk, inspect the available source mapping
+or session material. If verification is unavailable, state what is missing and what
+was actually checked. A title listed in the repository is not the same as independently
+checking the talk's contents. “AGNTCon/MCPCon sessions” alone is not a verified citation.
+The unverified label prevents invented attribution; it does not prove a source search
+occurred, and it does not make the model's chosen priority conference-prescribed.
+
 ### Guided learning
 
 The default interaction teaches the methodology while doing the work. At meaningful gates, briefly explain the concept in use, what it means for the current skill, which evidence matters, and why the recommendation follows.
@@ -301,6 +313,22 @@ Bootstrap decision rules:
 If the target is already structurally valid, state that bootstrap is unnecessary and continue without rewriting it merely to match a preferred style.
 
 ## 1. Frame one observable behavior
+
+In plain English, this stage chooses **which skill we are testing** and **one behavior
+we want to observe**. We are not running the eval or grading it yet.
+
+For example, “make Review Remote MR better” is too broad. A hypothetical focused
+behavior is: “When required diff context is absent, identify the gap and request the
+needed information instead of inventing code-specific findings.” This is useful because
+missing evidence undermines later conclusions. Choosing it first is a model recommendation,
+unless an inspected source establishes that priority for this task.
+
+The stage should explain what is happening, why now, a concrete example, and what you
+will approve. Its output is a target/version, focused behavior, rationale, and boundaries.
+Stage 2 then turns that approved direction into an actual case and grading checklist.
+Apply this same explanatory format to every stage; headings and source labels alone
+are not a tutorial. Hypothetical examples must not be presented as observed results.
+
 
 Start with a small, observable objective. Write down the intended task, required context, scope, and what the agent should do when evidence is missing.
 
