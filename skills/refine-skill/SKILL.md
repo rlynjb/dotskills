@@ -109,6 +109,30 @@ mutations. State the currently active gate cadence in the workflow trace when it
 Keep the human oriented throughout the workflow, including stages that do not require
 input.
 
+Use the heading `Stage N — Step name` for every user-facing tutorial stage,
+including stage openings, completion summaries, and resumed stages. Use the canonical
+Procedure step number (0–11) and its step name below; do not renumber stages when
+bootstrap is skipped, gates are batched, or an eval is repeated. Stage 0 is bootstrap;
+Stage 2 is case design; Stage 4 is grading. Explain Stage 0 briefly to beginners.
+
+Under the heading, give the plain-English explanation and evidence. When the active
+approval cadence requires a decision, put `HUMAN GATE — <specific decision>` on its
+own line after that explanation, and state that the workflow is waiting. Otherwise
+state `Status: Continuing`. Keep the stage heading separate from the approval label;
+a heading or ordinary progress update is not itself a request for approval.
+For a rerun or resumed discussion, retain the relevant stage number and identify the
+iteration when useful rather than advancing the number just because a message was sent.
+
+Example:
+
+```text
+Stage 2 — Design the eval case
+Recommendation: use one synthetic change to check whether the review finds a known defect.
+Explain the input, expected behavior, why this case matters, and how it will run safely.
+HUMAN GATE — Approve or revise this case
+Status: Waiting for approval
+```
+
 For every meaningful stage:
 1. Announce the stage before beginning it, including its purpose and the immediate next
    action.

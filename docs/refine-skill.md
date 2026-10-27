@@ -110,6 +110,17 @@ The active cadence should be stated in the workflow trace whenever it changes.
 
 Every meaningful stage should produce a concise user-facing execution trace, even when that stage does not require input.
 
+Use a consistent **Stage N — Step name** heading for tutorial stage openings,
+completion summaries, and resumed stages. Match the canonical Procedure numbering
+in [Refine Skill](../skills/refine-skill/SKILL.md#procedure), from Stage 0 (bootstrap)
+through Stage 11 (accept or continue). This guide groups some later steps for readability;
+its section numbers do not replace the operational stage numbering. Keep stage numbers
+stable when skipping bootstrap, batching gates, or repeating a run.
+
+Place **HUMAN GATE — Specific decision** on a separate line after the explanation
+when approval is required, followed by **Status: Waiting for approval**. Otherwise use
+**Status: Continuing**. A stage heading does not itself request approval.
+
 A progress update should state:
 
 - what stage just completed;
@@ -124,14 +135,19 @@ The trace exposes workflow state, evidence, decisions, and outcomes—not privat
 Example:
 
 ```text
+Stage 0 — Assess maturity and bootstrap the target when needed
 Bootstrap assessment complete — target is a partial draft.
 Next: propose the smallest valid package. Continuing.
 
+Stage 0 — Assess maturity and bootstrap the target when needed
 Package proposal ready.
-HUMAN GATE — approve or revise the proposed structure.
+HUMAN GATE — Approve or revise the proposed structure
+Status: Waiting for approval
 
+Stage 0 — Assess maturity and bootstrap the target when needed
 Approved normalization applied; structural validation passed.
-Next: define one observable behavior to evaluate. Continuing.
+Next: Stage 1 — Frame the target and behavior.
+Status: Continuing
 ```
 
 ### Recommendation source labels
