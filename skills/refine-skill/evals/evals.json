@@ -1,0 +1,29 @@
+{
+  "skill_name": "refine-skill",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Use Refine Skill to improve the attached valid-sample Agent Skill. Start in guided mode and explain your first evaluation decision.",
+      "expected_output": "Verify the package meets the Agent Skills minimum requirements, report no structural changes needed, and proceed to Stage 1 with one observable behavior proposed for human approval; do not execute the example task or change files.",
+      "files": [
+        "evals/files/valid-sample/SKILL.md"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Use Refine Skill on the attached invalid-sample package. Keep the intended task the same and show me what you would change before doing anything.",
+      "expected_output": "Identify the invalid/mismatched name, propose only the minimal frontmatter correction with a readable diff, and wait at a human approval gate; do not silently write or perform the task.",
+      "files": [
+        "evals/files/invalid-sample/SKILL.md"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Turn this attached rough prompt into something I can evaluate with Refine Skill. Do not carry out the prompt's actions yet.",
+      "expected_output": "Classify the input as a raw prompt, preview the smallest Agent Skills SKILL.md package including preserved no-push boundary, label inferred triggers as proposed, and wait for explicit approval before creating any file or executing the end-user task.",
+      "files": [
+        "evals/files/raw-review-prompt.md"
+      ]
+    }
+  ]
+}
