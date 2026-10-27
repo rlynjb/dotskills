@@ -52,6 +52,7 @@ DotSkills is **not another skill creator or evaluation engine**. It keeps the li
 | [investigate-new-feature](skills/investigate-new-feature/SKILL.md) | engineering | Pre-design feature discovery and requirements. |
 | [refine-feature-requirements](skills/refine-feature-requirements/SKILL.md) | engineering | Ticket refinement and Superpowers handoff. |
 | [system-learning-repo](skills/system-learning-repo/SKILL.md) | learning | Learn an unfamiliar repository architecture and data lifecycle. |
+| [learn-repo](skills/learn-repo/SKILL.md) | learning | Learn a whole repository through the extracted master onboarding prompt. |
 | [learn-implementation](skills/learn-implementation/SKILL.md) | learning | Learn an implementation using the extracted master prompt and five book lenses. |
 | [buffr-decision-support](skills/buffr-decision-support/SKILL.md) | decision-support | Buffr M0–M7 module reference and execution guidance; engine remains external. |
 
@@ -118,7 +119,7 @@ for existing coverage and planned controls.
 
 ```text
 dotskills/
-├── skills/                    # Thirteen skill packages (some hidden by default)
+├── skills/                    # Fourteen skill packages (some hidden by default)
 │   ├── refine-skill/
 │   ├── context-engineering/
 │   ├── correctness-and-verification/
@@ -130,6 +131,7 @@ dotskills/
 │   ├── investigate-new-feature/
 │   ├── refine-feature-requirements/
 │   ├── system-learning-repo/
+│   ├── learn-repo/
 │   ├── learn-implementation/
 │   └── buffr-decision-support/
 │       └── references/        # module-map.md, runtime/, versioned/

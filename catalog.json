@@ -100,6 +100,14 @@
       "reference_count": 1
     },
     {
+      "name": "learn-repo",
+      "category": "learning",
+      "purpose": "Learn a whole repository using the extracted master onboarding prompt and staged teaching workflow.",
+      "source": "dotfiles",
+      "path": "skills/learn-repo",
+      "reference_count": 0
+    },
+    {
       "name": "learn-implementation",
       "category": "learning",
       "purpose": "Learn an implementation through the extracted master prompt and five relevant book lenses.",
