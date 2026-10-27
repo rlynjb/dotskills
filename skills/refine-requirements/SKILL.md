@@ -1,13 +1,13 @@
 ---
 name: refine-requirements
-description: "Refine new or existing feature tickets using a codebase-first, system-design/DSA-inspired requirements interview. Guided tutorial by default: one Problem question at a time, worked answers, scenario walkthroughs, trade-offs, functional and non-functional requirements, and stakeholder questions. Produce evidence-backed acceptance criteria and a design-ready Superpowers handoff without implementing."
+description: "Refine new or existing feature tickets with a codebase-first, overview-first requirements interview. First show the evidence and pattern map, all material functional and non-functional findings, design-input gaps, and concise stakeholder questions; then let the user select individual requirements for guided or practice deep dives. Prepare an evidence-backed Superpowers handoff without implementing."
 ---
 
 # Refine Requirements
 
 ## Objective
 
-Use a structured engineering interview to learn and practice requirements analysis while preparing a real ticket or feature idea for design. Like the Code Review skill, default to a plain-English tutorial with concrete **Problem questions**, reasoned answers, scenario walkthroughs, trade-offs, a learning checkpoint, and a final **Post-interview — Questions to ask stakeholders** section **instead of code-review comments**.
+Use a structured engineering interview to learn and practice requirements analysis while preparing a real ticket or feature idea for design. **Overview first, details on demand:** after investigating evidence, show the complete concise findings index (pattern map + FRs + NFRs + design gaps) before any individual Problem question. Let the user choose an item to explore, then use the Code Review-style reasoning, scenarios, trade-offs, and learning checkpoint. Keep **Post-interview — Questions to ask stakeholders** as a short consolidated **last** section, not code-review comments.
 
 Borrow the problem-clarification and edge-case reasoning of DSA interviews and the scope, FR/NFR, scale, and trade-off reasoning of system-design interviews. The deliverable remains **verified requirements and design inputs**, not a chosen technical architecture or implementation.
 
@@ -16,7 +16,7 @@ Borrow the problem-clarification and edge-case reasoning of DSA interviews and t
 1. Read the complete [Master feature requirements reference](references/refine-requirements.md). It is the authoritative requirements-analysis checklist and final Superpowers-handoff content. Keep the imported, source-locked reference unchanged.
 2. Read the [Interview playbook](references/interview-playbook.md). It controls interview roles, modes, order, learning sections, coverage, FR/NFR structure, and stakeholder-question wording.
 
-Treat the master's nine-item REQUIRED OUTPUT as the **completion/on-request report**, not nine sections to dump into every single interview response. Use the interview playbook's one-question format during Guided or Practice mode. Where the references describe similar steps, preserve the master's **codebase-first** and **read-only** constraints.
+Treat the master's nine-item REQUIRED OUTPUT as the **completion/on-request report**, not nine sections to dump into every single interview response. Use the interview playbook's overview-first format, then its one-question format for the selected item in Guided or Practice mode. Where the references describe similar steps, preserve the master's **codebase-first** and **read-only** constraints.
 
 ## Before the interview: establish evidence first
 
@@ -25,10 +25,25 @@ Treat the master's nine-item REQUIRED OUTPUT as the **completion/on-request repo
 3. Open with a compact **evidence and pattern map**: comparable feature / path-symbol-test evidence / current observable behavior / relevant differences / FOLLOW, ADAPT, NO SUITABLE PATTERN FOUND, or NOT VERIFIED. A proven code pattern is a possible reuse baseline, **not** proof of approved product intent. Note revision and search coverage.
 4. If code is missing or access is restricted, mark alignment **NOT VERIFIED**, explain the limit, and continue with ticket-grounded **provisional** interview questions. Do not invent inspected code or block all progress.
 5. Keep distinctions explicit throughout: **CONFIRMED REQUIREMENT** (approved evidence), **OBSERVED BEHAVIOR** (code/tests), **PROPOSED**, **ASSUMED**, and **UNKNOWN**. Mark source and confidence for important statements; never invent approvals, numbers, compliance obligations, or stakeholder history.
+6. Record the inspected revision/branch, ticket/spec version or date if known, and search coverage. When the user supplies revised ticket facts, new code, changed decisions, or requests a refresh, **recheck affected evidence and update the pattern map and findings index first**; mark what changed and what is still NOT VERIFIED. Do not pretend previous evidence was freshly checked.
+
+## Default first response — Findings Overview (mandatory)
+
+**Do not open with “Problem question 1.”** After focused codebase reconnaissance, synthesize all *material initial findings* before inviting any item-by-item discussion. Deliver a skimmable first-pass **Findings Overview**, even in Guided or Practice mode, with the following order:
+
+1. **Feature snapshot:** one-sentence problem/outcome, actors and boundaries, evidence revision/coverage, and a clear PROVISIONAL/CONFIRMED distinction.
+2. **Evidence & pattern map:** compact table with comparable feature, file/symbol/test source, verified observable behavior or NOT VERIFIED, key fit/difference, and FOLLOW / ADAPT / NO SUITABLE PATTERN FOUND / NOT VERIFIED. Always include this map; do not replace it with a generic assertion of reuse.
+3. **Functional requirements — overview:** **all material candidate FR-IDs** in one concise table (behavior, priority, confirmed/proposed/assumed/unknown, evidence or pattern linkage, gap/linked Q-ID). Show a brief acceptance headline only when useful; defer detailed Given/When/Then traces until an item is selected.
+4. **Non-functional requirements — overview:** **all material candidate NFR-IDs** in one concise table (linked FR/journey, quality and target or **target requires confirmation**, status, evidence/owner or linked Q-ID). Do not expand every quality category when irrelevant.
+5. **Bigger-picture gaps:** short summaries of meaningful edge/failure cases, dependencies, compatibility, permission/data boundaries, and system-design inputs (entities, contracts, ownership, read/write patterns, scale, reliability, security, trade-offs), with evidence and unknowns distinguished.
+6. **Readiness and review choices:** clearly provisional READY / CONDITIONAL / BLOCKED assessment if enough is known (otherwise readiness NOT YET ASSESSED), the biggest blockers, and an invitation to select **FR-01, NFR-01, an edge case, or a design-input gap** to explore. **Do not auto-start** the first deep dive.
+7. **Post-interview — Questions to ask stakeholders:** the **final section**, a short deduplicated question queue with Q-ID, decision owner, ready-to-ask wording, linked FR/NFR, priority and **BLOCKS HANDOFF? YES/NO**. Keep reasons to a few words unless requested; don't interview each stakeholder question individually.
+
+The overview is a **working index**, not stakeholder approval and not the master's full completion handoff. No need to force a Problem-question section or repeat detailed acceptance scenarios here. If source access is unavailable, still provide a clearly provisional overview and an explicit **NOT VERIFIED** evidence/pattern map.
 
 ## Interview procedure
 
-Act as a supportive **interviewer and coach**; the learner is the candidate. Ask targeted questions about this feature, not generic trivia. Never impersonate a stakeholder or claim the model's worked answer is an approved business decision.
+Act as a supportive **interviewer and coach**; the learner is the candidate. **Only after presenting the Findings Overview**, follow the learner's selected requirement or gap. Ask targeted questions about that item, not generic trivia. Never impersonate a stakeholder or claim the model's worked answer is an approved business decision.
 
 Select material questions from the inspected evidence, moving roughly through:
 
@@ -44,9 +59,7 @@ The order is adaptive, **not** a requirement to ask a question in every category
 
 ## Tutorial format — default
 
-Open with feature/ticket, relevant inspected pattern(s) and evidence limits, mode, and the read-only boundary.
-
-Use headings **Problem question N — [concrete question]**. Number questions, not project lifecycle phases. Choose one high-value question per response in default Guided mode. After a completed question present:
+**After the Findings Overview and the user selects an item**, use the compact question format below. Reuse the opening evidence map by referencing its source/ID; do not repost the full overview in every reply. Use headings **Problem question N — [selected FR/NFR or design gap]**. Choose one high-value question per response in Guided mode. After a completed question present:
 
 1. **What and why:** plain-English explanation of the requirement or system-design concept and why it matters for this feature.
 2. **Problem question:** a specific question grounded in ticket and code/pattern evidence (or explicitly provisional context).
@@ -56,17 +69,17 @@ Use headings **Problem question N — [concrete question]**. Number questions, n
 6. **Trade-off and interviewer follow-up:** explore a changed constraint, its requirements impact, and what evidence or decision would alter the answer.
 7. **Refined FR/NFR/acceptance:** record the smallest useful requirements delta with ID, classification, evidence/owner, and verifiable outcome. A question may clarify existing good behavior; do not force a new requirement.
 8. **Takeaway:** what the candidate should learn.
-9. **LEARNING CHECKPOINT — Next question or explore this one?**
-10. **Post-interview — Questions to ask stakeholders:** final section; rules below.
+9. **LEARNING CHECKPOINT — Explore this item further, pick another ID, or refresh the overview?** Preserve the evolving FR/NFR register and update statuses/acceptance without restarting.
+10. **Post-interview — Questions to ask stakeholders:** last section; show the current concise consolidated unresolved queue (or “No unresolved stakeholder questions for this topic”), not a detailed per-question stakeholder interview.
 
 Define unfamiliar terms when first used. Avoid filler and repetitive reports; the evidence map can be referenced instead of repeated.
 
 ### Modes
 
-- **Guided (default):** one question, a short worked answer and walkthrough, one meaningful follow-up, and a learning checkpoint each response. Wait for the candidate to request the next question or more depth. This is teaching, **not a real-time quiz requiring the learner to answer first**.
-- **Practice (on request):** act like an interviewer. Present the scenario and **one** candidate question, then wait without spoiling the worked answer or stakeholder questions. Offer hints if asked, critique the learner's reasoning fairly, then reveal supported answers, missing cases, FR/NFR improvement, takeaway, and stakeholder questions. Resume the same question after clarification.
-- **Full walkthrough (on request):** run the relevant questions and final report in one response, consolidating repeated evidence and stakeholder questions; no per-question pause.
-- **Concise/refinement-only (on request):** skip teaching sections but still inspect code first and produce evidence-backed FRs, NFRs, acceptance, open questions, and the final readiness handoff.
+- **Guided (default):** first show the Findings Overview, then **wait for the user to choose an ID/topic**. Deep dive one selected item with a short worked answer, walkthrough, one relevant follow-up, and learning checkpoint. Do not assume that viewing the overview authorizes an in-depth question. This is teaching, **not a real-time quiz requiring the learner to answer first**.
+- **Practice (on request):** first show the first-pass Findings Overview, then let the candidate choose a requirement/gap. Present **one** interview question for that selected item and wait without revealing its worked answer or follow-up analysis. Offer hints if asked, critique reasoning fairly, then reveal supported answers, missing cases, FR/NFR improvement, and takeaway. Resume the same item after clarification; keep the stakeholder queue concise at the bottom.
+- **Full walkthrough (on request):** lead with Findings Overview, then cover relevant questions and final report in one response, consolidating repeated evidence and stakeholder questions; no per-question pause.
+- **Concise/refinement-only (on request):** use the overview-first tables without teaching sections, but still inspect code first and produce evidence-backed FRs, NFRs, acceptance, open questions, and the final readiness handoff.
 
 A learning checkpoint does **not** authorize editing, outreach, commits, or starting Superpowers.
 
@@ -74,7 +87,7 @@ A learning checkpoint does **not** authorize editing, outreach, commits, or star
 
 Before labeling the interview complete, assess: actor and scope; pattern fit and source quality; core FRs and acceptance criteria; relevant NFRs and targets; negative/edge and recovery cases; permissions; dependencies/interfaces/data ownership; sizing inputs and system-design constraints; contradictions and open decisions. Mark each **reviewed**, **not applicable with reason**, or **unverified**.
 
-At completion or on request, provide one consolidated **Requirements & Superpowers Handoff**:
+At completion or on request, expand the maintained overview into one consolidated **Requirements & Superpowers Handoff** (do not dump every prior question again):
 
 1. Goal, actor, scope/out of scope, ticket evidence and code revision/verification limits.
 2. Existing-pattern map and ticket-to-code alignment: ALREADY PRESENT, PARTIAL, MISSING only when verified, CONFLICT, NOT VERIFIED, or NOT APPLICABLE.
@@ -90,14 +103,11 @@ The completed handoff is for Superpowers to **design and plan later**. Do not ge
 
 ## Post-interview — Questions to ask stakeholders
 
-This **replaces the Code Review skill's draft code-review comments**. End each completed Guided question and each completed report with stakeholder questions **after the takeaway, learning checkpoint, and verification/readiness summary**. In Practice mode, reveal them only after the learner's answer and feedback. Do not produce inline code comments.
+This **replaces the Code Review skill's draft code-review comments**. The **Findings Overview, completed Guided deep dives, and completion report** end with one **compact consolidated** stakeholder-question section. It must be at the **very bottom** after the review choices, takeaway/checkpoint, or readiness summary; do not scatter or deeply explain questions throughout the analysis. Practice mode may show the unresolved question queue in the overview, but must not reveal worked solutions to the selected interview question before the candidate answers. Do not produce inline code comments.
 
 First check the ticket, decisions, code, docs, and tests to remove answered or duplicate questions. Ask only important **unresolved** questions. Put **stakeholder/product owner decisions** first; use a separate **developer/history/contract** group only where the code cannot answer a consequential technical fact. Keep implementation/design choices for Superpowers, not the product owner.
 
-For each useful question include:
-- **Q-ID / owner** and **priority**; **BLOCKS HANDOFF? YES/NO** with a reason.
-- **Exact ready-to-ask question**, phrased neutrally for the appropriate person.
-- **Why it matters**, with related FR/NFR/journey, source of uncertainty, and possible consequences if the answer varies.
+For each useful question include **Q-ID / owner**, **priority**, **BLOCKS HANDOFF? YES/NO**, **exact ready-to-ask wording**, and the linked FR/NFR/journey. In the overview keep rationale to a few words; deeper consequences and source uncertainty may be expanded on request or in the full handoff.
 
 Optionally provide one compact ready-to-send stakeholder message and one developer message in a final report when helpful. Never fabricate a stakeholder answer or imply outreach happened. If none is justified, say **"No unresolved stakeholder questions for this topic."**
 
