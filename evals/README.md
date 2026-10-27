@@ -1,37 +1,51 @@
-# Evaluations
+# Evaluations — legacy cases and new convention
 
-The library has static repository checks and a first manual behavioral eval
-package. It does not yet have an automated model-evaluation harness.
+DotSkills retains the **original manually authored cases** under
+`evals/<skill>/<capability>/cases/`, including their historical
+results and preparation scripts. No migration, deletion or regrading
+of these records is performed automatically.
 
-## Start here
+The original [code-review context-validation suite](code-review/context-validation/README.md)
+has two synthetic cases and recorded attempts. Its fixture verifier
+checks example code, **not** agent output quality. The
+[legacy case template](../templates/case/README.md) remains useful
+for reproducing those experiments.
 
-Use [Refine Skill](../docs/refine-skill.md) for the shared workflow across skills, including case design, run checklists, grading, failure diagnosis, and regression comparisons.
+## New Agent Skills-aligned workflow
 
-[Code review: context for input validation](code-review/context-validation/README.md)
-contains two runnable cases with expected behavior, grading guidance, and recorded
-attempts. Run and grade one case at a time; save each attempt under that case’s
-`results/<run-id>/` directory.
+For *new* tests, the
+[official evaluation guide](https://agentskills.io/skill-creation/evaluating-skills)
+recommends `skills/<target>/evals/evals.json` with:
 
-The fixture verifier checks that the example code behaves as expected.
-Static checks and fixture checks are not skill-quality scores.
+- `skill_name` identifying the target skill;
+- `evals` array of cases with `id`, realistic `prompt`,
+  `expected_output` and optional skill-relative `files`;
+- optional `assertions` added after studying initial outputs.
 
-## Create a case
+Copy the [evals.json template](../templates/evals/README.md).
+The [Refine Skill Stage 2–4 guide](../skills/refine-skill/references/eval-design-guide.md)
+coaches case writing, safe with-/without-skill or old-skill runs,
+grading with evidence, and human review. Generated `grading.json`,
+`timing.json` and `benchmark.json` belong under gitignored
+`eval-workspaces/<skill>/iteration-N/`. Their content must come from
+**real runs**, not invented metrics.
 
-Copy the [reusable case template](../templates/case/README.md) to
-`evals/<skill>/<capability>/cases/<case-id>/`. It separates reviewer inputs and
-requirements from expected behavior, grading criteria, and actual run results.
-Use the same structure for mock examples and real application snapshots; vary the
-materials inside `input/` as needed. The template is for manual authoring and keeps the migrated suite's preparation commands working.
+```bash
+python3 scripts/validate_evals.py --all
+python3 scripts/validate_evals.py skills/refine-skill/evals/evals.json
+```
 
-## Roadmap
+Validation checks JSON fields and fixture paths only, not evaluation
+quality or correct tool behavior. A full automated model runner is
+not installed. Safely isolate the eval coordinator's expected outputs
+from the evaluated agent; copying a whole source skill with
+`evals/` into its runtime workspace would leak answer keys.
+DotSkills copy/build adapters exclude those evaluator files.
 
-Future behavioral evals should cover:
-- correct versus incorrect skill triggering
-- requirements discovery without unauthorized implementation
-- evidence-backed code-review calibration and zero-finding cases
-- source-citation fidelity, errors, and unknowns
-- prompt-injection resistance and tool-permission boundaries
-- cross-harness behavior and regression
-- Buffr integration tests against the **real** engine with controlled normalized evidence
+## Coverage roadmap
 
-Prefer deterministic assertions for format and hard boundaries. For subjective quality, use reproducible scenarios, documented judge rubrics, repeated runs, and separate calibration data. Avoid claiming a score until tests actually run.
+Expand from a few realistic cases toward skill triggering,
+missing/conflicting context, calibrated code review and zero-finding
+cases, prompt-injection resistance, permissions, cross-harness
+behavior, regression, and Buffr runtime integration. Maintain
+independent holdout cases instead of overfitting to one fixture.

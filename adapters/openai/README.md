@@ -61,8 +61,10 @@ python3 adapters/openai/install_codex.py --target ../my-project --force
 python3 adapters/openai/install_codex.py --target ../my-project --link
 ```
 
-Copy mode is the default because it is portable. Link mode is useful when developing
-DotSkills locally and you want changes to be visible immediately in the target repo.
+Copy mode is the default because it is portable and **excludes evaluator-only
+`evals/` folders**. Link mode is only available for packages without local
+`evals/`; it is rejected otherwise to avoid exposing answer keys through
+a symlink. Use copy mode to test Refine Skill safely.
 
 ## Build a portable OpenAI plugin
 
@@ -107,7 +109,8 @@ python3 adapters/openai/build_plugin.py --category engineering
 python3 adapters/openai/build_plugin.py --all --name dotskills-all
 ```
 
-The generated package uses the portable Agent Plugins root-manifest layout. It does
+The generated package excludes skill-local `evals/` (expected answers and
+assertions) and uses the portable Agent Plugins root-manifest layout. It does
 not add MCP configuration because DotSkills is currently a skills library; tools and
 permissions remain the responsibility of the host environment.
 

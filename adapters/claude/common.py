@@ -72,3 +72,13 @@ def check_existing(path, force):
 def remove_existing(path):
     if path.exists():
         shutil.rmtree(path)
+
+
+def ignore_evaluator_material(source: Path):
+    """Exclude skill-local answer keys when copying a runtime skill package."""
+    root = source.resolve()
+
+    def ignore(directory, names):
+        return {"evals"} if Path(directory).resolve() == root and "evals" in names else set()
+
+    return ignore

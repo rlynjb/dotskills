@@ -58,7 +58,10 @@ The repository follows these boundaries:
 - imported file bytes match the Git blob SHA recorded in the local source lock;
 - catalog `reference_count` values match the locked imported references.
 
-The same validator runs locally and in GitHub Actions.
+The same validator runs locally and in GitHub Actions. The separate
+[`scripts/validate_evals.py`](../scripts/validate_evals.py) checks optional
+skill-local `evals/evals.json` case fields, unique IDs and fixture paths; it
+is also structural only and does not execute a model or verify isolation.
 
 A source-lock hash match establishes that the local file agrees with the recorded
 local lock entry. It does **not** independently prove that the upstream source was

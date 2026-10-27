@@ -31,8 +31,11 @@ The default is the methodology family; hidden catalog entries are excluded.
 ## Distribution rule
 
 Each directory under `../skills/` remains an independently distributable package.
-Install the **entire directory**, preserving `SKILL.md`, `references/`, scripts, templates,
-and other skill-local assets.
+Install **runtime components** (`SKILL.md`, `references/`, scripts and needed
+assets), but **exclude skill-local `evals/`**, which contains evaluator-only
+expected outputs and grading assertions. Do not mount generated run workspaces
+into the evaluated agent. Codex symlink mode is refused for a source package
+that contains an `evals/` directory, since a symlink would expose answer keys.
 
 Do not assume that putting skills in Git, exposing an MCP server, or building a package
 makes them automatically discoverable in every client. Discovery rules, permissions,

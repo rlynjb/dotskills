@@ -16,6 +16,8 @@ import sys
 import zipfile
 from pathlib import Path
 
+from runtime_copy import ignore_evaluator_material
+
 ROOT = Path(__file__).resolve().parents[2]
 CATALOG = ROOT / "catalog.json"
 DEFAULT_OUTPUT = ROOT / "dist" / "openai" / "dotskills-methodology"
@@ -57,7 +59,8 @@ def copy_skill(item: dict, destination: Path) -> str:
     expected_root = (ROOT / "skills").resolve()
     if not source.is_relative_to(expected_root) or not (source / "SKILL.md").is_file():
         raise ValueError(f"Unsafe or invalid skill path for {name}: {source_rel}")
-    shutil.copytree(source, destination / name)
+    shutil.copytree(source, destination / name,
+                    ignore=ignore_evaluator_material(source))
     return name
 
 

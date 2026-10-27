@@ -60,7 +60,7 @@ See [`catalog.json`](catalog.json) for machine-readable discovery metadata and [
 ## Quick start
 
 1. Choose a skill above and read its `SKILL.md`.
-2. Install or package **the whole skill directory**, including `references/`, for your chosen harness. For OpenAI harnesses, see the [OpenAI adapter](adapters/openai/README.md); for the Claude Code CLI, see the [Claude Code adapter](adapters/claude/README.md). Other harness guidance lives under [adapters](adapters/README.md).
+2. Install or package the **runtime skill files**, including `SKILL.md` and `references/` but excluding evaluator-only `evals/` and generated workspaces, for your chosen harness. For OpenAI harnesses, see the [OpenAI adapter](adapters/openai/README.md); for the Claude Code CLI, see the [Claude Code adapter](adapters/claude/README.md). Other harness guidance lives under [adapters](adapters/README.md).
 3. Load additional reference documents on demand. A skill is not automatically executable merely because it exists in a Git repository.
 4. Check the library before edits:
 
@@ -68,19 +68,22 @@ See [`catalog.json`](catalog.json) for machine-readable discovery metadata and [
 python3 scripts/validate_skill_repository_integrity.py
 ```
 
-Static CI verifies frontmatter, catalog consistency, referenced files, and immutable imported-source hashes; it is **not** an LLM evaluation pipeline.
+Static CI checks package/source integrity, skill-local eval JSON structure, and adapter behavior; it is **not** an LLM evaluation pipeline.
 
 ## Refine Skill
 
-Invoke [`refine-skill`](skills/refine-skill/SKILL.md) to refine an existing skill, or to bootstrap rough source material into an evaluable package. The [workflow guide](docs/refine-skill.md) covers the human gates, learning modes, and practical run checklists. A typical iteration is:
+Invoke [`refine-skill`](skills/refine-skill/SKILL.md) to evaluate/refine an existing skill or minimally reformat a raw prompt to the [Agent Skills Quickstart](https://agentskills.io/skill-creation/quickstart) format (Stage 0, only when needed). The [workflow guide](docs/refine-skill.md) covers the human gates, learning modes, and practical run checklists. A typical iteration is:
 
-1. Define the skill's purpose, required context, and observable success criteria.
-2. Create cases with agent inputs and separate evaluator expectations.
-3. Run the skill in fresh sessions and preserve outputs and available tool evidence.
-4. Grade the results and investigate failures, unknowns, and invalid runs.
-5. Improve the responsible part of the system, then rerun existing and independent cases.
+1. Check the target `SKILL.md` format; valid packages skip all formatting.
+2. Learn to write realistic cases and expected outputs in `<skill>/evals/evals.json`.
+3. Run isolated with-skill vs without-/old-skill comparisons and inspect results.
+4. Add verifiable assertions, grade evidence and screen all five conference methodology lenses.
+5. With human approval, improve the responsible component and test regressions.
 
-The guide includes a cycle diagram, a practical run checklist, a reusable case outline, and a worked DDIA example. The workflow applies across skills; the existing [manual eval package](evals/README.md) is a starting point for practicing it.
+The [practical guide](docs/refine-skill.md) links the 12 stages, teaching references
+and AgentSkills.io conventions. [Legacy manual eval cases](evals/README.md)
+remain preserved; the new [skill-local eval template](templates/evals/README.md)
+is optional. DotSkills still has **no automated model-evaluation runner**.
 
 ### Why a passing eval is not enough
 
@@ -139,9 +142,11 @@ dotskills/
 ├── adapters/                  # harness-specific packaging/install adapters
 │   ├── openai/                # Codex repo install + portable OpenAI plugin build
 │   └── claude/                # Claude Code project install + plugin build
-├── evals/                     # manual skill-evaluation cases and roadmap
-├── scripts/                   # dependency-free local validation
-└── .github/workflows/         # CI structural/source-integrity checks
+├── evals/                     # preserved legacy manual eval cases
+├── templates/evals/           # optional skill-local evals.json starter
+├── scripts/                   # repository + eval JSON static validators
+├── eval-workspaces/           # generated paired run evidence (gitignored)
+└── .github/workflows/         # CI structural/schema checks and adapter tests
 ```
 
 ## Current source inventory
@@ -154,10 +159,9 @@ Every imported Markdown file is copied byte-for-byte and tracked against its ups
 
 ## Next phases
 
-The first [manual code-review eval](evals/code-review/context-validation/README.md)
-provides two cases. Each case holds its inputs, expected behavior, grading guidance,
-and recorded attempts. Start with one case, run the reviewer, grade its response,
-and save the result in that case’s `results/` folder.
+The preserved [manual code-review eval](evals/code-review/context-validation/README.md)
+has two cases and recorded attempts; it remains in its previous layout.
+New skill-local evaluations follow the [Agent Skills evaluation guide](https://agentskills.io/skill-creation/evaluating-skills) and the [template](templates/evals/README.md). The [Refine Skill self-eval suite](skills/refine-skill/evals/README.md) is drafted but **not executed**.
 
 Future work may include additional harness adapters, broader per-skill evals, automated regression runs, a release pipeline, compatibility testing, and optional MCP skill discovery/gateway integration.
 

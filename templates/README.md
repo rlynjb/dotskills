@@ -1,41 +1,31 @@
 # Reusable templates
 
-Copy [skill/](skill/SKILL.md) to `skills/<skill-name>/` to create a new DotSkills
-package. This is an authoring template, not an installed or cataloged skill.
+All Agent Skills need only a package-root `SKILL.md` with valid YAML
+`name` / `description` followed by Markdown. Optional folders should
+be added because a real need exists, not just to match a template.
 
 | Template | Use it for |
 | --- | --- |
-| [skill/](skill/SKILL.md) | A new skill with its entry point and supporting references. |
-| [case/](case/README.md) | A new eval case with inputs, expected behavior, grading, and results. |
+| [skill/](skill/SKILL.md) | Rich authoring starter with optional guidance (remove unused files). |
+| [evals/](evals/README.md) | **Recommended new convention:** copy `evals.json` into a target skill's `evals/` folder. |
+| [case/](case/README.md) | **Legacy manual suite:** original detailed cases and grading files; preserved for existing tests. |
 
-Keep reusable starting templates here. Put completed skills under `skills/`
-and actual eval cases under `evals/`.
+## Start a skill
 
-## Create a skill
+1. Define the task and when the skill should activate.
+2. Write `skills/<name>/SKILL.md` using the
+   [Agent Skills Quickstart](https://agentskills.io/skill-creation/quickstart),
+   or start from [the richer authoring template](skill/SKILL.md)
+   and delete unnecessary references and placeholders.
+3. Register the skill in `catalog.json` and run
+   `python3 scripts/validate_skill_repository_integrity.py`.
+4. Run Refine Skill. Its Stage 0 performs the minimum format check and
+   **does not rewrite a valid skill**. In Stage 2, practice writing
+   `evals/evals.json` for the target skill using [evals/](evals/README.md).
+5. Validate the JSON with `python3 scripts/validate_evals.py --all`,
+   then run safe isolated paired model evals and record actual results
+   through the [workflow](../docs/refine-skill.md).
 
-1. Define one useful task and realistic requests that should trigger the skill.
-2. Copy `templates/skill/` into `skills/<skill-name>/`.
-3. Set the frontmatter `name` to match the folder using lowercase letters,
-   digits, and hyphens. Replace every TODO, including the description's triggers.
-4. Fill in the required context, workflow, output, and tool boundaries.
-   Customize `references/context-quality-and-requirements.md` to define needed
-   inputs, evidence checks, missing-context handling, and completion conditions.
-5. Customize `references/skill-name.md`, which includes a minimal task-guide
-   template and a filled-in code-review example. Rename it for its subject and
-   update the link in `SKILL.md`; remove irrelevant examples and authoring notes.
-   Remove the file and its link if no supporting guide is needed. Keep the entry
-   point short and say when to read each reference.
-6. Add `scripts/` only for necessary executable helpers and `assets/` only for
-   files used in the output. Do not create unused folders.
-7. Register the completed skill in `catalog.json`. For imported references,
-   follow the [source policy](../docs/sources.md) and record their provenance.
-8. Run `python3 scripts/validate_skill_repository_integrity.py` from the repository root.
-9. Copy the [eval case template](case/README.md), define an
-   expected outcome and grading checks, then run and grade one case. Save the
-   result in that case's `results/<run-id>/` folder.
-
-Repository validation checks structure and source integrity; it does not prove
-that the skill behaves correctly. Start with one case and add cases as needed.
-
-See [authoring guidance](../docs/authoring.md) and the
-[development workflow](../docs/refine-skill.md).
+Tests and answer keys are **evaluator-only**. Install runtime skill copies
+without local `evals/` and do not expose generated run directories.
+Static validation does not mean an evaluation has run or passed.

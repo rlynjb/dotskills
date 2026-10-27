@@ -1,0 +1,15 @@
+{
+  "skill_name": "example-skill",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Can you review this small example and explain what it does?",
+      "expected_output": "A correct, clear explanation grounded in the supplied example, with stated limits when evidence is missing."
+    },
+    {
+      "id": 2,
+      "prompt": "Something seems off in the attached example. Can you figure out what?",
+      "expected_output": "Checks evidence before alleging a defect and reports material uncertainty instead of inventing details."
+    }
+  ]
+}

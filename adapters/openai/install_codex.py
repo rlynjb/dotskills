@@ -12,6 +12,8 @@ import shutil
 import sys
 from pathlib import Path
 
+from runtime_copy import ignore_evaluator_material
+
 ROOT = Path(__file__).resolve().parents[2]
 CATALOG = ROOT / "catalog.json"
 
@@ -73,6 +75,9 @@ def install_one(
             else:
                 destination.unlink()
 
+    if link and (source / 'evals').exists():
+        raise ValueError('Refusing --link: source contains evaluator-only evals/; use copy mode')
+
     if dry_run:
         action = "link" if link else "copy"
         print(f"DRY RUN: {action} {source} -> {destination}")
@@ -82,7 +87,8 @@ def install_one(
     if link:
         destination.symlink_to(source, target_is_directory=True)
     else:
-        shutil.copytree(source, destination)
+        shutil.copytree(source, destination,
+                        ignore=ignore_evaluator_material(source))
 
 
 def parse_args() -> argparse.Namespace:

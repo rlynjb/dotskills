@@ -22,7 +22,8 @@ python3 adapters/claude/install_claude.py --target ../my-project
 ```
 
 This copies the six methodology skills, including `refine-skill`, into
-`../my-project/.claude/skills/<name>/`, with their complete supporting files.
+`../my-project/.claude/skills/<name>/`, with runtime supporting files.
+Evaluator-only `evals/` folders are deliberately excluded.
 Start `claude` from that project and invoke `/refine-skill`. Confirm that the
 skill appears in the command menu; managed policies can restrict loading.
 
@@ -41,7 +42,8 @@ claude --plugin-dir ./dist/claude/dotskills-methodology
 ```
 
 The generated folder contains `.claude-plugin/plugin.json` and
-`skills/<name>/SKILL.md` with each skill's full directory. An optional ZIP is
+`skills/<name>/SKILL.md` with each skill's runtime files, excluding
+skill-local `evals/` answer keys and grader instructions. An optional ZIP is
 written beside it, with the manifest and skills at the archive root.
 In that Claude session, invoke `/dotskills-methodology:refine-skill`.
 `--plugin-dir` loads the plugin for that session; it is not a marketplace install.

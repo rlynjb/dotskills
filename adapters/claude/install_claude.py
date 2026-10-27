@@ -7,7 +7,7 @@ import shutil
 import sys
 from pathlib import Path
 
-from common import add_selection, check_existing, remove_existing, safe_destination, select
+from common import add_selection, check_existing, ignore_evaluator_material, remove_existing, safe_destination, select
 
 
 def main():
@@ -32,7 +32,8 @@ def main():
             if not args.dry_run:
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 remove_existing(destination)
-                shutil.copytree(source, destination)
+                shutil.copytree(source, destination,
+                                ignore=ignore_evaluator_material(source))
         print(f'{"Would install" if args.dry_run else "Installed"} {len(plan)} skill(s).')
         return 0
     except (OSError, ValueError, KeyError, TypeError) as exc:

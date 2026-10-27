@@ -11,7 +11,7 @@ import tempfile
 import zipfile
 from pathlib import Path
 
-from common import ROOT, add_selection, check_existing, remove_existing, safe_destination, select
+from common import ROOT, add_selection, check_existing, ignore_evaluator_material, remove_existing, safe_destination, select
 
 
 def main():
@@ -45,7 +45,8 @@ def main():
             staged = Path(temp) / 'plugin'
             (staged / '.claude-plugin').mkdir(parents=True)
             for name, source in selected:
-                shutil.copytree(source, staged / 'skills' / name)
+                shutil.copytree(source, staged / 'skills' / name,
+                                ignore=ignore_evaluator_material(source))
             manifest = {'name': args.name, 'version': args.version,
                         'description': args.description,
                         'repository': 'https://github.com/rlynjb/dotskills'}
