@@ -125,7 +125,62 @@ Describe expected behavior **before** testing, then teach precise assertions aft
 - **Private evaluator data:** Keep expected answers, assertions, and grading materials outside the evaluated agent's readable environment; an `evals/` folder by itself is not access control.
 - **Evidence limitations:** Drafted self-eval cases and passing schema checks are not successful model evaluations. Mark executions **Not Run** when isolation cannot be verified, and report missing evidence as **Unknown**.
 
-## 6. Try it
+## 6. Comparison with Claude and OpenAI
+
+This is a **capability and workflow comparison**, not a measured ranking. It reflects
+the documented tools as of October 2026. Refine Skill is designed to work
+*alongside* existing skill creators and eval runners rather than replace them.
+
+| Capability | DotSkills **Refine Skill** | [Claude Skill Creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator) | [OpenAI Skill Creator (Codex)](https://github.com/openai/codex/blob/main/codex-rs/skills/src/assets/samples/skill-creator/SKILL.md) | [OpenAI Plugin Eval](https://github.com/openai/plugins/tree/main/plugins/plugin-eval) |
+| --- | --- | --- | --- | --- |
+| **Main role** | Guided, human-gated evaluation and diagnosis | Create, evaluate, iterate and optimize skills | Create/update well-scoped skills | Inspect, benchmark and compare skills/plugins |
+| **Skill authoring** | Minimal Agent Skills format normalization | Full creation and revision | Full creation and revision | Not a skill-creation tool |
+| **Eval design** | Learner co-authors cases, expectations and assertions | Creates test prompts and quantitative checks with feedback | Targeted testing when appropriate | Benchmark configurations and test scenarios |
+| **Execute model evals** | **No bundled model runner**; requires an authorized harness | Supports paired agent runs in compatible Claude environments | Task-specific testing, not a dedicated benchmarking engine | Live benchmarks through **Codex CLI** |
+| **Grade and compare** | Prescribes evidence-based grades, paired baselines and regressions; no built-in aggregator | Automated grading, qualitative review, benchmark summaries | Inspect and verify focused skill changes | Static reports, measured runs, before/after comparison |
+| **Trigger optimization** | A potential future eval focus | Description/trigger optimizer | Description and activation guidance | Static analysis of relevant skill metadata |
+| **Human oversight** | Explicit learning and approval gates across Stages 0–11 | User feedback and review within its workflow | Scope-sensitive authoring and validation | Human-reviewed CLI/configuration and reports |
+| **Special methodology** | **Five conference-informed lenses**, selective specialist routing, provenance labels | No matching five-lens program described | No matching five-lens program described | Metric-oriented analysis, not the five-lens teaching workflow |
+
+**Shared ground:** All can contribute to improving skills; Claude Skill Creator
+already includes substantial behavioral evaluation and benchmarking, not merely
+formatting. OpenAI splits responsibilities between its Skill Creator and the
+separate Plugin Eval CLI/plugin.
+
+**DotSkills' distinct role:** teach *why* an eval case and grading criterion
+matter, check the evidence and action trace, differentiate a flawed test from
+a flawed skill, route diagnoses through the five methodology lenses, and let
+the human approve changes. Those gates are instructions and process conventions;
+the actual agent harness must enforce permissions.
+
+### Recommended combination (proposed, not yet integrated)
+
+```mermaid
+flowchart TD
+    A["Raw prompt or existing skill"] --> B["Claude or OpenAI Skill Creator, when needed"]
+    B --> C["DotSkills Refine Skill: Stage 0–2"]
+    C --> D["Approved cases and evaluator-only expectations"]
+    D --> E{"Safe execution available?"}
+    E -->|Yes| F["Claude evaluation tooling or Codex Plugin Eval"]
+    E -->|No| G["Static review; mark Not Run"]
+    F --> H["Import outputs, grades and traces"]
+    H --> I["DotSkills: diagnose and screen five lenses"]
+    I --> J{"Human approves next step?"}
+    J -->|Iterate| C
+    J -->|Accept| K["Record version and regression cases"]
+```
+
+**Integration gap:** The tools use different execution and result interfaces;
+DotSkills does not currently have adapters that import their run artifacts
+or orchestrate their model benchmarks. Use their runners manually where available
+and keep output, permissions, model settings, cases and grading versions traceable.
+
+**Recommended priorities:** (1) reuse an existing safe eval runner rather than
+rebuild one; (2) add adapters for actual results and tool traces; (3) add
+triggering and regression coverage; (4) compare Claude/Codex runs only when
+the prompts, permissions and environments are meaningfully comparable.
+
+## 7. Try it
 
 > Use **refine-skill** on `skills/code-review` in **Guided** mode. Check Stage 0, walk me through writing eval cases, explain evidence and recommendations, and pause at each approval gate. Do not perform live external writes.
 
