@@ -8,7 +8,7 @@ Optional context:
 - Repository / revision: [current workspace, or URL and branch/commit]
 - My background: [languages/frameworks I know; unfamiliar areas]
 - Time available: [optional]
-- Delivery: [staged by default; complete guide if explicitly requested]
+- Delivery: [guided tutorial, one question at a time by default; complete tutorial if explicitly requested]
 
 Use these four books as complementary teaching lenses:
 - Designing Data-Intensive Applications, 2nd edition (DDIA), by Martin Kleppmann
@@ -17,7 +17,38 @@ Use these four books as complementary teaching lenses:
 - System Design Interview, by Alex Xu.
 - Algorithmic Thinking, 2nd edition, by Daniel Zingaro.
 
-Working rules:
+## Tutorial delivery — default
+
+
+Use the three stages and ten topics below as a technical coverage guide, not three large responses to deliver by default. Choose useful questions from inspected code and the relevant book lenses. Explain which lenses fit and why; do not force all four into every question. A question can teach an existing safeguard or design choice without implying a defect.
+
+Open with the repository target, scope/revision when known, relevant lenses, mode, and read-only boundary. Use `Problem question N — Concrete question` headings; numbers count tutorial questions, not topic sections or lifecycle stages.
+
+For each completed question, present:
+
+1. **What and why:** explain the concept and why it matters here in plain English. Define unfamiliar terms at first use.
+2. **Problem question:** ask about a concrete behavior, mechanism, or design decision in this repository.
+3. **How to build an answer:** identify requirements, code paths, callers, contracts, and tests to examine.
+4. **Worked answer:** provide an example answer grounded in inspected files and symbols. Explain the supporting evidence and unknowns; the answer is not automatically correct or the only valid answer.
+5. **Walkthrough:** trace a small input, code path, data transformation, state change, or failure sequence. Clearly label hypothetical inputs and manual traces; do not present them as executed tests. Use a compact diagram when it improves understanding.
+6. **Trade-off and follow-up:** explain a relevant alternative, its benefit and cost, and what constraint or evidence could change the choice.
+7. **Takeaway:** state the transferable lesson and vocabulary to remember.
+8. **LEARNING CHECKPOINT — Next question or explore this one?**
+
+Keep explanations beginner-friendly, concrete, and tied to the repository. Avoid mechanical filler. Use concise public explanations of evidence and decisions.
+
+- **Guided (default):** teach one question per response, including the worked answer and walkthrough, then pause at the checkpoint.
+- **Practice (on request):** ask one question and wait before revealing the worked answer or walkthrough. After the learner answers or asks for help, give feedback or hints, then the teaching sections as appropriate. Clarifications stay on the same question.
+- **Complete tutorial (on request):** present the relevant questions and worked answers together, followed by the glossary and learning summary; use one checkpoint at the end rather than pausing between questions.
+- **Concise explanation (on request):** summarize behavior, mechanisms, trade-offs, and evidence without the teaching sequence.
+
+Track coverage across questions: covered, not applicable with a reason, or unverified because evidence is missing. One answered question is not a complete repository onboarding. At completion or on request, provide the relevant glossary and learning summary and practical onboarding path from Stage 3, scope, coverage, remaining unknowns, and verification limits. Separate tests inspected, actually executed, and proposed. If the learner stops early, label the summary partial.
+
+Do not append draft code review comments or a post-review comments section. This is an repository-learning tutorial. Discuss supported concerns as teaching points, distinguish confirmed issues from plausible risks and unknowns, and do not manufacture findings. Learning checkpoints govern pace only; they do not authorize code changes or external actions.
+
+Keep the whole-repository scope: begin with purpose and the major-area map, then deepen execution/data flows and investigation skills. Use the three stages as a learning progression and coverage record, while the tutorial questions determine response pacing. Map every major first-party area at a useful level; a representative flow or one directory does not replace that map. Stage-end comprehension questions are optional practice prompts, not extra questions to ask all at once in Guided or Practice mode. Present them one at a time if the learner chooses practice.
+
+## Working rules
 - Inspect the repository before explaining it. Read applicable repo instructions,
   README/docs, manifests, configuration, entry points, tests, and CI/deployment
   files. Use these to decide which implementation files to inspect next.
@@ -46,7 +77,7 @@ Working rules:
   Distinguish commands you actually ran from commands you only inspected.
   Use local examples and redact secret values.
 
-Stage 1 — Build the repo map
+## Stage 1 — Build the repo map
 
 1. Purpose and boundaries
    - Explain the user or developer problem this repo solves and its main outputs.
@@ -75,13 +106,16 @@ Stage 1 — Build the repo map
    - Explain the existing CI checks and contribution conventions.
    - Recommend up to five files to read first, in order, with the question each
      file answers. Then give a short route into each remaining major subsystem.
-   - End with three open-ended comprehension questions, the most important
-     unknowns, and a preview of Stage 2.
+   - When Stage 1 coverage is complete, summarize the most important unknowns
+     and preview Stage 2. Offer three open-ended comprehension questions as
+     optional practice, delivered according to the selected tutorial mode.
 
-Deliver Stage 1 first and wait for me to say "continue." Do not wait between its
-individual sections. If I explicitly request a complete guide, deliver all stages.
+Cover Stage 1 through tutorial questions before proceeding to deeper stages.
+Pause after each completed Guided question at the learning checkpoint. A request
+to continue advances the current tutorial; it does not restart onboarding.
+If I explicitly request a complete guide, deliver all stages together.
 
-Stage 2 — Connect execution, data, and algorithms
+## Stage 2 — Connect execution, data, and algorithms
 
 4. Trace representative existing flows
    - Select two or three flows that collectively connect the repo's main areas.
@@ -157,10 +191,11 @@ Stage 2 — Connect execution, data, and algorithms
      into a repo whose code does not use them.
 
 End Stage 2 with a short explanation connecting domain rules, runtime components,
-code organization, data lifecycle, and algorithms. Ask three open-ended questions
-and wait for "continue," unless I requested the complete guide.
+code organization, data lifecycle, and algorithms. Offer three open-ended questions
+as optional practice, using the tutorial mode to control pacing. In Guided mode,
+keep the learning checkpoint as the final section of the response.
 
-Stage 3 — Learn to investigate and explain the repo
+## Stage 3 — Learn to investigate and explain the repo
 
 8. Failure, security, and performance
    - Show where validation, authentication/authorization, error handling,
@@ -192,7 +227,8 @@ Stage 3 — Learn to investigate and explain the repo
     - Give a suggested progression for the first session, next few sessions, and
       later study. For each step, include a file/flow, a learning goal, and a way
       to demonstrate understanding. Adapt it to my time if provided.
-    - Finish with five repo-specific teach-back questions and one small read-only
+    - Offer five repo-specific teach-back questions (one at a time in Practice
+      mode, together in a complete guide) and one small read-only
       exercise, such as annotating a flow, predicting behavior from a test, or
       tracing an input. Do not assign feature work or require a redesign.
 
