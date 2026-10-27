@@ -14,6 +14,38 @@ Assume I am a developer trying to build vocabulary and intuition. Connect what t
 
 Teach me to reason from problem -> requirements -> algorithm/data flow -> system design -> implemented code -> failure modes. Distinguish code-backed facts from proposed design alternatives.
 
+## Tutorial delivery — default
+
+Use the thirteen topic sections below as a technical coverage guide, not a mandatory output order or thirteen sections to dump into every response. Choose useful questions from inspected code and the relevant book lenses. Explain which lenses fit and why; do not force all five into every question. A question can teach an existing safeguard or design choice without implying a defect.
+
+Open with the implementation target, scope/revision when known, relevant lenses, mode, and read-only boundary. Use `Problem question N — Concrete question` headings; numbers count tutorial questions, not topic sections or lifecycle stages.
+
+For each completed question, present:
+
+1. **What and why:** explain the concept and why it matters here in plain English. Define unfamiliar terms at first use.
+2. **Problem question:** ask about a concrete behavior, mechanism, or design decision in this implementation.
+3. **How to build an answer:** identify requirements, code paths, callers, contracts, and tests to examine.
+4. **Worked answer:** provide an example answer grounded in inspected files and symbols. Explain the supporting evidence and unknowns; the answer is not automatically correct or the only valid answer.
+5. **Walkthrough:** trace a small input, code path, data transformation, state change, or failure sequence. Clearly label hypothetical inputs and manual traces; do not present them as executed tests. Use a compact diagram when it improves understanding.
+6. **Trade-off and follow-up:** explain a relevant alternative, its benefit and cost, and what constraint or evidence could change the choice.
+7. **Takeaway:** state the transferable lesson and vocabulary to remember.
+8. **LEARNING CHECKPOINT — Next question or explore this one?**
+
+Keep explanations beginner-friendly, concrete, and tied to the implementation. Avoid mechanical filler. Use concise public explanations of evidence and decisions.
+
+- **Guided (default):** teach one question per response, including the worked answer and walkthrough, then pause at the checkpoint.
+- **Practice (on request):** ask one question and wait before revealing the worked answer or walkthrough. After the learner answers or asks for help, give feedback or hints, then the teaching sections as appropriate. Clarifications stay on the same question.
+- **Complete tutorial (on request):** present the relevant questions and worked answers together, followed by the glossary and learning summary; use one checkpoint at the end rather than pausing between questions.
+- **Concise explanation (on request):** summarize behavior, mechanisms, trade-offs, and evidence without the teaching sequence.
+
+Track coverage across questions: covered, not applicable with a reason, or unverified because evidence is missing. One answered question is not a complete implementation walkthrough. At completion or on request, provide the relevant glossary and learning summary from the final topic sections, scope, coverage, remaining unknowns, and verification limits. Separate tests inspected, actually executed, and proposed. If the learner stops early, label the summary partial.
+
+Do not append draft code review comments or a post-review comments section. This is an implementation-learning tutorial. Discuss supported concerns as teaching points, distinguish confirmed issues from plausible risks and unknowns, and do not manufacture findings. Learning checkpoints govern pace only; they do not authorize code changes or external actions.
+
+## Technical coverage guide
+
+The numbered sections below supply the content for tutorial questions. Their instructions to explain, map, or finish apply when the corresponding topic is covered; the delivery modes above control response structure and pacing.
+
 ## Inputs
 
 Use any available context:
@@ -64,11 +96,9 @@ Also identify lifecycle undercurrents:
 
 For each stage, say whether the implementation changed it, depends on it, or leaves it untouched.
 
-## 3. ASCII Data Flow Diagram
+## 3. Data Flow Diagram
 
-Create an ASCII diagram showing the overall data flow.
-
-Use this style:
+Create a compact Mermaid diagram showing the overall data flow when it helps explain the implementation. Use the following flow as a conceptual example, not a required output format:
 
 [Generation]
     |
