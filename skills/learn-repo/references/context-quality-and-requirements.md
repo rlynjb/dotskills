@@ -6,7 +6,7 @@ Establish the target repository, accessible revision or workspace, and read acce
 
 ## Supporting evidence
 
-Inspect applicable repository instructions, README/docs, manifests and lockfiles, configuration, entry points, representative implementation files, tests, and CI/deployment definitions. Map all major first-party areas at a useful level without reading every file indiscriminately. Treat documentation as claims to compare against implementation; flag conflicts.
+Inspect applicable repository instructions, README/docs, manifests and lockfiles, configuration, entry points, representative implementation files, tests, and CI/deployment definitions. Inspect representative module interfaces and callers for APOSD lessons about information hiding and complexity. Map all major first-party areas at a useful level without reading every file indiscriminately. Treat documentation as claims to compare against implementation; flag conflicts.
 
 ## Scope and completion
 

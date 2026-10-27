@@ -10,17 +10,18 @@ Optional context:
 - Time available: [optional]
 - Delivery: [guided tutorial, one question at a time by default; complete tutorial if explicitly requested]
 
-Use these four books as complementary teaching lenses:
+Use these five books as complementary teaching lenses:
 - Designing Data-Intensive Applications, 2nd edition (DDIA), by Martin Kleppmann
   and Chris Riccomini.
 - Fundamentals of Data Engineering (FODE), by Joe Reis and Matt Housley.
 - System Design Interview, by Alex Xu.
 - Algorithmic Thinking, 2nd edition, by Daniel Zingaro.
+- A Philosophy of Software Design (APOSD), by John Ousterhout.
 
 ## Tutorial delivery — default
 
 
-Use the three stages and ten topics below as a technical coverage guide, not three large responses to deliver by default. Choose useful questions from inspected code and the relevant book lenses. Explain which lenses fit and why; do not force all four into every question. A question can teach an existing safeguard or design choice without implying a defect.
+Use the three stages and eleven topics below as a technical coverage guide, not three large responses to deliver by default. Choose useful questions from inspected code and the relevant book lenses. Explain which lenses fit and why; do not force all five into every question. A question can teach an existing safeguard or design choice without implying a defect.
 
 Open with the repository target, scope/revision when known, relevant lenses, mode, and read-only boundary. Use `Problem question N — Concrete question` headings; numbers count tutorial questions, not topic sections or lifecycle stages.
 
@@ -190,14 +191,37 @@ If I explicitly request a complete guide, deliver all stages together.
      explanatory; do not implement a replacement or force advanced algorithms
      into a repo whose code does not use them.
 
+8. Software design and complexity — APOSD
+   - Select representative modules and their callers across the repository.
+     Explain their responsibilities, public interfaces, and dependency direction.
+   - Explain deep versus shallow modules by comparing the functionality provided
+     with the complexity exposed to callers, not by counting lines or methods.
+   - Identify information hiding: which design decisions stay inside a module,
+     and which assumptions or details leak into other packages or callers?
+   - Trace a small hypothetical change through actual files to explain change
+     amplification, cognitive load, and unclear dependencies. Label the scenario
+     hypothetical; distinguish observed coupling from predicted maintenance cost.
+   - Walk through one interface from a caller's perspective: inputs, outputs,
+     errors, defaults, and contracts. Explain what the caller must know and what
+     the abstraction handles on its behalf.
+   - Explain how naming, comments, and module boundaries communicate intent,
+     invariants, and responsibilities. Define unfamiliar terms in plain English.
+   - Discuss a simpler alternative only when supported by a concrete caller task
+     or change scenario. Explain its cost and constraints; do not assume that
+     more abstraction, smaller modules, or fewer lines automatically improve design.
+   - Ground each lesson in files, symbols, and callers. Mark missing caller or
+     contract evidence unknown; do not invent design history or author intent.
+     Keep the exercise educational and read-only, without refactoring or draft
+     code review comments.
+
 End Stage 2 with a short explanation connecting domain rules, runtime components,
-code organization, data lifecycle, and algorithms. Offer three open-ended questions
+code organization, data lifecycle, algorithms, and abstraction complexity. Offer three open-ended questions
 as optional practice, using the tutorial mode to control pacing. In Guided mode,
 keep the learning checkpoint as the final section of the response.
 
 ## Stage 3 — Learn to investigate and explain the repo
 
-8. Failure, security, and performance
+9. Failure, security, and performance
    - Show where validation, authentication/authorization, error handling,
      logging/metrics, timeouts, and retries live, when applicable.
    - Trace one failure from its origin to its visible result and recovery path.
@@ -209,21 +233,24 @@ keep the learning checkpoint as the final section of the response.
      stated hypothetical workload. Label estimates and assumptions; suggest what
      to measure before asserting a production bottleneck or scaling requirement.
 
-9. Design trade-offs and learning summary
+10. Design trade-offs and learning summary
    - Select up to three important existing decisions. Explain the observed design,
      its benefits/costs, and a plausible alternative. Label inferred rationale.
    - Where a relational data-model choice is material, include the trade-off
      between read-time joins and stored derived/denormalized data, with actual
      query evidence or clearly labeled performance questions.
-   - Connect the four book lenses without repeating four versions of the guide.
+   - Connect the five book lenses without repeating five versions of the guide.
    - Finish with this learning table:
      Book | Relevant concept | Repo evidence | What I should now understand |
      Next reading topic
-   - Use the labels DDIA, FODE, System Design Interview, and Algorithmic Thinking.
+   - Use the labels DDIA, FODE, System Design Interview, Algorithmic Thinking,
+     and APOSD (A Philosophy of Software Design).
      Mark a lens with limited applicability honestly.
+   - Include the relevant APOSD lesson about interfaces, information hiding, or
+     change complexity in the learning table and glossary.
    - Add a brief glossary and unresolved questions worth asking a maintainer.
 
-10. Practical onboarding path
+11. Practical onboarding path
     - Give a suggested progression for the first session, next few sessions, and
       later study. For each step, include a file/flow, a learning goal, and a way
       to demonstrate understanding. Adapt it to my time if provided.
@@ -237,5 +264,6 @@ Onboarding is successful when I can:
 - Locate its entry points and follow a representative execution path.
 - Describe where data/state comes from, changes, and reaches consumers.
 - Explain one relevant correctness guarantee and one computational trade-off.
+- Explain one module boundary and how it hides or exposes complexity to callers.
 - Identify the local workflow and know whether it has been verified.
 - Investigate a representative failure and state what remains unknown.
