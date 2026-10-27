@@ -10,4 +10,4 @@ Use the request or ticket, agent summary, tests, migrations, configuration, sche
 
 ## Scope and completion
 
-Keep the exercise read-only. Follow all twelve master sections, marking irrelevant mechanisms not applicable and unsupported claims unverified. Cite inspected files and symbols; use verified line numbers only. Explain one concrete flow, the relevant guarantees and limits, design and algorithmic trade-offs, and the final learning summary. Label a partial explanation as partial and identify evidence needed to complete it.
+Keep the exercise read-only. Follow all thirteen master sections, marking irrelevant mechanisms not applicable and unsupported claims unverified. Cite inspected files and symbols; use verified line numbers only. Explain one concrete flow, the relevant guarantees and limits, design and algorithmic trade-offs, relevant abstraction and interface complexity, and the final learning summary. Label a partial explanation as partial and identify evidence needed to complete it.

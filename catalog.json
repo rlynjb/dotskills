@@ -102,7 +102,7 @@
     {
       "name": "learn-implementation",
       "category": "learning",
-      "purpose": "Learn an implementation through the extracted master prompt and four relevant book lenses.",
+      "purpose": "Learn an implementation through the extracted master prompt and five relevant book lenses.",
       "source": "dotfiles",
       "path": "skills/learn-implementation",
       "reference_count": 0

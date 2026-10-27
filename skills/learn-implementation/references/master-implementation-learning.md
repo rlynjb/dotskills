@@ -8,8 +8,9 @@ Your goal is not just to summarize the diff. Your goal is to teach me the mechan
 - Designing Data-Intensive Applications (DDIA), 2nd Edition: reliable, scalable, maintainable data-system mechanisms
 - System Design Interview by Alex Xu: requirements, architecture, capacity, component choices, bottlenecks, and tradeoffs
 - Algorithmic Thinking by Daniel Zingaro, 2nd Edition: problem decomposition, pattern recognition, algorithm selection, correctness, and complexity
+- A Philosophy of Software Design (APOSD) by John Ousterhout: complexity management, deep modules, information hiding, interfaces, and change locality
 
-Assume I am a developer trying to build vocabulary and intuition. Connect what the coding agent built to the underlying ideas from these four resources, without forcing an irrelevant concept into the explanation.
+Assume I am a developer trying to build vocabulary and intuition. Connect what the coding agent built to the underlying ideas from these five resources, without forcing an irrelevant concept into the explanation.
 
 Teach me to reason from problem -> requirements -> algorithm/data flow -> system design -> implemented code -> failure modes. Distinguish code-backed facts from proposed design alternatives.
 
@@ -292,7 +293,36 @@ How to recognize this pattern next time:
 
 Finish with one transferable problem-solving heuristic I can reuse in future code reviews or DSA problems.
 
-## 9. Read Path And Write Path
+## 9. A Philosophy Of Software Design View (John Ousterhout)
+
+Explain how the implementation manages complexity through its modules, abstractions, and interfaces.
+
+Cover only concepts supported by the inspected code:
+
+- Deep versus shallow modules: compare the complexity callers must understand with the functionality the module provides; do not judge depth by line count.
+- Information hiding: identify design decisions encapsulated by a module and details that leak across boundaries.
+- Interface design: explain the inputs, outputs, errors, defaults, and assumptions a caller must understand.
+- Change amplification, cognitive load, and unknown unknowns: trace a concrete change or caller task to show where complexity appears.
+- Decomposition: examine whether responsibilities and knowledge stay together or are spread across modules.
+- Strategic design: discuss when a small investment in the abstraction could simplify future changes, including the cost and uncertainty of that alternative.
+- Comments and naming: explain whether they communicate intent, invariants, and non-obvious contracts beyond what the code already says.
+
+For each relevant concept, use:
+
+Concept:
+Evidence in code and callers:
+What the interface exposes:
+What the implementation hides:
+Effect on a concrete caller task or future change:
+Benefit and trade-off:
+Alternative worth considering, if warranted:
+Transferable design lesson:
+
+Distinguish observed structure from inferred intent. Do not label a module poorly designed merely because it is small, add abstraction without a demonstrated benefit, or claim maintainability improvements without explaining the affected change or caller task. If callers or contracts are unavailable, state that limitation.
+
+Finish with one concrete example of how the implementation reduces or spreads complexity. Keep this an educational explanation; propose alternatives without modifying the code.
+
+## 10. Read Path And Write Path
 
 Explain the read path and write path separately.
 
@@ -323,7 +353,7 @@ Describe:
 - What happens when data is missing?
 - What does the caller receive?
 
-## 10. Failure And Concurrency Walkthrough
+## 11. Failure And Concurrency Walkthrough
 
 Teach me what can go wrong.
 
@@ -348,9 +378,9 @@ Mechanism that handles it:
 Missing mechanism, if any:
 Risk level:
 
-## 11. Concept Glossary
+## 12. Concept Glossary
 
-Create a glossary of the most important FODE, DDIA, system-design, and algorithmic-thinking terms that appear in this implementation.
+Create a glossary of the most important FODE, DDIA, system-design, algorithmic-thinking, and APOSD terms that appear in this implementation.
 
 For each term:
 
@@ -358,11 +388,11 @@ For each term:
 - Plain-English meaning
 - Where it appears in this implementation
 - Why it matters
-- Related DDIA / FODE / Alex Xu / Zingaro topic
+- Related DDIA / FODE / Alex Xu / Zingaro / Ousterhout topic
 
-Prefer terms that help me think like a software engineer who can reason about algorithms, system design, and data systems.
+Prefer terms that help me think like a software engineer who can reason about algorithms, system design, data systems, and software complexity.
 
-## 12. Learning Summary
+## 13. Learning Summary
 
 Finish with:
 
@@ -374,7 +404,8 @@ Finish with:
 6. The DDIA concepts I should study next
 7. The key design decision or tradeoff from System Design Interview I should remember
 8. The algorithmic pattern, invariant, or complexity lesson from Algorithmic Thinking I should remember
-9. Three questions I should ask in code review (covering design, correctness, and failure modes)
-10. One small hands-on exercise to reinforce the most relevant concept
+9. The abstraction, interface, or complexity-management lesson from A Philosophy of Software Design I should remember
+10. Three questions I should ask in code review (covering design, correctness, and failure modes)
+11. One small hands-on exercise to reinforce the most relevant concept
 
 Keep the tone educational, precise, and developer-friendly.
