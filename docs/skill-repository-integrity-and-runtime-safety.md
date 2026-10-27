@@ -63,6 +63,12 @@ The same validator runs locally and in GitHub Actions. The separate
 skill-local `evals/evals.json` case fields, unique IDs and fixture paths; it
 is also structural only and does not execute a model or verify isolation.
 
+The optional [Refine Skill execution safety helper](../scripts/refine_eval_safety.py)
+checks a host-supplied mock-only manifest, individual tool calls and action
+traces for policy violations. It is not a model runner or a sandbox. Its
+unit tests validate its deny/grade logic, not real Claude/Codex tool isolation;
+a consuming host must enforce the guard on **every** dispatch.
+
 A source-lock hash match establishes that the local file agrees with the recorded
 local lock entry. It does **not** independently prove that the upstream source was
 safe, trustworthy, or correctly reviewed.

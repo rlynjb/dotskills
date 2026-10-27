@@ -39,6 +39,35 @@ baselines, reruns, regressions, specialist handoffs, and delegated / fast mode.
 These instructions guide behavior; the harness must enforce tool permissions and
 isolation. A simulated pass does not establish safe live execution.
 
+## MANDATORY GATE — prior to evaluated-agent execution
+
+Apply [Execution Safety Gate](execution-safety-gate.md) before Stage 3,
+Stage 9, delegated execution, and any earlier step that would execute
+an untrusted target skill, script, or tool call. Stage 0 structural
+validation remains non-executing.
+
+1. Obtain the separately scoped human approval for the *case/run*.
+2. Have an **independent host** verify mock tool bindings, network/credential
+   isolation, shell/API denial, restricted child agents, evaluator-only
+   answer-key separation and complete trace/state evidence.
+3. Where the DotSkills checkout is available, check the host-exported
+   capability manifest with `python3 scripts/refine_eval_safety.py preflight
+   <manifest.json>`. A `MANIFEST_VALID` response validates only the
+   manifest's claims, not that the host actually enforces them.
+4. Configure the host to classify and authorize **every** tool request
+   before dispatch using the helper's deny-by-default `authorize` policy
+   or a stricter equivalent. The evaluated agent cannot grant itself
+   permissions by editing a manifest, instructing another agent, or
+   using a CLI/HTTP bypass. Never expose unmediated live tools.
+5. Inspect the complete host trace and independently checked resulting
+   state; `audit` can flag unauthorized *attempts*, even when blocked.
+
+If any essential independent guarantee is absent, **STOP; Not Run**.
+If action/state evidence is incomplete, report **Unknown**, not Pass.
+A request to perform live writes falls outside the included mock-only
+gate: separate authorization alone is insufficient without independently
+enforced service-level controls.
+
 ### Human-gated mode — default
 
 Do not cross a human gate until the human explicitly approves the next action.
