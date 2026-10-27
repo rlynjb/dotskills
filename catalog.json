@@ -100,14 +100,6 @@
       "reference_count": 1
     },
     {
-      "name": "system-learning-implementation",
-      "category": "learning",
-      "purpose": "Learn a specific code implementation, its mechanisms, and trade-offs.",
-      "source": "dotfiles",
-      "path": "skills/system-learning-implementation",
-      "reference_count": 1
-    },
-    {
       "name": "learn-implementation",
       "category": "learning",
       "purpose": "Learn an implementation through the extracted master prompt and four relevant book lenses.",

@@ -16,7 +16,7 @@ description: "Learn how a specific implementation or agent-produced change works
 
 ## Source
 
-The bundled master is extracted verbatim from section 0, "Master implementation learning prompt", in DotSkills' `skills/system-learning-implementation/references/system-learning-implementation.md`. The original library remains source-locked in `source-lock.json`; compact and focused variants are not part of this package. These are book-inspired instructions, not quotations from the books. The bundled master is self-contained and does not require the original package at runtime.
+The bundled master is extracted verbatim from section 0, "Master implementation learning prompt", in [the original upstream prompt library](https://github.com/rlynjb/dotfiles/blob/5a0e147ac81db92c1082dfb8ed4a6b629845b742/reference/system-learning-implementation.md) (Git blob: `3c4a11bd02d7072c9a76d7ceb874feacff6c35ec`). The former System Learning Implementation package has been removed from DotSkills; compact and focused variants are not part of this package. These are book-inspired instructions, not quotations from the books. The bundled master is self-contained.
 
 ## Trust and execution boundaries
 

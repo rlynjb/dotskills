@@ -52,7 +52,6 @@ DotSkills is **not another skill creator or evaluation engine**. It keeps the li
 | [investigate-new-feature](skills/investigate-new-feature/SKILL.md) | engineering | Pre-design feature discovery and requirements. |
 | [refine-feature-requirements](skills/refine-feature-requirements/SKILL.md) | engineering | Ticket refinement and Superpowers handoff. |
 | [system-learning-repo](skills/system-learning-repo/SKILL.md) | learning | Learn an unfamiliar repository architecture and data lifecycle. |
-| [system-learning-implementation](skills/system-learning-implementation/SKILL.md) | learning | Learn a specific code implementation, its mechanisms, and trade-offs. |
 | [learn-implementation](skills/learn-implementation/SKILL.md) | learning | Learn an implementation using the extracted master prompt and four book lenses. |
 | [buffr-decision-support](skills/buffr-decision-support/SKILL.md) | decision-support | Buffr M0–M7 module reference and execution guidance; engine remains external. |
 
@@ -119,7 +118,7 @@ for existing coverage and planned controls.
 
 ```text
 dotskills/
-├── skills/                    # Fourteen skill packages (some hidden by default)
+├── skills/                    # Thirteen skill packages (some hidden by default)
 │   ├── refine-skill/
 │   ├── context-engineering/
 │   ├── correctness-and-verification/
@@ -131,7 +130,6 @@ dotskills/
 │   ├── investigate-new-feature/
 │   ├── refine-feature-requirements/
 │   ├── system-learning-repo/
-│   ├── system-learning-implementation/
 │   ├── learn-implementation/
 │   └── buffr-decision-support/
 │       └── references/        # module-map.md, runtime/, versioned/
@@ -148,7 +146,7 @@ dotskills/
 
 ## Current source inventory
 
-- **Dotfiles:** 10 Markdown documents from [dotfiles/reference](https://github.com/rlynjb/dotfiles/tree/master/reference), including five individual code-review lenses, investigation, requirements, and learning. The combined code-review prompt is no longer included. The PNG diagram remains in dotfiles; it is not a reusable prompt.
+- **Dotfiles:** 9 Markdown documents from [dotfiles/reference](https://github.com/rlynjb/dotfiles/tree/master/reference), including five individual code-review lenses, investigation, requirements, and learning. The combined code-review prompt is no longer included. The PNG diagram remains in dotfiles; it is not a reusable prompt.
 - **Buffr:** 10 versioned design/prompt documents and 8 runtime prompt snapshots covering shared policy M0 and stages M1–M7. They are **references only**; actual Buffr module execution is not installed here.
 
 Every imported Markdown file is copied byte-for-byte and tracked against its upstream Git blob SHA. Original cross-reference links inside copied documents may point to neighboring source files that reside in another DotSkills package; use [source provenance](docs/sources.md) to locate them.
