@@ -47,7 +47,8 @@ authorized codebase or change scope to identify useful questions. Use
 lifecycle stages. Vary topics and code paths when useful. On request, shuffle
 code-grounded candidate questions; do not invent issues to create variety.
 In Guided mode, default to one question per response, followed by its answer-building
-guidance, worked answer, walkthrough, and trade-offs. End with
+guidance, worked answer, walkthrough, and trade-offs. After the learning checkpoint,
+append the post-review comment section described below as the final section. Use
 `LEARNING CHECKPOINT — Next question or explore this one?`
 Offer a complete set when requested. A checkpoint controls teaching pace, not
 permission to mutate anything; it is not a Refine Skill human approval gate.
@@ -106,8 +107,29 @@ For each finding include the inspected evidence, concrete consequence, realistic
 failure/concurrency/workload scenario, smallest reasonable improvement, claim
 classification, and severity.
 
-End with the review scope and verification boundary. If no actionable findings
+State the review scope and verification boundary. If no actionable findings
 are supported, say so without implying the entire repository is defect-free.
+
+### Post-review — Draft code review comments
+
+Finish each completed guided question and each review report with this section,
+after any takeaway, recap, or learning checkpoint. In Practice mode, include it
+after feedback/worked answers, not while waiting for the learner's first answer.
+Use ordinary teammate-to-teammate review language, without interview prompts or
+answer-building instructions.
+
+Draft concise inline-style comments for supported actionable findings only. Anchor
+each to an inspected file and the smallest relevant line range at the reviewed
+revision. If line numbers cannot be verified, give the symbol and a short matching
+snippet instead; never invent a location or a diff anchor. Explain the concrete
+condition, consequence, and smallest reasonable fix or focused clarification.
+Preserve uncertainty and label optional suggestions as non-blocking. Deduplicate
+comments across questions; do not convert hypothetical exercises into findings.
+If nothing warrants a comment, say "No actionable review comment for this scope."
+
+These are ready-to-copy drafts in the response. Do not post them to GitHub/GitLab
+or insert them into source files. Drafting a comment does not authorize publishing.
+See the [walkthrough example](references/interview-walkthrough.md#post-review-comment-example).
 
 ## Tools and boundaries
 

@@ -10,6 +10,7 @@
 - [Data ownership and design](#data-ownership-and-design)
 - [Implementation, algorithms, and guarantees](#implementation-algorithms-and-guarantees)
 - [Verification questions](#verification-questions)
+- [Post-review comment example](#post-review-comment-example)
 - [Worked miniature](#worked-miniature)
 - [Coverage of the Master DDIA rubric](#coverage-of-the-master-ddia-rubric)
 - [Research sources](#research-sources)
@@ -252,6 +253,26 @@ supported finding or safeguard; here is the trade-off; here is what I tested and
 what still needs evidence.”
 Do not invent a defect, certainty, a hiring verdict, or a recommendation to fill
 this sentence. Suggest one useful follow-up learning question.
+
+## Post-review comment example
+
+After teaching and any checkpoint, append **Post-review — Draft code review comments**
+using the rules in SKILL.md. For a complete report, place it after the scope and
+verification summary. Keep the comment itself natural and concise, suitable for
+an inline review rather than an interview answer.
+
+Hypothetical example only: suppose an inspected handler acknowledges a message
+before saving it, and the established contract requires redelivery after a failed
+save. A draft anchored to the verified acknowledgement line could read:
+
+> Acknowledging here means a failed save will prevent this message from being
+> redelivered, so the update can be lost. Could we acknowledge only after the save
+> succeeds and add a test for a failed save?
+
+In a real review, show the actual file and verified line above the comment and
+check surrounding error handling before making this claim. Do not reuse this
+example as a finding without evidence. If the discussion only explained a safeguard
+or a hypothetical risk, state that no actionable comment is warranted.
 
 ## Worked miniature
 
