@@ -1,6 +1,6 @@
 ---
 name: code-review-ddia
-description: "Review a codebase or code change with the full Designing Data-Intensive Applications (DDIA) lens using inspected evidence. Default to a beginner-friendly tutorial built around varied code-grounded Problem questions, using Microsoft's Technical excellence topics, DDIA, worked answers, and trade-offs. Use for broad or higher-risk data-affecting changes that need the master 15-point review, or learning to explain such a review. Do not use for other book lenses, style-only review, or a narrowly scoped DDIA drill-down."
+description: "Review a codebase or code change with the full Designing Data-Intensive Applications (DDIA) lens using inspected evidence. Default to a beginner-friendly tutorial built around varied code-grounded Problem questions, using DDIA concepts, worked answers, and trade-offs. Use for broad or higher-risk data-affecting changes that need the master 15-point review, or learning to explain such a review. Do not use for other book lenses, style-only review, or a narrowly scoped DDIA drill-down."
 ---
 
 # Code Review DDIA
@@ -26,11 +26,10 @@ separate skills later; they are not dependencies of this skill.
 
 ## Teaching format — default
 
-Use the [interview walkthrough](references/interview-walkthrough.md) for every
-tutorial or practice review. Choose varied questions from Microsoft's relevant
-Technical excellence topics and DDIA based on inspected code. Do not organize the
-tutorial into Engineering lifecycle stages or require a fixed topic sequence.
-Preserve all 15 Master DDIA checks and the evidence rules below.
+Use the [DDIA walkthrough](references/interview-walkthrough.md) for every
+tutorial or practice review. Choose varied DDIA questions based on inspected code,
+without requiring a fixed topic sequence. Preserve all 15 Master DDIA checks and
+the evidence rules below.
 
 - **Guided tutorial (default):** explain in plain English, show a relevant **Problem question**,
   demonstrate how to answer using inspected evidence, and explain why the
@@ -57,14 +56,16 @@ Inspect available code and requirements before asking questions the repository c
 answer. Distinguish confirmed requirements, inferred behavior, proposed assumptions,
 and open questions. Do not fabricate traffic, latency targets, production topology,
 interview questions attributed to a company, or defects to fill the tutorial.
-Use system-design reasoning as the core DDIA lens; add DSA analysis only where an
-actual data structure, traversal, lookup, sorting, batching, or algorithm warrants it.
-Do not turn a DDIA review into an unrelated algorithm quiz or a greenfield redesign.
+Keep every question and finding within the DDIA lens: data models, storage and
+retrieval, encoding/evolution, transactions, concurrency, replication, partitioning,
+consistency, distributed failure, batch/stream processing, and reliable operation.
+Discuss algorithms, data structures, or network behavior only as needed to explain
+a specific DDIA guarantee or trade-off. Do not select standalone DSA, general
+architecture interview, AI/ML, data science, or networking exercises, and do not
+load other book lenses as part of this review.
 
 Coding means inspecting and explaining implementation by default. Offer hands-on
-coding only when separately requested, within a bounded local or synthetic exercise.
-Select AI/ML, data science, and networking questions when the code makes them relevant;
-DDIA does not replace specialist assessment in those fields.
+coding only when separately requested, within a bounded local or synthetic DDIA exercise.
 
 ## Workflow
 
@@ -82,7 +83,7 @@ DDIA does not replace specialist assessment in those fields.
 
 ## Supporting references
 
-- [Interview walkthrough, examples, and research sources](references/interview-walkthrough.md)
+- [DDIA walkthrough, examples, and source boundaries](references/interview-walkthrough.md)
 
 - [Context quality and requirements](references/context-quality-and-requirements.md)
 - [Master DDIA code-review rubric](references/master-ddia-code-review.md)

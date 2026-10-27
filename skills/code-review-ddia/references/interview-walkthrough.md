@@ -1,27 +1,26 @@
-# Codebase Problem Questions Using Technical Excellence and DDIA
+# DDIA Codebase Problem Questions
 
 ## Contents
 
 - [Purpose and source boundaries](#purpose-and-source-boundaries)
-- [Technical excellence topics](#technical-excellence-topics)
+- [DDIA topic scope](#ddia-topic-scope)
 - [The repeated teaching format](#the-repeated-teaching-format)
 - [Choosing problem questions](#choosing-problem-questions)
 - [Requirements and behavior](#requirements-and-behavior)
 - [Data ownership and design](#data-ownership-and-design)
-- [Implementation, algorithms, and guarantees](#implementation-algorithms-and-guarantees)
+- [Implementation and data guarantees](#implementation-and-data-guarantees)
 - [Verification questions](#verification-questions)
 - [Post-review comment example](#post-review-comment-example)
 - [Worked miniature](#worked-miniature)
 - [Coverage of the Master DDIA rubric](#coverage-of-the-master-ddia-rubric)
-- [Research sources](#research-sources)
+- [Source boundaries](#source-boundaries)
 
 ## Purpose and source boundaries
 
-Use Microsoft's **Technical excellence** areas as topic inspiration and DDIA as
-the review lens. Explore the authorized codebase and select useful, varied questions
-from real implementation details. Do not require Engineering lifecycle stages,
-a fixed topic order, or a question from every topic. This question-led flow is a
-DotSkills teaching adaptation, not an official Microsoft interview sequence.
+Use DDIA as the sole technical review lens. Explore the authorized codebase and
+select useful, varied questions about data-intensive behavior from real implementation
+details. Do not require a fixed topic order or a question from every topic.
+The question-led tutorial format is a DotSkills teaching adaptation.
 
 Keep DDIA as the technical review lens throughout the questions. Start from the
 actual implementation and requirements, not an imagined greenfield system. Explain
@@ -33,28 +32,30 @@ authorize writing code, editing files, or executing a target skill against real 
 Hands-on coding requires a separate user request and a bounded local/synthetic scope.
 An explanation of code does not establish the learner's ability to implement it.
 
-The questions, examples, and DDIA mappings below are original DotSkills adaptations,
-not official Microsoft interview questions, a hiring rubric, or conference methodology.
-Do not invent DDIA chapter/page citations. Preserve links to preparation sources and
-distinguish source principles from inspected evidence and model recommendations.
+The questions, examples, and DDIA mappings below are original DotSkills adaptations.
+Do not present them as verbatim book material, official company questions, or
+conference methodology. Do not invent DDIA chapter/page citations. Distinguish
+book concepts, inspected code evidence, and model recommendations.
 
-## Technical excellence topics
+## DDIA topic scope
 
-Select topics based on the target and the learner's goal; do not cover every area
-in every session. State which topics apply and why. The source list is role-dependent,
-not a universal mastery checklist.
+Choose relevant topics from the Master DDIA rubric, including:
 
-| Topic | Application within this DDIA tutorial |
-| --- | --- |
-| Algorithms | Explain relevant computation, complexity, and correctness. |
-| Data structures | Compare actual lookup, ordering, memory, and traversal choices. |
-| System design and distributed systems | Apply DDIA to ownership, storage, consistency, failure, and scale. |
-| AI / ML | When present, inspect data/model pipeline reliability; do not claim DDIA alone evaluates model quality. |
-| Data science | When present, examine data correctness and transformations; identify statistical questions needing separate expertise. |
-| Computer networking | When relevant, examine protocol behavior, timeouts, retries, and failure assumptions. |
+- Data models, authoritative data, storage, indexes, and access patterns.
+- Encoding, schema evolution, and compatibility.
+- Transactions, invariants, concurrency, consistency, and ordering.
+- Replication, partitioning, failover, and distributed-system failure.
+- Retries, idempotency, recovery, and duplicate processing.
+- Batch/stream processing, events, caches, and derived views.
+- Reliability, scalability, operability, and tests of these guarantees.
 
-Unrelated ML, statistics, or networking exercises do not become mandatory DDIA checks.
-If the user wants a broader exercise outside this skill's scope, explain the boundary.
+State which DDIA concept each question teaches and why it matters to the inspected
+code. Discuss implementation mechanics only to support that concept. Do not create
+standalone algorithm/data-structure drills, general architecture interviews, AI/ML,
+data science, or networking reviews. An AI pipeline may still be reviewed for its
+data consistency or recovery guarantees; model quality is outside this skill.
+If the scoped code has no meaningful DDIA concern, say so instead of filling the
+tutorial with unrelated topics or inventing findings.
 
 ## The repeated teaching format
 
@@ -75,8 +76,7 @@ For each problem question, use the following teaching scaffold:
 7. **Takeaway:** summarize what the learner should notice.
 
 Define technical terms at first use. For example, an invariant is a rule that must
-stay true; idempotency means repeating an operation has the same intended effect;
-Big O describes how resource use grows with input size. Use concrete examples before
+stay true; idempotency means repeating an operation has the same intended effect. Use concrete examples before
 terminology. Give concise public explanations of evidence and decisions, not private
 chain-of-thought. Do not fill every slot mechanically when it adds no teaching value.
 
@@ -105,9 +105,9 @@ never substitute generic puzzles for the target code or fabricate defects.
 Offer a next question from a different relevant topic when useful.
 
 The sections below are an optional question pool, not sequential stages. Choose
-and combine them freely. For example, start with a real lookup's complexity, then
-examine retry safety elsewhere, then a model pipeline's data-version handling if
-such a pipeline exists. Do not force AI/ML into a repository that has none.
+and combine them freely. For example, start with a transaction's invariant, then
+examine retry safety elsewhere, then schema compatibility in a consumer. Keep the
+variety within DDIA.
 
 ## Requirements and behavior
 
@@ -161,7 +161,7 @@ Model an answer that names the invariant, benefit, cost, and evidence needed. Ke
 capacity estimates hypothetical unless sourced; use them only when they affect a
 decision. Prefer the smallest justified change over an unnecessary redesign.
 
-## Implementation, algorithms, and guarantees
+## Implementation and data guarantees
 
 ### Inspect implementation and guarantees
 
@@ -181,30 +181,16 @@ does/does not cover both. The supported outcome is D, affecting invariant E.”
 When discussing alternatives, distinguish transaction atomicity from isolation and
 idempotency; one does not automatically supply all three guarantees.
 
-### Analyze algorithms and data structures
+### Examine storage and operational trade-offs
 
-Use relevant DSA reasoning alongside DDIA design reasoning. Define n (and m, k, or
-other variables) before claiming complexity. Trace loops, lookups, sorting, recursion,
-or graph traversal from actual code. Distinguish average, worst-case, and amortized
-bounds when they matter; state data-structure assumptions and auxiliary space.
-
-Example questions:
-- What is the simplest correct approach, and where does its cost grow?
-- Could a set, map, heap, index, or batching help, and what semantics must be preserved?
-- How do duplicates, ordering, memory limits, or hot keys change the choice?
-- What evidence would justify a cache, queue, replica, or partitioning?
-- What changes at 10× load, and which part is only a hypothesis?
-
-Do not equate in-memory Big O with database latency or end-to-end request time.
-Database plans, I/O, network calls, contention, payload size, and workload distribution
-may dominate. Estimate capacity only when it informs a decision, label assumed
-numbers, and show units. Never report a calculation as a measured benchmark.
-Do not describe CAP as an unrestricted “pick any two” rule.
-
-Compare the current approach with one justified alternative: benefit, cost, invariant
-preserved, and conditions where you would choose differently. Do not recommend
-distributed infrastructure merely because it could scale further in theory.
-If no meaningful DSA analysis applies, explain that briefly and retain DDIA coverage.
+Connect access patterns, indexes, caching, batching, replication, and partitioning
+to actual requirements and evidence. Explain the read/write cost, consistency,
+durability, and recovery consequences of a justified alternative.
+Do not equate in-memory complexity with database latency or end-to-end request time.
+Query plans, I/O, contention, network calls, and workload distribution may dominate.
+Label estimates and assumptions; do not present them as measured benchmarks.
+Do not describe CAP as an unrestricted "pick any two" rule or recommend distributed
+infrastructure merely because it could scale further in theory.
 
 ### Optional hands-on practice
 
@@ -278,30 +264,32 @@ or a hypothetical risk, state that no actionable comment is warranted.
 
 This is a hypothetical teaching example, not a finding about the user's repository.
 
-Suppose a batch function keeps the first record for each ID in input order. It scans
-an ever-growing list of accepted IDs for every input item. Requirements specify
-integer IDs and a maximum batch of 1,000 records; no measured latency is supplied.
+Suppose a message consumer records an account credit and acknowledges the message.
+The established contract permits redelivery and requires each event to affect the
+balance once. In this hypothetical implementation, a unique event-ID record and
+the balance update commit in the same database transaction; acknowledgement follows.
 
-- **Problem question:** “Must we preserve order and which duplicate wins?” The supplied
-  contract says first occurrence wins. Faster code must preserve that behavior.
-- **Walkthrough:** Input IDs [7, 2, 7] yields [7, 2]. The third item is skipped.
-- **Worked answer:** For n distinct records, repeated linear membership scans take O(n²)
-  comparisons overall and O(n) storage. A hash set alongside the ordered output
-  can give expected O(n) processing and O(n) space, assuming expected O(1) membership.
-  It does not guarantee constant-time lookup in every worst case.
-- **Explain the trade-off:** A set adds implementation/memory overhead but can reduce
-  repeated scans. With bounded batches and no timings, this is an optional improvement,
-  not proof of a performance incident.
-- **DDIA connection:** In-memory deduplication within one batch does not establish
-  idempotency across retried requests or multiple workers. Inspect persistence and
-  transaction semantics before claiming either a duplicate-write bug or protection.
-- **Verification:** Propose empty input, repeated IDs, distinct IDs, and first-occurrence/order
-  checks. Separately test any established retry contract in isolation. None has run
-  merely because this walkthrough described it.
+- **Problem question:** "What happens if the process crashes after committing the
+  credit but before acknowledging the message?"
+- **How to build an answer:** inspect the redelivery contract, transaction boundary,
+  unique constraint, and duplicate-handling path.
+- **Worked answer:** the message may arrive again. If the consumer treats a unique
+  event-ID conflict as an already processed event and skips the credit, the same
+  event does not increase the balance twice. Verify that the ID record and credit
+  really share a transaction and that the duplicate path handles the conflict.
+- **Walkthrough:** event E commits one credit; the process crashes; E is redelivered;
+  the existing event ID prevents a second credit; the consumer acknowledges E.
+- **Trade-off and follow-up:** persistent deduplication requires storage and a
+  retention policy. Deleting IDs too early may allow an old event to apply again.
+  This database guarantee does not automatically cover external side effects.
+- **Verification:** propose tests for a crash before commit, redelivery after commit,
+  and concurrent delivery of the same ID. These tests have not run merely because
+  the walkthrough described them.
+- **Takeaway:** reliable retry behavior depends on persistent identity, atomic state
+  changes, and correct duplicate handling, not only the acknowledgement order.
 
-A useful sample answer is: “I would preserve first-occurrence order, replace repeated
-membership scans with a set if profiling justifies it, and verify retry safety
-separately. Batch deduplication alone does not prove distributed idempotency.”
+No actionable review comment is warranted if inspection confirms the required
+safeguards. The hypothetical example is not evidence of a defect in the target code.
 
 ## Coverage of the Master DDIA rubric
 
@@ -322,26 +310,12 @@ Do not force irrelevant dimensions into findings.
 | 14. Scale and operability | Design choices and implementation guarantees |
 | 15. Tests of guarantees/failures | Verification |
 
-## Research sources
+## Source boundaries
 
-Checked 2026-10-26. These are preparation sources, not guarantees of interview content.
-
-- [Microsoft — Technical interviewing](https://careers.microsoft.com/v2/global/en/hiring-tips/technical-interviewing.html):
-  **primary topic reference**: Technical excellence supplies role-relevant topic
-  choices. Its Engineering lifecycle areas remain useful preparation context but
-  do not prescribe this tutorial's structure.
-Supplementary sources below inform examples and techniques; they do not impose
-a question sequence.
-
-- [Amazon — Software development interview topics](https://amazon.jobs/content/en-gb/how-we-hire/interview-prep/software-development-topics):
-  lists coding, algorithms, data structures, databases, and distributed computing;
-  emphasizes applying knowledge rather than memorizing details.
-- [Atlassian — Engineering interview handbook](https://www.atlassian.com/company/careers/resources/interviewing/engineering):
-  describes practical questions, reliability/cost constraints, and changing trade-offs;
-  does not prescribe a single correct solution.
-- [Hello Interview — Delivery Framework](https://www.hellointerview.com/learn/system-design/in-a-hurry/delivery):
-  proposes requirements, entities/interfaces, high-level design, and deep dives,
-  with estimates when they influence a design decision.
-
-The DDIA mapping, question-led format, questions, and worked miniature are original
-model-proposed adaptations for DotSkills. They are not copied company questions or conference methods.
+Use the [Master DDIA code-review rubric](master-ddia-code-review.md) as this skill's
+operational review checklist. It is an adaptation of Designing Data-Intensive
+Applications concepts, not the book's verbatim text or chapter structure.
+The questions, teaching format, and worked examples are model-proposed DotSkills
+adaptations. Cite available book material accurately when used; otherwise name the
+concept and state the source limitation rather than inventing a quotation or page.
+Company interview topic lists do not determine this skill's scope.
