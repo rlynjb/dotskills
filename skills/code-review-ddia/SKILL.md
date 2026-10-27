@@ -1,6 +1,6 @@
 ---
 name: code-review-ddia
-description: "Review a code change with the full Designing Data-Intensive Applications (DDIA) lens using inspected evidence. Default to a beginner-friendly technical-interview tutorial with system-design and relevant DSA questions, worked answers, and trade-offs. Use for broad or higher-risk data-affecting changes that need the master 15-point review, or learning to explain such a review. Do not use for other book lenses, style-only review, or a narrowly scoped DDIA drill-down."
+description: "Review a code change with the full Designing Data-Intensive Applications (DDIA) lens using inspected evidence. Default to a beginner-friendly tutorial structured around Microsoft's engineering lifecycle: problem solving, design, coding, and testing, with DDIA, relevant DSA, worked answers, and trade-offs. Use for broad or higher-risk data-affecting changes that need the master 15-point review, or learning to explain such a review. Do not use for other book lenses, style-only review, or a narrowly scoped DDIA drill-down."
 ---
 
 # Code Review DDIA
@@ -27,8 +27,10 @@ separate skills later; they are not dependencies of this skill.
 ## Teaching format — default
 
 Use the [interview walkthrough](references/interview-walkthrough.md) for every
-tutorial or practice review. This adapts common system-design and coding-interview
-habits to existing code; it is not an official company interview script.
+tutorial or practice review. Use Microsoft's Engineering lifecycle as the primary
+structure: Problem solving, Design, Coding, and Testing. Select relevant subjects
+from its Technical excellence areas, and apply DDIA within every stage. This is a
+teaching adaptation of assessment areas, not an official four-round interview script.
 Preserve all 15 Master DDIA checks and the evidence rules below.
 
 - **Guided tutorial (default):** explain in plain English, show a relevant interview
@@ -41,7 +43,7 @@ Preserve all 15 Master DDIA checks and the evidence rules below.
   review categories, coverage, and evidence requirements.
 
 Open with the review target, mode, and read-only action boundary. Use stable
-`Stage N — Step name` headings (1–6) from the walkthrough, with small steps inside
+`Stage N — Step name` headings (1–4) from the walkthrough, with small steps inside
 a stage when useful. In Guided mode, default to one stage per response and a
 `LEARNING CHECKPOINT — Continue or explore this stage?` at its end. Offer a complete
 walkthrough in one response when requested. A checkpoint controls teaching pace, not
@@ -54,6 +56,11 @@ interview questions attributed to a company, or defects to fill the tutorial.
 Use system-design reasoning as the core DDIA lens; add DSA analysis only where an
 actual data structure, traversal, lookup, sorting, batching, or algorithm warrants it.
 Do not turn a DDIA review into an unrelated algorithm quiz or a greenfield redesign.
+
+Coding means inspecting and explaining implementation by default. Offer hands-on
+coding only when separately requested, within a bounded local or synthetic exercise.
+Keep unrelated AI/ML, data science, and networking topics optional and role-relevant;
+DDIA does not replace specialist assessment in those fields.
 
 ## Workflow
 
@@ -79,7 +86,7 @@ Do not turn a DDIA review into an unrelated algorithm quiz or a greenfield redes
 ## Output
 
 In Guided or Practice mode, present the stage walkthrough first and deliver the
-following review report at Stage 6. Label interim findings provisional until the
+following review report at the end of Stage 4. Label interim findings provisional until the
 necessary evidence has been checked. In Concise mode, deliver the report directly.
 Do not claim a complete review before all relevant dimensions have been considered.
 

@@ -1,33 +1,58 @@
-# DDIA Review as a Technical-Interview Tutorial
+# DDIA Review Using Microsoft's Engineering Lifecycle
 
 ## Contents
 
 - [Purpose and source boundaries](#purpose-and-source-boundaries)
+- [Technical excellence topics](#technical-excellence-topics)
 - [The repeated teaching format](#the-repeated-teaching-format)
-- [Stage 1 — Clarify the problem and requirements](#stage-1--clarify-the-problem-and-requirements)
-- [Stage 2 — Map the implementation and data](#stage-2--map-the-implementation-and-data)
-- [Stage 3 — Trace correctness, concurrency, and failure](#stage-3--trace-correctness-concurrency-and-failure)
-- [Stage 4 — Analyze complexity, scale, and trade-offs](#stage-4--analyze-complexity-scale-and-trade-offs)
-- [Stage 5 — Verify with examples and tests](#stage-5--verify-with-examples-and-tests)
-- [Stage 6 — Present the review and interview recap](#stage-6--present-the-review-and-interview-recap)
+- [Stage 1 — Problem solving](#stage-1--problem-solving)
+- [Stage 2 — Design](#stage-2--design)
+- [Stage 3 — Coding](#stage-3--coding)
+- [Stage 4 — Testing](#stage-4--testing)
 - [Worked miniature](#worked-miniature)
 - [Coverage of the Master DDIA rubric](#coverage-of-the-master-ddia-rubric)
 - [Research sources](#research-sources)
 
 ## Purpose and source boundaries
 
-Teach the user to explain a real code review using interview-style questions.
-A system-design round usually starts from a problem to design; this skill starts
-from an implementation to inspect. Reconstruct what exists before proposing changes.
-There need not be an issue: a supported explanation of why a safeguard works is a
-valuable tutorial outcome.
+Use Microsoft's **Engineering lifecycle** areas as the primary teaching structure:
+Problem solving, Design, Coding, and Testing. Use its **Technical excellence** areas
+to select relevant subjects within that structure. Microsoft's page describes
+assessment areas, not a mandatory four-round interview sequence; the numbered stages
+here are a DotSkills teaching adaptation.
 
-The six stages, questions, examples, and answer scaffold below are a DotSkills
-adaptation, not a universal company process or a list of questions known to be asked.
-Company, role, and seniority affect interview format. The sources at the end support
-general preparation themes; DDIA supplies the review lens through the existing rubric.
-Do not attribute this adaptation to AGNTCon/MCPCon or to a specific DDIA chapter/page
-unless that attribution has actually been verified.
+Keep DDIA as the technical review lens throughout all four stages. Start from the
+actual implementation and requirements, not an imagined greenfield system. Explain
+existing protections as well as supported issues. Zero findings is a valid outcome.
+
+This remains a code-review skill with guided learning and optional interview practice.
+A Coding stage means inspecting and explaining existing code by default. It does not
+authorize writing code, editing files, or executing a target skill against real services.
+Hands-on coding requires a separate user request and a bounded local/synthetic scope.
+An explanation of code does not establish the learner's ability to implement it.
+
+The questions, examples, and DDIA mappings below are original DotSkills adaptations,
+not official Microsoft interview questions, a hiring rubric, or conference methodology.
+Do not invent DDIA chapter/page citations. Preserve links to preparation sources and
+distinguish source principles from inspected evidence and model recommendations.
+
+## Technical excellence topics
+
+Select topics based on the target and the learner's goal; do not cover every area
+in every session. State which topics apply and why. The source list is role-dependent,
+not a universal mastery checklist.
+
+| Topic | Application within this DDIA tutorial |
+| --- | --- |
+| Algorithms | Explain relevant computation, complexity, and correctness. |
+| Data structures | Compare actual lookup, ordering, memory, and traversal choices. |
+| System design and distributed systems | Apply DDIA to ownership, storage, consistency, failure, and scale. |
+| AI / ML | When present, inspect data/model pipeline reliability; do not claim DDIA alone evaluates model quality. |
+| Data science | When present, examine data correctness and transformations; identify statistical questions needing separate expertise. |
+| Computer networking | When relevant, examine protocol behavior, timeouts, retries, and failure assumptions. |
+
+Unrelated ML, statistics, or networking exercises do not become mandatory DDIA checks.
+If the user wants a broader exercise outside this skill's scope, explain the boundary.
 
 ## The repeated teaching format
 
@@ -60,7 +85,7 @@ Keep teaching examples labeled hypothetical and separate from findings about act
 code. Link the source title when using a research-derived preparation principle;
 label target-code evidence and model-proposed recommendations separately.
 
-## Stage 1 — Clarify the problem and requirements
+## Stage 1 — Problem solving
 
 Inspect the target change, surrounding behavior, and available requirements first.
 Then state scope, revision, user goal, and exclusions. If no target is identifiable,
@@ -84,7 +109,7 @@ Example questions:
 Answer scaffold: “The required behavior is X, established by Y. The invariant is Z.
 We know A about the workload; B is unknown, so I will not assume a scale problem.”
 
-## Stage 2 — Map the implementation and data
+## Stage 2 — Design
 
 Identify actual entry points, API or function contracts, entities, authoritative
 stores, and read/write paths. Explain how a request passes through the implementation.
@@ -100,7 +125,21 @@ Answer scaffold: “This entry point calls A, which changes B in store C. D is a
 derived copy. The contract establishes E; the inspected implementation guarantees F.”
 Explain the difference between intended architecture and observed implementation.
 
-## Stage 3 — Trace correctness, concurrency, and failure
+### Compare design choices through DDIA
+
+Connect the proposed or existing design to Stage 1's requirements. Discuss ownership,
+transaction boundaries, consistency, schema evolution, replication, and recovery only
+where applicable. Explain which properties come from a design contract and which still
+need implementation verification in Stage 3.
+
+Ask: “What alternative would you consider, and which constraint changes your choice?”
+Model an answer that names the invariant, benefit, cost, and evidence needed. Keep
+capacity estimates hypothetical unless sourced; use them only when they affect a
+decision. Prefer the smallest justified change over an unnecessary redesign.
+
+## Stage 3 — Coding
+
+### Inspect implementation and guarantees
 
 Choose a concrete path and walk through the successful case, then a relevant failure
 or interleaving. Inspect transaction boundaries, locks/constraints, retry behavior,
@@ -118,7 +157,7 @@ does/does not cover both. The supported outcome is D, affecting invariant E.”
 When discussing alternatives, distinguish transaction atomicity from isolation and
 idempotency; one does not automatically supply all three guarantees.
 
-## Stage 4 — Analyze complexity, scale, and trade-offs
+### Analyze algorithms and data structures
 
 Use relevant DSA reasoning alongside DDIA design reasoning. Define n (and m, k, or
 other variables) before claiming complexity. Trace loops, lookups, sorting, recursion,
@@ -143,7 +182,16 @@ preserved, and conditions where you would choose differently. Do not recommend
 distributed infrastructure merely because it could scale further in theory.
 If no meaningful DSA analysis applies, explain that briefly and retain DDIA coverage.
 
-## Stage 5 — Verify with examples and tests
+### Optional hands-on practice
+
+For an explicitly requested coding exercise, help the learner choose a familiar
+language, propose a small implementation task, and let them write it before showing
+a worked solution when in Practice mode. Prefer runnable code for the exercise;
+label pseudocode as explanatory rather than a tested implementation. Stay within
+authorized local fixtures and carry the result into Stage 4. Do not silently modify
+the repository during a review or treat a learning checkpoint as write authorization.
+
+## Stage 4 — Testing
 
 Recommend a small normal case, boundary case, and relevant failure/concurrency case.
 For each, state input/setup, expected behavior and its source, what would be observed,
@@ -163,7 +211,7 @@ Example questions:
 
 Report tests actually executed, tests only inspected, and proposed tests separately.
 
-## Stage 6 — Present the review and interview recap
+### Review report and interview recap
 
 Deliver the original review categories: correctness/invariants, data model/consistency,
 reliability/operability, testing gaps, and optional improvements. Deduplicate root
@@ -189,10 +237,10 @@ Suppose a batch function keeps the first record for each ID in input order. It s
 an ever-growing list of accepted IDs for every input item. Requirements specify
 integer IDs and a maximum batch of 1,000 records; no measured latency is supplied.
 
-- **Clarify:** “Must we preserve order and which duplicate wins?” The supplied
+- **Stage 1 — Problem solving:** “Must we preserve order and which duplicate wins?” The supplied
   contract says first occurrence wins. Faster code must preserve that behavior.
-- **Trace:** Input IDs [7, 2, 7] yields [7, 2]. The third item is skipped.
-- **Analyze:** For n distinct records, repeated linear membership scans take O(n²)
+- **Stage 2 — Design:** Input IDs [7, 2, 7] yields [7, 2]. The third item is skipped.
+- **Stage 3 — Coding:** For n distinct records, repeated linear membership scans take O(n²)
   comparisons overall and O(n) storage. A hash set alongside the ordered output
   can give expected O(n) processing and O(n) space, assuming expected O(1) membership.
   It does not guarantee constant-time lookup in every worst case.
@@ -202,7 +250,7 @@ integer IDs and a maximum batch of 1,000 records; no measured latency is supplie
 - **DDIA connection:** In-memory deduplication within one batch does not establish
   idempotency across retried requests or multiple workers. Inspect persistence and
   transaction semantics before claiming either a duplicate-write bug or protection.
-- **Verify:** Propose empty input, repeated IDs, distinct IDs, and first-occurrence/order
+- **Stage 4 — Testing:** Propose empty input, repeated IDs, distinct IDs, and first-occurrence/order
   checks. Separately test any established retry contract in isolation. None has run
   merely because this walkthrough described it.
 
@@ -220,22 +268,26 @@ Do not force irrelevant dimensions into findings.
 | --- | --- |
 | 1. Changed behavior; 2. Match to intent | 1 and 3 |
 | 3. Entities/stores/flows; 4. Authoritative values | 2 |
-| 5. Access patterns, storage, indexes | 2 and 4 |
+| 5. Access patterns, storage, indexes | 2 and 3 |
 | 6. Transactions/invariants; 7. Concurrency; 8. Consistency/ordering | 3 |
 | 9. Retries/duplicates; 10. Events/caches/derived views | 3 |
 | 11. Schema/encoding compatibility | 3 |
-| 12. Replication/partitioning/failover | 3 and 4 |
+| 12. Replication/partitioning/failover | 2 and 3 |
 | 13. Partial failures/recovery | 3 |
-| 14. Scale and operability | 4 |
-| 15. Tests of guarantees/failures | 5 |
+| 14. Scale and operability | 2 and 3 |
+| 15. Tests of guarantees/failures | 4 |
 
 ## Research sources
 
 Checked 2026-10-26. These are preparation sources, not guarantees of interview content.
 
 - [Microsoft — Technical interviewing](https://careers.microsoft.com/v2/global/en/hiring-tips/technical-interviewing.html):
-  supports clarifying ambiguities, planning, testing boundaries, explaining algorithmic
-  complexity, and comparing data structures.
+  **primary framework**: Engineering lifecycle provides the four teaching areas;
+  Technical excellence supplies role-relevant topic choices. Numbering these areas
+  as tutorial stages and embedding DDIA are DotSkills adaptations.
+Supplementary sources below inform examples and techniques; they do not define the
+primary stage structure.
+
 - [Amazon — Software development interview topics](https://amazon.jobs/content/en-gb/how-we-hire/interview-prep/software-development-topics):
   lists coding, algorithms, data structures, databases, and distributed computing;
   emphasizes applying knowledge rather than memorizing details.
@@ -246,5 +298,5 @@ Checked 2026-10-26. These are preparation sources, not guarantees of interview c
   proposes requirements, entities/interfaces, high-level design, and deep dives,
   with estimates when they influence a design decision.
 
-The six-stage code-review flow and worked miniature are original model-proposed
-adaptations for DotSkills. They are not copied company questions or conference methods.
+The DDIA mapping, stage numbering, questions, and worked miniature are original
+model-proposed adaptations for DotSkills. They are not copied company questions or conference methods.
