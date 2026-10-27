@@ -66,14 +66,6 @@
       "exposed": false
     },
     {
-      "name": "code-review-ddia",
-      "category": "engineering",
-      "purpose": "Broad DDIA code review using the standalone Master 15-point rubric and evidence-calibrated findings.",
-      "source": "dotskills",
-      "path": "skills/code-review-ddia",
-      "reference_count": 0
-    },
-    {
       "name": "investigate-existing-feature",
       "category": "engineering",
       "purpose": "Feature provenance and dependencies investigation.",

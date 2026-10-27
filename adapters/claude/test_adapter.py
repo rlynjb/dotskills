@@ -65,8 +65,8 @@ class AdapterTests(unittest.TestCase):
                 if file.is_file():
                     self.assertEqual(file.read_bytes(), archive.read(file.relative_to(output).as_posix()))
         self.run_cli('build_plugin.py', '--output', output, ok=False)
-        self.run_cli('build_plugin.py', '--output', output, '--force', '--skill', 'code-review-ddia')
-        self.assertEqual([p.name for p in (output / 'skills').iterdir()], ['code-review-ddia'])
+        self.run_cli('build_plugin.py', '--output', output, '--force', '--skill', 'refine-feature-requirements')
+        self.assertEqual([p.name for p in (output / 'skills').iterdir()], ['refine-feature-requirements'])
 
     def test_unsafe_paths(self):
         self.run_cli('build_plugin.py', '--output', ROOT / 'skills', '--force', ok=False)

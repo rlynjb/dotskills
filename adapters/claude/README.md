@@ -59,7 +59,7 @@ Both commands support the same mutually exclusive selectors:
 
 ```bash
 # One or more skills (repeat --skill)
-python3 adapters/claude/install_claude.py --target ../my-project --skill code-review-ddia
+python3 adapters/claude/install_claude.py --target ../my-project --skill refine-feature-requirements
 
 # A category
 python3 adapters/claude/build_plugin.py --category engineering --name dotskills-engineering

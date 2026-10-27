@@ -48,7 +48,6 @@ DotSkills is **not another skill creator or evaluation engine**. It keeps the li
 | [agent-observability-and-feedback](skills/agent-observability-and-feedback/SKILL.md) | methodology | Inspect agent journeys and turn production feedback into actionable eval coverage. |
 | [agent-trust-and-governance](skills/agent-trust-and-governance/SKILL.md) | methodology | Apply provenance, authority boundaries, approvals, risk controls, and verification. |
 | [code-review](skills/code-review/SKILL.md) | engineering | Engineering code review through individual book lenses. |
-| [code-review-ddia](skills/code-review-ddia/SKILL.md) | engineering | Standalone DDIA review with an evidence-calibrated rubric. |
 | [investigate-existing-feature](skills/investigate-existing-feature/SKILL.md) | engineering | Feature provenance and dependencies investigation. |
 | [investigate-new-feature](skills/investigate-new-feature/SKILL.md) | engineering | Pre-design feature discovery and requirements. |
 | [refine-feature-requirements](skills/refine-feature-requirements/SKILL.md) | engineering | Ticket refinement and Superpowers handoff. |
@@ -127,7 +126,6 @@ dotskills/
 │   ├── agent-observability-and-feedback/
 │   ├── agent-trust-and-governance/
 │   ├── code-review/
-│   ├── code-review-ddia/
 │   ├── investigate-existing-feature/
 │   ├── investigate-new-feature/
 │   ├── refine-feature-requirements/
