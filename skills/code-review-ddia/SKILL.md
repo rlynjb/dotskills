@@ -33,8 +33,8 @@ from its Technical excellence areas, and apply DDIA within every stage. This is 
 teaching adaptation of assessment areas, not an official four-round interview script.
 Preserve all 15 Master DDIA checks and the evidence rules below.
 
-- **Guided tutorial (default):** explain in plain English, show a relevant interview
-  question, demonstrate how to answer using inspected evidence, and explain why the
+- **Guided tutorial (default):** explain in plain English, show a relevant **Problem question**,
+  demonstrate how to answer using inspected evidence, and explain why the
   answer is justified. Do not make the beginner invent the questions or answers.
 - **Practice (on request):** ask one question at a time, wait for the learner's answer,
   then provide evidence-based feedback, a hint or worked answer, and a follow-up.

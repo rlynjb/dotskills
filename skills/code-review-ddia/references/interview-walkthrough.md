@@ -59,7 +59,10 @@ If the user wants a broader exercise outside this skill's scope, explain the bou
 For each stage, use a small, relevant selection of the following:
 
 1. **What and why:** explain the stage's goal and why it matters.
-2. **Interview-style question:** ask a concrete question tied to the target.
+2. **Problem question:** state the concrete behavior, concern, or decision to examine
+   in the target code. Use this label in Guided and Practice mode, rather than
+   “Interview-style question.” For example: “What happens if this request is retried
+   after the first attempt commits?” A question does not imply a defect exists.
 3. **How to build an answer:** name the requirements and evidence to examine.
 4. **Worked answer:** demonstrate a concise answer supported by inspected files,
    symbols, tests, or supplied contracts. If evidence is missing, model an honest
