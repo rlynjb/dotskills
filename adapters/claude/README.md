@@ -21,7 +21,8 @@ python3 adapters/claude/install_claude.py --target ../my-project --dry-run
 python3 adapters/claude/install_claude.py --target ../my-project
 ```
 
-This copies the six methodology skills, including `refine-skill`, into
+This copies the exposed methodology skills, including `refine-skill` and
+`audit-skill`, into
 `../my-project/.claude/skills/<name>/`, with runtime supporting files.
 Evaluator-only `evals/` folders are deliberately excluded.
 Start `claude` from that project and invoke `/refine-skill`. Confirm that the

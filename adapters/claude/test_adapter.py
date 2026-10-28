@@ -28,7 +28,10 @@ class AdapterTests(unittest.TestCase):
         self.assertFalse((self.target / '.claude').exists())
         self.run_cli('install_claude.py', '--target', self.target)
         installed = self.target / '.claude' / 'skills'
-        self.assertEqual(len(list(installed.iterdir())), 6)
+        catalog = json.loads((ROOT / 'catalog.json').read_text())['skills']
+        expected = {s['name'] for s in catalog
+                    if s['category'] == 'methodology' and s.get('exposed') is not False}
+        self.assertEqual({p.name for p in installed.iterdir()}, expected)
         self.assertFalse((installed / 'refine-skill' / 'evals').exists())
         for package in installed.iterdir():
             for file in (ROOT / 'skills' / package.name).rglob('*'):
