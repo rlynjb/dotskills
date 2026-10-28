@@ -17,6 +17,14 @@
       "reference_count": 0
     },
     {
+      "name": "audit-skill",
+      "category": "methodology",
+      "purpose": "Read-only, overview-first skill contracts, workflow/evidence maps, overlap analysis, validation-gap assessment, and proposed test scenarios.",
+      "source": "dotskills",
+      "path": "skills/audit-skill",
+      "reference_count": 0
+    },
+    {
       "name": "context-engineering",
       "category": "methodology",
       "purpose": "Diagnose and improve how a target skill selects, verifies, expands, and stops using context.",
