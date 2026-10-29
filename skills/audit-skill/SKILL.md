@@ -17,6 +17,25 @@ Understand a skill **before changing it**. Inspect its instructions and supporti
 
 **Select the mode by intent, not by the skill name.** An explicit mode wins. "Explore", "learn", "understand", "get acquainted", or "walk me through" selects Explore. "Audit", "assess", "find gaps", "validate" or "review risks" selects Audit. "Compare", "overlap", or "contrast" selects Compare if multiple skills are available. **For a single target without an assessment request, default to Explore.** Do not require a second skill. Do not silently transition from Explore to Audit or to `refine-skill`.
 
+## First-response Mode Guide (all modes)
+
+**Every new invocation must begin its initial user-facing response with this concise Mode Guide, before any Skill Snapshot, Executive Summary, Skill Contract, workflow map, evidence map, findings, or questions.** This is an orientation, not a mandatory mode-selection step: select the mode from the user's intent and continue with that mode's normal first response. Even if the user explicitly names a mode, show the guide briefly.
+
+Use this format, substituting the active mode and a truthful one-line reason:
+
+```text
+Audit Skill — Mode Guide
+Explore (1 skill): Learn its purpose, workflow, decisions, and concepts.
+Audit (1 skill): Assess gaps, risks, evidence, and missing safeguards.
+Compare (2+ skills): Examine overlaps, conflicting responsibilities, and handoffs.
+Active mode: <Explore | Audit | Compare> — <reason based on the request>.
+To switch: "Audit <skill>" or "Compare <skill A> with <skill B>".
+
+<Continue with the selected mode's normal first-response sections.>
+```
+
+Explicitly make clear that **Audit does not require two skills; only Compare requires multiple accessible skills**. Do not pause for confirmation or offer a new selection gate when the intent is clear. If Explore was selected by default, say that it was because one skill was supplied without an assessment request. Keep this guide short and avoid repeating it on every follow-up/deep dive unless the user starts a new invocation or asks about modes.
+
 ## Common read-only discovery and evidence rules
 
 1. Locate the target `SKILL.md`, then inspect material linked `references/`, templates, scripts, tests/evals and handoff docs **progressively**. Record target revision/branch, inspected files and inaccessible areas. Avoid reading everything aloud or dumping long instructions.
@@ -27,7 +46,7 @@ Understand a skill **before changing it**. Inspect its instructions and supporti
 
 ## Explore Mode — understand one skill
 
-The first response is **a learning index, not a gap report or a lesson**. Inspect enough evidence to cover every material part of the skill, then present:
+After the required **Mode Guide**, the Explore first response is **a learning index, not a gap report or a lesson**. Inspect enough evidence to cover every material part of the skill, then present:
 
 1. **Skill snapshot:** purpose, version/source, inspected scope, what remains unknown.
 2. **Compact Skill Contract:** purpose, trigger, inputs, major workflow, decisions, outputs, validation, and handoff. Summarize the documented design, not a proven capability.
@@ -69,7 +88,7 @@ Apply the established five-phase audit, **omitting Phase 3 unless comparison was
 4. **Validation and Gap Analysis:** identify existing protections **first**; then examine completeness, assumptions, provenance, acceptance criteria, functional and nonfunctional requirements, dependencies, estimates, confidence, readiness, permissions and task-specific checks **where applicable**. Rank material gaps High/Medium/Low with consequence, confidence and evidence. A missing instruction is not proof of a behavioral failure.
 5. **Evaluation Recommendations (design only):** propose three representative cases (normal/well-defined, ambiguous, unresolved dependencies or other target-specific risks), expected outcomes and objective pass/fail checks. Mark every case `NOT RUN`. Do not run them.
 
-**Audit first response:** executive summary; Skill Contract; Evidence & Pattern Map; Workflow Map; existing safeguards; ranked gaps/risks; smallest proposed validation improvement; three `NOT RUN` scenarios; questions for human decisions. Include overlap analysis **only in Compare Mode**. Keep it skimmable and wait for the user to select a finding.
+**Audit first response:** after the required **Mode Guide**, present an executive summary; Skill Contract; Evidence & Pattern Map; Workflow Map; existing safeguards; ranked gaps/risks; smallest proposed validation improvement; three `NOT RUN` scenarios; questions for human decisions. Include overlap analysis **only in Compare Mode**. Keep it skimmable and wait for the user to select a finding.
 
 **Compare Mode** runs the same audit with Phase 3 enabled, separately substantiates claims about **each** skill, and distinguishes complementary shared context from conflicting decisions. If one skill cannot be inspected, say `NOT ASSESSED` for that side; do not invent its behavior. The original Sprint Assessment vs. Refine Requirements example is preserved in [the starter audit prompt](references/sprint-assessment-audit.md).
 
