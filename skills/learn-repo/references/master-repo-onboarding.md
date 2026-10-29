@@ -8,7 +8,7 @@ Optional context:
 - Repository / revision: [current workspace, or URL and branch/commit]
 - My background: [languages/frameworks I know; unfamiliar areas]
 - Time available: [optional]
-- Delivery: [guided tutorial, one question at a time by default; complete tutorial if explicitly requested]
+- Delivery: [first show all planned learning questions as a menu; then guided/practice deep dives by choice; complete tutorial if explicitly requested]
 
 Use these five books as complementary teaching lenses:
 - Designing Data-Intensive Applications, 2nd edition (DDIA), by Martin Kleppmann
@@ -18,14 +18,29 @@ Use these five books as complementary teaching lenses:
 - Algorithmic Thinking, 2nd edition, by Daniel Zingaro.
 - A Philosophy of Software Design (APOSD), by John Ousterhout.
 
-## Tutorial delivery — default
+## Tutorial delivery — overview first (default)
 
+Use the following three stages and eleven topics as a **coverage map**, not a mandatory lesson sequence. Select relevant questions and book lenses from inspected code; do not force a book topic where the repository has no supporting evidence.
 
-Use the three stages and eleven topics below as a technical coverage guide, not three large responses to deliver by default. Choose useful questions from inspected code and the relevant book lenses. Explain which lenses fit and why; do not force all five into every question. A question can teach an existing safeguard or design choice without implying a defect.
+### Default first response: complete Learning Menu
 
-Open with the repository target, scope/revision when known, relevant lenses, mode, and read-only boundary. Use `Problem question N — Concrete question` headings; numbers count tutorial questions, not topic sections or lifecycle stages.
+Before teaching any question, perform a bounded, read-only reconnaissance of repo instructions, docs, manifests, tests, CI, entry points, contracts, and representative code across **all major first-party subsystems**. Record revision, paths, scope, and unknowns. If essential sources cannot be accessed, request the minimum missing files; do not hallucinate paths or results.
 
-For each completed question, present:
+Present the initial **Learning Menu** in this order:
+
+1. **Repository snapshot** — repository purpose/type, revision, scope, major limitations, relevant book lenses, and read-only boundary.
+2. **Major-area evidence map** — each important first-party package/subsystem, responsibility, representative file/symbol, and VERIFIED/INFERRED/NOT VERIFIED status.
+3. **All planned questions** — a concise, complete first-pass index covering all **applicable** topics `T-01` through `T-11`, organized under Stages 1–3. For **every material question discovered**, give a stable `Q-xx` ID, one-sentence concrete question, topic, code/doc evidence or NOT VERIFIED, and relevant lens if useful. Include at least one question per applicable topic and enough questions to represent each major first-party area. Do not force irrelevant data-engineering concerns; note `NOT APPLICABLE — reason`. Label tentative entries `PROVISIONAL / NOT VERIFIED`. Keep the whole list skimmable even in large monorepos by grouping and deduplicating, not hiding questions for later.
+4. **Findings & unknowns** — optional short `F-xx` list of interesting observed patterns, conflicts, or unresolved evidence gaps, **not assumed defects**.
+5. **Choose what to explore** — invite `Q-xx`, `T-xx`, `F-xx`, a subsystem, or a named concept, as well as suggested study order, menu refresh, or full guide. **Stop; do not auto-start Question 1, ask a Practice question, or reveal worked answers.**
+
+Questions are **complete for the first-pass inspection**, not a claim that no new knowledge can emerge later. If newly inspected evidence reveals a missing question, append a new ID and explain why; do not silently renumber. Stage order is only a recommended starting path. If the learner selects Stage 2/3 first, briefly explain necessary prerequisites and honor the choice.
+
+### After user selection
+
+For a `Q-xx` choice, use the heading `Problem question Q-xx — Concrete question` and teach only that question, or wait for the learner in Practice mode. A `T-xx`, subsystem, or concept choice triggers a focused orientation and its matching questions, or the clearest concrete question if the selection is specific enough. A `F-xx` choice examines the evidence for the finding and offers a relevant question. Keep the original `Q-xx` IDs, track coverage as covered/pending/not applicable/unverified, and invite another selection at each checkpoint. "Continue" means advance the selected topic or a clearly recommended pending question, **not** restart or automatically work through every stage.
+
+For each completed selected question, present:
 
 1. **What and why:** explain the concept and why it matters here in plain English. Define unfamiliar terms at first use.
 2. **Problem question:** ask about a concrete behavior, mechanism, or design decision in this repository.
@@ -38,16 +53,16 @@ For each completed question, present:
 
 Keep explanations beginner-friendly, concrete, and tied to the repository. Avoid mechanical filler. Use concise public explanations of evidence and decisions.
 
-- **Guided (default):** teach one question per response, including the worked answer and walkthrough, then pause at the checkpoint.
-- **Practice (on request):** ask one question and wait before revealing the worked answer or walkthrough. After the learner answers or asks for help, give feedback or hints, then the teaching sections as appropriate. Clarifications stay on the same question.
-- **Complete tutorial (on request):** present the relevant questions and worked answers together, followed by the glossary and learning summary; use one checkpoint at the end rather than pausing between questions.
-- **Concise explanation (on request):** summarize behavior, mechanisms, trade-offs, and evidence without the teaching sequence.
+- **Guided (default after the menu):** teach one selected question per response, including the worked answer and walkthrough, then pause at the checkpoint.
+- **Practice (on request after the menu):** ask one selected question and wait before revealing the worked answer or walkthrough. After the learner answers or asks for help, give feedback or hints, then the teaching sections as appropriate. Clarifications stay on the same question.
+- **Complete tutorial (on explicit request):** present the question index first, then the relevant questions and worked answers together, followed by the glossary and learning summary; use one checkpoint at the end rather than pausing between questions.
+- **Concise explanation (on request):** explain a selected concept's behavior, mechanisms, trade-offs, and evidence without the full teaching sequence; if no topic was selected, still show the initial Learning Menu.
 
 Track coverage across questions: covered, not applicable with a reason, or unverified because evidence is missing. One answered question is not a complete repository onboarding. At completion or on request, provide the relevant glossary and learning summary and practical onboarding path from Stage 3, scope, coverage, remaining unknowns, and verification limits. Separate tests inspected, actually executed, and proposed. If the learner stops early, label the summary partial.
 
 Do not append draft code review comments or a post-review comments section. This is an repository-learning tutorial. Discuss supported concerns as teaching points, distinguish confirmed issues from plausible risks and unknowns, and do not manufacture findings. Learning checkpoints govern pace only; they do not authorize code changes or external actions.
 
-Keep the whole-repository scope: begin with purpose and the major-area map, then deepen execution/data flows and investigation skills. Use the three stages as a learning progression and coverage record, while the tutorial questions determine response pacing. Map every major first-party area at a useful level; a representative flow or one directory does not replace that map. Stage-end comprehension questions are optional practice prompts, not extra questions to ask all at once in Guided or Practice mode. Present them one at a time if the learner chooses practice.
+Keep the whole-repository scope: first map purpose and all major areas for the Learning Menu, then deepen whichever execution/data flows or investigation skills the learner selects. Use the stages as a coverage record and optional recommended progression, while the learner's selected questions control the actual order and response pacing. Map every major first-party area at a useful level; a representative flow or one directory does not replace that map. Stage-end comprehension questions are optional practice prompts, not extra questions to ask all at once in Guided or Practice mode. Present them one at a time if the learner chooses practice.
 
 ## Working rules
 - Inspect the repository before explaining it. Read applicable repo instructions,
@@ -111,10 +126,13 @@ Keep the whole-repository scope: begin with purpose and the major-area map, then
      and preview Stage 2. Offer three open-ended comprehension questions as
      optional practice, delivered according to the selected tutorial mode.
 
-Cover Stage 1 through tutorial questions before proceeding to deeper stages.
-Pause after each completed Guided question at the learning checkpoint. A request
-to continue advances the current tutorial; it does not restart onboarding.
-If I explicitly request a complete guide, deliver all stages together.
+Offer Stage 1 as a recommended foundation, but do not require its completion
+before a learner-selected Stage 2 or Stage 3 topic. Explain prerequisites briefly
+when relevant and proceed with the chosen question. Pause after each completed
+Guided question at the learning checkpoint. A request to continue advances the
+selected topic or a clearly suggested pending question; it does not restart the
+menu. If I explicitly request a complete guide, show the index first and then
+deliver all applicable stages together.
 
 ## Stage 2 — Connect execution, data, and algorithms
 

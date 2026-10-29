@@ -102,7 +102,7 @@
     {
       "name": "learn-repo",
       "category": "learning",
-      "purpose": "Learn a whole repository using the extracted master onboarding prompt and staged teaching workflow.",
+      "purpose": "Read-only, overview-first repository learning menu: all material evidence-anchored questions first, followed by learner-selected Guided/Practice deep dives across three stages and five book lenses.",
       "source": "dotfiles",
       "path": "skills/learn-repo",
       "reference_count": 0

@@ -52,7 +52,7 @@ DotSkills is **not another skill creator or evaluation engine**. It keeps the li
 | [investigate-existing-feature](skills/investigate-existing-feature/SKILL.md) | engineering | Feature provenance and dependencies investigation. |
 | [investigate-new-feature](skills/investigate-new-feature/SKILL.md) | engineering | Pre-design feature discovery and requirements. |
 | [refine-requirements](skills/refine-requirements/SKILL.md) | engineering | Codebase-first guided/practice interview for FRs, NFRs, edge cases, and system-design-ready Superpowers handoff. |
-| [learn-repo](skills/learn-repo/SKILL.md) | learning | Learn a whole repository through the extracted master onboarding prompt. |
+| [learn-repo](skills/learn-repo/SKILL.md) | learning | Overview-first repository questions and evidence map; choose any topic for a guided/practice deep dive. |
 | [learn-implementation](skills/learn-implementation/SKILL.md) | learning | Learn an implementation using the extracted master prompt and five book lenses. |
 | [buffr-decision-support](skills/buffr-decision-support/SKILL.md) | decision-support | Buffr M0–M7 module reference and execution guidance; engine remains external. |
 
