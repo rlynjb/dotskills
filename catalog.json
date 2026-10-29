@@ -19,7 +19,7 @@
     {
       "name": "audit-skill",
       "category": "methodology",
-      "purpose": "Read-only, overview-first skill contracts, workflow/evidence maps, overlap analysis, validation-gap assessment, and proposed test scenarios.",
+      "purpose": "Read-only Explore/Audit/Compare modes: evidence-backed skill learning menus and deep dives, single-skill validation-gap audits, and cross-skill overlap analysis.",
       "source": "dotskills",
       "path": "skills/audit-skill",
       "reference_count": 0
