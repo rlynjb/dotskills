@@ -42,7 +42,7 @@ DotSkills is **not another skill creator or evaluation engine**. It keeps the li
 | Skill | Category | Purpose |
 | --- | --- | --- |
 | [refine-skill](skills/refine-skill/SKILL.md) | methodology | Optional evidence-driven, conference-informed, human-gated workflow to learn, evaluate, and refine skills. |
-| [audit-skill](skills/audit-skill/SKILL.md) | methodology | Read-only, overview-first audits of skill workflows, overlap, evidence, validation gaps, and proposed test scenarios. |
+| [audit-skill](skills/audit-skill/SKILL.md) | methodology | Read-only **Explore / Audit / Compare**: learn one skill through a question menu and selected deep dives, assess gaps, or compare workflows. [Guide](skills/audit-skill/README.md). |
 | [context-engineering](skills/context-engineering/SKILL.md) | methodology | Diagnose and improve context selection, expansion, provenance, freshness, and stopping. |
 | [correctness-and-verification](skills/correctness-and-verification/SKILL.md) | methodology | Turn requirements into verifiable claims, invariants, checks, and evidence. |
 | [skill-lifecycle-and-release](skills/skill-lifecycle-and-release/SKILL.md) | methodology | Version, regression-test, review, and release skill changes safely. |
