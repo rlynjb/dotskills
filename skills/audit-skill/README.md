@@ -7,6 +7,7 @@ The central idea: **understand first → choose an angle → investigate with ev
 ## Table of contents
 
 - [Choose a mode](#choose-a-mode)
+- [First-response mode guide](#first-response-mode-guide)
 - [Explore Mode: learn one skill](#explore-mode-learn-one-skill)
 - [First response and question menu](#first-response-and-question-menu)
 - [Deep dives and methodology lenses](#deep-dives-and-methodology-lenses)
@@ -46,6 +47,25 @@ The central idea: **understand first → choose an angle → investigate with ev
            Human decides whether to request Refine Skill
 ```
 
+## First-response mode guide
+
+**Whenever you start `audit-skill`, its first output begins with a small mode explanation before the Skill Snapshot or Executive Summary.** The skill selects the mode from your request and keeps going; you do not have to answer a mode-selection question when your intent is clear.
+
+```text
+Audit Skill — Mode Guide
+Explore (1 skill): Learn its purpose, workflow, decisions, and concepts.
+Audit (1 skill): Assess gaps, risks, evidence, and missing safeguards.
+Compare (2+ skills): Examine overlaps, conflicting responsibilities, and handoffs.
+Active mode: Explore — one skill was provided without a request to assess it.
+To switch: "Audit Sprint Assessment" or
+           "Compare Sprint Assessment with Refine Requirements".
+
+Skill Snapshot
+...
+```
+
+The **Active mode** line changes based on your request. **Audit works with one skill**; only Compare needs multiple accessible skills. The guide appears once at the start of each invocation, not before every question or deep dive. It does not alter the existing read-only safeguards or the Explore question-first flow.
+
 ## Explore Mode: learn one skill
 
 Use Explore when you want to know *how a skill works* before deciding whether anything needs to be improved. This mode does **not** require finding a defect, producing a readiness score, or writing evals.
@@ -79,8 +99,14 @@ The agent derives **concrete, target-specific questions** from inspected files, 
 For example, an **illustrative menu only** for Sprint Assessment might read:
 
 ```text
-Skill: Sprint Assessment | Mode: Explore
-Snapshot: [source revision, inspected files, known limitations]
+Audit Skill — Mode Guide
+Explore (1 skill): Learn how it works.
+Audit (1 skill): Assess gaps, risks, and safeguards.
+Compare (2+ skills): Examine overlap and handoffs.
+Active mode: Explore — one skill, no assessment requested.
+To switch: "Audit Sprint Assessment" or "Compare Sprint Assessment with Refine Requirements".
+
+Skill Snapshot: Sprint Assessment [source revision, inspected files, known limitations]
 Skill Contract: [purpose / inputs / decisions / outputs / handoff]
 Workflow: [documented stages and decision points]
 Evidence Map: [claim -> file:line -> documented / implemented / observed / unverified]
