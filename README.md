@@ -17,30 +17,30 @@ Skills are grouped by use.
 
 | Skill | Purpose |
 | --- | --- |
-| [refine-skill](skills/refine-skill/SKILL.md) | Optional evidence-driven, conference-informed, human-gated workflow to learn, evaluate, and refine skills. |
-| [audit-skill](skills/audit-skill/SKILL.md) | Read-only **Explore / Audit / Compare**: learn one skill through a question menu and selected deep dives, assess gaps, or compare workflows. [Guide](skills/audit-skill/README.md). |
-| [context-engineering](skills/context-engineering/SKILL.md) | Diagnose and improve context selection, expansion, provenance, freshness, and stopping. |
-| [correctness-and-verification](skills/correctness-and-verification/SKILL.md) | Turn requirements into verifiable claims, invariants, checks, and evidence. |
-| [skill-lifecycle-and-release](skills/skill-lifecycle-and-release/SKILL.md) | Version, regression-test, review, and release skill changes safely. |
-| [agent-observability-and-feedback](skills/agent-observability-and-feedback/SKILL.md) | Inspect agent journeys and turn production feedback into actionable eval coverage. |
-| [agent-trust-and-governance](skills/agent-trust-and-governance/SKILL.md) | Apply provenance, authority boundaries, approvals, risk controls, and verification. |
+| [refine-skill](skills/refine-skill/SKILL.md) | Evaluate and improve agent skills through guided tests, evidence-based diagnosis, and approved changes. |
+| [audit-skill](skills/audit-skill/SKILL.md) | Explore, audit, or compare skills to understand their workflows, identify gaps, and spot overlaps without making changes. |
+| [context-engineering](skills/context-engineering/SKILL.md) | Identify missing, stale, or excessive context and recommend better retrieval, verification, and stopping rules. |
+| [correctness-and-verification](skills/correctness-and-verification/SKILL.md) | Check whether a skill's conclusions follow requirements and evidence; identify missed invariants and verification gaps. |
+| [skill-lifecycle-and-release](skills/skill-lifecycle-and-release/SKILL.md) | Compare skill versions, assess regressions and portability, and guide release or rollback decisions. |
+| [agent-observability-and-feedback](skills/agent-observability-and-feedback/SKILL.md) | Trace agent inputs, tool use, and outcomes to diagnose failures and turn feedback into regression cases. |
+| [agent-trust-and-governance](skills/agent-trust-and-governance/SKILL.md) | Assess permissions, provenance, and approval boundaries; recommend controls for untrusted inputs and risky agent actions. |
 
 ### Everyday workflows
 
 | Skill | Purpose |
 | --- | --- |
-| [code-review](skills/code-review/SKILL.md) | Engineering code review through individual book lenses. |
-| [refine-requirements](skills/refine-requirements/SKILL.md) | Codebase-first guided/practice interview for FRs, NFRs, edge cases, and system-design-ready Superpowers handoff. |
-| [learn-repo](skills/learn-repo/SKILL.md) | Whole-repo learning menu, recent technical changes, and selected deep dives using Alex Xu's four steps and relevant book lenses. |
-| [learn-implementation](skills/learn-implementation/SKILL.md) | Learn an implementation using the extracted master prompt and five book lenses. |
-| [investigate-existing-feature](skills/investigate-existing-feature/SKILL.md) | Feature provenance and dependencies investigation. |
-| [investigate-new-feature](skills/investigate-new-feature/SKILL.md) | Pre-design feature discovery and requirements. |
+| [code-review](skills/code-review/SKILL.md) | Review code through a software-engineering book lens, explaining evidence-backed findings, trade-offs, and suggested review comments. |
+| [refine-requirements](skills/refine-requirements/SKILL.md) | Refine feature requirements against existing code, identify functional and nonfunctional gaps, and prepare stakeholder questions and design handoffs. |
+| [learn-repo](skills/learn-repo/SKILL.md) | Learn an unfamiliar codebase through a selectable question menu, code-backed deep dives, and recent-change analysis. |
+| [learn-implementation](skills/learn-implementation/SKILL.md) | Explain how a specific implementation works by tracing requirements, code paths, data flow, failure modes, and design trade-offs. |
+| [investigate-existing-feature](skills/investigate-existing-feature/SKILL.md) | Trace an existing feature through code, assets, dependencies, and history to understand how it works and where it came from. |
+| [investigate-new-feature](skills/investigate-new-feature/SKILL.md) | Investigate a proposed feature's users, constraints, requirements, and trade-offs before choosing a design. |
 
 ### Decision support
 
 | Skill | Purpose |
 | --- | --- |
-| [buffr-decision-support](skills/buffr-decision-support/SKILL.md) | Buffr M0–M7 module reference and execution guidance; engine remains external. |
+| [buffr-decision-support](skills/buffr-decision-support/SKILL.md) | Explore Buffr's M0–M7 decision-support workflow and use its modules when an authorized runtime is available. |
 
 See [`catalog.json`](catalog.json) for machine-readable categories and exposure settings, and [`source-lock.json`](source-lock.json) for upstream provenance.
 
