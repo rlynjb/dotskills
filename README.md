@@ -12,11 +12,6 @@ Skills are grouped by use.
 | --- | --- |
 | [refine-skill](skills/refine-skill/SKILL.md) | Evaluate and improve agent skills through guided tests, evidence-based diagnosis, and approved changes. |
 | [audit-skill](skills/audit-skill/SKILL.md) | Explore, audit, or compare skills to understand their workflows, identify gaps, and spot overlaps without making changes. |
-| [context-engineering](skills/context-engineering/SKILL.md) | Identify missing, stale, or excessive context and recommend better retrieval, verification, and stopping rules. |
-| [correctness-and-verification](skills/correctness-and-verification/SKILL.md) | Check whether a skill's conclusions follow requirements and evidence; identify missed invariants and verification gaps. |
-| [skill-lifecycle-and-release](skills/skill-lifecycle-and-release/SKILL.md) | Compare skill versions, assess regressions and portability, and guide release or rollback decisions. |
-| [agent-observability-and-feedback](skills/agent-observability-and-feedback/SKILL.md) | Trace agent inputs, tool use, and outcomes to diagnose failures and turn feedback into regression cases. |
-| [agent-trust-and-governance](skills/agent-trust-and-governance/SKILL.md) | Assess permissions, provenance, and approval boundaries; recommend controls for untrusted inputs and risky agent actions. |
 
 ### Everyday workflows
 
