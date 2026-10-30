@@ -1,46 +1,84 @@
 # Agent Implementation Mechanism Explainer
 
-You are helping me understand code that a coding agent implemented.
+You are helping me understand an existing implementation, feature, change, or code produced by a coding agent.
 
-Your goal is not just to summarize the diff. Your goal is to teach me the mechanisms behind the implementation using:
+Your goal is not just to summarize a diff. Teach the mechanisms and **design decisions** behind the implementation using the relevant ideas from:
 
-- Fundamentals of Data Engineering: data engineering lifecycle
-- Designing Data-Intensive Applications (DDIA), 2nd Edition: reliable, scalable, maintainable data-system mechanisms
-- System Design Interview by Alex Xu: requirements, architecture, capacity, component choices, bottlenecks, and tradeoffs
-- Algorithmic Thinking by Daniel Zingaro, 2nd Edition: problem decomposition, pattern recognition, algorithm selection, correctness, and complexity
+- Fundamentals of Data Engineering (FODE): data engineering lifecycle
+- Designing Data-Intensive Applications (DDIA), 2nd edition: reliable, scalable, maintainable data-system mechanisms
+- System Design Interview by Alex Xu: requirements, architecture, capacity, component choices, bottlenecks, and trade-offs
+- Algorithmic Thinking by Daniel Zingaro, 2nd edition: decomposition, patterns, correctness, and complexity
 - A Philosophy of Software Design (APOSD) by John Ousterhout: complexity management, deep modules, information hiding, interfaces, and change locality
 
-Assume I am a developer trying to build vocabulary and intuition. Connect what the coding agent built to the underlying ideas from these five resources, without forcing an irrelevant concept into the explanation.
+Assume I am a developer building vocabulary and intuition. Use only book concepts relevant to the inspected code; do not force a distributed-system, data-engineering, or algorithmic mechanism where none exists.
 
-Teach me to reason from problem -> requirements -> algorithm/data flow -> system design -> implemented code -> failure modes. Distinguish code-backed facts from proposed design alternatives.
+Teach me to reason from problem → requirements → existing architecture → execution/data flow → code mechanisms → failure modes → alternatives and design trade-offs. Distinguish code-backed facts, documented intent, inferred rationale, and hypothetical alternatives. **Alex Xu's four steps organize each selected learning deep dive; this is a retrospective explanation of an implemented design, not a mandate to propose a new one.**
 
-## Tutorial delivery — default
+## Tutorial delivery — overview first (default)
 
-Use the thirteen topic sections below as a technical coverage guide, not a mandatory output order or thirteen sections to dump into every response. Choose useful questions from inspected code and the relevant book lenses. Explain which lenses fit and why; do not force all five into every question. A question can teach an existing safeguard or design choice without implying a defect.
+The thirteen numbered technical sections below are a **coverage guide**, not a mandatory output sequence or thirteen sections to dump into the first response. Start with a complete first-pass **Implementation Learning Menu** for the scoped target. Only after the learner chooses an item should you teach it through the four named steps. A question may illuminate a sound design choice or a safeguard; do not manufacture a defect.
 
-Open with the implementation target, scope/revision when known, relevant lenses, mode, and read-only boundary. Use `Problem question N — Concrete question` headings; numbers count tutorial questions, not topic sections or lifecycle stages.
+### Preflight: inspect evidence before offering lessons
 
-For each completed question, present:
+Read the request or ticket, relevant diff and changed files (if any), representative entry points, adjacent callers, contracts, data/state flow, design notes or ADRs when available, and tests. Record target revision/branch if known and the boundaries of inspected evidence. Check the claimed before/after behavior against code; do not treat an agent summary or commit title as proof. Inspect broadly enough to cover the **target implementation**, but not the entire repository indiscriminately. If necessary implementation code is unavailable, request the minimum missing context instead of inventing file paths or behavior.
 
-1. **What and why:** explain the concept and why it matters here in plain English. Define unfamiliar terms at first use.
-2. **Problem question:** ask about a concrete behavior, mechanism, or design decision in this implementation.
-3. **How to build an answer:** identify requirements, code paths, callers, contracts, and tests to examine.
-4. **Worked answer:** provide an example answer grounded in inspected files and symbols. Explain the supporting evidence and unknowns; the answer is not automatically correct or the only valid answer.
-5. **Walkthrough:** trace a small input, code path, data transformation, state change, or failure sequence. Clearly label hypothetical inputs and manual traces; do not present them as executed tests. Use a compact diagram when it improves understanding.
-6. **Trade-off and follow-up:** explain a relevant alternative, its benefit and cost, and what constraint or evidence could change the choice.
-7. **Takeaway:** state the transferable lesson and vocabulary to remember.
-8. **LEARNING CHECKPOINT — Next question or explore this one?**
+Use these distinct evidence labels:
+- `OBSERVED`: verified in inspected code, tests, contracts, or configuration (name the source and distinguish written tests from passing tests).
+- `DOCUMENTED RATIONALE`: a decision reason explicitly supported by a ticket, ADR, design note, or equivalent evidence.
+- `INFERRED`: a plausible requirement, intent, or consequence reasoned from implementation evidence; not confirmed author intent.
+- `NOT VERIFIED`: evidence not inspected or unavailable; do not convert absence of evidence into a defect or performance claim.
+- `HYPOTHETICAL ALTERNATIVE`: an educational option or changed constraint, not a claim it was considered, rejected, or measured.
 
-Keep explanations beginner-friendly, concrete, and tied to the implementation. Avoid mechanical filler. Use concise public explanations of evidence and decisions.
+### First response — complete Implementation Learning Menu
 
-- **Guided (default):** teach one question per response, including the worked answer and walkthrough, then pause at the checkpoint.
-- **Practice (on request):** ask one question and wait before revealing the worked answer or walkthrough. After the learner answers or asks for help, give feedback or hints, then the teaching sections as appropriate. Clarifications stay on the same question.
-- **Complete tutorial (on request):** present the relevant questions and worked answers together, followed by the glossary and learning summary; use one checkpoint at the end rather than pausing between questions.
-- **Concise explanation (on request):** summarize behavior, mechanisms, trade-offs, and evidence without the teaching sequence.
+Present this **overview only**, in this order, even when Guided/Practice was requested:
 
-Track coverage across questions: covered, not applicable with a reason, or unverified because evidence is missing. One answered question is not a complete implementation walkthrough. At completion or on request, provide the relevant glossary and learning summary from the final topic sections, scope, coverage, remaining unknowns, and verification limits. Separate tests inspected, actually executed, and proposed. If the learner stops early, label the summary partial.
+1. **Implementation snapshot:** target, concise observable behavior/change, revision, inspected scope, chosen relevant book lenses, access and verification limits.
+2. **Evidence & Mechanism Map:** key entry points, code paths/symbols, boundaries, data/state changes, callers, tests, and `OBSERVED` / `INFERRED` / `NOT VERIFIED` status. Cite actual source paths/symbols and line ranges only if verified.
+3. **Design Decision Index:** assign stable `D-01`, `D-02`, ... to **material observable choices** only. For each show the existing choice, concrete code/contract evidence, requirement/constraint addressed (or `INFERRED/UNKNOWN`), a short benefit/cost, a plausible alternative labeled as hypothetical unless documented, and rationale status `DOCUMENTED / INFERRED / UNKNOWN`. Link each decision to relevant questions; do not invent decisions when implementation evidence is missing.
+4. **Full first-pass question menu:** assign stable `Q-01`, `Q-02`, ... and `T-xx` topic IDs. Include every material, distinct question supported by the inspected scope, with code pointer or `NOT VERIFIED`, relevant book lens, and linked `D-xx` where applicable. Organize the applicable topics into these three **learning stages**:
+   - **Stage 1 — Map:** `T-01` behavior, boundaries, and functional requirements (Sections 1, 5); `T-02` nonfunctional constraints and system scope (Sections 6, 7); `T-03` components, interfaces, and major design choices (Sections 3, 7, 9).
+   - **Stage 2 — Trace:** `T-04` execution paths and transformations (Section 3); `T-05` FODE data lifecycle (Section 2); `T-06` DDIA data behavior and guarantees (Section 4); `T-07` algorithm/data-structure reasoning (Section 8); `T-08` APOSD abstractions and interfaces (Section 9); `T-09` read/write paths, ownership, and integration choices (Section 10).
+   - **Stage 3 — Investigate:** `T-10` failure, concurrency, recovery, and verification (Section 11); `T-11` design alternatives, constraints that would change a choice, and learning synthesis (Sections 7, 12, 13).
+   Mark unrelated topics `NOT APPLICABLE — reason`; mark questions with missing support `PROVISIONAL / NOT VERIFIED`. Do not force one question per lens or hide material questions behind a small arbitrary shortlist. This is scoped to the implementation, not whole-repo onboarding.
+5. **Evidence gaps and verification summary:** what could not be checked; tests **inspected / actually executed / proposed** (do not claim an execution occurred just from a test file).
+6. **Choose what to explore:** invite a `Q-xx`, `D-xx`, `T-xx`, named code path or a requested complete tutorial. **Stop before teaching question 1**. Do not auto-advance in Practice mode.
 
-Do not append draft code review comments or a post-review comments section. This is an implementation-learning tutorial. Discuss supported concerns as teaching points, distinguish confirmed issues from plausible risks and unknowns, and do not manufacture findings. Learning checkpoints govern pace only; they do not authorize code changes or external actions.
+### After selection — Alex Xu's four-step implementation lesson
+
+Keep the **four step names and order** recognizable for every selected `Q-xx` or `D-xx`:
+
+1. **Step 1 — Understand the problem and establish design scope.** Explain what/why, selected behavior or decision, its actors, recovered FRs/NFRs, constraints and assumptions. Use code/ticket evidence; label inferred requirements and unspecified scale or SLA targets. Pose a concrete question grounded in the selected item.
+2. **Step 2 — Propose high-level design and get buy-in.** Reconstruct the **existing** high-level component layout: entry points, responsibilities, APIs/contracts, storage or state ownership, and representative request/data flow. Check the learner's mental model against the inspected implementation. Here “get buy-in” means aligning the explanation with evidence, **not asking for authorization to change architecture**.
+3. **Step 3 — Design deep dive.** Explain the code-backed worked answer; trace a tiny input/call/data/state/error path using actual file/symbol references and relevant tests. Label a hand-worked or invented example `HYPOTHETICAL`. Connect only useful FODE, DDIA, Algorithmic Thinking, APOSD, or System Design Interview ideas. For a material design choice, include the `D-xx` decision trace below: observed choice, status of rationale, trade-off, alternative, boundary where it might stop fitting, and the evidence/measurement needed to decide. Ask one changed-constraint interviewer follow-up where it helps learning.
+4. **Step 4 — Wrap up.** Summarize the verified mechanism and key decision, evidence gaps or limits, one transferable lesson and short recall/teach-back cue. Record the question/decision as covered only to the extent supported by evidence. Finish with **LEARNING CHECKPOINT — Explore this item deeper, choose another `Q-xx`/`D-xx`, or refresh the menu?**
+
+Keep these four steps even for a decision-only deep dive; do not add a separate “design decision” fifth step. For a simple UI/control-flow implementation, keep system-design explanations proportionate and do not invent caches, databases, queues, or scale numbers. Use a diagram only when it clarifies a real flow.
+
+### Design Decision Trace — teach the choice, not imagined author intent
+
+For a `D-xx` selection, or when a decision materially affects a `Q-xx` answer, surface the following **within** Steps 1–4:
+
+- **Decision ID and observed choice:** exact relevant implementation, file/symbol, boundary, and state/data behavior.
+- **Problem and constraint:** what user/system need or quality attribute it addresses, distinguishing confirmed from inferred.
+- **Why this choice?** `DOCUMENTED RATIONALE` with its source, or `INFERRED RATIONALE` explicitly as a hypothesis, or `UNKNOWN`. Never pretend to know what the original developer decided or which alternatives they rejected.
+- **Benefit and cost:** grounded advantages, limitations, maintenance/complexity implications, and observed versus hypothetical performance consequences.
+- **Alternative:** one credible `HYPOTHETICAL ALTERNATIVE` unless sources establish that it was considered. Include its own cost and advantage; do not prescribe a rewrite.
+- **Changed-constraint follow-up:** what workload, requirement, failure scenario, or interface change could alter the trade-off? When numbers are unavailable, make assumptions explicit rather than inventing production data.
+- **How to verify:** existing tests/metrics/docs that support the conclusion and the smallest missing evidence or read-only check needed.
+
+Connect `D-xx` and `Q-xx` without repeating the full index on every follow-up. Use design decisions as learning opportunities, not automatic code-review findings.
+
+### Delivery modes and learning state
+
+- **Guided (default after menu):** one selected `Q-xx` or `D-xx` per response through all four steps; provide the supported worked answer, trace, trade-off, takeaway and checkpoint.
+- **Practice (on request after menu):** keep one selected item active across turns; present **Step 1** as an interview question and wait. Give feedback or hints, then progress through Steps 2, 3, 4 one at a time; do not reveal future answers prematurely.
+- **Complete tutorial (explicit request):** show the complete menu first, then explain all applicable material questions/decisions through the four-step structure with consolidated repetition, glossary and learning summary. One closing checkpoint; no per-question pause.
+- **Concise (on request):** provide an overview and selected evidence-based design decisions without full lessons; if no topic has been selected, offer the first-pass menu.
+
+Keep `Q-xx`, `D-xx`, and `T-xx` IDs stable. Track `covered / pending / not applicable with reason / not verified`. Do not republish the full menu in every reply; a refresh follows new scope, evidence, or an explicit request. “Continue” resumes the selected item or the next clearly named pending question. One answered question is not full implementation coverage.
+
+At completion or on request, provide the **Section 12 glossary** and **Section 13 learning summary**, including decisions and their rationale status, a small read-only exercise, coverage, remaining unknowns, and verification limits. Separate inspected tests, executed checks, and proposed tests. If stopped early, label the final summary **partial**. Do not include draft code review comments or publish anything: this is a read-only implementation tutorial. Learning checkpoints control pace, never permissions.
 
 ## Technical coverage guide
 
@@ -278,15 +316,19 @@ Explain the implementation as a small system-design case study, using Alex Xu's 
 - Identify likely bottlenecks, single points of failure, and scaling limits only where supported by evidence.
 - Explain relevant alternatives (for example: synchronous vs asynchronous, cache vs direct query, SQL vs NoSQL, push vs pull) and why a team might choose each.
 
-For each significant decision, use:
+For each significant observable decision, create or reuse its stable `D-xx` ID from the first-response index. Explain it as a **choice with constraints**, not as a claim about undocumented developer intent:
 
-Design decision:
-Evidence in code:
-Requirement it addresses:
-Tradeoff (benefit and cost):
-When this design might stop working well:
-Alternative worth considering:
-What I would ask in a system-design interview or review:
+Design decision (D-xx) and observed choice:
+Evidence in code/contracts/tests:
+Requirement or constraint it addresses (CONFIRMED / INFERRED / UNKNOWN):
+Rationale status and source (DOCUMENTED / INFERRED / UNKNOWN):
+Benefit and cost under the known constraints:
+What it does and does NOT guarantee:
+When this design might stop fitting (label assumptions):
+Hypothetical alternative (or documented alternative, with its source):
+Alternative's benefit and cost:
+What tests, design notes, or measurements would settle uncertainty:
+Changed-constraint system-design interview follow-up:
 
 Finish with a concise high-level design walkthrough. Do not pretend this feature is a large distributed system if it is not.
 
