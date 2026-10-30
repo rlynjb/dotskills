@@ -33,9 +33,7 @@ Present the initial **Learning Menu** in this order:
 3. **All planned questions** — a concise, complete first-pass index covering all **applicable** topics `T-01` through `T-11`, organized under Stages 1–3. For **every material question discovered**, give a stable `Q-xx` ID, one-sentence concrete question, topic, code/doc evidence or NOT VERIFIED, and relevant lens if useful. Include at least one question per applicable topic and enough questions to represent each major first-party area. Do not force irrelevant data-engineering concerns; note `NOT APPLICABLE — reason`. Label tentative entries `PROVISIONAL / NOT VERIFIED`. Keep the whole list skimmable even in large monorepos by grouping and deduplicating, not hiding questions for later.
 4. **Findings & unknowns** — optional short `F-xx` list of interesting observed patterns, conflicts, or unresolved evidence gaps, **not assumed defects**.
 5. **Choose what to explore** — invite `Q-xx`, `T-xx`, `F-xx`, `C-xx`, a subsystem, or a named concept, as well as suggested study order, menu refresh, or full guide.
-6. **Recent Technical Changes (the bottom section)** — after the regular Learning Menu, present up to five substantive recent code/configuration changes based on commit diffs, not just commit messages. Assign `C-xx` IDs; identify the reviewed branch/revision/history window, affected symbols/files, evidence-backed before/after behavior and system/interface/data/runtime effects, related tests and unknowns, and links to commits/diffs. Prefer meaningful implementation changes over docs-only edits. If Git history or diffs are unavailable, label the section `NOT VERIFIED`; if none are found, say so. End by inviting a selection and **stop; do not auto-start Question 1, a change deep dive, or a Practice question.**
-
-Before writing Recent Technical Changes, read a bounded history (typically 10–20 newest commits) and inspect diffs for up to five substantive code/configuration changes. Group related commits where useful. For each, distinguish **observed** behavior and tests inspected from **inferred** implications or unknowns; never assert unmeasured performance, unverified requirements, or a behavior change from a commit title alone. Do not run tests or modify files without separate authorization. If local uncommitted changes are accessible, report them separately from committed history. Keep the technical digest at the bottom of the first response and refresh only on request or new history.
+6. **Recent Technical Changes (last content section)** — inspect a bounded recent history (typically 10–20 commits) and relevant diffs; summarize up to five substantive code/configuration changes, grouping related commits. Give each a stable `C-xx` ID, inspected revision/history window, affected paths/symbols, evidence-backed before/after behavior and technical implications, relevant tests and unknowns, and a commit/diff link. Prefer meaningful implementation changes to documentation-only edits. Clearly distinguish observed behavior from inferred effects; do not invent performance claims or treat commit messages as proof. If local changes are accessible, list them separately; if history/diffs are unavailable or contain no substantive changes, explain the limitation. **Finish with an invitation to choose an item and stop; do not auto-start a lesson.**
 
 Questions are **complete for the first-pass inspection**, not a claim that no new knowledge can emerge later. If newly inspected evidence reveals a missing question, append a new ID and explain why; do not silently renumber. Stage order is only a recommended starting path. If the learner selects Stage 2/3 first, briefly explain necessary prerequisites and honor the choice.
 
@@ -50,7 +48,7 @@ For each completed selected question, use **Alex Xu's four steps as the visible 
 3. **Step 3 — Design deep dive.** Give the evidence-backed worked answer, a tiny concrete/hypothetical flow, relevant symbols/paths/tests, failure cases, invariants and worthwhile alternatives/trade-offs. **Choose only the book lenses that explain what was inspected:** DDIA for data models, transactions, consistency, replication and reliability; FODE for data generation/ingestion/transformations/storage/serving; Algorithmic Thinking for algorithm choice, invariants and complexity; APOSD for module depth, interfaces, information hiding and change amplification; System Design Interview for component decisions, bottlenecks, constraints and alternatives. Distinguish observed, inferred, hypothetical, and unknown. Do **not** turn each step into five separate book mini-essays.
 4. **Step 4 — Wrap up.** Recap actual mechanisms, decisions, trade-offs, verification limitations, a transferable takeaway and **only the book references actually used**. Add one short **four-step recall/teach-back question**. Finish with **LEARNING CHECKPOINT — Next question or explore this one?**
 
-Keep explanations beginner-friendly, concrete and tied to the repository. This is an educational framework applied retrospectively, **not** proof of the codebase's original design process. For setup/navigation questions, use lightweight step headings without inventing architectural mechanisms. Source for the step names and intent: [Alex Xu / ByteByteGo](https://bytebytego.com/courses/system-design-interview/a-framework-for-system-design-interviews).
+Keep explanations concrete and evidence-backed. This framework analyzes an existing design retrospectively; it is **not** proof of the original design process. For setup/navigation questions, use brief stage explanations rather than inventing architecture. Source: [Alex Xu / ByteByteGo](https://bytebytego.com/courses/system-design-interview/a-framework-for-system-design-interviews).
 
 - **Guided (default after the menu):** teach **one selected question per response** through all four named stages, give the worked answer and walkthrough, then pause at the checkpoint. Do not ask for a mandatory approval at Step 2.
 - **Practice (on request after the menu):** keep **one selected question active across turns**. Ask about Step 1 and wait; offer feedback and then advance to Step 2, Step 3 and Step 4, one at a time. Do not reveal future worked answers early. A learner's clarification does not restart the process.
@@ -121,17 +119,9 @@ Keep the whole-repository scope: first map purpose and all major areas for the L
    - Explain the existing CI checks and contribution conventions.
    - Recommend up to five files to read first, in order, with the question each
      file answers. Then give a short route into each remaining major subsystem.
-   - When Stage 1 coverage is complete, summarize the most important unknowns
-     and preview Stage 2. Offer three open-ended comprehension questions as
-     optional practice, delivered according to the selected tutorial mode.
-
-Offer Stage 1 as a recommended foundation, but do not require its completion
-before a learner-selected Stage 2 or Stage 3 topic. Explain prerequisites briefly
-when relevant and proceed with the chosen question. Pause after each completed
-Guided question at the learning checkpoint. A request to continue advances the
-selected topic or a clearly suggested pending question; it does not restart the
-menu. If I explicitly request a complete guide, show the index first and then
-deliver all applicable stages together.
+   - When Stage 1 coverage is complete, summarize key unknowns and offer optional
+     practice questions **only when the learner asks or selects them**; do not
+     automatically ask several questions in Guided mode.
 
 ## Stage 2 — Connect execution, data, and algorithms
 
@@ -231,10 +221,9 @@ deliver all applicable stages together.
      Keep the exercise educational and read-only, without refactoring or draft
      code review comments.
 
-End Stage 2 with a short explanation connecting domain rules, runtime components,
-code organization, data lifecycle, algorithms, and abstraction complexity. Offer three open-ended questions
-as optional practice, using the tutorial mode to control pacing. In Guided mode,
-keep the learning checkpoint as the final section of the response.
+At Stage 2 completion, connect domain rules, runtime components, code organization,
+data lifecycle, algorithms, and abstractions. Offer optional practice only on request;
+in Guided mode, finish at the normal learning checkpoint.
 
 ## Stage 3 — Learn to investigate and explain the repo
 
@@ -256,15 +245,14 @@ keep the learning checkpoint as the final section of the response.
    - Where a relational data-model choice is material, include the trade-off
      between read-time joins and stored derived/denormalized data, with actual
      query evidence or clearly labeled performance questions.
-   - Connect the five book lenses without repeating five versions of the guide.
-   - Finish with this learning table:
-     Book | Relevant concept | Repo evidence | What I should now understand |
-     Next reading topic
-   - Use the labels DDIA, FODE, System Design Interview, Algorithmic Thinking,
-     and APOSD (A Philosophy of Software Design).
-     Mark a lens with limited applicability honestly.
-   - Include the relevant APOSD lesson about interfaces, information hiding, or
-     change complexity in the learning table and glossary.
+   - Connect **only applicable book lenses** rather than forcing a five-book analysis.
+   - At completion, offer a learning table with columns: Book | Relevant concept |
+     Repo evidence | What I should now understand | Next reading topic.
+     Use relevant labels from DDIA, FODE, System Design Interview,
+     Algorithmic Thinking, and APOSD. If asked to compare all five, mark
+     unsupported lenses **NOT APPLICABLE** instead of fabricating links.
+   - Include APOSD in the summary/glossary **when code evidence supports**
+     an interface, information-hiding, or change-complexity lesson.
    - Add a brief glossary and unresolved questions worth asking a maintainer.
 
 11. Practical onboarding path
