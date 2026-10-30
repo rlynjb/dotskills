@@ -9,6 +9,7 @@ The outcome is a practical understanding of a codebase's purpose, architecture, 
 - [Workflow at a glance](#workflow-at-a-glance)
 - [Initial Learning Menu](#initial-learning-menu)
 - [Recent Technical Changes](#recent-technical-changes)
+- [Alex Xu four-step deep dives](#alex-xu-four-step-deep-dives)
 - [Three stages and eleven topics](#three-stages-and-eleven-topics)
 - [Learning modes and selection](#learning-modes-and-selection)
 - [How to invoke](#how-to-invoke)
@@ -72,6 +73,23 @@ For each `C-xx` entry, explain **before → after behavior** when supported by t
 
 This section appears **at the very bottom of the initial Learning Menu**, after the normal topic choices. You can choose a `C-xx` change for an evidence-based technical deep dive, without switching skills. It is refreshed on request or on new repository evidence, not repeated during every lesson.
 
+## Alex Xu four-step deep dives
+
+Once you choose a question, topic, subsystem or `C-xx` technical change, Learn Repo uses **Alex Xu's four-step framework** to teach you how to reason about the existing code. The steps repeat across questions so you can internalize them.
+
+| Step | What you practice | Relevant book lenses (optional, not automatic) |
+| --- | --- | --- |
+| **1. Understand the problem and establish design scope** | Clarify behavior, requirements, constraints and unknowns before talking about solutions. | **System Design Interview**; perhaps **DDIA** for consistency/reliability constraints or **FODE** for data requirements. |
+| **2. Propose high-level design and get buy-in** | Draw a simple map of the **existing** components, module/API boundaries and data flow, and confirm the mental model against code. | **System Design Interview**; **APOSD** for interfaces; **FODE** for meaningful data movement. |
+| **3. Design deep dive** | Trace functions, contracts and tests; explain mechanisms, data behavior, algorithms, failure modes and architectural trade-offs. | Choose **DDIA**, **FODE**, **Algorithmic Thinking**, **APOSD**, or **System Design Interview** depending on the actual code. |
+| **4. Wrap up** | Summarize key trade-offs, verified limits and a transferable lesson; recall the four-step sequence. | Revisit **only the book concepts actually used** in this lesson. |
+
+For example, if you select "How does retry handling work?", Step 1 defines delivery requirements; Step 2 maps the real request/job path; Step 3 investigates retries and idempotency from code (perhaps **DDIA**, without forcing all other books); Step 4 summarizes the trade-off and asks you to recall the four steps.
+
+**Guided mode** covers all four stages for one question per response; **Practice mode** asks you to reason through one stage at a time and gives feedback before advancing. This is a learning scaffold for an existing codebase: Step 2's "buy-in" checks understanding; it does not authorize changes. The initial menu is unchanged and **Recent Technical Changes remains its bottom section**. The workflow stays read-only.
+
+Framework reference: [Alex Xu / ByteByteGo](https://bytebytego.com/courses/system-design-interview/a-framework-for-system-design-interviews).
+
 ## Three stages and eleven topics
 
 | Stage | Topic | What it covers |
@@ -92,9 +110,9 @@ Stage order is **recommended, never required**. Pick `T-06` directly if you want
 
 ## Learning modes and selection
 
-**Guided (default):** after you select `Q-xx`, the skill teaches one question in plain English: what/why, code evidence, worked answer, small walkthrough, trade-offs, takeaway and learning checkpoint.
+**Guided (default):** after you select `Q-xx`, the skill teaches one question in plain English through **Alex Xu's four named steps**, with code evidence, a worked answer, walkthrough, trade-offs, takeaway and checkpoint.
 
-**Practice:** same full menu, but after selection you answer the question before seeing the worked response. **Complete tutorial:** only on explicit request, with the menu first and applicable lessons together. **Concise explanation:** a selected topic without the full teaching template.
+**Practice:** same full menu, then practice **one step at a time**, with feedback before seeing worked reasoning and advancing. **Complete tutorial:** on explicit request, with the menu first and four-step lessons together. **Concise explanation:** the four steps in a compact form when useful.
 
 You can select by ID or plain language, for example "Q-04", "T-08", "C-02", "the caching concept", "the authentication subsystem", or "F-01". The menu is preserved across turns; a checkpoint lets you go deeper, pick a different question, or refresh the index.
 
@@ -114,6 +132,9 @@ inspect recent code/config diffs and explain technical effects,
 not just the latest commit messages.
 
 Stop and let me choose what to explore.
+Once I select one, teach the Alex Xu four-step sequence:
+scope -> high-level design -> deep dive -> wrap up.
+Choose only book lenses relevant to the code and question.
 Don't begin a worked question until I select one.
 Keep the work read-only.
 ```
