@@ -110,7 +110,7 @@
     {
       "name": "learn-implementation",
       "category": "learning",
-      "purpose": "Learn an implementation through the extracted master prompt and five relevant book lenses.",
+      "purpose": "Overview-first implementation learning with a design-decision index, Alex Xu four-step Guided/Practice deep dives, and selective five-book technical lenses.",
       "source": "dotfiles",
       "path": "skills/learn-implementation",
       "reference_count": 0
