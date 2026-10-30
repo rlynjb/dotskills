@@ -6,8 +6,6 @@
 
 - [Skill catalog](#skill-catalog)
 - [Quick start](#quick-start)
-- [Refine Skill](#refine-skill)
-  - [Why a passing eval is not enough](#why-a-passing-eval-is-not-enough)
 
 ## Skill catalog
 
@@ -56,17 +54,3 @@ python3 scripts/validate_skill_repository_integrity.py
 ```
 
 Static CI checks package/source integrity, skill-local eval JSON structure, and adapter behavior; it is **not** an LLM evaluation pipeline.
-
-## Refine Skill
-
-Use [`refine-skill`](skills/refine-skill/SKILL.md) to evaluate and improve a skill, or to minimally convert a raw prompt to the [Agent Skills format](https://agentskills.io/skill-creation/quickstart) when needed. The [practical guide](docs/refine-skill.md) documents the 12 stages, learning modes, and approval gates.
-
-The process is to check the skill's format, write realistic [skill-local eval cases](templates/evals/README.md), compare with-skill versus baseline runs, inspect evidence and grading, diagnose the cause, then apply **approved** changes and check regressions. [Legacy manual cases](evals/README.md) are retained. DotSkills does **not** include an automated model-evaluation runner.
-
-### Why a passing eval is not enough
-
-A **false pass** occurs when evaluation reports success despite a missed requirement or a safety-boundary violation. A rubric can check the wrong behavior, a grader can be misled by untrusted content, or an answer can look acceptable even when the tool trace shows an unauthorized action.
-
-Review both the **grading basis** and the **actual behavior** (available traces, attempted versus completed actions, resulting state, and final output). Diagnose whether the problem lies in the case, rubric, context, harness, trust boundary, or skill. When the rubric changes, regrade preserved evidence if sufficient or rerun before attributing improvement to a skill edit.
-
-This process is **not** an automatic security detector or safety certification. Runtime controls remain essential; see [repository integrity and runtime safety](docs/skill-repository-integrity-and-runtime-safety.md). The [methodology guide](docs/refine-skill.md) covers the relevant conference-informed evaluation practices.
