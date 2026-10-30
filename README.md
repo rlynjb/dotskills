@@ -2,11 +2,6 @@
 
 **DotSkills** is a harness-agnostic library of reusable agent skills for any compatible agent harness.
 
-## Table of contents
-
-- [Skill catalog](#skill-catalog)
-- [Quick start](#quick-start)
-
 ## Skill catalog
 
 Skills are grouped by use.
