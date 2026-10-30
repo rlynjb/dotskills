@@ -20,22 +20,15 @@ The outcome is a practical understanding of a codebase's purpose, architecture, 
 
 ```mermaid
 flowchart TD
- A["Target repo and revision"] --> B["Read docs, entry points, tests and representative code across major areas"]
- B --> C["Repo snapshot and major-area evidence map"]
- C --> D["Learning Menu: all material Q-xx questions across 11 topics"]
- D --> E["Findings/unknowns and learning choices"]
- E --> K["Recent technical changes: code/diff-backed digest, at the bottom"]
- K --> F{"Choose where to dig in"}
- F -->|"Question"| G["Guided or Practice: one selected question"]
- F -->|"Topic / subsystem / concept"| H["Focused orientation and relevant questions"]
- F -->|"Finding"| I["Examine source evidence"]
- F -->|"Recent change"| L["Trace diff, contracts, behavior and tests"]
- L --> J
- G --> J["Checkpoint: go deeper, choose another, or show menu"]
- H --> J
- I --> J
- J --> F
- F -->|"New evidence / refresh"| B
+ A["Target repo and revision"] --> B["Bounded evidence scan across major areas"]
+ B --> C["Learning Menu: snapshot, map, Q/T/F index"]
+ C --> D["Recent Technical Changes: C-xx digest at the bottom"]
+ D --> E{"Choose Q, T, F, C, or subsystem"}
+ E --> F["Focused question / change"]
+ F --> G["Alex Xu: scope → high-level design → deep dive → wrap up"]
+ G --> H["Checkpoint: deepen, choose another, or refresh"]
+ H --> E
+ H -->|"Refresh evidence"| B
 ```
 
 The initial inspection is **bounded but covers all major first-party areas** at a representative level. It isn't a line-by-line dump of the repository.
@@ -51,7 +44,7 @@ The first response is **an overview only**, always including:
 5. **Choose what to explore** — select a question, topic, finding, recent change, subsystem, book concept, suggested learning order, or an updated menu.
 6. **Recent Technical Changes (at the bottom)** — a concise, evidence-backed digest of the latest meaningful code/configuration changes: what changed technically, affected components, behavior/contract differences, tests and implications. Identify changes with stable `C-xx` IDs, show relevant paths and commit/diff links, then invite selection. If history is unavailable, explicitly mark it unverified.
 
-**No worked answers or Problem Question 1 until you choose.** For a very large repository, group one-line questions by major subsystem to keep the full index skimmable. Newly discovered questions and changes can be appended later without renumbering existing ones. The Recent Technical Changes section is the **last content section** of the first response, not a recurring footer after each lesson.
+**No worked answers or automatic first question until you choose.** In large repositories, group questions by subsystem without withholding material first-pass questions. Append new IDs only when fresh evidence warrants them.
 
 ### Illustrative menu excerpt
 
@@ -86,7 +79,7 @@ Once you choose a question, topic, subsystem or `C-xx` technical change, Learn R
 
 For example, if you select "How does retry handling work?", Step 1 defines delivery requirements; Step 2 maps the real request/job path; Step 3 investigates retries and idempotency from code (perhaps **DDIA**, without forcing all other books); Step 4 summarizes the trade-off and asks you to recall the four steps.
 
-**Guided mode** covers all four stages for one question per response; **Practice mode** asks you to reason through one stage at a time and gives feedback before advancing. This is a learning scaffold for an existing codebase: Step 2's "buy-in" checks understanding; it does not authorize changes. The initial menu is unchanged and **Recent Technical Changes remains its bottom section**. The workflow stays read-only.
+The framework analyzes an **existing** system; Step 2's "buy-in" means checking your understanding, not approving changes. Book lenses are optional and only added when relevant to inspected code.
 
 Framework reference: [Alex Xu / ByteByteGo](https://bytebytego.com/courses/system-design-interview/a-framework-for-system-design-interviews).
 
@@ -116,7 +109,7 @@ Stage order is **recommended, never required**. Pick `T-06` directly if you want
 
 You can select by ID or plain language, for example "Q-04", "T-08", "C-02", "the caching concept", "the authentication subsystem", or "F-01". The menu is preserved across turns; a checkpoint lets you go deeper, pick a different question, or refresh the index.
 
-The five optional teaching lenses are **Designing Data-Intensive Applications (DDIA)**, **Fundamentals of Data Engineering (FODE)**, **System Design Interview**, **Algorithmic Thinking**, and **A Philosophy of Software Design (APOSD)**. Include only concepts supported by the actual repo.
+The available references are **DDIA, FODE, System Design Interview, Algorithmic Thinking, and A Philosophy of Software Design (APOSD)**; use only concepts supported by the actual repository.
 
 ## How to invoke
 
