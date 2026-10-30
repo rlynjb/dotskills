@@ -8,6 +8,7 @@ The outcome is a practical understanding of a codebase's purpose, architecture, 
 
 - [Workflow at a glance](#workflow-at-a-glance)
 - [Initial Learning Menu](#initial-learning-menu)
+- [Recent Technical Changes](#recent-technical-changes)
 - [Three stages and eleven topics](#three-stages-and-eleven-topics)
 - [Learning modes and selection](#learning-modes-and-selection)
 - [How to invoke](#how-to-invoke)
@@ -21,11 +22,14 @@ flowchart TD
  A["Target repo and revision"] --> B["Read docs, entry points, tests and representative code across major areas"]
  B --> C["Repo snapshot and major-area evidence map"]
  C --> D["Learning Menu: all material Q-xx questions across 11 topics"]
- D --> E["Findings/unknowns and user selection"]
- E --> F{"Choose where to dig in"}
+ D --> E["Findings/unknowns and learning choices"]
+ E --> K["Recent technical changes: code/diff-backed digest, at the bottom"]
+ K --> F{"Choose where to dig in"}
  F -->|"Question"| G["Guided or Practice: one selected question"]
  F -->|"Topic / subsystem / concept"| H["Focused orientation and relevant questions"]
  F -->|"Finding"| I["Examine source evidence"]
+ F -->|"Recent change"| L["Trace diff, contracts, behavior and tests"]
+ L --> J
  G --> J["Checkpoint: go deeper, choose another, or show menu"]
  H --> J
  I --> J
@@ -43,9 +47,10 @@ The first response is **an overview only**, always including:
 2. **Evidence and major-area map** — important packages/subsystems, their responsibilities, entry points, representative files and symbols, and verification status.
 3. **Full question index** — *all material initial planned learning questions*, grouped by stage/topic, with stable `Q-xx` IDs, brief evidence, and relevant concepts. Every applicable topic is represented; unrelated topics are marked `NOT APPLICABLE`, and uninspected mechanisms `NOT VERIFIED`.
 4. **Findings and unknowns** — an optional short index of interesting `F-xx` patterns, disagreements between docs/code, or evidence gaps (not automatically bugs).
-5. **Choose what to explore** — select a question, topic, finding, subsystem, book concept, suggested learning order, or an updated menu.
+5. **Choose what to explore** — select a question, topic, finding, recent change, subsystem, book concept, suggested learning order, or an updated menu.
+6. **Recent Technical Changes (at the bottom)** — a concise, evidence-backed digest of the latest meaningful code/configuration changes: what changed technically, affected components, behavior/contract differences, tests and implications. Identify changes with stable `C-xx` IDs, show relevant paths and commit/diff links, then invite selection. If history is unavailable, explicitly mark it unverified.
 
-**No worked answers or Problem Question 1 until you choose.** For a very large repository, group one-line questions by major subsystem to keep the full index skimmable. Newly discovered questions can be appended later without renumbering existing ones.
+**No worked answers or Problem Question 1 until you choose.** For a very large repository, group one-line questions by major subsystem to keep the full index skimmable. Newly discovered questions and changes can be appended later without renumbering existing ones. The Recent Technical Changes section is the **last content section** of the first response, not a recurring footer after each lesson.
 
 ### Illustrative menu excerpt
 
@@ -58,6 +63,14 @@ This example is hypothetical—not an audit of any actual repository.
 | `Q-03` | `T-06` DDIA | Which data is authoritative and where does derived state come from? |
 | `Q-04` | `T-08` APOSD | Which abstraction hides complexity, and what must its callers know? |
 | `F-01` | Finding | The docs and code may describe different flows; investigate before concluding. |
+
+## Recent Technical Changes
+
+This is a **technical change analysis**, not a Git-log recap. On the initial overview, inspect recent history and the relevant diffs (typically the newest 10–20 commits, selecting up to five substantive code/configuration changes). Group related commits for the same mechanism, and prefer actual implementation changes over documentation-only edits. Give the history window and revision inspected; identify local uncommitted changes separately if accessible.
+
+For each `C-xx` entry, explain **before → after behavior** when supported by the diff, affected files/symbols, and significant interface, data flow, schema, dependency, runtime, or deployment effects. Note related tests and whether they were only read or run. Distinguish observed facts from inferred consequences or unknowns, and provide the actual commit/diff link. Where no meaningful technical changes can be verified, say so rather than creating a narrative from commit messages.
+
+This section appears **at the very bottom of the initial Learning Menu**, after the normal topic choices. You can choose a `C-xx` change for an evidence-based technical deep dive, without switching skills. It is refreshed on request or on new repository evidence, not repeated during every lesson.
 
 ## Three stages and eleven topics
 
@@ -83,7 +96,7 @@ Stage order is **recommended, never required**. Pick `T-06` directly if you want
 
 **Practice:** same full menu, but after selection you answer the question before seeing the worked response. **Complete tutorial:** only on explicit request, with the menu first and applicable lessons together. **Concise explanation:** a selected topic without the full teaching template.
 
-You can select by ID or plain language, for example "Q-04", "T-08", "the caching concept", "the authentication subsystem", or "F-01". The menu is preserved across turns; a checkpoint lets you go deeper, pick a different question, or refresh the index.
+You can select by ID or plain language, for example "Q-04", "T-08", "C-02", "the caching concept", "the authentication subsystem", or "F-01". The menu is preserved across turns; a checkpoint lets you go deeper, pick a different question, or refresh the index.
 
 The five optional teaching lenses are **Designing Data-Intensive Applications (DDIA)**, **Fundamentals of Data Engineering (FODE)**, **System Design Interview**, **Algorithmic Thinking**, and **A Philosophy of Software Design (APOSD)**. Include only concepts supported by the actual repo.
 
@@ -96,6 +109,9 @@ Start with a concise repository snapshot and evidence map,
 then list ALL material initial learning questions grouped
 across the 3 stages and 11 topics. Give each question a
 stable Q-xx ID; list important findings/unknowns as F-xx.
+At the very bottom, include Recent Technical Changes (C-xx):
+inspect recent code/config diffs and explain technical effects,
+not just the latest commit messages.
 
 Stop and let me choose what to explore.
 Don't begin a worked question until I select one.
