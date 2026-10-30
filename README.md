@@ -19,6 +19,11 @@ Skills are grouped by use.
 | --- | --- |
 | [refine-skill](skills/refine-skill/SKILL.md) | Optional evidence-driven, conference-informed, human-gated workflow to learn, evaluate, and refine skills. |
 | [audit-skill](skills/audit-skill/SKILL.md) | Read-only **Explore / Audit / Compare**: learn one skill through a question menu and selected deep dives, assess gaps, or compare workflows. [Guide](skills/audit-skill/README.md). |
+| [context-engineering](skills/context-engineering/SKILL.md) | Diagnose and improve context selection, expansion, provenance, freshness, and stopping. |
+| [correctness-and-verification](skills/correctness-and-verification/SKILL.md) | Turn requirements into verifiable claims, invariants, checks, and evidence. |
+| [skill-lifecycle-and-release](skills/skill-lifecycle-and-release/SKILL.md) | Version, regression-test, review, and release skill changes safely. |
+| [agent-observability-and-feedback](skills/agent-observability-and-feedback/SKILL.md) | Inspect agent journeys and turn production feedback into actionable eval coverage. |
+| [agent-trust-and-governance](skills/agent-trust-and-governance/SKILL.md) | Apply provenance, authority boundaries, approvals, risk controls, and verification. |
 
 ### Everyday workflows
 
