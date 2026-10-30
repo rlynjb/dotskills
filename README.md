@@ -1,37 +1,13 @@
 # DotSkills
 
-**DotSkills** is a version-controlled library of reusable agent skills for compatible harnesses. Each `skills/<name>/` package contains an Agent Skills-compatible `SKILL.md` and optional references. This repository owns skill packaging, discovery metadata, and source provenance; Codex, Claude Code, ChatGPT Work, and other compatible hosts provide execution. [Buffr](https://github.com/rlynjb/buffr) remains the authority for its own decision-support runtime.
+**DotSkills** is a harness-agnostic library of reusable agent skills for any compatible agent harness.
 
 ## Table of contents
 
-- [Why DotSkills is different](#why-dotskills-is-different)
-  - [How it relates to other skill-creation and evaluation tools](#how-it-relates-to-other-skill-creation-and-evaluation-tools)
 - [Skill catalog](#skill-catalog)
 - [Quick start](#quick-start)
 - [Refine Skill](#refine-skill)
   - [Why a passing eval is not enough](#why-a-passing-eval-is-not-enough)
-
-## Why DotSkills is different
-
-DotSkills is **not another skill creator or evaluation engine**. It keeps the library portable and source-attributed, while its optional [`refine-skill`](skills/refine-skill/SKILL.md) methodology guides improvements to individual skills. The workflow's human gates and learning modes are specific to that skill, not requirements imposed on every DotSkills package.
-
-| Scope | Distinctive approach |
-| --- | --- |
-| **DotSkills library** | Versioned [skill packages](skills/README.md), [discovery metadata](catalog.json), [source-locked references](docs/sources.md), and [harness adapters](adapters/README.md) keep instructions and their origins reviewable and reusable. Portability must still be tested in each target environment. |
-| **Conference-informed methodology** | `refine-skill` and its [specialist methodologies](skills/README.md) draw on AGNTCon/MCPCon 2026 material about context, correctness, observability, lifecycle, and trust. Speaker claims, repository evidence, and model recommendations remain distinct. |
-| **Human-guided learning** | `refine-skill` offers Guided, Deep dive, and Fast learning depths. Consequential actions require explicit approval; feedback alone is not approval. Teaching and evaluator-only answers stay outside evaluated skill runs. |
-| **Diagnosis before changes** | `refine-skill` evaluates neutral cases and recorded outcomes, checks whether graders and context are trustworthy, and identifies the likely failure source before proposing a change or specialist handoff. |
-| **Validation boundaries** | [Static checks](docs/skill-repository-integrity-and-runtime-safety.md) cover repository structure and source integrity, not model behavior. The consuming harness—not skill text—enforces permissions and approvals. |
-
-### How it relates to other skill-creation and evaluation tools
-
-| Tool | What it contributes | How it fits with DotSkills |
-| --- | --- | --- |
-| [Anthropic Skill Creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator) | Skill authoring, tests, benchmarking, and trigger optimization. | A potential companion to `refine-skill`'s conference-informed, human-gated learning and diagnosis workflow; this is a difference in emphasis, not a claim that Skill Creator lacks review. |
-| [OpenAI Plugin Eval](https://github.com/openai/plugins/tree/main/plugins/plugin-eval) | Skill/plugin analysis, measurements, and evaluation reports. | A possible testing aid while DotSkills retains the canonical packages and human review decisions. |
-| [Google Cloud EvalBench](https://github.com/GoogleCloudPlatform/evalbench) and [Promptfoo](https://www.promptfoo.dev/docs/guides/test-agent-skills/) | Evaluation execution, scoring, and supported model/harness comparisons. | Potential future runners; DotSkills currently defines manual cases and workflow decisions, not a built-in automated eval service. |
-
-**Current scope:** DotSkills includes structural CI checks, templates, methodology skills, and a starter [manual eval package](evals/README.md). Automated model evaluation, universal cross-harness compatibility, a deployed MCP gateway, and runtime-enforced approvals are **not** included. See [architecture](docs/architecture.md) and [evaluation roadmap](evals/README.md).
 
 ## Skill catalog
 
