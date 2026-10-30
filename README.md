@@ -11,7 +11,7 @@
 
 ## Skill catalog
 
-Skills are grouped by use. The Refine Skill specialists can also be invoked independently.
+Skills are grouped by use.
 
 ### Skill development and assessment
 
@@ -19,16 +19,6 @@ Skills are grouped by use. The Refine Skill specialists can also be invoked inde
 | --- | --- |
 | [refine-skill](skills/refine-skill/SKILL.md) | Optional evidence-driven, conference-informed, human-gated workflow to learn, evaluate, and refine skills. |
 | [audit-skill](skills/audit-skill/SKILL.md) | Read-only **Explore / Audit / Compare**: learn one skill through a question menu and selected deep dives, assess gaps, or compare workflows. [Guide](skills/audit-skill/README.md). |
-
-### Refine Skill supporting methodologies
-
-| Skill | Purpose |
-| --- | --- |
-| [context-engineering](skills/context-engineering/SKILL.md) | Diagnose and improve context selection, expansion, provenance, freshness, and stopping. |
-| [correctness-and-verification](skills/correctness-and-verification/SKILL.md) | Turn requirements into verifiable claims, invariants, checks, and evidence. |
-| [skill-lifecycle-and-release](skills/skill-lifecycle-and-release/SKILL.md) | Version, regression-test, review, and release skill changes safely. |
-| [agent-observability-and-feedback](skills/agent-observability-and-feedback/SKILL.md) | Inspect agent journeys and turn production feedback into actionable eval coverage. |
-| [agent-trust-and-governance](skills/agent-trust-and-governance/SKILL.md) | Apply provenance, authority boundaries, approvals, risk controls, and verification. |
 
 ### Everyday workflows
 
@@ -38,11 +28,6 @@ Skills are grouped by use. The Refine Skill specialists can also be invoked inde
 | [refine-requirements](skills/refine-requirements/SKILL.md) | Codebase-first guided/practice interview for FRs, NFRs, edge cases, and system-design-ready Superpowers handoff. |
 | [learn-repo](skills/learn-repo/SKILL.md) | Whole-repo learning menu, recent technical changes, and selected deep dives using Alex Xu's four steps and relevant book lenses. |
 | [learn-implementation](skills/learn-implementation/SKILL.md) | Learn an implementation using the extracted master prompt and five book lenses. |
-
-### Feature investigation
-
-| Skill | Purpose |
-| --- | --- |
 | [investigate-existing-feature](skills/investigate-existing-feature/SKILL.md) | Feature provenance and dependencies investigation. |
 | [investigate-new-feature](skills/investigate-new-feature/SKILL.md) | Pre-design feature discovery and requirements. |
 
