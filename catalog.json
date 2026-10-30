@@ -74,24 +74,6 @@
       "exposed": false
     },
     {
-      "name": "investigate-existing-feature",
-      "category": "engineering",
-      "purpose": "Feature provenance and dependencies investigation.",
-      "source": "dotfiles",
-      "path": "skills/investigate-existing-feature",
-      "reference_count": 1,
-      "exposed": false
-    },
-    {
-      "name": "investigate-new-feature",
-      "category": "engineering",
-      "purpose": "Pre-design feature discovery and requirements.",
-      "source": "dotfiles",
-      "path": "skills/investigate-new-feature",
-      "reference_count": 1,
-      "exposed": false
-    },
-    {
       "name": "refine-requirements",
       "category": "engineering",
       "purpose": "Codebase-first guided/practice interview for functional and non-functional requirements, edge cases, stakeholder questions, and a system-design-ready Superpowers handoff.",

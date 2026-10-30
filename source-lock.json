@@ -153,18 +153,6 @@
     },
     {
       "source": "dotfiles",
-      "source_path": "reference/investigate-existing-feature.md",
-      "destination": "skills/investigate-existing-feature/references/investigate-existing-feature.md",
-      "blob_sha": "ed897f1c7de6691aecb67087f907df509e00cadf"
-    },
-    {
-      "source": "dotfiles",
-      "source_path": "reference/investigate-new-feature.md",
-      "destination": "skills/investigate-new-feature/references/investigate-new-feature.md",
-      "blob_sha": "8aac98e55fd6bbc9fd62f4e621f63d833c4fffb1"
-    },
-    {
-      "source": "dotfiles",
       "source_path": "reference/refine-feature-requirements.md",
       "destination": "skills/refine-requirements/references/refine-requirements.md",
       "blob_sha": "ea2e7c29c4540fe66c7a64aa4915e07832ecbd1b"

@@ -26,8 +26,6 @@ Skills are grouped by use.
 | [refine-requirements](skills/refine-requirements/SKILL.md) | Refine feature requirements against existing code, identify functional and nonfunctional gaps, and prepare stakeholder questions and design handoffs. |
 | [learn-repo](skills/learn-repo/SKILL.md) | Learn an unfamiliar codebase through a selectable question menu, code-backed deep dives, and recent-change analysis. |
 | [learn-implementation](skills/learn-implementation/SKILL.md) | Learn an implementation through an evidence-backed question and design-decision menu, then Alex Xu's four-step guided deep dives into code, trade-offs, and failure modes. |
-| [investigate-existing-feature](skills/investigate-existing-feature/SKILL.md) | Trace an existing feature through code, assets, dependencies, and history to understand how it works and where it came from. |
-| [investigate-new-feature](skills/investigate-new-feature/SKILL.md) | Investigate a proposed feature's users, constraints, requirements, and trade-offs before choosing a design. |
 
 ### Decision support
 
