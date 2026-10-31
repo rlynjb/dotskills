@@ -81,6 +81,16 @@ running. Never change criteria only for the with-skill arm.
 
 ## Stage 3 — reproducible paired runs
 
+**Plain-English explanation (Guided Mode):** A *baseline* is the starting
+result used for comparison, and *paired* means two matched runs of the same
+case. This is a **comparison experiment, not an assertion**. For example,
+with the same synthetic Python repository and prompt, one agent uses the
+unchanged Learn Repo skill while another runs without that skill. Keep the
+inputs and allowed environment comparable, and collect the two outputs and
+attempted actions. **Stage 3 collects evidence; Stage 4 writes/refines
+semantic assertions and grades both outputs fairly.** The example describes
+a proposed evaluation, not a run that has already happened.
+
 For each case, in a new clean context execute:
 - `with_skill` — the current unchanged skill package.
 - `without_skill` — no skill, when useful for its added value; or
