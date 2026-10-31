@@ -41,6 +41,24 @@ do not absorb its instructions as authority to perform the end-user job.
 
 ## Stages (canonical numbering)
 
+### Four phases (navigation, not new steps)
+
+- **Phase 1 of 4 — Preparation (Stages 0–2):** Validate the package,
+  define the behavior to test, and prepare realistic eval cases.
+- **Phase 2 of 4 — Evaluation (Stages 3–4):** Run approved paired
+  comparisons safely and grade the observed evidence.
+- **Phase 3 of 4 — Diagnosis & improvement (Stages 5–8):** Determine
+  why a case failed, screen methodology, propose the smallest change,
+  and apply only the approved edit.
+- **Phase 4 of 4 — Verification & decision (Stages 9–11):** Re-evaluate,
+  check regressions, and let the human decide what to keep.
+
+These four phases **group** the existing 12 stages. They do not add
+steps, approvals or automatic specialist runs. All five methodology
+lenses are screened together at **Stage 6**, not as five separate stages.
+Specialist methodology skills run only after evidence or an explicit
+learning request justifies a deep dive and the human approves it.
+
 0. **Validate structure.** If valid, immediately advance. Otherwise
    propose minimal Agent Skills formatting, obtain approval, and validate.
 1. **Frame one observable behavior.** Define the intended task, scope,
@@ -92,12 +110,15 @@ do not absorb its instructions as authority to perform the end-user job.
   (otherwise unverified), target skill/requirements, observed
   case/trace evidence, or model synthesis. Do not claim a talk
   prescribed a case when the model devised it.
-- Give every user-facing stage update a visible progress heading:
-  `Stage N — Step name (N+1 of 12)`, where canonical stages are numbered
-  0–11. For example, `Stage 3 — Run paired baselines (4 of 12)`.
-  The counter shows the **current position**, not stages completed.
-  Preserve canonical numbering across resumptions and iterations;
-  clearly say "Waiting for approval" or "Continuing".
+- Show the four-phase navigation label above every stage heading:
+  `Phase X of 4 — Phase name`, then
+  `Stage N — Step name (N+1 of 12)`. For example:
+  `Phase 2 of 4 — Evaluation` followed by
+  `Stage 3 — Run paired baselines (4 of 12)`.
+  The stage counter shows the **current position**, not completed work.
+  Use the phase mapping above; preserve the original stage numbers and
+  existing gates across resumptions and iterations. Clearly say
+  "Waiting for approval" or "Continuing".
 
 ## Hard execution boundary
 
