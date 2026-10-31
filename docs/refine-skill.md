@@ -63,6 +63,21 @@ The authoring template is [`templates/evals/`](../templates/evals/README.md).
 Run `python3 scripts/validate_evals.py --all` to check registered
 skill-local suites; this validates **structure only**, not LLM quality.
 
+### Stage 4: understand how grading becomes a score
+
+Refine Skill teaches a simple, evidence-backed default:
+**assertion → evidence → Pass/Fail → pass rate → interpretation**.
+For gradable assertions, `pass_rate = passed / (passed + failed)`.
+For example, three passing assertions and one failing assertion give
+`3/4 = 0.75` (75%). Record missing trace/state evidence as **Unknown**
+separately, not as Pass; any resulting partial rate is provisional.
+A failed critical correctness or safety assertion makes the **case Fail**
+regardless of the percentage. There is no automatic weighted score or
+universal pass threshold. If a particular task needs a numeric rubric,
+define and calibrate its criteria and thresholds before comparing runs.
+See the [scoring rubric and worked example](../skills/refine-skill/references/eval-design-guide.md#default-scoring-rubric--assertion-grades-before-aggregate-scores).
+This teaches grading; it **does not run a model or grade an unexecuted eval**.
+
 ## Teaching: one example, one case, one decision
 
 For the DDIA code-review lens, suppose an agent claims a partial-write
