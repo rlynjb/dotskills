@@ -79,6 +79,28 @@ guide, wait until after initial outputs to teach specific `assertions`.
 If predeclared hard safety boundaries matter, make them explicit before
 running. Never change criteria only for the with-skill arm.
 
+### Reuse existing cases and fixtures on resumed runs
+
+Before authoring or generating a new case, check whether the target
+skill already has an accessible, approved `evals/evals.json` and the
+fixture files identified in its `files` entries. Validate that
+references resolve and the saved scenario still matches the intended
+behavior. If so, use the **same versioned case and synthetic fixture**
+rather than regenerating them. A synthetic repository is an input to a
+test, not a disposable byproduct that must be recreated whenever a
+session restarts.
+
+If case/fixture files are absent, damaged, incompatible or unavailable
+in the current harness, report the specific gap. Seek explicit approval
+for any new or replacement case/fixture; do not silently overwrite or
+delete work. Verify the last completed stage from saved evidence and
+keep previous run iterations unchanged. With an approved existing case
+and **no** evaluated-agent output, continue at Stage 3 **pending**
+execution approval and host safety verification; do not claim an
+evaluation took place. Reusing fixtures can reduce prompt-generation
+work and token usage, but supplying them to an evaluated agent still
+costs context and tokens.
+
 ## Stage 3 — reproducible paired runs
 
 **Plain-English explanation (Guided Mode):** A *baseline* is the starting
