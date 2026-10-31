@@ -92,6 +92,30 @@ learning request justifies a deep dive and the human approves it.
 11. **Human decides.** Keep, revise, revert, release or iterate.
     Record lessons and limits; do not claim broad reliability from one run.
 
+## Resume and reuse saved evaluation work
+
+On a new invocation, do the brief Stage 0 structural check, then inspect
+available **persisted** target-skill `evals/evals.json`, referenced fixture
+files, and recorded run/approval evidence **before** designing anything new.
+If the approved case and synthetic fixture are present and valid, **reuse
+them by default**: do not regenerate, overwrite, move, delete, or silently
+replace them. Identify the last confirmed stage from actual artifacts and
+run records, and resume at the next unfinished step using the existing
+phase/stage counter. For a saved case with no evaluated-agent output,
+offer Stage 3 rather than recreating Stage 2. When records are incomplete
+or contradictory, explain what is known and request the necessary choice;
+do not infer that an eval ran or that a past approval covers a new run.
+
+Propose any required repair, explicit reset, or new fixture revision
+separately and wait for human approval before changing saved work.
+Keep existing iterations intact and save new run outputs in a fresh
+versioned iteration. A resume **does not** bypass current execution
+safety checks or scoped approval for a new run. If the files are not
+available in the current workspace/harness, say so; do not claim they
+were reused or recreate them without approval. Reusing fixtures can
+avoid repeated generation tokens, but reading them during execution
+still consumes context and tokens. See [workflow](references/workflow.md).
+
 ## Default collaboration
 
 - **Guided learning + per-gate approval by default.** At the opening of
