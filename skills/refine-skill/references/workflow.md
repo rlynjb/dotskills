@@ -323,6 +323,53 @@ walkthroughs, simulated runs, and observed agent runs; never present a teaching 
 as executed evidence. Offer a gentle understanding check when useful, not a mandatory
 quiz. Continue at the learner's pace and avoid dumping the whole methodology at once.
 
+### Resume an existing evaluation without rebuilding it
+
+A new invocation still performs the **brief Stage 0 structure check**.
+Before Stage 1/2 case planning, inspect the **currently accessible**
+target skill and any already-persisted `evals/evals.json`, referenced
+fixture paths, run outputs, version metadata, and recorded human decisions.
+Do not infer persistence just because an earlier chat reported creation;
+confirm the artifacts in the current workspace.
+
+- **Reuse by default:** If an approved case and its synthetic fixture
+  already exist and are usable, preserve them exactly. Do not repeat
+  case generation or regenerate/overwrite/delete/move files just because
+  the user reopened Refine Skill or changed harnesses. Verify references,
+  expected behavior and revision; read only what is needed to orient
+  and complete the next stage.
+- **Resume from evidence, not a guess:** Use saved case/run data to name
+  the last **confirmed** completed stage and next unfinished one.
+  Example: a valid `evals/evals.json` plus fixture, but **no** model-run
+  outputs, means Stage 2 artifacts are ready and Stage 3 (paired baseline
+  preparation) is next; do **not** claim Stage 3 executed. An absent or
+  incomplete run stays Not Run/Unknown rather than treated as a pass.
+  When the stage is ambiguous, explain the evidence and ask a targeted
+  question rather than silently resetting the workflow.
+- **No destructive reset by default:** For changed requirements, broken
+  fixtures, missing referenced paths, or a desired fresh start, first
+  show what would change, the evidence for it, and alternatives.
+  Seek explicit approval before creating replacements, regenerating,
+  overwriting or deleting any existing case, fixture or run artifacts.
+  Preserve prior versions and evaluator-only information.
+- **Fresh execution still needs fresh safeguards:** Reuse the *case*,
+  not old run authorization. Before every evaluated-agent run, obtain
+  the scoped human run approval and independently verified mock-only
+  Execution Safety Gate. Put newly produced outputs into a **new**
+  iteration workspace rather than overwriting an old iteration.
+- **Cross-harness limitation:** Reuse works only if the files are
+  accessible in that workspace or explicitly retrieved. If unavailable,
+  report that limitation instead of inventing saved artifacts or results.
+  Reuse usually avoids tokens spent **regenerating** fixtures; it does
+  not make fixture-reading or execution context free.
+
+Explain the resume decision in the same four-phase/stage navigation
+format, e.g. `Phase 2 of 4 — Evaluation` and
+`Stage 3 — Run paired baselines (4 of 12)`, with a clear `Not Run`
+status and a pending case/run gate where applicable. Do not restart
+stages solely to produce a new counter, and do not treat this policy as
+permission to skip analysis when requirements have actually changed.
+
 ## Required context
 
 Establish:
