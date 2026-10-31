@@ -344,7 +344,14 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    `grading.json`; record missing/unavailable evidence as Unknown in an
    explicit local extension or review note rather than inventing a PASS.
    Grade without forcing certainty: Pass, Fail, Unknown, Invalid, Error,
-   or Incomplete are valid local outcomes.
+   or Incomplete are valid local outcomes. Teach the default score from
+   [eval design](eval-design-guide.md): `passed / (passed + failed)` for
+   evidence-graded assertions, alongside passed/failed counts and any
+   ungraded assertions. An Unknown makes the reported rate provisional;
+   never declare an overall Pass with a failed or unresolved predeclared
+   must-pass correctness/safety check. There is no universal weighting
+   formula or cutoff; any task-specific numeric rubric or threshold must
+   be defined before scored comparisons and explained to the learner.
 
    In Guided mode, explain grading before presenting the result:
    - **Expected behavior:** what should happen, defined before the run from verified
