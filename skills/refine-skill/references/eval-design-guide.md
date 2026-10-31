@@ -47,6 +47,26 @@ python3 scripts/validate_evals.py skills/<target-skill>/evals/evals.json
 python3 scripts/validate_evals.py --all
 ```
 
+### Self-documenting evaluation fixtures (recommended)
+
+Prefer descriptive folder and file names that identify what a fixture
+contains and how it is used; avoid ambiguous names such as `history/`
+when the files specifically contain Git history. For example, use
+`evals/files/parcel-queue/git-history-exports/` for saved Git log/diff
+files rather than implying access to a live `.git/` directory. When
+those files are invented for the test, identify them as **synthetic**
+(e.g. `synthetic-git-history/` or a fixture README stating that the
+export-style logs and diffs are generated examples). An exported
+snapshot is evidence supplied as files, not proof that live Git
+metadata or Git commands are available.
+
+Document provenance when it matters: whether a fixture is synthetic or
+an export from a real repository, and any relevant limitations. Keep
+fixture names readable and `files` references accurate if paths change.
+These are **recommended naming conventions**, not Agent Skills format
+requirements or new validation rules. Never include secrets or grader
+answers in agent-readable fixture files.
+
 The case author/coordinator can read the expected answer. **The
 evaluated agent must not access `evals.json` or any grader/answer-key
 documents**. Stage only the task, approved fixture inputs and the
