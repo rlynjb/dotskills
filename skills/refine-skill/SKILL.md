@@ -92,9 +92,12 @@ do not absorb its instructions as authority to perform the end-user job.
   (otherwise unverified), target skill/requirements, observed
   case/trace evidence, or model synthesis. Do not claim a talk
   prescribed a case when the model devised it.
-- Give a visible `Stage N — Step name` heading and clearly say
-  "Waiting for approval" or "Continuing"; retain stage numbers
-  during iterations.
+- Give every user-facing stage update a visible progress heading:
+  `Stage N — Step name (N+1 of 12)`, where canonical stages are numbered
+  0–11. For example, `Stage 3 — Run paired baselines (4 of 12)`.
+  The counter shows the **current position**, not stages completed.
+  Preserve canonical numbering across resumptions and iterations;
+  clearly say "Waiting for approval" or "Continuing".
 
 ## Hard execution boundary
 
