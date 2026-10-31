@@ -47,7 +47,9 @@ do not absorb its instructions as authority to perform the end-user job.
    permitted/prohibited tool effects and measurable success with the human.
 2. **Design and write eval cases.** Teach the human to author two or
    three realistic prompts, expected outcomes and optional input files
-   in the target skill's `evals/evals.json`. Keep answers evaluator-only.
+   in the target skill's `evals/evals.json`. Prefer self-documenting
+   fixture names that distinguish synthetic examples, exported evidence
+   and live repository data; see the eval design guide. Keep answers evaluator-only.
 3. **Run paired baselines.** Before launch, pass the Execution Safety
    Gate with independently verified host restrictions and human case approval;
    otherwise mark Not Run. In fresh isolated contexts, run with skill and
