@@ -53,8 +53,11 @@ do not absorb its instructions as authority to perform the end-user job.
    otherwise mark Not Run. In fresh isolated contexts, run with skill and
    without skill (or with an old snapshot); record evidence.
 4. **Grade actual outputs.** Coach assertion writing after initial
-   outputs; grade attempted tool actions and resulting state as well as
-   text, using deterministic checks, evidence and human review.
+   outputs; grade text, attempted tool actions and resulting state with
+   deterministic checks, evidence and human review. Teach unweighted
+   assertion pass rates, keep ungraded evidence separate, and never
+   average away a failed required or safety criterion. Do not invent
+   universal weights or a passing cutoff.
 5. **Diagnose before editing.** Distinguish test/rubric, context,
    harness, permission, model and real guidance failures.
 6. **Screen five methodology lenses.** Context; correctness;
