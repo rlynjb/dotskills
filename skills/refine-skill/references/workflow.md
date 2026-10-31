@@ -20,6 +20,11 @@ and specialist methodology are DotSkills extensions.
 Keep the human oriented throughout the workflow, including stages that do not require
 input.
 
+For every stage opening, progress update, completion or resumed stage, first show
+the phase label from the **four-phase map below**, then the unchanged
+canonical stage heading. The phase label is a navigation aid, not an
+additional step or approval gate.
+
 Use the heading `Stage N — Step name (P of 12)` for every user-facing
 stage, including stage openings, progress updates, completion summaries and
 resumed stages. `N` is the canonical Procedure number **0–11** and `P = N + 1`
@@ -44,6 +49,7 @@ iteration when useful rather than advancing the number just because a message wa
 Example:
 
 ```text
+Phase 1 of 4 — Preparation
 Stage 2 — Design the eval case (3 of 12)
 Recommendation: use one synthetic change to check whether the review finds a known defect.
 Explain the input, expected behavior, why this case matters, and how it will run safely.
@@ -67,6 +73,43 @@ For every meaningful stage:
 A progress update is informational. A `HUMAN GATE` is blocking. If a stage contains
 both, show the completed-stage result first, then present the gate that controls the next
 action.
+
+### Four-phase map — progress orientation
+
+Group the 12 existing stages into **four phases** to reduce cognitive load.
+Show the applicable phase **before** the stage heading; don't change the
+Stage 0–11 numbering, existing human gates, ordering or run restrictions.
+
+| Phase | Stages | What the learner is doing |
+| --- | --- | --- |
+| **Phase 1 of 4 — Preparation** | **0–2** | Validate the skill, choose one observable behavior, and design safe eval cases and fixtures. |
+| **Phase 2 of 4 — Evaluation** | **3–4** | Run approved paired comparisons in a verified safe host (or mark Not Run), then grade the collected evidence. |
+| **Phase 3 of 4 — Diagnosis & improvement** | **5–8** | Diagnose the failure, screen methodology in Stage 6, propose a small fix, and apply only approved changes. |
+| **Phase 4 of 4 — Verification & decision** | **9–11** | Rerun comparable cases, check regressions and independent evidence, then make a human keep/revise/revert decision. |
+
+**Methodology distinction:** Stage 6 is **one shared methodology review
+stage**, not a separate stage for each methodology skill. It briefly
+screens all five lenses (context, correctness, observability, trust and
+lifecycle), marks relevance based on observed evidence, and recommends
+at most a justified deep dive. Do not automatically invoke all five
+specialists; specialist execution still requires the existing human
+gate. A user-selected full-lens learning mode does not add stages.
+
+Sample progress:
+
+```text
+Phase 2 of 4 — Evaluation
+Stage 3 — Run paired baselines (4 of 12)
+What we're doing: run the same approved case in clean contexts with and
+without the skill (or compare against a pinned old version).
+Why: measure the skill's contribution, not just whether one answer looks good.
+Next: only launch after approved, verified mock-only isolation; collect
+outputs for Stage 4 grading. Otherwise report Not Run.
+Status: Waiting for approval
+```
+
+The phase and stage numbers reflect **current focus**, not percent done;
+if an iteration revisits an earlier stage, update both labels to match.
 
 ### Recommendation source labels — always visible
 
@@ -519,6 +562,8 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    experiment.
 
 6. **Perform a methodology coverage scan and recommend specialist routing when needed.**
+   This is **one Stage 6 for all five methodology lenses**, not five separate
+   stages. A specialist deep dive is optional, evidence-driven and human-gated.
 
    Consider every major methodology layer so important failure classes are not skipped:
    - **Context engineering:** missing, stale, conflicting, distracting, excessive, or
@@ -595,7 +640,7 @@ workflow is continuing or blocked, and what comes next.
 Return:
 - Target skill/capability and current maturity.
 - Bootstrap / normalization status and approved package changes, if any.
-- Current methodology stage, one-based progress position (P of 12), and pending human gate.
+- Current phase (X of 4), methodology stage, one-based stage position (P of 12), and pending human gate.
 - Case and run status.
 - Evidence-backed diagnosis.
 - Methodology coverage scan across context, correctness, lifecycle, observability, and
