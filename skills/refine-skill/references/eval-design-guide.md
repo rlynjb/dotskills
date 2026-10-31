@@ -129,6 +129,64 @@ For **Unknown**, **Invalid** or **Incomplete** runs, add separate
 status/reviewer notes instead of inventing a boolean PASS/FAIL or
 silently counting unknowns as passes. Record what cannot be graded.
 
+### Default scoring rubric — assertion grades before aggregate scores
+
+Use this **evidence-first, unweighted default**, consistent with the
+[Agent Skills evaluation guide](https://agentskills.io/skill-creation/evaluating-skills)
+and [Anthropic Skill Creator's grader](https://github.com/anthropics/skills/blob/main/skills/skill-creator/agents/grader.md).
+It is a teaching convention, **not** a new required Agent Skills schema.
+
+| Grade | When to assign it | How to record it |
+| --- | --- | --- |
+| **Pass** | Concrete output, action and/or state evidence satisfies the observable assertion. | `passed: true` plus specific evidence in `assertion_results`. |
+| **Fail** | Complete relevant evidence contradicts the assertion, or a required result is absent despite an adequate check. A prohibited attempted action fails even if blocked. | `passed: false` plus specific evidence. |
+| **Unknown** | Required trace, state verification or other evidence is unavailable; the criterion cannot be decided. | Explicit evaluator-only status/reviewer note; **not** a fabricated boolean grade. |
+| **Invalid / Error / Incomplete / Not Run** | Answer-key contamination, setup failure, incomplete execution, or execution did not occur. | Separate run status and limitation; do not treat as a valid scored run. |
+
+For each **gradable** case, compute the standard `grading.json` summary:
+
+- `passed` = number of assertions supported as Pass.
+- `failed` = number of assertions supported as Fail.
+- `total = passed + failed` (boolean-graded assertions only).
+- `pass_rate = passed / total`, a proportion from 0 to 1; show a percentage
+  as a display aid if useful. If `total = 0`, the rate is unavailable.
+- Report the count/identity of **ungraded assertions** separately, with
+  overall status **Needs evidence** when their absence prevents a decision.
+  Any partial `pass_rate` must be labeled **provisional**, not as a complete
+  case Pass. Preserve the official `summary` keys and put local Unknown
+  details in a separate note or explicitly labeled extension.
+
+**Must-pass gates are separate from the average.** Establish critical
+correctness/permission/safety criteria before execution. One failed
+must-pass criterion makes the case **Fail**, even if the other assertions
+give a high pass rate; an Unknown critical criterion leaves the case
+**Unresolved**, not Pass. Without a predeclared case acceptance rule,
+report the assertion grades and rate without inventing an overall Pass
+threshold. There is **no universal industry weight or cutoff** (such as
+80%); only introduce task-specific weights, numerical score ranges,
+thresholds or anchored subjective rubrics when their meaning is stated
+and justified *before* a scored comparison. They never override a
+required safety check.
+
+**Hypothetical teaching example (not an executed eval):** a code-review
+case passes "identifies the real defect" and "cites supporting evidence",
+but fails "makes no unauthorized write attempt". Thus `passed = 2`,
+`failed = 1`, `total = 3`, `pass_rate = 2/3 ≈ 0.667` (66.7%).
+**Case outcome: Fail** because the safety gate failed. Show the evidence
+for each judgment before showing this aggregate.
+
+For semantic or subjective checks, define explicit rubric anchors and
+review example judgments with a human to **calibrate LLM-as-judge**;
+record disagreement and avoid trusting an unexplained numeric rating.
+[OpenAI's evaluation best practices](https://developers.openai.com/api/docs/guides/evaluation-best-practices)
+recommend clear rubrics, human calibration, and a pass/fail criterion
+alongside optional numeric scores. Compare with-skill and baseline arms
+using the **same versioned criteria**. In `benchmark.json`, show
+comparable mean per-case pass rates, counts, evidence coverage and
+critical-gate failures; express arm-to-arm rate differences as **percentage
+points**, not a relative percent change. Compute standard deviation
+only from actual repeated runs.
+
 A changed assertion set creates a new grading revision; apply it
 symmetrically to both arms and keep the original results. Avoid
 memorizing fixture answers in the skill. An invalid run cannot prove
