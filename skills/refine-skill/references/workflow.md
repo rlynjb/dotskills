@@ -153,6 +153,96 @@ At each stage, teach one small step before requesting a decision:
    as hypothetical and do not assume missing target details.
 5. **Your decision:** recommend the next bounded step and explain what approval allows.
 
+#### Stage-by-stage plain-English walkthroughs (Guided Mode)
+
+Use these as **teaching prompts**, not text to recite mechanically. At the start of
+**every Stage 0–11**, before presenting technical plans or source labels, briefly
+answer **What are we doing? Why does it matter? Example for this target?
+What happens next?** Explain unfamiliar terms on first use. Tailor the
+illustration to the selected target skill and actual case; the Learn Repo examples
+below are **hypothetical**, not evidence of completed runs. Keep each stage
+introduction short, then show its real evidence, next bounded action and any
+required human gate. Do not say a run, edit, approval or grade happened unless
+there is evidence that it did.
+
+- **Stage 0 — Validate structure.**
+  **What:** Check the skill package's required format.
+  **Why:** A valid skill needs no formatting changes.
+  **Example:** Learn Repo has a valid `SKILL.md` with name and description.
+  **Next:** Report validation, or seek approval for only the necessary repair.
+- **Stage 1 — Frame one observable behavior.**
+  **What:** Choose one thing the target skill should demonstrably do.
+  **Why:** A focused goal gives the eval a clear purpose.
+  **Example:** Learn Repo should identify the important modules in a supplied
+  repository and ground its explanation in the provided files.
+  **Next:** Confirm intended behavior, scope and prohibited actions.
+- **Stage 2 — Design and write eval cases.**
+  **What:** Write a realistic prompt, expected behavior and safe input fixture.
+  **Why:** We need a reproducible test before evaluating the agent.
+  **Example:** Supply an invented Python CLI repository such as `parcel-queue`;
+  describe success in `expected_output` before execution. Detailed semantic
+  assertions can be drafted after initial outputs; safety boundaries cannot shift.
+  **Next:** Review the case and fixture for approval; no agent has run yet.
+- **Stage 3 — Run paired baselines.**
+  **What:** Perform the same case in separate fresh contexts, once **with the
+  unchanged skill** and once **without the skill** (or against a pinned older
+  version). A *baseline* is the comparison starting result; *paired* means
+  matched test conditions.
+  **Why:** See what difference the skill makes, not just whether one answer
+  sounds good.
+  **Example:** Give the same `parcel-queue` prompt and fixture to Learn Repo
+  with its instructions and to a no-skill agent; capture both outputs and
+  attempted tool actions. This pair is an **experiment, not an assertion**.
+  **Next:** Obtain case/run approval and verify the mock-only Execution Safety
+  Gate before launching; otherwise mark **Not Run**. Stage 4 judges the results.
+- **Stage 4 — Grade actual outputs.**
+  **What:** Compare observed outputs/actions against the expected behavior
+  using testable *assertions* (individual checks).
+  **Why:** Evidence-backed Pass, Fail or Unknown is more useful than a feeling.
+  **Example:** Check whether both first-party modules were identified using
+  supplied file evidence; grade both paired arms with the same rubric.
+  **Next:** Show evidence and uncertainties for human review before diagnosis.
+- **Stage 5 — Diagnose before editing.**
+  **What:** Find the reason for a failed or uncertain check.
+  **Why:** A bad fixture or missing tool trace is not necessarily a bad skill.
+  **Example:** An absent module in the output may reflect omitted fixture
+  files rather than weak Learn Repo instructions.
+  **Next:** Classify the likely failure source before proposing changes.
+- **Stage 6 — Screen methodology lenses.**
+  **What:** Check context, correctness, observability, trust and lifecycle.
+  **Why:** A single failure may reflect a broader system issue.
+  **Example:** Missing tool traces suggest an observability gap, while an
+  unauthorized write attempt raises a trust/permission concern.
+  **Next:** Recommend a specialist deep dive only if justified and approved.
+- **Stage 7 — Propose the smallest improvement.**
+  **What:** Draft a targeted change, without editing yet.
+  **Why:** General improvements are preferable to memorizing one test answer.
+  **Example:** Propose clearer file-evidence instructions rather than inserting
+  `parcel-queue` module names into Learn Repo.
+  **Next:** Show trade-offs and exact files; wait for edit approval.
+- **Stage 8 — Apply the approved change.**
+  **What:** Make only the accepted edits.
+  **Why:** Keep the experiment's intervention small and auditable.
+  **Example:** Update a specific Learn Repo instruction and record its diff.
+  **Next:** Preserve version evidence and prepare a comparable rerun.
+- **Stage 9 — Rerun the same eval.**
+  **What:** Test the revised skill against the same versioned case/rubric.
+  **Why:** See whether the change helped under comparable conditions.
+  **Example:** Reuse the `parcel-queue` task rather than making it easier.
+  **Next:** Pass the execution approval/safety gate again, or mark **Not Run**.
+- **Stage 10 — Check regression and independence.**
+  **What:** See whether prior behaviors broke and whether results generalize.
+  **Why:** Improving one case can conceal new failures.
+  **Example:** Recheck a previously passing missing-context case and a
+  separate repository fixture.
+  **Next:** Present before/after evidence, safety outcomes and limitations.
+- **Stage 11 — Human decides.**
+  **What:** Choose to keep, revise, revert, release or iterate.
+  **Why:** A test result informs a decision; it does not make it automatically.
+  **Example:** Keep a Learn Repo improvement only after reviewing the
+  comparable grades and any regressions.
+  **Next:** Record the decision, remaining uncertainty and future test coverage.
+
 Proactively recommend cases instead of asking the beginner to invent tests from scratch.
 Inspect the target's intended behavior, requirements, and available failure evidence.
 Offer one recommended first case and at most two useful alternatives, with a brief
@@ -295,6 +385,12 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    - Is evaluator-only material isolated from the evaluated task context?
 
 3. **Run the unchanged baseline and paired evaluation.**
+   In Guided Mode, first explain that this is a controlled comparison experiment:
+   the same case runs with and without the skill (or with an old snapshot), so
+   we can see the skill's added effect. This pair is **not an assertion**;
+   assertions are individual criteria used to grade the two outputs in Stage 4.
+   Explicitly distinguish the proposed run from an executed run, and explain
+   that evidence collection is not yet a score.
    For the first iteration, run each approved case in clean contexts **with**
    the unchanged skill and **without** it when a no-skill comparison is
    meaningful. For skill revisions, compare the current version with a pinned
