@@ -20,11 +20,18 @@ and specialist methodology are DotSkills extensions.
 Keep the human oriented throughout the workflow, including stages that do not require
 input.
 
-Use the heading `Stage N — Step name` for every user-facing tutorial stage,
-including stage openings, completion summaries, and resumed stages. Use the canonical
-Procedure step number (0–11) and its step name below; do not renumber stages when
-bootstrap is skipped, gates are batched, or an eval is repeated. Stage 0 is the structural check;
-Stage 2 is case design; Stage 4 is grading. Explain Stage 0 briefly to beginners.
+Use the heading `Stage N — Step name (P of 12)` for every user-facing
+stage, including stage openings, progress updates, completion summaries and
+resumed stages. `N` is the canonical Procedure number **0–11** and `P = N + 1`
+is its one-based position in the **12-stage workflow**. For example,
+`Stage 3 — Run paired baselines (4 of 12)` means the fourth stage is current,
+not that four stages have been completed. Keep the stage title and progress
+counter visible so learners never have to recalculate their position. Do not
+renumber or advance the counter when Stage 0 is brief, a gate is batched, an
+iteration repeats, or work resumes at an earlier stage. The position indicates
+where the workflow is currently focused; it is **not a completion percentage**.
+Stage 0 is the structural check; Stage 2 is case design; Stage 4 is grading.
+Explain Stage 0 briefly to beginners.
 
 Under the heading, give the plain-English explanation and evidence. When the active
 approval cadence requires a decision, put `HUMAN GATE — <specific decision>` on its
@@ -37,7 +44,7 @@ iteration when useful rather than advancing the number just because a message wa
 Example:
 
 ```text
-Stage 2 — Design the eval case
+Stage 2 — Design the eval case (3 of 12)
 Recommendation: use one synthetic change to check whether the review finds a known defect.
 Explain the input, expected behavior, why this case matters, and how it will run safely.
 HUMAN GATE — Approve or revise this case
@@ -588,7 +595,7 @@ workflow is continuing or blocked, and what comes next.
 Return:
 - Target skill/capability and current maturity.
 - Bootstrap / normalization status and approved package changes, if any.
-- Current methodology stage and pending human gate.
+- Current methodology stage, one-based progress position (P of 12), and pending human gate.
 - Case and run status.
 - Evidence-backed diagnosis.
 - Methodology coverage scan across context, correctness, lifecycle, observability, and
