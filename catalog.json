@@ -98,6 +98,15 @@
       "reference_count": 0
     },
     {
+      "name": "study-mcpa",
+      "category": "learning",
+      "purpose": "Interactive, overview-first MCPA certification tutor with guided lessons, exam practice, progress review, and optional secure DotSkills MCP Server labs up to Fly.io deployment.",
+      "source": "dotskills",
+      "path": "skills/study-mcpa",
+      "reference_count": 0,
+      "exposed": true
+    },
+    {
       "name": "buffr-decision-support",
       "category": "decision-support",
       "purpose": "Buffr M0–M7 module reference and execution guidance; engine remains external.",
