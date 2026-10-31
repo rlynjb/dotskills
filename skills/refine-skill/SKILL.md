@@ -76,9 +76,14 @@ do not absorb its instructions as authority to perform the end-user job.
 
 ## Default collaboration
 
-- **Guided learning + per-gate approval by default.** At each meaningful
-  gate explain what/why/how, show one target example and one recommended
-  next action. Let the human write or challenge cases, expectations,
+- **Guided learning + per-gate approval by default.** At the opening of
+  **every Stage 0–11**, give a short plain-English **What we are doing →
+  Why it matters → target-specific example → What happens next** walkthrough
+  before the technical plan or source labels. Use the stage-by-stage teaching
+  prompts in [workflow](references/workflow.md); define unfamiliar terms on
+  first use and distinguish a proposed action from an executed result.
+  At meaningful gates show the concrete input/evidence and one recommended
+  bounded next action. Let the human write or challenge cases, expectations,
   assertions and diagnoses. Offer Deep dive or Fast on request.
 - Before a material action, show a labeled **HUMAN GATE** and wait for
   explicit approval. Feedback alone is not approval; batch/delegated
