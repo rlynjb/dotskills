@@ -158,13 +158,17 @@ eval-workspaces/
 │       ├── skills/<target-skill>/SKILL.md
 │       └── evals/<case-id>/
 │           ├── prompt.md
-│           └── graders/criterion-01.md
+│           ├── graders/criterion-01.md
+│           └── fixtures/evals/files/fixture.txt     # Only if an input fixture exists
 └── codex-native-<case-id>-<unique>/         # Only when preparing for Codex
     ├── manifest.json                       # PREPARED_NOT_RUN
     └── codex/
         ├── promptfooconfig.yaml
-        ├── with_skill/.agents/skills/<target-skill>/SKILL.md
+        ├── with_skill/
+        │   ├── .agents/skills/<target-skill>/SKILL.md
+        │   └── inputs/evals/files/fixture.txt        # Only if a fixture exists
         └── without_skill/
+            └── inputs/evals/files/fixture.txt        # Only if a fixture exists
 ```
 
 **Preparing a bundle does not execute or grade anything.** The selected
@@ -236,12 +240,14 @@ command is necessary. Stage 9 reruns the matching provider and case/rubric.
 Stage 10 reviews comparable, provider-native results—not an automatic
 cross-provider benchmark or blind comparator.
 
-**Status — experimental / model evaluation Not Run:** Source files and
-offline tests are committed, but real Claude/Codex native execution,
-grader behavior, output compatibility and independently enforced host
-isolation have **not been verified end to end**. Fixture-backed preparation
-also has a known path-resolution mismatch between the skill-root case
-convention and `native_eval.py`; [see the runner limitations](runner/README.md).
+**Status — fixture fix offline-tested; model evaluation Not Run:**
+The skill-root-relative fixture mismatch is corrected and **seven
+offline unit tests passed** for provider-specific preparation,
+path-security checks and blocked execution. The existing
+`evals/evals.json` authoring convention is unchanged. However, live
+Claude/Codex native execution, actual grader behavior, provider output
+compatibility, and independently enforced host isolation are **not yet
+verified end to end**. See [runner testing and limitations](runner/README.md).
 Do not describe a prepared case as a completed evaluation or send
 workplace data to an unapproved provider.
 
