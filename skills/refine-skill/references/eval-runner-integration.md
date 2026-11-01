@@ -1,13 +1,35 @@
-# Refine Skill — Anthropic Skill Creator evaluation adapter
+# Refine Skill — Claude/Codex evaluation integration (experimental)
 
-**Integration status: documented / NOT RUN.** This reference connects the
-existing Refine Skill stages to Anthropic's Skill Creator workflow. It does
-**not** install Anthropic's components, spawn an agent, configure isolation, or
-verify an end-to-end evaluation. Do not describe it as a working runner merely
-because this reference exists. Keep all integration files under
-`skills/refine-skill/`; use an external, approved execution host.
+**Integration status: dual-harness adapter implemented; live model evaluations NOT RUN.**
+The skill-local [runner](../runner/README.md) implements experimental paired
+CLI execution, model-based assertion grading, and a provisional comparison for
+**both** Claude Code and Codex. Neither provider's complete Skill Creator or
+evaluation framework is installed by this adapter. No verified isolated host or
+end-to-end Claude/Codex model test is available yet. Keep adapter files under
+`skills/refine-skill/`; run only in a separately approved, independently
+verified execution host.
 
-## Upstream components and their actual responsibilities
+## Harness selection: what is actually implemented
+
+The selected CLI `--harness claude` or `--harness codex` chooses **both**
+the evaluated-agent runtime and its LLM judge. The runner currently defaults
+to `claude` if no harness is given; callers should pass `--harness`
+explicitly. Merely invoking Refine Skill within Codex does **not**
+automatically prove the runner will select Codex.
+
+| Selected harness | Paired execution | LLM-as-judge | Integration limit |
+| --- | --- | --- | --- |
+| **Claude** | `claude -p` using restricted CLI options and separate workspaces | Claude model prompted with a locally reviewed, SHA-256-pinned copy of Anthropic Skill Creator's `agents/grader.md` | **Not** Anthropic's complete Skill Creator subagent execution/benchmark/viewer installation |
+| **Codex (OpenAI)** | `codex exec --json --sandbox read-only` using separate workspaces | Codex model asked to grade assertions; `--output-schema` constrains the response JSON | **Not** OpenAI's separate official evaluation runner or Plugin Eval engine; this is a custom Codex CLI adapter |
+| **Both** | With-skill and without-skill, same case and fixture | Evidence-based assertion checks + human review | Python `compare` calculates assertion pass-rate differences; no blind comparator agent or review viewer |
+
+The provider-specific CLI commands and grading prompt live in
+[`runner/runner.py`](../runner/runner.py). OpenAI documents
+[`codex exec --json` and `--output-schema`](https://learn.chatgpt.com/docs/non-interactive-mode);
+these are Codex CLI capabilities, **not** a dedicated OpenAI skill-evaluation
+runner or prepackaged LLM grader.
+
+## Anthropic Skill Creator reference components (not all installed)
 
 Source: [Anthropic Skill Creator](https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md).
 Inspect the installed/version-pinned upstream files before invoking them:
@@ -66,10 +88,15 @@ as an unsafe fallback.
 ## Stage 4 — grading (after verified behavioral outputs exist)
 
 - Apply deterministic checks first where they establish meaningful behavior.
-- Optionally use an independently configured Anthropic Grader subagent
-  following `agents/grader.md`, giving it only the necessary evaluator-side
-  expected assertions, trusted transcripts and outputs, **not** unchecked
-  secrets or proprietary data sent to an unapproved provider.
+- For **Claude**, the experimental runner passes reviewed, SHA-256-pinned
+  Anthropic `agents/grader.md` instructions to a separate Claude CLI grader
+  invocation; it does **not** start the original Skill Creator grader subagent.
+  For **Codex**, the runner prompts the Codex model directly and requests
+  structured JSON via `--output-schema`; this is our own grader integration,
+  not OpenAI's separate evaluation framework.
+- Provide only approved evaluator-side expectations and actual outputs.
+  Neither path may send unchecked secrets or proprietary data to an
+  unapproved provider.
 - Record each testable assertion as `text`, `passed` and `evidence`.
   Preserve the same versioned rubric for both comparison arms. Record
   Unknown/unverifiable items separately; never make them fabricated Pass.
@@ -82,30 +109,34 @@ as an unsafe fallback.
 
 ## Stage 10 — comparative analysis and human review
 
-- When actual paired outputs and comparable grades exist, optionally
-  invoke Anthropic's `agents/comparator.md` with blinded A/B content.
-  Hide which arm is which from the comparator; store the mapping separately
-  for the evaluator. A blind preference is supplementary, not a safety pass.
-- If a reviewed upstream Skill Creator installation and trusted outputs
-  are available, use `scripts/aggregate_benchmark.py` and
-  `eval-viewer/generate_review.py` with their documented input schemas.
-  These tools summarize/review completed runs; they do not execute the
-  behavioral task or enforce sandboxing.
+- The current cross-harness adapter's `compare` action calculates both
+  arms' assertion pass rates and their percentage-point difference. It
+  does **not** run an LLM blind comparator or aggregate multiple trials.
+- Anthropic's `agents/comparator.md`, `scripts/aggregate_benchmark.py`,
+  and `eval-viewer/generate_review.py` are **upstream optional references**,
+  not integrated stages. A separate reviewed integration could use them
+  with actual, compatible evidence; never imply they already ran.
+- OpenAI's separate [Plugin Eval tooling](https://github.com/openai/plugins/tree/main/plugins/plugin-eval)
+  is **not installed or invoked** by this adapter. Connecting such a tool
+  would require a distinct compatibility and security review.
 - Distinguish missing metrics from zeros, and do not invent variance from
   one trial. Human feedback and release decisions remain human-gated.
 
 ## What remains before we can claim integration is complete
 
-- Install/review a pinned version of Skill Creator on the intended
-  host or implement and test a narrow equivalent adapter.
+- Review and pin the Anthropic grader instructions on an approved Claude
+  host, and verify Codex CLI execution and structured grading separately.
+  The narrow adapter exists but is still experimental.
 - Establish and independently verify a safe host with an actual
   behavioral-agent execution interface, mock tools, per-call authorization,
   trusted action traces and state checks.
-- Run a synthetic paired evaluation end-to-end; prove evaluator-only
-  information stays hidden, no live writes are reachable, outputs are
-  captured, and the Grader/Comparator outputs follow the expected schema.
-- Validate blocked/missing-run behavior and regression tests. Until these
-  checks succeed, report **integration planned; behavioral eval Not Run**.
+- Run a synthetic paired evaluation end-to-end for **both harnesses**;
+  prove evaluator-only information stays hidden, no live writes are reachable,
+  and execution and grader outputs follow the expected schema. Do not claim
+  a comparator-agent test: that feature is not implemented.
+- Re-run the committed tests and validate blocked/missing-run behavior.
+  Until these checks succeed, report **adapter experimental; behavioral
+  eval Not Run**.
 
 This preserves Refine Skill's 12 stages, four-phase navigation, learning
 format, source provenance labels, opt-in Reset Eval and per-gate approvals.
