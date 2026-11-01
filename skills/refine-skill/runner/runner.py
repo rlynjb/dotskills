@@ -147,6 +147,12 @@ def invoke(harness, prompt, mode, workspace, timeout):
     return parse_result(harness, result.stdout, final_file), result.stdout
 
 
+def case_input_digest(case):
+    """Version only fixed Stage 2 inputs, not Stage 4 assertion additions."""
+    frozen = {key: case.get(key) for key in ("id", "prompt", "expected_output", "files")}
+    return hashlib.sha256(json.dumps(frozen, sort_keys=True).encode()).hexdigest()
+
+
 def paired(args):
     case = case_from_suite(args.suite, args.case_id)
     if not (args.approved_case and args.approved_provider and args.host_enforced and args.synthetic_only):
@@ -157,7 +163,7 @@ def paired(args):
     path.mkdir(exist_ok=False)
     save(path / "metadata.json", {
         "status": "INCOMPLETE", "harness": args.harness, "case_id": args.case_id,
-        "case_sha256": hashlib.sha256(json.dumps(case, sort_keys=True).encode()).hexdigest(),
+        "case_sha256": case_input_digest(case),
         "runner_proved_host_isolation": False,
     })
     for mode in ("with_skill", "without_skill"):
@@ -245,7 +251,7 @@ def compare(args):
     """Compare actual matched grades; not a new model call or a safety pass."""
     case = case_from_suite(args.suite, args.case_id)
     meta = load(args.run_dir / "metadata.json")
-    expected_hash = hashlib.sha256(json.dumps(case, sort_keys=True).encode()).hexdigest()
+    expected_hash = case_input_digest(case)
     if (meta.get("status") != "EXECUTED_PENDING_HOST_TRACE_AUDIT_AND_GRADING"
             or meta.get("case_id") != args.case_id or meta.get("harness") != args.harness
             or meta.get("case_sha256") != expected_hash):
