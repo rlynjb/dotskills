@@ -86,6 +86,21 @@ class RunnerTests(unittest.TestCase):
         self.assertNotIn("--full-auto", codex)
         self.assertNotIn("--dangerously-skip-permissions", claude)
 
+    def test_codex_grader_uses_structured_schema(self):
+        directory = Path(self.temp.name)
+        final = directory / "last-message.txt"
+        argv = runner.argv_for("codex", "grade output", "grader", final)
+        self.assertIn("--output-schema", argv)
+        schema = runner.load(directory / "grading.schema.json")
+        self.assertIn("expectations", schema["properties"])
+
+    def test_claude_grader_requires_pinned_instructions(self):
+        args = type("Args", (), {"suite": self.suite, "case_id": 1,
+           "grader_instructions": None, "grader_instructions_sha256": None,
+           "harness": "claude"})()
+        with self.assertRaises(runner.Blocked):
+            runner.grade(args)
+
     def test_normalize_llm_grade_needs_evidence(self):
         good = {"expectations": [{"text": "Uses evidence", "passed": True,
                                   "evidence": "Output cites input.txt"}]}
