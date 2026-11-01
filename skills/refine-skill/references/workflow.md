@@ -57,8 +57,8 @@ HUMAN GATE — Approve or revise this case
 Status: Waiting for approval
 ```
 
-**Agent/tool and source trace (every stage):** After the plain-English
-*what / why / next*, add a concise **Agent/tool** and **Sources** line
+**Agent/tool and source trace (every stage):** After the concise stage
+summary, add a **Agent/tool** and **Sources** line
 when walking through each stage. State the active coding harness
 (Claude Code or Codex), then name any provider runner, grader, or
 methodology specialist actually used; otherwise say **no separate tool
@@ -119,11 +119,9 @@ Sample progress:
 ```text
 Phase 2 of 4 — Evaluation
 Stage 3 — Run paired baselines (4 of 12)
-What we're doing: run the same approved case in clean contexts with and
-without the skill (or compare against a pinned old version).
-Why: measure the skill's contribution, not just whether one answer looks good.
-Next: only launch after approved, verified mock-only isolation; collect
-outputs for Stage 4 grading. Otherwise report Not Run.
+Proposed run: approved case, with and without the skill, in an independently
+verified mock-only host.
+HUMAN GATE — Approve this evaluation run
 Status: Waiting for approval
 ```
 
@@ -205,134 +203,12 @@ Introduce terms when first needed: a case is one test situation; a baseline is t
 starting result; a rubric is the checklist used to judge the result; a regression is
 behavior that worked before but breaks after a change.
 
-A stage title and source list alone do not satisfy the tutorial requirement.
-Immediately below each stage heading, explain in plain English:
-- **What we are doing:** the concrete activity and what we are not yet doing.
-- **Why now:** the decision or uncertainty this stage resolves.
-- **Example for this target:** a small illustration, labeled hypothetical if unobserved.
-- **What this stage produces:** the artifact or decision the human will review.
-Then give the recommendation and source explanations, followed by the existing gate.
-Keep this compact; examples supplement evidence and never count as an executed eval.
-
-At each stage, teach one small step before requesting a decision:
-1. **What:** explain what we are doing in everyday language.
-2. **Why:** explain what question this step answers and why it matters for this skill.
-3. **How:** show the concrete input, proposed action, or evidence to inspect.
-4. **Example:** use a small example tied to the actual target; label invented examples
-   as hypothetical and do not assume missing target details.
-5. **Your decision:** recommend the next bounded step and explain what approval allows.
-
-#### Stage-by-stage plain-English walkthroughs (Guided Mode)
-
-Use these as **teaching prompts**, not text to recite mechanically. At the start of
-**every Stage 0–11**, before presenting technical plans or source labels, briefly
-answer **What are we doing? Why does it matter? Example for this target?
-What happens next?** Explain unfamiliar terms on first use. Tailor the
-illustration to the selected target skill and actual case; the Learn Repo examples
-below are **hypothetical**, not evidence of completed runs. Keep each stage
-introduction short, then show its real evidence, next bounded action and any
-required human gate. Do not say a run, edit, approval or grade happened unless
-there is evidence that it did.
-
-- **Stage 0 — Validate structure.**
-  **What:** Check the skill package's required format.
-  **Why:** A valid skill needs no formatting changes.
-  **Example:** Learn Repo has a valid `SKILL.md` with name and description.
-  **Next:** Report validation, or seek approval for only the necessary repair.
-- **Stage 1 — Frame one observable behavior.**
-  **What:** Choose one thing the target skill should demonstrably do.
-  **Why:** A focused goal gives the eval a clear purpose.
-  **Example:** Learn Repo should identify the important modules in a supplied
-  repository and ground its explanation in the provided files.
-  **Next:** Confirm intended behavior, scope and prohibited actions.
-- **Stage 2 — Draft cases automatically, then review together.**
-  **What:** The active coding agent drafts realistic prompts, expected behavior, assertions and optional safe fixture plans for the learner to review.
-  **Why:** Beginners learn from concrete examples without having to invent their first tests. Drafting is not running a test, grading, or revising the target skill.
-  **Example:** For Learn Repo, propose an architecture-explanation case using
-  a synthetic project such as `parcel-queue` and a second case checking
-  checkpoint behavior. Show what a correct response must demonstrate.
-  An after-run rubric change is a new approved version, never a silent adjustment.
-  **How to understand grading (teaching, not a new runner feature):**
-  A *deterministic check* is a fixed rule or script, such as checking whether
-  an expected module name appears. An *LLM grader* uses a model and a rubric
-  (a checklist) to judge an explanation; it can be mistaken. *Human review*
-  means a person checks the evidence, especially for nuanced or safety
-  decisions. *Grader calibration* means comparing a few grader judgments with
-  examples a human has already reviewed, then improving the rubric if they
-  disagree. The current dispatcher prepares provider-native LLM rubrics; it
-  does not automatically route assertions among all three grading methods.
-  **Next:** Review, edit or approve the draft cases, rubrics and fixtures
-  **before** writing them or preparing provider-native cases. The current
-  coding agent drafted text; **no evaluated agent or grader has run**.
-  Stage 3 still requires separate execution approval and verified isolation.
-- **Stage 3 — Run paired baselines.**
-  **What:** Perform the same case in separate fresh contexts, once **with the
-  unchanged skill** and once **without the skill** (or against a pinned older
-  version). A *baseline* is the comparison starting result; *paired* means
-  matched test conditions.
-  **Why:** See what difference the skill makes, not just whether one answer
-  sounds good.
-  **Example:** Give the same `parcel-queue` prompt and fixture to Learn Repo
-  with its instructions and to a no-skill agent; capture both outputs and
-  attempted tool actions. This pair is an **experiment, not an assertion**.
-  **Next:** Confirm the selected provider's native tooling, scoped run and
-  provider approvals, and the mock-only Execution Safety Gate. Otherwise mark
-  **Not Run**. Stage 4 reviews the grades and real evidence from the run.
-- **Stage 4 — Grade actual outputs.**
-  **What:** Compare observed outputs/actions against the expected behavior
-  using testable *assertions* (individual checks).
-  **Why:** Evidence-backed Pass, Fail or Unknown is more useful than a feeling.
-  **Example:** Check whether both first-party modules were identified using
-  supplied file evidence; grade both paired arms with the same rubric.
-  **Next:** Show evidence and uncertainties for human review before diagnosis.
-- **Stage 5 — Diagnose before editing.**
-  **What:** Find the reason for a failed or uncertain check.
-  **Why:** A bad fixture or missing tool trace is not necessarily a bad skill.
-  **Example:** An absent module in the output may reflect omitted fixture
-  files rather than weak Learn Repo instructions.
-  **Next:** Classify the likely failure source before proposing changes.
-- **Stage 6 — Screen methodology lenses.**
-  **What:** Check context, correctness, observability, trust and lifecycle.
-  **Why:** A single failure may reflect a broader system issue.
-  **Example:** Missing tool traces suggest an observability gap, while an
-  unauthorized write attempt raises a trust/permission concern.
-  **Next:** Recommend a specialist deep dive only if justified and approved.
-- **Stage 7 — Propose the smallest improvement.**
-  **What:** Draft a targeted change, without editing yet.
-  **Why:** General improvements are preferable to memorizing one test answer.
-  **Example:** Propose clearer file-evidence instructions rather than inserting
-  `parcel-queue` module names into Learn Repo.
-  **Next:** Show trade-offs and exact files; wait for edit approval.
-- **Stage 8 — Apply the approved change.**
-  **What:** Make only the accepted edits.
-  **Why:** Keep the experiment's intervention small and auditable.
-  **Example:** Update a specific Learn Repo instruction and record its diff.
-  **Next:** Preserve version evidence and prepare a comparable rerun.
-- **Stage 9 — Rerun approved evaluations.**
-  **What:** Rerun the case we tried to fix **and relevant previously passing
-  cases**, each with its original approved prompt and grading rules.
-  **Why:** See whether the fix helped without breaking an old behavior.
-  **Example:** Reuse the `parcel-queue` architecture case, plus an approved
-  case that checks whether Learn Repo pauses at a learning checkpoint.
-  **Next:** Approve the exact rerun scope and pass the execution safety gate
-  again, or mark **Not Run**.
-- **Stage 10 — Check regression and independence.**
-  **What:** Compare new evidence with earlier results to see whether any
-  behavior that passed before now fails (a *regression*).
-  **Why:** Improving one case can conceal new failures.
-  **Example:** An architecture explanation now passes, but the approved
-  checkpoint-pausing case that used to pass fails: that is a regression.
-  If no comparable prior result exists, say so rather than claiming failure.
-  **Next:** Present before/after evidence, safety outcomes and limitations.
-- **Stage 11 — Human decides.**
-  **What:** Choose to keep, revise, revert, release or iterate.
-  **Why:** A test result informs a decision; it does not make it automatically.
-  **Example:** Keep a Learn Repo improvement only after reviewing the
-  comparable grades and any regressions.
-  **Next:** Record the decision and preserve cases, rubrics and evidence for
-  future changes. Explain that future regression reruns require fresh scope,
-  approval and safety verification; accepting a skill never authorizes an
-  unattended external model evaluation.
+Use the [README's current stage walkthrough](../README.md#plain-english-walkthrough-what-happens-next-at-each-stage) for a single beginner-friendly overview.
+During Guided mode, explain unfamiliar ideas only when useful, using a small
+target-specific example if it improves understanding. Show real evidence, the
+next action and any actual approval gate without imposing a repeated
+"What / Why / Example / Next" script. Never present a hypothetical example
+as an observed run or approval.
 
 Proactively **draft** cases instead of asking the beginner to invent tests
 from scratch. Use the approved Stage 1 behavior, inspected target skill
