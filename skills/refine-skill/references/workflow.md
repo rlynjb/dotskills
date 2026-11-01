@@ -508,19 +508,25 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    labels, alternatives, and an open feedback path. Obtain approval before finalizing
    the evaluation direction.
 
-2. **Design the eval case.**
-   Proactively recommend a first case using the tutorial and case-recommendation guidance
-   above; explain the what, why, and how before asking the human to approve it.
-   In Guided mode, coach the learner to draft two or three varied, realistic user
-   prompts (including a boundary case), descriptions of expected outputs, and
-   optional safe input fixtures. Record the approved definitions in the *target*
+2. **Draft evaluation cases for review, then prepare approved cases.**
+   After the human agrees on the Stage 1 behavior, the **active coding agent**
+   proactively drafts two or three realistic user prompts (including a
+   boundary case), expected behavior, testable `assertions` and optional
+   safe synthetic fixture plans. Explain *why each case is useful*, what
+   success would look like, and which requirements support it. Clearly
+   label assumptions and drafts as proposed, not observed or approved.
+   This is **automatic drafting, not automatic test execution, grading, or
+   skill revision**. The learner reviews, changes, replaces or rejects the
+   proposed cases and learns why each assertion measures the goal.
+   **Human gate before persistence:** present the exact cases, assertions,
+   and fixture plans for approval. Only then save them to the *target*
    skill's `evals/evals.json` using the Agent Skills guide's `skill_name` and
    `evals` fields; each case has `id`, `prompt`, `expected_output` and optional
-   `files`. Ask the learner to try writing a case before supplying a worked
-   example; offer assisted mode on request. Start with observable expectations
-   and any non-negotiable safety criteria. **Draft and approve detailed
-   `assertions` before native case preparation**; the dispatcher uses them
-   to generate provider-specific grading definitions. Revisit assertions
+   `files`. After approval, prepare provider-native cases locally with
+   `native_eval.py prepare` (no evaluated model or grader runs in Stage 2).
+   Start with observable expectations and non-negotiable safety criteria.
+   **Approved, nonempty `assertions` are required before native case
+   preparation** because the dispatcher generates grading definitions from them. Revisit assertions
    after observed outputs only as a new approved rubric revision, applied
    fairly to both arms. When the target has external tools or side effects,
    include security regression
