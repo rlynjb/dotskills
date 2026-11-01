@@ -1,138 +1,123 @@
-# Refine Skill — Claude + Codex evaluation adapter (experimental)
+# Refine Skill — provider-specific evaluation workflows (experimental)
 
-This **skill-local**, standard-library Python adapter connects the existing
-Refine Skill stages to native model/harness CLIs. It has no project-wide
-package dependency and does **not** vendor Anthropic or OpenAI code.
+The only Refine Skill evaluation dispatcher is [`native_eval.py`](native_eval.py).
+It **prepares provider-specific synthetic cases** and routes evaluation to the
+active coding harness. It does not implement a shared model runner, shared
+LLM grader, or cross-provider fallback.
 
-- **Stage 3:** Paired execution with the current skill and without it.
-  Claude uses its noninteractive CLI; Codex uses codex exec with JSONL events.
-  Only the selected case and synthetic fixture go to agent workspaces;
-  evaluator-only expected outputs, assertions, and earlier runs stay outside.
-- **Stage 4:** Semantic assertion grading via a Claude or Codex model. Claude
-  requires a locally reviewed, **SHA-256 pinned** copy of Anthropic Skill
-  Creator's official agents/grader.md. Codex can use its own model with a
-  structured JSON output schema; the same pinned grader guide is optional.
-  Deterministic and human review remain part of Refine Skill.
-- **Stage 10:** The compare action creates comparison.json containing both
-  arms' pass rates and their difference in **percentage points**. It is
-  descriptive/provisional, not proof of safety, significance, or generality.
+| Active harness | Execution | Grading | Native result format |
+| --- | --- | --- | --- |
+| Claude Code | Claude's `claude plugin eval`, with-skill and without-skill via `--ablation with-without` | Claude plugin-eval `graders/*.md` using `type: llm` | Claude plugin-eval JSON / review artifacts |
+| Codex | Promptfoo with the `openai:codex-sdk` provider in separate with-skill and without-skill workspaces | Promptfoo `llm-rubric` assertions configured to use the same Codex SDK provider | Promptfoo JSON results |
 
-## Security contract — read before running
+**Provider ownership matters:** `claude plugin eval` is Claude tooling.
+Promptfoo is **third-party evaluation tooling recommended for Codex**, not an
+OpenAI-owned evaluation runner or prepackaged OpenAI grading service. The
+Codex model supplies the grading judgments through the Codex SDK provider.
+No Anthropic grader prompt is passed to Codex, and no Codex rubric is
+substituted for Claude's native graders. Do not describe these paths as
+identical implementations.
 
-**This adapter is NOT an isolated host, security proxy, or complete agent
-eval framework.** Claude's plan mode, Codex's read-only sandbox, and a JSON
-manifest are defense-in-depth, **not** independent isolation. The command-line
-flags requiring approvals are operator declarations, not enforceable human
-approvals or proof that your OS/network/tool permissions are restricted.
+## Harness selection: no substitution
 
-**Do not execute run-pair or grade-pair** unless a separately configured and
-independently verified host enforces all of the following: disposable isolated
-workspace, approved provider/data routing, no accessible production secrets,
-no live write paths, no unrestricted shell/API/network bypass, child-agent
-restrictions, complete host-generated attempted-action traces, and post-run
-state verification. Apply [Execution Safety Gate](../references/execution-safety-gate.md).
-The host MUST enforce per-tool authorization; this runner cannot guarantee it.
+- `native_eval.py inspect` checks for a Claude session via `CLAUDECODE`,
+  or a Codex session via `CODEX_THREAD_ID` / `CODEX_SESSION_ID`.
+- Preparation selects the detected harness. `--harness` is permitted only
+  for **offline preparation** when detection is unavailable; conflicting
+  session markers and mismatches are blocked.
+- Execution requires an identifiable active session matching the prepared
+  case. The presence of a CLI binary alone is **not** harness identification.
+- If the native tool, credentials, approval, or independent isolation are
+  missing, report **Blocked — Not Run**. Never switch providers.
 
-For workplace use, obtain employer authorization before any proprietary
-code, prompts, logs, or outputs are sent to external providers. **V1 is
-synthetic-only** and deliberately refuses model execution without the
-separate case/provider approval flags, synthetic-only declaration, and
-host-enforcement declaration. Those flags alone are not sufficient safety
-evidence. Do not treat a manifest validator as a sandbox.
+These environment markers are a convenience, not a trusted attestation of
+the actual caller. The separately enforced host must verify provider identity
+and routing before running a model.
 
-**No executable safe host was provided or verified in this change.**
-Therefore the real Claude/Codex evaluations remain **Blocked — Not Run**
-until the host and provider access are configured and approved. Your
-existing Stage 2 cases and fixtures remain intact.
+## Prepare synthetic cases — no model calls
 
-## Offline validation
+Run these commands from the DotSkills repository root with a saved, approved
+case. The case in `evals/evals.json` must have an `id`, `prompt`,
+`expected_output`, and nonempty `assertions`. Existing input fixtures
+(`files`) must be synthetic and approved. The case and source files remain
+unchanged; each preparation gets its own output directory.
 
-From the DotSkills root:
+```bash
+python3 skills/refine-skill/runner/native_eval.py inspect
 
-    python3 -m unittest discover -s skills/refine-skill/runner -p 'test_*.py' -v
+python3 skills/refine-skill/runner/native_eval.py prepare \
+  --suite skills/example-skill/evals/evals.json \
+  --case-id 1 \
+  --target-skill skills/example-skill \
+  --output eval-workspaces
+```
 
-A safe static preflight (never calls a model):
+`inspect` will fail if a known harness is not exposed in the environment.
+For **offline-only** fixture preparation, `prepare` also accepts
+`--harness claude` or `--harness codex`, but a live evaluation must still
+prove the actual current harness. The example paths are placeholders.
 
-    python3 skills/refine-skill/runner/runner.py preflight \
-        --suite skills/learn-repo/evals/evals.json --case-id 1
+The preparer writes a manifest with `PREPARED_NOT_RUN` status and one of:
 
-The Stage 2 case must actually exist in that workspace; the example
-path will be absent if the fixture is local/uncommitted.
+- Claude: `plugin/.claude-plugin/plugin.json`, `plugin/skills/<skill>/`,
+  `plugin/evals/<case>/prompt.md`, and `graders/criterion-*.md`.
+- Codex: `codex/promptfooconfig.yaml`, separate `with_skill/` and
+  `without_skill/` workspaces, and `llm-rubric` assertions with the
+  `openai:codex-sdk` grader provider.
 
-## Host-only execution flow (reference; DO NOT run in ordinary shell)
+**Important:** Static fixture generation and model/tool instructions do not
+establish that the provider accepted the case or that isolation works.
 
-After separate human/provider approval **and independent host verification**:
+## Live execution — approved host only
 
-    python3 skills/refine-skill/runner/runner.py run-pair \
-        --suite skills/learn-repo/evals/evals.json --case-id 1 \
-        --harness claude --host-manifest /verified/host-manifest.json \
-        --approved-case --approved-provider --host-enforced --synthetic-only \
-        --output /isolated/eval-workspaces
+The following is a command contract for a **separately provisioned, independently
+verified isolated host**, not an instruction to run untrusted skills in an
+ordinary shell:
 
-Use --harness codex when executing under the approved Codex host. Both
-arms use the same case and fixture, in separate fresh workspaces, and
-receive **different skill access**. Each run writes to a unique directory;
-nothing replaces existing saved fixtures or previous runs.
+```bash
+python3 skills/refine-skill/runner/native_eval.py run \
+  --bundle /isolated/eval-workspaces/PREPARED-BUNDLE \
+  --host-manifest /verified/host-manifest.json \
+  --approved-case --approved-provider --host-enforced --synthetic-only
+```
 
-After the first observed outputs, define evidence-based assertions in
-the approved case and freeze them symmetrically for both arms. For
-Claude, install/review the upstream [Skill Creator grader](https://github.com/anthropics/skills/blob/main/skills/skill-creator/agents/grader.md)
-on the approved host and calculate its SHA-256:
+This dispatcher invokes only the selected native command:
 
-    shasum -a 256 /reviewed/skill-creator/agents/grader.md
+- Claude: `claude plugin eval <prepared-plugin> --ablation with-without
+  --no-publish --json <output>`
+- Codex: `promptfoo eval --config <prepared-config> --no-cache --no-share
+  --output <output>`
 
-Then run **only inside the approved grading host**:
+Review and pin the installed tool versions and their supported CLI flags.
+Do not allow runtime package installation or unreviewed dependency execution.
 
-    python3 skills/refine-skill/runner/runner.py grade-pair \
-        --suite skills/learn-repo/evals/evals.json --case-id 1 \
-        --harness claude --run-dir /isolated/eval-workspaces/RUN-ID \
-        --host-manifest /verified/host-manifest.json \
-        --approved-provider --host-enforced \
-        --grader-instructions /reviewed/skill-creator/agents/grader.md \
-        --grader-instructions-sha256 EXPECTED_DIGEST
+The safety requirement is **host-enforced**, not merely declared: disposable
+workspaces, mock-only tool authorization, no live credentials/writes,
+network and shell/API bypass prevention, child-agent restrictions, independent
+attempted-action traces and post-run state checks. The manifest and
+`--host-enforced` flag **cannot provide these controls themselves**.
+Follow [Execution Safety Gate](../references/execution-safety-gate.md).
+Work-related prompts, code and outputs may be sent to a provider **only**
+with the appropriate employer/provider approval.
 
-Codex uses --harness codex, with its own Codex model as judge, and
-passes a restrictive output schema to codex exec. The same reviewed
-grader.md can optionally inform the Codex grading rubric.
+Provider-generated judgments are **not a safety pass**. Confirm that the
+native outputs exist, review assertions and host traces, and make the human
+keep/revise/revert decision within Refine Skill. Never invent grades or
+comparison metrics.
 
-After grading, compare the **same case revision** with:
+## Offline tests and current limits
 
-    python3 skills/refine-skill/runner/runner.py compare \
-        --suite skills/learn-repo/evals/evals.json --case-id 1 \
-        --harness claude --run-dir /isolated/eval-workspaces/RUN-ID
+```bash
+python3 -m unittest discover -s skills/refine-skill/runner -p 'test_*.py' -v
+```
 
-This produces output.txt, trace.txt, grading.json and comparison.json.
-**The CLI's trace is not a trusted host action/state trace**; a separate
-host audit must evaluate attempted tool effects before security can be
-graded. A failed or missing host audit must remain Unknown/Blocked, never
-a fabricated Pass. Human approval still controls all skill edits.
-
-## Native tooling limitations
-
-Anthropic's Skill Creator handles behavioral cases through independent
-subagents. Its scripts/run_eval.py only tests whether a description
-**triggers** the skill; it is not a behavioral runner. Here we use
-approved noninteractive Claude CLI execution and the official pinned
-grader instructions, not a vendored or automatically installed Anthropic
-subagent runtime.
-
-OpenAI documents codex exec --json for structured execution traces and
---output-schema for model-assisted grading. This adapter uses those CLI
-capabilities but does not install Codex, provision authentication,
-manage model costs, or enforce the host sandbox.
-
-The host may need controlled, approved model API access while agent tool
-egress remains blocked; that enforcement is infrastructure outside this
-skill. No code here proves that boundary exists.
-
-## Known limits
-
-- No actual Claude Code or Codex CLI/model run has been verified in this
-  repository change. Offline tests exercise file staging, argument
-  construction, grading validation, and denial paths only.
-- Input staging copies SKILL.md and references/, not arbitrary executable
-  scripts/assets. Skills requiring such resources need a reviewed extension.
-- The provisional compare action aggregates assertion pass rates but does
-  not implement the optional blind comparator agent or viewer yet.
-- Missing/unsafe host configuration stops the workflow at Stage 3;
-  no automatic jump to Stage 4–11, simulated grades, or performance claims.
+- Offline tests exercise routing, case preparation, and refusal paths only.
+- No real Claude or Codex evaluation has been verified end to end in this
+  environment, and no independently verified isolated host is configured.
+- Native tool compatibility, ablation behavior, evaluator-only rubric
+  isolation, actual grader responses, trace integrity, and result parsing
+  still require approved-host validation. The preparer requires assertions
+  before it can build native grader definitions.
+- The prototype does not aggregate native results across providers into a
+  single score. Keep provider output schemas separate. Compare revisions
+  within each provider using actual supported reports and human review.
