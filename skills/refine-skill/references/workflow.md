@@ -518,14 +518,15 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    for each arm prevents leakage; do not share skill-specific instructions
    with the no-skill arm.
    Before presenting a launch option, follow the
-   [Anthropic Skill Creator integration](eval-runner-integration.md): a
-   verified Claude host may coordinate the **two independent behavioral
-   subagent runs**, but upstream `scripts/run_eval.py` tests skill
-   **triggering only**, not behavioral quality. Validate that a real
-   evaluated-agent interface is installed/configured, can use the approved
-   input fixture, and will produce raw outputs plus trustworthy host
-   tool/action/state traces. A Grader agent prompt, installed Skill Creator,
-   config file or successfully validated fixture is **not** a safe runner.
+   [provider-native evaluation integration](eval-runner-integration.md).
+   Detect and independently verify the active harness. For **Claude Code**,
+   prepare Claude plugin-eval cases and use Claude's paired execution and
+   `type: llm` graders. For **Codex**, prepare Promptfoo cases using
+   `openai:codex-sdk` as both execution and `llm-rubric` grading provider.
+   These are distinct tools and result formats; **never mix providers**.
+   Confirm the selected native tooling and its actual supported flags
+   in the independently verified host. The provider's CLI, an evaluator
+   prompt, prepared fixture or configuration file is **not** a safety sandbox.
    Save outputs and available trace, errors, metadata, tokens and duration in
    separate per-iteration workspaces; see [eval design](eval-design-guide.md).
    Never claim a paired run happened when only one arm was executed.
@@ -571,9 +572,12 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    assertions drafted after seeing outputs must not silently favor one arm.
    Apply the same versioned rubric to both arms (regrade or rerun both after
    material edits). Prefer deterministic scripts for mechanical checks;
-   when an approved host and provider are available, use Anthropic Skill
-   Creator's evidence-based Grader instructions (`agents/grader.md`) for
-   LLM-as-judge semantics, plus human review for subjective quality.
+   when an approved host and provider are available, use **that provider's
+   native LLM grader**: Claude plugin-eval `type: llm` rubric files or
+   Promptfoo `llm-rubric` graded by the Codex SDK model. The native
+   preparer requires approved `assertions` before generating grader files;
+   preserve the same versioned assertions in both arms. Keep native
+   output schemas separate and supplement with human review.
    An LLM grader evaluates evidence; it does not enforce sandboxing or
    prove that no unauthorized tool action occurred. Preserve concrete evidence per assertion in
    `grading.json`; record missing/unavailable evidence as Unknown in an
@@ -703,13 +707,14 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
 
 10. **Check regressions and independence.**
     Run relevant previously passing cases and an independent case when practical.
-    For verified comparable paired outputs, optionally use Anthropic Skill
-    Creator's independent blind Comparator (`agents/comparator.md`),
-    `scripts/aggregate_benchmark.py`, and
-    `eval-viewer/generate_review.py` when those reviewed upstream tools
-    are actually available. Their verdicts cannot override a safety failure.
-    Compare evidence, assertion pass/fail outcomes, human feedback, timing and
-    tokens. Save `benchmark.json` when both arms have comparable runs.
+    For verified comparable paired outputs, use the current provider's
+    supported result and comparison features only. Preserve Claude's
+    evaluation reports or Promptfoo's Codex results **without inventing
+    a shared score format**. An optional provider-specific viewer or
+    comparator is only an observed result if it actually ran.
+    No model judgment can override a failed safety requirement.
+    Compare evidence, assertion outcomes, human feedback, timing and
+    tokens. Save provider-native benchmark artifacts where supported.
     Treat multiple runs as required for reliability/variance claims; do not
     invent averages or standard deviation for one attempt. A correct answer
     with an unauthorized attempted action still fails its safety criterion.
