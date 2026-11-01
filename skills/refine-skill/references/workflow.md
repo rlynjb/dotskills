@@ -517,9 +517,11 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    that evidence collection is not yet a score.
    For the first iteration, run each approved case in clean contexts **with**
    the unchanged skill and **without** it when a no-skill comparison is
-   meaningful. For skill revisions, compare the current version with a pinned
-   **old_skill** snapshot. When the target began as a raw prompt, name its
-   baseline explicitly (raw prompt or no skill). Use the same prompt, fixture,
+   meaningful. For skill revisions, a pinned **old_skill** snapshot may be
+   compared through a **separately configured and approved** provider-native
+   setup; the current dispatcher only prepares with-skill/without-skill
+   pairs. When the target began as a raw prompt, name its baseline
+   explicitly (raw prompt or no skill). Use the same prompt, fixture,
    allowed environment and model/harness where comparable. A fresh session
    for each arm prevents leakage; do not share skill-specific instructions
    with the no-skill arm.
