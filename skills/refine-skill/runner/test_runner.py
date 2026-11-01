@@ -118,11 +118,18 @@ class RunnerTests(unittest.TestCase):
         final_file.write_text("response", encoding="utf-8")
         self.assertEqual(runner.parse_result("codex", "", final_file), "response")
 
+    def test_later_assertions_do_not_change_stage2_case_digest(self):
+        original = dict(self.case)
+        revised = dict(original)
+        revised["assertions"] = ["Additional semantic criterion"]
+        self.assertEqual(runner.case_input_digest(original),
+                         runner.case_input_digest(revised))
+
     def test_compare_requires_matching_real_grading_artifacts(self):
         import hashlib
         path = Path(self.temp.name) / "run"
         path.mkdir()
-        digest = hashlib.sha256(json.dumps(self.case, sort_keys=True).encode()).hexdigest()
+        digest = runner.case_input_digest(self.case)
         runner.save(path / "metadata.json", {
             "status": "EXECUTED_PENDING_HOST_TRACE_AUDIT_AND_GRADING",
             "case_id": 1, "harness": "claude", "case_sha256": digest})
