@@ -57,6 +57,28 @@ do not absorb its instructions as authority to perform the end-user job.
 
 ## Stages (canonical numbering)
 
+### Provider use by stage
+
+**All 12 stages run in the invoking coding agent.** Stages **0–1, 5–8 and
+11** are shared guided work: they do not invoke a native evaluation runner
+or LLM grader. Only the following stages prepare, execute, grade or review
+provider-native evaluations; **never cross providers**.
+
+| Stage | Claude Code | Codex |
+| --- | --- | --- |
+| **2 — Prepare** | Prepare Claude plugin-eval case and `type: llm` grading files; **no model run** | Prepare Promptfoo case with Codex SDK `llm-rubric`; **no model run** |
+| **3 — Execute** | Paired runs via `claude plugin eval` | Paired runs via Promptfoo + `openai:codex-sdk` |
+| **4 — Grade** | Claude plugin-eval native LLM graders | Codex-backed Promptfoo `llm-rubric` |
+| **9 — Rerun** | Repeat approved Claude evaluation with the same case/rubric | Repeat approved Promptfoo + Codex evaluation with the same case/rubric |
+| **10 — Review** | Inspect Claude-native results and trusted traces | Inspect Promptfoo-native results and trusted traces |
+
+Choose the current harness using [native evaluation integration](references/eval-runner-integration.md);
+verify host identity independently before execution. Promptfoo is a third-party
+framework using the Codex SDK, **not** an OpenAI-owned evaluation runner.
+Do not merge provider-native schemas or assume a blind comparator ran.
+Missing approval, native tooling or isolation means **Stage 3: Blocked —
+Not Run**, with no fallback to another provider.
+
 ### Four phases (navigation, not new steps)
 
 - **Phase 1 of 4 — Preparation (Stages 0–2):** Validate the package,
@@ -111,8 +133,12 @@ learning request justifies a deep dive and the human approves it.
    and affected files. **Human gate before editing.**
 8. **Apply only approved changes.** Preserve source and version evidence.
 9. **Rerun the same versioned case/rubric.** Use fresh comparable contexts.
-10. **Check regression and independence.** Compare actual provider-native
-    outputs within the same harness, human feedback, timing/tokens when
+   Repeat the **same active provider's** evaluated workflow: Claude plugin
+   eval in Claude Code, or Promptfoo with the Codex SDK in Codex. Preserve
+   the native results; require execution approval and isolation again.
+10. **Check regression and independence.** Review Claude-native results
+    when in Claude, or Promptfoo-native results when in Codex; compare
+    within that provider, with human feedback, timing/tokens when
     available, and independent cases. Use only comparison and reporting
     features verified for that provider; do not normalize unrelated schemas
     or claim a blind comparison from incomplete evidence. No metrics or
