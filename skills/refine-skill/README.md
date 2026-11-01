@@ -239,9 +239,11 @@ cross-provider benchmark or blind comparator.
 **Status — experimental / model evaluation Not Run:** Source files and
 offline tests are committed, but real Claude/Codex native execution,
 grader behavior, output compatibility and independently enforced host
-isolation have **not been verified end to end**. Do not describe a
-prepared case as a completed evaluation or send workplace data to
-an unapproved provider.
+isolation have **not been verified end to end**. Fixture-backed preparation
+also has a known path-resolution mismatch between the skill-root case
+convention and `native_eval.py`; [see the runner limitations](runner/README.md).
+Do not describe a prepared case as a completed evaluation or send
+workplace data to an unapproved provider.
 
 See [native setup and security](runner/README.md),
 [Stage 3–4 and 9–10 integration](references/eval-runner-integration.md),
