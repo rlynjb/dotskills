@@ -132,7 +132,7 @@ def prepare(args, *, env=None):
     source = args.target_skill.resolve()
     if not source.is_dir():
         raise Blocked('Target skill directory does not exist')
-    suite = safe_file(args.suite.resolve(), source)
+    suite = safe_file(args.suite.absolute(), source)  # Preserve symlinks for safe_file checks
     case, inputs = get_case(suite, args.case_id)
     # Fail before creating the output bundle when any fixture is unsafe/missing.
     fixture_sources(source, inputs)
