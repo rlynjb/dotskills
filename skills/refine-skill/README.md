@@ -83,6 +83,38 @@ scoped approval and an independently verified isolated host; otherwise Stage
 3 remains **Blocked — Not Run**. See
 [provider-native runner instructions](runner/README.md).
 
+### Plain-English walkthrough: what happens next at each stage
+
+These descriptions explain the **same 12 stages** in everyday language.
+Each stage answers: *What happens? Why does it matter? What happens next?*
+An example is a teaching illustration, **not** evidence that an eval ran.
+
+**Phase 1 — Preparation (Stages 0–2)**
+
+- **Stage 0 — Check the skill's structure.** We check whether its `SKILL.md` meets the required Agent Skills format. **Why:** A valid skill does not need formatting changes. **Next:** If valid, leave it alone and go to Stage 1; otherwise, show the smallest repair and request approval before editing.
+- **Stage 1 — Decide what good behavior looks like.** We agree on one observable behavior, its success criteria, and any actions the agent must avoid. **Why:** We need a clear target before designing tests. **Next:** Turn that target into concrete cases in Stage 2; no model is run here.
+- **Stage 2 — Create the test and grading checklist.** We write realistic cases, expected outcomes, assertions (individual checks), and any safe example files. **Why:** Everyone should know what counts as success *before* seeing results. **Next:** Obtain your approval, then prepare the matching Claude or Codex case format without executing a model.
+
+**Phase 2 — Evaluation (Stages 3–4)**
+
+- **Stage 3 — Run the test safely.** With separate, fresh contexts, the active provider runs a case **with the skill** and **without the skill**. Claude uses Claude plugin eval; Codex uses Promptfoo with the Codex SDK. **Why:** Comparing matched runs helps show what the skill actually changes. **Next:** Only run after approval and verified host isolation; otherwise record **Blocked — Not Run**. An authorized run may also produce LLM grades in the same command.
+- **Stage 4 — Read the grades and evidence.** We inspect which checks passed, failed, or could not be verified, and whether the actual outputs and actions support the grader's conclusion. **Why:** A grader can be mistaken or lack evidence. **Next:** Diagnose failures in Stage 5; do not assume a second grading command is necessary.
+
+**Phase 3 — Diagnosis and improvement (Stages 5–8)**
+
+- **Stage 5 — Find out why a check failed.** We distinguish a real instruction problem from a missing fixture, unclear test, bad grade, missing context, or execution issue. **Why:** Changing the skill cannot fix a broken test environment. **Next:** Review the wider causes in Stage 6; no skill edits yet.
+- **Stage 6 — Check the five methodology lenses.** We briefly examine context engineering, correctness, observability, trust, and skill lifecycle. **Why:** A quick prompt fix can miss safety or reliability concerns. **Next:** Suggest a specialist deep dive only if justified and approved, then move to Stage 7.
+- **Stage 7 — Propose a specific improvement.** We show the smallest likely fix, the evidence behind it, its trade-offs, and the exact files involved. **Why:** You should see and judge the change before it happens. **Next:** **Human approval gate:** approve to continue to Stage 8, or revise the proposal or stop.
+- **Stage 8 — Make only the approved edit.** We apply the accepted change and preserve the earlier version and a readable diff. **Why:** A small, traceable edit is easier to evaluate and reverse. **Next:** Request fresh run approval and safety verification before Stage 9.
+
+**Phase 4 — Verification and decision (Stages 9–11)**
+
+- **Stage 9 — Rerun the same evaluation.** We use the same approved case and rubric, the same provider, and fresh isolated contexts, saving a **new** result bundle. **Why:** Keeping the test comparable shows whether the edit helped. **Next:** Run only after renewed approval and verified isolation; otherwise record **Blocked — Not Run**.
+- **Stage 10 — Compare before and after.** We read the old and new provider-native results, check whether the targeted issue improved, and look for regressions or gaps in independent coverage. **Why:** Fixing one problem is not useful if something else breaks. **Next:** Present the evidence and limits to you in Stage 11.
+- **Stage 11 — You make the decision.** You choose to keep, revise, revert, release, or iterate; the skill never approves itself. **Why:** Test results support a human decision rather than replacing it. **Next:** If revising the edit, return to Stage 7 and approve a new proposal; if redesigning the eval, return to Stage 2 with the required case approval.
+
+**In short:** propose → **approve** → edit → **approve safe rerun** → compare → **you decide**. Provider-specific runs remain separated; nothing in this walkthrough authorizes live execution or external writes.
+
 Learning is **Guided by default**: explain *what, why, how*, show a target-specific example, and help the human write or challenge cases and assertions. **Deep dive** and **Fast** learning modes are available.
 
 ### Evaluation and refinement loop
