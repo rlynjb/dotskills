@@ -12,6 +12,7 @@ Skills are grouped by use.
 | --- | --- |
 | [evaluate-skill](skills/evaluate-skill/SKILL.md) | Evaluate and improve agent skills through guided tests, evidence-based diagnosis, and approved changes. |
 | [audit-skill](skills/audit-skill/SKILL.md) | Explore, audit, or compare skills to understand their workflows, identify gaps, and spot overlaps without making changes. |
+| [integrate-skills](skills/integrate-skills/SKILL.md) **(draft)** | Learn how to collaboratively design, connect, evaluate, and release multi-skill workflows; walkthrough only, no automated changes. |
 
 ### Everyday workflows
 
