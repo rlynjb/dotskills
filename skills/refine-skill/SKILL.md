@@ -13,9 +13,12 @@ format; it is **not** a substitute for Claude/Codex Skill Creator.
 A valid package goes straight to evaluation. A raw/invalid package gets
 only an explicitly approved, minimal structural proposal.
 
-A full model-eval harness is **not** built into DotSkills. Never claim
-to have run a model or verified results when only drafting cases,
-validating JSON or checking fixture code.
+An experimental skill-local [Claude/Codex evaluation adapter](runner/README.md)
+is available for paired CLI runs, model grading and provisional comparison.
+It is **not** a verified isolated execution host or a substitute for host-
+enforced tool restrictions and human approvals. No live end-to-end model
+evaluation has been verified. Never claim to have run a model or verified
+results when only drafting cases, validating JSON or checking fixture code.
 
 ## Load references progressively
 
@@ -34,6 +37,10 @@ validating JSON or checking fixture code.
   grading, optional blind comparison, and benchmark review. These are
   adapters to **separately installed/approved tools**, not components
   automatically supplied or made safe by this SKILL.md.
+- In **Stages 3–4 and 9–10**, consult [the skill-local runner guide](runner/README.md)
+  for the Claude/Codex harness choice, `preflight`, `run-pair`, `grade-pair`,
+  and `compare` command contracts. Do not invoke a model without a separately
+  approved and independently verified isolated host.
 - In **Stage 0**, read [structure validation](references/structure-validation.md);
   when the skill is valid, make no formatting changes.
 - In **Stages 2–4 or 9–10**, read [eval design](references/eval-design-guide.md)
@@ -85,9 +92,10 @@ learning request justifies a deep dive and the human approves it.
    a pinned old version), then record actual outputs and action traces.
 4. **Grade actual outputs.** Require observed, trusted Stage 3 outputs
    first. Coach assertion writing after initial outputs; use deterministic
-   checks and, when available and approved, Anthropic Skill Creator's
-   `agents/grader.md` as an **LLM-as-judge** instruction for evaluating
-   transcripts and outputs. Grade text, attempted tool actions and
+   checks and, when available and approved, the selected harness's
+   **LLM-as-judge** path: Claude with reviewed, SHA-256-pinned Anthropic
+   Skill Creator `agents/grader.md` instructions, or Codex with structured
+   grader output. Evaluate actual transcripts and outputs. Grade text, attempted tool actions and
    resulting state with evidence and human review. Teach unweighted
    assertion pass rates, keep ungraded evidence separate, and never
    average away a failed required or safety criterion. Do not invent
