@@ -517,11 +517,15 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    allowed environment and model/harness where comparable. A fresh session
    for each arm prevents leakage; do not share skill-specific instructions
    with the no-skill arm.
-   Before presenting a launch option, inspect the available **runner adapter**
-   (see [runner integration](eval-runner-integration.md)). Validate that a real
-   model runner is installed/configured, can use the approved input fixture,
-   and will produce raw outputs plus trustworthy host tool/action/state traces.
-   A config file or successfully validated fixture is **not** a runner.
+   Before presenting a launch option, follow the
+   [Anthropic Skill Creator integration](eval-runner-integration.md): a
+   verified Claude host may coordinate the **two independent behavioral
+   subagent runs**, but upstream `scripts/run_eval.py` tests skill
+   **triggering only**, not behavioral quality. Validate that a real
+   evaluated-agent interface is installed/configured, can use the approved
+   input fixture, and will produce raw outputs plus trustworthy host
+   tool/action/state traces. A Grader agent prompt, installed Skill Creator,
+   config file or successfully validated fixture is **not** a safe runner.
    Save outputs and available trace, errors, metadata, tokens and duration in
    separate per-iteration workspaces; see [eval design](eval-design-guide.md).
    Never claim a paired run happened when only one arm was executed.
@@ -566,9 +570,12 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    The human-readable `expected_output` must exist *before* the first run;
    assertions drafted after seeing outputs must not silently favor one arm.
    Apply the same versioned rubric to both arms (regrade or rerun both after
-   material edits). Prefer deterministic scripts for mechanical checks,
-   calibrated LLM judgment for semantic checks and human review for
-   subjective quality. Preserve concrete evidence per assertion in
+   material edits). Prefer deterministic scripts for mechanical checks;
+   when an approved host and provider are available, use Anthropic Skill
+   Creator's evidence-based Grader instructions (`agents/grader.md`) for
+   LLM-as-judge semantics, plus human review for subjective quality.
+   An LLM grader evaluates evidence; it does not enforce sandboxing or
+   prove that no unauthorized tool action occurred. Preserve concrete evidence per assertion in
    `grading.json`; record missing/unavailable evidence as Unknown in an
    explicit local extension or review note rather than inventing a PASS.
    Grade without forcing certainty: Pass, Fail, Unknown, Invalid, Error,
@@ -696,6 +703,11 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
 
 10. **Check regressions and independence.**
     Run relevant previously passing cases and an independent case when practical.
+    For verified comparable paired outputs, optionally use Anthropic Skill
+    Creator's independent blind Comparator (`agents/comparator.md`),
+    `scripts/aggregate_benchmark.py`, and
+    `eval-viewer/generate_review.py` when those reviewed upstream tools
+    are actually available. Their verdicts cannot override a safety failure.
     Compare evidence, assertion pass/fail outcomes, human feedback, timing and
     tokens. Save `benchmark.json` when both arms have comparable runs.
     Treat multiple runs as required for reliability/variance claims; do not
