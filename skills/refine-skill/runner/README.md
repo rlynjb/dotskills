@@ -10,11 +10,13 @@ LLM grader, or cross-provider fallback.
 | Claude Code | Claude's `claude plugin eval`, with-skill and without-skill via `--ablation with-without` | Claude plugin-eval `graders/*.md` using `type: llm` | Claude plugin-eval JSON / review artifacts |
 | Codex | Promptfoo with the `openai:codex-sdk` provider in separate with-skill and without-skill workspaces | Promptfoo `llm-rubric` assertions configured to use the same Codex SDK provider | Promptfoo JSON results |
 
-**Provider ownership matters:** `claude plugin eval` is Claude tooling.
-Promptfoo is **third-party evaluation tooling recommended for Codex**, not an
-OpenAI-owned evaluation runner or prepackaged OpenAI grading service. The
-Codex model supplies the grading judgments through the Codex SDK provider.
-No Anthropic grader prompt is passed to Codex, and no Codex rubric is
+**Ownership and integration are distinct:** `claude plugin eval` is Claude
+tooling. [Promptfoo is now part of OpenAI](https://www.promptfoo.dev/about/)
+and remains an [open-source, multi-provider framework](https://www.promptfoo.dev/blog/promptfoo-joining-openai/).
+Refine Skill explicitly invokes the Promptfoo CLI for the Codex route;
+Promptfoo uses the `openai:codex-sdk` provider for execution and LLM-rubric
+grading. This is not a grading service automatically bundled into the Codex
+SDK. No Anthropic grader prompt is passed to Codex, and no Codex rubric is
 substituted for Claude's native graders. Do not describe these paths as
 identical implementations.
 
