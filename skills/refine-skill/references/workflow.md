@@ -57,6 +57,25 @@ HUMAN GATE — Approve or revise this case
 Status: Waiting for approval
 ```
 
+**Agent/tool and source trace (every stage):** After the plain-English
+*what / why / next*, add a concise **Agent/tool** and **Sources** line
+when walking through each stage. State the active coding harness
+(Claude Code or Codex), then name any provider runner, grader, or
+methodology specialist actually used; otherwise say **no separate tool
+invoked**. Identify target files, local references and real run reports,
+plus any verified external documentation or service consulted. Label
+resources that are merely *available* as such, not as accessed.
+Differentiate **prepared / planned / blocked** from **actually invoked**.
+Stage 2's dispatcher prepares files without running a model; Stages 3
+and 9 conditionally invoke the selected provider after authorization and
+independent isolation; Stage 4 reads grades that may already have been
+produced in Stage 3; Stage 10 does not assume a new automatic comparator.
+Stage 6 reviews five local lenses but invokes a specialist only after
+the existing approval gate. See the per-stage
+[agent/tool/source map](../README.md#agent-tool-and-source-map).
+This trace is for clarity, not authorization to trigger tools or fetch
+external data.
+
 For every meaningful stage:
 1. Announce the stage before beginning it, including its purpose and the immediate next
    action.
