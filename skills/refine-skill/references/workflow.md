@@ -245,9 +245,9 @@ there is evidence that it did.
   **Example:** Learn Repo should identify the important modules in a supplied
   repository and ground its explanation in the provided files.
   **Next:** Confirm intended behavior, scope and prohibited actions.
-- **Stage 2 — Design and write eval cases.**
-  **What:** Write a realistic prompt, expected behavior and safe input fixture.
-  **Why:** We need a reproducible test before evaluating the agent.
+- **Stage 2 — Draft cases automatically, then review together.**
+  **What:** The active coding agent drafts realistic prompts, expected behavior, assertions and optional safe fixture plans for the learner to review.
+  **Why:** Beginners learn from concrete examples without having to invent their first tests. Drafting is not running a test, grading, or revising the target skill.
   **Example:** Supply an invented Python CLI repository such as `parcel-queue`;
   describe success in `expected_output` and approve testable `assertions`
   before native case preparation. An after-run rubric change is a new
