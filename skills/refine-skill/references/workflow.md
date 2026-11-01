@@ -248,10 +248,10 @@ there is evidence that it did.
 - **Stage 2 — Draft cases automatically, then review together.**
   **What:** The active coding agent drafts realistic prompts, expected behavior, assertions and optional safe fixture plans for the learner to review.
   **Why:** Beginners learn from concrete examples without having to invent their first tests. Drafting is not running a test, grading, or revising the target skill.
-  **Example:** Supply an invented Python CLI repository such as `parcel-queue`;
-  describe success in `expected_output` and approve testable `assertions`
-  before native case preparation. An after-run rubric change is a new
-  approved version, never a silent adjustment.
+  **Example:** For Learn Repo, propose an architecture-explanation case using
+  a synthetic project such as `parcel-queue` and a second case checking
+  checkpoint behavior. Show what a correct response must demonstrate.
+  An after-run rubric change is a new approved version, never a silent adjustment.
   **How to understand grading (teaching, not a new runner feature):**
   A *deterministic check* is a fixed rule or script, such as checking whether
   an expected module name appears. An *LLM grader* uses a model and a rubric
@@ -261,7 +261,10 @@ there is evidence that it did.
   examples a human has already reviewed, then improving the rubric if they
   disagree. The current dispatcher prepares provider-native LLM rubrics; it
   does not automatically route assertions among all three grading methods.
-  **Next:** Review and approve the case, rubric and fixture; no model has run.
+  **Next:** Review, edit or approve the draft cases, rubrics and fixtures
+  **before** writing them or preparing provider-native cases. The current
+  coding agent drafted text; **no evaluated agent or grader has run**.
+  Stage 3 still requires separate execution approval and verified isolation.
 - **Stage 3 — Run paired baselines.**
   **What:** Perform the same case in separate fresh contexts, once **with the
   unchanged skill** and once **without the skill** (or against a pinned older
@@ -331,10 +334,12 @@ there is evidence that it did.
   approval and safety verification; accepting a skill never authorizes an
   unattended external model evaluation.
 
-Proactively recommend cases instead of asking the beginner to invent tests from scratch.
-Inspect the target's intended behavior, requirements, and available failure evidence.
-Offer one recommended first case and at most two useful alternatives, with a brief
-reason for the priority. Prefer one observable behavior and a small synthetic fixture.
+Proactively **draft** cases instead of asking the beginner to invent tests
+from scratch. Use the approved Stage 1 behavior, inspected target skill
+requirements and available evidence. Clearly label assumptions and
+model-suggested criteria. Offer one recommended first case and at most
+two useful alternatives, with a brief reason for the priority. Present
+them as editable proposals, not saved or prepared cases. Prefer one observable behavior and a small synthetic fixture.
 Consider normal behavior, a boundary/failure situation, missing information, and
 unauthorized-action handling as coverage grows; do not require all cases at once.
 
@@ -536,8 +541,10 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    See [eval design](eval-design-guide.md). Do not encode the answer into the
    evaluated agent's task input.
 
-   **Human gate:** present the proposed case and what it tests. Let the human approve,
-   revise, replace, or contribute their own case before execution.
+   **Human gate:** show proposed cases and what each tests. Let the human
+   approve, revise, replace or contribute their own cases **before writing
+   or preparing any case or fixture**. Stage 3 requires fresh approval
+   for actual evaluation execution, plus independently verified isolation.
 
    Use this review checklist unless the active gate cadence explicitly batches it:
    - Is the behavior being tested clear and observable?
