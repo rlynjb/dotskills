@@ -61,7 +61,7 @@ the guided work still happens in the active coding agent.
 | **0** | Validate structure; minimally normalize if needed | Valid package or approved format conversion | — | — |
 | **1** | Define one observable behavior | Success criteria and scope | — | — |
 | **2** | Learn to write 2–3 realistic cases and approve assertions | Prompts, expected outcomes, optional fixtures; prepare native case without running models | Prepare Claude plugin-eval case + `type: llm` grader files | Prepare Promptfoo config + `llm-rubric` assertions for Codex SDK |
-| **3** | Run paired baselines in fresh contexts | With-skill vs. without-skill (or old-skill) evidence | **Execute:** `claude plugin eval` paired runs | **Execute:** Promptfoo with `openai:codex-sdk` paired runs |
+| **3** | Run paired baselines in fresh contexts | With-skill vs. without-skill evidence; old-version comparisons need separate setup | **Execute:** `claude plugin eval` paired runs | **Execute:** Promptfoo with `openai:codex-sdk` paired runs |
 | **4** | Grade actual outputs | Assertions, grading evidence, uncertainty | **Grade:** Claude plugin-eval `type: llm` graders | **Grade:** Promptfoo `llm-rubric` using Codex SDK |
 | **5** | Diagnose before editing | Identify case, grader, context, harness, trust, or skill issues | — | — |
 | **6** | Screen five methodology lenses | Evidence-backed diagnosis and optional specialist route | — | — |
