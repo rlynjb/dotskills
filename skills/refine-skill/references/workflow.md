@@ -296,23 +296,31 @@ there is evidence that it did.
   **Why:** Keep the experiment's intervention small and auditable.
   **Example:** Update a specific Learn Repo instruction and record its diff.
   **Next:** Preserve version evidence and prepare a comparable rerun.
-- **Stage 9 — Rerun the same eval.**
-  **What:** Test the revised skill against the same versioned case/rubric.
-  **Why:** See whether the change helped under comparable conditions.
-  **Example:** Reuse the `parcel-queue` task rather than making it easier.
-  **Next:** Pass the execution approval/safety gate again, or mark **Not Run**.
+- **Stage 9 — Rerun approved evaluations.**
+  **What:** Rerun the case we tried to fix **and relevant previously passing
+  cases**, each with its original approved prompt and grading rules.
+  **Why:** See whether the fix helped without breaking an old behavior.
+  **Example:** Reuse the `parcel-queue` architecture case, plus an approved
+  case that checks whether Learn Repo pauses at a learning checkpoint.
+  **Next:** Approve the exact rerun scope and pass the execution safety gate
+  again, or mark **Not Run**.
 - **Stage 10 — Check regression and independence.**
-  **What:** See whether prior behaviors broke and whether results generalize.
+  **What:** Compare new evidence with earlier results to see whether any
+  behavior that passed before now fails (a *regression*).
   **Why:** Improving one case can conceal new failures.
-  **Example:** Recheck a previously passing missing-context case and a
-  separate repository fixture.
+  **Example:** An architecture explanation now passes, but the approved
+  checkpoint-pausing case that used to pass fails: that is a regression.
+  If no comparable prior result exists, say so rather than claiming failure.
   **Next:** Present before/after evidence, safety outcomes and limitations.
 - **Stage 11 — Human decides.**
   **What:** Choose to keep, revise, revert, release or iterate.
   **Why:** A test result informs a decision; it does not make it automatically.
   **Example:** Keep a Learn Repo improvement only after reviewing the
   comparable grades and any regressions.
-  **Next:** Record the decision, remaining uncertainty and future test coverage.
+  **Next:** Record the decision and preserve cases, rubrics and evidence for
+  future changes. Explain that future regression reruns require fresh scope,
+  approval and safety verification; accepting a skill never authorizes an
+  unattended external model evaluation.
 
 Proactively recommend cases instead of asking the beginner to invent tests from scratch.
 Inspect the target's intended behavior, requirements, and available failure evidence.
@@ -721,19 +729,26 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    different structure, file, or behavior change is needed, stop and return to the human
    gate instead of expanding scope silently.
 
-9. **Re-run the same eval.**
-   Prepare a **new unique native bundle** for the selected provider;
+9. **Re-run approved evaluations.**
+   Include the targeted case and relevant previously passing cases as
+   regression coverage when explicitly approved. Reuse each case's original
+   versioned prompt, fixture and grading rules; new or revised cases must
+   return to Stage 2 for approval. Prepare a **new unique native bundle**
+   for each selected provider-native evaluation;
    do not overwrite earlier evidence or presume an `iteration-N` folder
    exists. Hold prompt, fixtures, expected output and the *versioned*
    assertions fixed across arms and use comparable conditions. If a
    rubric/answer key must change, approve and record its revision, then
    rerun both arms using that same revision before claiming improvement.
 
-   **Human gate before execution:** confirm the exact comparison being run.
+   **Human gate before execution:** confirm the exact case set and
+   comparison being run, and independently verify isolation for every run.
 
 10. **Check regressions and independence.**
-    Run relevant previously passing cases and an independent case when practical.
-    For verified comparable paired outputs, use the current provider's
+    Review previously passing cases rerun under the Stage 9 execution gate,
+    plus an approved independent case when practical; do not launch model
+    evaluations in this review stage without the Stage 9 approval and safety
+    checks. For verified comparable paired outputs, use the current provider's
     supported result and comparison features only. Preserve Claude's
     evaluation reports or Promptfoo's Codex results **without inventing
     a shared score format**. An optional provider-specific viewer or
@@ -752,9 +767,14 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
     a recommendation about whether to keep, revise, revert, or investigate further.
 
 11. **Accept or continue.**
-    Keep useful cases as regression coverage only after human approval. Record unresolved
-    limits, rejected alternatives, package-structure decisions, and the next independent
-    case when useful.
+    Keep useful cases as regression coverage only after human approval. Preserve
+    versioned cases, rubrics and reports so future skill, model, or harness
+    updates can be checked against previously working behavior. Explain that
+    continuous regression testing is reuse across future changes, **not a
+    new stage or automatic authorization** for live model runs; each later
+    evaluated-agent execution still needs scoped approval and verified
+    isolation. Record unresolved limits, rejected alternatives, package-structure
+    decisions, and the next independent case when useful.
 
 ## Output
 
