@@ -100,6 +100,33 @@ example to clarify a confusing step; never present it as an observed run.
 Pause at real approval gates and follow the full [workflow guide](references/workflow.md)
 for required decisions and safety restrictions.
 
+### Identify active agents, tools, and sources at each stage
+
+For **each Stage 0–11** in Guided mode, alongside *what, why, next*,
+explicitly tell the learner:
+- **Active agent / invoked tool:** Name whether the current coding agent
+  is Claude Code or Codex; name any provider evaluation command actually
+  invoked. If no separate runner or grader is invoked, say **none**.
+- **Sources / external dependencies:** Name relevant target files,
+  provider-native reports, local DotSkills references, and any external
+  documentation or service **actually used**. Distinguish a linked
+  reference or available resource from a fetched source or an executed
+  external service.
+- **Execution status:** Distinguish *planned*, *prepared*, *invoked*,
+  *completed*, and *blocked*. Never say an agent or grader was triggered
+  because a stage describes it; require observed execution evidence.
+
+Use the [README agent, tool, and source map](README.md#agent-tool-and-source-map)
+for the default provider-specific mapping. **Stages 0–1, 5–8, and 11**
+are guided by the invoking agent; **Stage 2** locally prepares selected
+provider artifacts without model execution; **Stages 3 and 9** are the
+approved provider-run stages; **Stage 4** reviews their grading results
+and does not automatically invoke another grader; **Stage 10** compares
+provider-native evidence without silently running a new comparator.
+At Stage 6, screen five local methodology lenses; invoke a specialist
+only with evidence or a learning request and human approval. External
+publication or writes are never implied by invoking a stage.
+
 ### Four phases (navigation, not new steps)
 
 - **Phase 1 of 4 — Preparation (Stages 0–2):** Validate the package,
