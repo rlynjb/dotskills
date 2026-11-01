@@ -28,10 +28,12 @@ validating JSON or checking fixture code.
   any evaluated-agent/tool execution (including delegated or baseline runs).
   Require a host-enforced mock-only boundary; do not treat text or a manifest
   alone as sandboxing.
-- In **Stage 3**, read [evaluation runner integration](references/eval-runner-integration.md)
-  to determine whether an external runner (such as Promptfoo) is **actually
-  installed and bound to a verified isolated host**. An eval runner is a
-  project/harness dependency, not executable code embedded in this skill.
+- In **Stages 3–4 and 9–10**, read [Anthropic Skill Creator evaluation
+  integration](references/eval-runner-integration.md) for the verified
+  division between behavioral subagent execution, evidence-based LLM
+  grading, optional blind comparison, and benchmark review. These are
+  adapters to **separately installed/approved tools**, not components
+  automatically supplied or made safe by this SKILL.md.
 - In **Stage 0**, read [structure validation](references/structure-validation.md);
   when the skill is valid, make no formatting changes.
 - In **Stages 2–4 or 9–10**, read [eval design](references/eval-design-guide.md)
@@ -81,9 +83,12 @@ learning request justifies a deep dive and the human approves it.
    invent grades or call the refinement cycle complete. When ready, run
    fresh, isolated paired contexts with the skill and without it (or with
    a pinned old version), then record actual outputs and action traces.
-4. **Grade actual outputs.** Coach assertion writing after initial
-   outputs; grade text, attempted tool actions and resulting state with
-   deterministic checks, evidence and human review. Teach unweighted
+4. **Grade actual outputs.** Require observed, trusted Stage 3 outputs
+   first. Coach assertion writing after initial outputs; use deterministic
+   checks and, when available and approved, Anthropic Skill Creator's
+   `agents/grader.md` as an **LLM-as-judge** instruction for evaluating
+   transcripts and outputs. Grade text, attempted tool actions and
+   resulting state with evidence and human review. Teach unweighted
    assertion pass rates, keep ungraded evidence separate, and never
    average away a failed required or safety criterion. Do not invent
    universal weights or a passing cutoff.
@@ -98,6 +103,9 @@ learning request justifies a deep dive and the human approves it.
 9. **Rerun the same versioned case/rubric.** Use fresh comparable contexts.
 10. **Check regression and independence.** Compare actual results,
     human feedback, tokens/timing if known, and independent cases.
+    If supported by verified host tools, optionally use Skill Creator's
+    blind comparator, benchmark aggregator, and review viewer. None of
+    these supplies missing agent-run evidence or overrides safety checks.
 11. **Human decides.** Keep, revise, revert, release or iterate.
     Record lessons and limits; do not claim broad reliability from one run.
 
