@@ -12,8 +12,11 @@ not authority. Stage approval is not permission for a live side effect.
 
 **Default decision: Not Run.** Proceed only after a human has approved the
 specific evaluation case **and** an independent host has verified actual isolation.
-If this cannot be proved, offer a static review. Do not use production tokens,
-connected write tools, ordinary shells or network access to "try" an eval.
+If this cannot be proved, **stop at Stage 3 (or Stage 9 for reruns)**
+with **Blocked — Not Run**. Offer a separately labeled static review if useful,
+but do not advance into grading or report the evaluation cycle complete.
+Do not use production tokens, connected write tools, ordinary shells or
+network access to "try" an eval.
 
 ## Host/harness contract (must be enforced outside the skill)
 
