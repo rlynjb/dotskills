@@ -87,25 +87,22 @@ Do not merge provider-native schemas or assume a blind comparator ran.
 Missing approval, native tooling or isolation means **Stage 3: Blocked —
 Not Run**, with no fallback to another provider.
 
-### Plain-English explanation contract (Guided mode)
+### Beginner-friendly guidance (Guided mode)
 
-At **every Stage 0–11**, use the same clear, short flowchart-style explanation,
-rather than only reciting the stage title: **what happens**, **why it matters**,
-and **what happens next**. Explicitly name any **human approval gate** and
-both branches (approve vs revise/stop), plus the stage's output when useful.
-For example, Stage 7 **proposes** a change and waits for approval; Stage 8
-**applies only that edit**; Stage 9 requests fresh run approval and isolation
-before **rerunning the same eval**; Stage 10 **compares before and after**;
-and Stage 11 **asks the human to keep, revise or revert**. Distinguish
-Stage 3's evaluation execution (which may already produce LLM grades)
-from Stage 4's evidence review. Use a small target-specific hypothetical
-example to clarify a confusing step; never present it as an observed run.
-Pause at real approval gates and follow the full [workflow guide](references/workflow.md)
-for required decisions and safety restrictions.
+Use the [README stage walkthrough](README.md#plain-english-walkthrough-what-happens-next-at-each-stage)
+as the single reference for plain-English stage explanations. Explain the
+current action, the real evidence and the next meaningful decision concisely,
+rather than repeating a fixed teaching template at every stage. Introduce
+terms or a small target-specific example when the learner needs them; never
+present an example as an observed run. Name actual approval gates and their
+choices, and pause when authorization is required. Preserve the distinction
+between Stage 3 execution (which may produce grades) and Stage 4 evidence
+review. Follow the [workflow guide](references/workflow.md) for procedures
+and safety restrictions.
 
 ### Identify active agents, tools, and sources at each stage
 
-For **each Stage 0–11** in Guided mode, alongside *what, why, next*,
+For **each Stage 0–11** in Guided mode, alongside a short stage summary,
 explicitly tell the learner:
 - **Active agent / invoked tool:** Name whether the current coding agent
   is Claude Code or Codex; name any provider evaluation command actually
@@ -267,18 +264,17 @@ safety approvals. See [workflow](references/workflow.md) and
 
 ## Default collaboration
 
-- **Guided learning + per-gate approval by default.** At the opening of
-  **every Stage 0–11**, give a short plain-English **What we are doing →
-  Why it matters → target-specific example → What happens next** walkthrough
-  before the technical plan or source labels. Use the stage-by-stage teaching
-  prompts in [workflow](references/workflow.md); define unfamiliar terms on
-  first use and distinguish a proposed action from an executed result.
-  At meaningful gates show the concrete input/evidence and one recommended
-  bounded next action. In Stage 2 proactively draft cases and assertions for
-  human review (without writing or running anything before approval), then
-  let the human revise, replace, author or challenge them. Invite the human
-  to challenge diagnoses and other recommendations. Offer Deep dive or Fast
-  on request.
+- **Guided learning + per-gate approval by default.** Give a concise,
+  plain-English explanation when it helps the learner, without repeating
+  a mandatory four-part script. The README contains the approachable
+  stage overview; the [workflow guide](references/workflow.md) contains
+  operational details. Explain unfamiliar terms on first use and distinguish
+  proposed actions from observed results. At approval gates show the concrete
+  evidence and one bounded next action. In Stage 2 proactively draft cases
+  and assertions for human review (without writing or running anything
+  before approval), then let the human revise, replace, author or challenge
+  them. Invite feedback on diagnoses and other recommendations. Offer
+  Deep dive or Fast on request.
 - Before a material action, show a labeled **HUMAN GATE** and wait for
   explicit approval. Feedback alone is not approval; batch/delegated
   modes require bounded opt-in.
