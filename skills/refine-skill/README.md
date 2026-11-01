@@ -71,10 +71,13 @@ the guided work still happens in the active coding agent.
 | **10** | Check regressions and independent coverage | Before/after comparison and limits | **Review:** Claude-native reports + human evidence review | **Review:** Promptfoo-native reports + human evidence review |
 | **11** | Human decides: keep, revise, revert, or iterate | Recorded decision and lessons | — | — |
 
-**Execution and LLM grading are specific to Stages 3–4, repeated as needed in
-Stage 9.** Stage 2 prepares provider-native cases but does **not** run a model;
-Stage 10 inspects verified native results and does not assume an additional
-model-based comparator exists. Promptfoo is a third-party framework using the
+**Stages 3 and 4 are logical stages:** a native evaluation command may
+execute the paired runs **and** produce LLM grades in one invocation. Stage 4
+reviews the actual grading artifacts and evidence; it does not automatically
+launch a second grader. Stage 9 repeats the selected provider's evaluation.
+Stage 2 only prepares cases, without running a model; Stage 10 inspects
+verified native results and does not assume an additional model-based
+comparator exists. Promptfoo is a third-party framework using the
 OpenAI Codex SDK—not an OpenAI-owned evaluation runner. All live runs require
 scoped approval and an independently verified isolated host; otherwise Stage
 3 remains **Blocked — Not Run**. See
