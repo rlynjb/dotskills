@@ -230,9 +230,10 @@ there is evidence that it did.
   **What:** Write a realistic prompt, expected behavior and safe input fixture.
   **Why:** We need a reproducible test before evaluating the agent.
   **Example:** Supply an invented Python CLI repository such as `parcel-queue`;
-  describe success in `expected_output` before execution. Detailed semantic
-  assertions can be drafted after initial outputs; safety boundaries cannot shift.
-  **Next:** Review the case and fixture for approval; no agent has run yet.
+  describe success in `expected_output` and approve testable `assertions`
+  before native case preparation. An after-run rubric change is a new
+  approved version, never a silent adjustment.
+  **Next:** Review and approve the case, rubric and fixture; no model has run.
 - **Stage 3 — Run paired baselines.**
   **What:** Perform the same case in separate fresh contexts, once **with the
   unchanged skill** and once **without the skill** (or against a pinned older
@@ -243,8 +244,9 @@ there is evidence that it did.
   **Example:** Give the same `parcel-queue` prompt and fixture to Learn Repo
   with its instructions and to a no-skill agent; capture both outputs and
   attempted tool actions. This pair is an **experiment, not an assertion**.
-  **Next:** Obtain case/run approval and verify the mock-only Execution Safety
-  Gate before launching; otherwise mark **Not Run**. Stage 4 judges the results.
+  **Next:** Confirm the selected provider's native tooling, scoped run and
+  provider approvals, and the mock-only Execution Safety Gate. Otherwise mark
+  **Not Run**. Stage 4 reviews the grades and real evidence from the run.
 - **Stage 4 — Grade actual outputs.**
   **What:** Compare observed outputs/actions against the expected behavior
   using testable *assertions* (individual checks).
@@ -341,9 +343,10 @@ confirm the artifacts in the current workspace.
 - **Resume from evidence, not a guess:** Use saved case/run data to name
   the last **confirmed** completed stage and next unfinished one.
   Example: a valid `evals/evals.json` plus fixture, but **no** model-run
-  outputs, means Stage 2 artifacts are ready and Stage 3 (paired baseline
-  preparation) is next; do **not** claim Stage 3 executed. An absent or
-  incomplete run stays Not Run/Unknown rather than treated as a pass.
+  outputs, means Stage 3 is next **only if** the case also has approved
+  assertions and the provider-native case has been prepared. Otherwise
+  finish Stage 2 preparation first. Do **not** claim Stage 3 executed.
+  An absent or incomplete run stays Not Run/Unknown rather than a pass.
   When the stage is ambiguous, explain the evidence and ask a targeted
   question rather than silently resetting the workflow.
 - **Existing-eval choices:** When an accessible saved case exists and
@@ -479,9 +482,12 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    `evals` fields; each case has `id`, `prompt`, `expected_output` and optional
    `files`. Ask the learner to try writing a case before supplying a worked
    example; offer assisted mode on request. Start with observable expectations
-   and any non-negotiable safety criteria. Add or refine detailed `assertions`
-   after inspecting the first outputs, as the official guide recommends.
-   When the target has external tools or side effects, include security regression
+   and any non-negotiable safety criteria. **Draft and approve detailed
+   `assertions` before native case preparation**; the dispatcher uses them
+   to generate provider-specific grading definitions. Revisit assertions
+   after observed outputs only as a new approved rubric revision, applied
+   fairly to both arms. When the target has external tools or side effects,
+   include security regression
    coverage for unauthorized actions, injected authority, indirect CLI/API bypass,
    and missing trace evidence as appropriate; require no real service writes.
    Validate the JSON structure, paths and evaluator isolation before execution.
@@ -564,33 +570,30 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
      excluded?
    - Are intentional missing-context conditions distinguished from setup mistakes?
 
-4. **Preserve and grade the evidence.**
-   Preserve raw outputs, attempted tool actions, trace, configuration, errors and
-   limitations for **both** arms. After the first round, coach the learner to
-   write precise, observable `assertions` in `evals/evals.json`, as appropriate.
-   The human-readable `expected_output` must exist *before* the first run;
-   assertions drafted after seeing outputs must not silently favor one arm.
-   Apply the same versioned rubric to both arms (regrade or rerun both after
-   material edits). Prefer deterministic scripts for mechanical checks;
-   when an approved host and provider are available, use **that provider's
-   native LLM grader**: Claude plugin-eval `type: llm` rubric files or
-   Promptfoo `llm-rubric` graded by the Codex SDK model. The native
-   preparer requires approved `assertions` before generating grader files;
-   preserve the same versioned assertions in both arms. Keep native
-   output schemas separate and supplement with human review.
-   An LLM grader evaluates evidence; it does not enforce sandboxing or
-   prove that no unauthorized tool action occurred. Preserve concrete evidence per assertion in
-   `grading.json`; record missing/unavailable evidence as Unknown in an
-   explicit local extension or review note rather than inventing a PASS.
-   Grade without forcing certainty: Pass, Fail, Unknown, Invalid, Error,
-   or Incomplete are valid local outcomes. Teach the default score from
-   [eval design](eval-design-guide.md): `passed / (passed + failed)` for
-   evidence-graded assertions, alongside passed/failed counts and any
-   ungraded assertions. An Unknown makes the reported rate provisional;
-   never declare an overall Pass with a failed or unresolved predeclared
-   must-pass correctness/safety check. There is no universal weighting
-   formula or cutoff; any task-specific numeric rubric or threshold must
-   be defined before scored comparisons and explained to the learner.
+4. **Preserve and review actual grades and evidence.**
+   Stage 2 already recorded and approved `assertions` in `evals/evals.json`
+   and prepared the active provider's grader definitions. Preserve actual
+   outputs, attempted tool actions, host traces, configuration, errors,
+   and limits for **both** arms. Stage 4 examines the **native grades and
+   observed evidence** produced by the run; it does not automatically call
+   a second grader. Use Claude plugin-eval `type: llm` graders **only**
+   for Claude, and Promptfoo `llm-rubric` with the Codex SDK **only**
+   for Codex. Do not mix grader instructions, reports or result schemas.
+   If evidence reveals a rubric defect, propose a new approved rubric
+   revision and rerun/regrade **both** arms fairly; keep earlier results.
+   Prefer deterministic checks for mechanical properties and human review
+   of subjective quality. An LLM grading output does **not** prove that
+   no unauthorized tool attempt occurred. Keep the provider's native
+   results alongside independent host-action/state traces. Do not
+   promise a generic `grading.json` or invent a missing score.
+   Record Unknown/Invalid/Error/Incomplete/Not Run and the limitation
+   explicitly, without fabricating PASS. A local teaching pass rate
+   (`passed / (passed + failed)`, where the denominator is nonzero)
+   is optional and **not** a provider-native schema. Missing safety
+   evidence makes the case provisional; never declare an overall Pass
+   with failed or unresolved must-pass correctness/safety checks. No
+   universal weighting formula or cutoff applies; define any task-specific
+   threshold before comparison and explain it to the learner.
 
    In Guided mode, explain grading before presenting the result:
    - **Expected behavior:** what should happen, defined before the run from verified
@@ -698,10 +701,12 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    gate instead of expanding scope silently.
 
 9. **Re-run the same eval.**
-   Use a new `iteration-N` workspace. Hold prompt, fixtures, expected output and
-   the *versioned* assertions fixed across arms; use comparable conditions.
-   If a broken assertion or answer key must change, record its revision and
-   regrade/rerun both configurations before claiming an improvement.
+   Prepare a **new unique native bundle** for the selected provider;
+   do not overwrite earlier evidence or presume an `iteration-N` folder
+   exists. Hold prompt, fixtures, expected output and the *versioned*
+   assertions fixed across arms and use comparable conditions. If a
+   rubric/answer key must change, approve and record its revision, then
+   rerun both arms using that same revision before claiming improvement.
 
    **Human gate before execution:** confirm the exact comparison being run.
 
