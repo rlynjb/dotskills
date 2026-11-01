@@ -111,19 +111,27 @@ comparison metrics.
 python3 -m unittest discover -s skills/refine-skill/runner -p 'test_*.py' -v
 ```
 
-- Offline tests exercise routing, case preparation, and refusal paths only.
+- Offline tests exercise routing, case preparation, fixture security,
+  and refusal paths only (seven tests passed locally).
 - No real Claude or Codex evaluation has been verified end to end in this
   environment, and no independently verified isolated host is configured.
 - Native tool compatibility, ablation behavior, evaluator-only rubric
   isolation, actual grader responses, trace integrity, and result parsing
   still require approved-host validation. The preparer requires assertions
   before it can build native grader definitions.
-- **Fixture path contract is not yet reconciled:** `native_eval.py`
-  currently resolves `files` relative to the containing `evals/`
-  directory, while skill-local case files commonly use skill-root-relative
-  paths such as `evals/files/example.txt`. Fixture-backed case preparation
-  may fail; keep it **blocked** until the dispatcher and tests agree with
-  the approved case convention.
+- **Fixture paths are skill-root-relative**, matching
+  `scripts/validate_evals.py`: a case stored in `<skill>/evals/evals.json`
+  can reference `evals/files/example.txt`, resolved from `<skill>/`.
+  The dispatcher stages the same approved path in Claude's `fixtures/`
+  or in **both** Codex `inputs/` workspaces. It rejects missing files,
+  absolute paths, parent traversal, symlinked files/directories, and
+  suites outside the selected target skill **before** creating a bundle.
+  It does not copy `evals.json` into either evaluated-agent workspace.
+- **Offline fixture regression tests:** Seven tests passed locally against
+  the same committed `native_eval.py` and `test_native_eval.py` files,
+  covering Claude, Codex, fixture-path isolation and blocked execution.
+  These tests do **not** verify live models, provider-native format
+  compatibility, or actual host isolation.
 - The prototype does not aggregate native results across providers into a
   single score. Keep provider output schemas separate. Compare revisions
   within each provider using actual supported reports and human review.
