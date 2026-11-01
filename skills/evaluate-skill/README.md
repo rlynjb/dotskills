@@ -35,24 +35,43 @@ The four phases below organize the same **Stages 0–11** in both Claude Code an
 
 ### Agent, tool, and source map
 
-The **active coding agent** (Claude Code *or* Codex) guides every stage. It does not launch both providers or automatically invoke a new specialist at each stage. This table shows tools **available or conditionally used**, not proof they ran; report only observed tool calls and consulted sources.
+**Evaluate Skill vs. Claude Code vs. Codex — stage matrix.** Evaluate Skill supplies the **12-stage methodology** inside whichever coding agent is active. **Claude Code** and **Codex** are alternative hosts and native evaluation paths, **not** two agents that run together. The matrix describes what each path *would* do; it does not claim any tool was invoked.
 
-| Stage | Agent / tool | Main inputs or sources |
-| --- | --- | --- |
-| **0** | Active agent; local format check | Target `SKILL.md` and [Agent Skills specification](https://agentskills.io/specification) |
-| **1** | Active agent + you | Target skill, intended behavior, requirements and safety boundaries |
-| **2** | Active agent drafts; `native_eval.py prepare` **after case approval** | Target `evals/evals.json`, assertions, approved synthetic fixtures, [eval design guide](references/eval-design-guide.md) |
-| **3** | **Claude:** `claude plugin eval`; **Codex:** Promptfoo + Codex SDK | Approved cases and rubrics; verified isolated host; [runner guide](runner/README.md) |
-| **4** | Active agent + human review; **no automatic second grader** | Actual provider-native grades, output and trusted action traces |
-| **5** | Active agent | Failed assertions, cases, context, logs and grader evidence |
-| **6** | Active agent; specialist **only when justified and approved** | [Five methodology lenses](references/methodology-lenses.md) and observed failures |
-| **7** | Active agent + your edit approval | Diagnosis, proposed change, trade-offs and diff |
-| **8** | Active agent edits **approved files only** | Approved diff and version history |
-| **9** | Same provider as Stage 3, after **fresh run approval** | Approved cases/rubrics, previously passing tests and new isolated workspace |
-| **10** | Active agent + human review | Before/after provider-native reports and regression evidence |
-| **11** | **You decide**; agent records outcome | Evidence, unresolved issues, approved changes and saved test cases |
+#### Phase 1 — Preparation (Stages 0–2)
 
-Documentation links are reference material, **not automatic network requests**. Stage 6 screens the five local lenses; it does **not** automatically run five specialist agents.
+| Stage | Evaluate Skill (shared workflow) | Claude Code (when active) | Codex (when active) |
+| --- | --- | --- | --- |
+| **0 · Validate** | Check the target `SKILL.md` against the Agent Skills format; propose a minimal repair only if needed. | Guide the structure check; **no eval command**. | Same structure check; **no eval command**. |
+| **1 · Define success** | Agree on one observable behavior, success criteria, and permitted/prohibited effects with the human. | Guide the discussion; **no eval command**. | Guide the discussion; **no eval command**. |
+| **2 · Design cases** | Draft 2–3 cases, expectations, and assertions. **Human approval** is required before saving or preparing cases. | After approval, `native_eval.py prepare` writes Claude plugin-eval cases and `type: llm` grader files. **Not Run**. | After approval, `native_eval.py prepare` writes Promptfoo cases with `openai:codex-sdk` and `llm-rubric`. **Not Run**. |
+
+#### Phase 2 — Evaluation (Stages 3–4)
+
+| Stage | Evaluate Skill (shared workflow) | Claude Code (when active) | Codex (when active) |
+| --- | --- | --- | --- |
+| **3 · Run baseline** | Require **separate run approval** and independently verified mock-only isolation; otherwise **Blocked — Not Run**. | If authorized and isolated, run paired comparisons through `claude plugin eval --ablation with-without`. | If authorized and isolated, run paired workspaces through `promptfoo eval` using `openai:codex-sdk`. |
+| **4 · Review grades** | Inspect actual outputs, native grades, tool-attempt traces, and uncertainty; do **not** run a second grader automatically. | Review Claude's `type: llm` grades and trusted host evidence from Stage 3. | Review Promptfoo `llm-rubric` grades and trusted host evidence from Stage 3. |
+
+#### Phase 3 — Diagnosis and improvement (Stages 5–8)
+
+| Stage | Evaluate Skill (shared workflow) | Claude Code (when active) | Codex (when active) |
+| --- | --- | --- | --- |
+| **5 · Diagnose** | Determine whether the issue is in the skill, case, grader, context, permissions, or environment **before editing**. | Analyze the observed Claude results; **no native eval command**. | Analyze the observed Codex results; **no native eval command**. |
+| **6 · Review five lenses** | Screen context, correctness, observability, trust, and lifecycle; request approval for any justified specialist deep dive. | Guided methodology review; **no automatic specialist invocation**. | Same guided methodology review; **no automatic specialist invocation**. |
+| **7 · Propose** | Explain the smallest supported improvement, alternatives, and affected files; **wait for edit approval**. | Present proposal in Claude Code; **no edit yet**. | Present proposal in Codex; **no edit yet**. |
+| **8 · Apply** | Apply **only approved changes** and preserve the diff/version evidence. | The active Claude Code agent edits approved files only. | The active Codex agent edits approved files only. |
+
+#### Phase 4 — Verification and decision (Stages 9–11)
+
+| Stage | Evaluate Skill (shared workflow) | Claude Code (when active) | Codex (when active) |
+| --- | --- | --- | --- |
+| **9 · Rerun** | Request **fresh run approval and isolation**; rerun fixed cases/rubrics, including relevant previously passing cases. | Repeat approved `claude plugin eval` runs; preserve Claude-native results. | Repeat approved `promptfoo eval` / Codex SDK runs; preserve Promptfoo-native results. |
+| **10 · Compare** | Compare observed before/after evidence and regressions; **no automatic new comparator**. | Review comparable Claude-native reports and host traces. | Review comparable Promptfoo-native reports and host traces. |
+| **11 · Decide** | **Human chooses** keep, revise, revert, release, or iterate; record evidence and open risks. | Guide the final decision; **no automatic release**. | Guide the final decision; **no automatic release**. |
+
+**Source and evidence map:** Stage **0** uses the target `SKILL.md` and [Agent Skills specification](https://agentskills.io/specification); Stages **1–2** use the target requirements and [eval design guide](references/eval-design-guide.md); Stages **3/9** use approved cases, the [runner guide](runner/README.md), and independently verified host controls; Stages **4/10** require actual provider-native reports and trusted action/state traces; Stages **5–8** use observed failure evidence and the [methodology lenses](references/methodology-lenses.md); Stage **11** uses versioned results and the human's decision. Documentation links are reference material, **not automatic network requests**.
+
+**Important:** Neither harness substitutes for the other. Native evaluation commands may **execute and grade in the same run**, so Stage 4 **reviews** grades from Stage 3 rather than launching a second grader. Stage 6 does not automatically run five specialist agents. A prepared case, structural check, or offline test is **not** a completed model evaluation.
 
 ### Plain-English walkthrough: what happens next at each stage
 
