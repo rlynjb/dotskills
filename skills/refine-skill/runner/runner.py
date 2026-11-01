@@ -216,9 +216,43 @@ def grade(args):
     return args.run_dir
 
 
+def compare(args):
+    """Compare actual matched grades; not a new model call or a safety pass."""
+    case = case_from_suite(args.suite, args.case_id)
+    meta = load(args.run_dir / "metadata.json")
+    expected_hash = hashlib.sha256(json.dumps(case, sort_keys=True).encode()).hexdigest()
+    if (meta.get("status") != "EXECUTED_PENDING_HOST_TRACE_AUDIT_AND_GRADING"
+            or meta.get("case_id") != args.case_id or meta.get("harness") != args.harness
+            or meta.get("case_sha256") != expected_hash):
+        raise Blocked("case, version or harness changed; comparison is not valid")
+    score = {}
+    for arm in ("with_skill", "without_skill"):
+        data = load(args.run_dir / arm / "grading.json")
+        graded = data.get("expectations")
+        assertions = case.get("assertions", [])
+        if not isinstance(graded, list) or [x.get("text") for x in graded] != assertions:
+            raise Blocked("paired arms must use the same versioned assertions")
+        summary = data.get("summary", {})
+        if not isinstance(summary.get("pass_rate"), (int, float)):
+            raise Blocked("arm has no comparable pass rate")
+        score[arm] = summary
+    delta = (score["with_skill"]["pass_rate"] -
+             score["without_skill"]["pass_rate"]) * 100
+    result = {
+        "harness": args.harness, "case_id": args.case_id,
+        "with_skill": score["with_skill"],
+        "without_skill": score["without_skill"],
+        "delta_percentage_points": round(delta, 2),
+        "evaluation_status": "PROVISIONAL_PENDING_TRUSTED_HOST_TRACE_AND_HUMAN_REVIEW",
+        "note": "No safety pass, general reliability or statistically significant gain inferred",
+    }
+    save(args.run_dir / "comparison.json", result)
+    return result
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("action", choices=("preflight", "run-pair", "grade-pair"))
+    p.add_argument("action", choices=("preflight", "run-pair", "grade-pair", "compare"))
     p.add_argument("--suite", type=Path)
     p.add_argument("--case-id", type=int, default=1)
     p.add_argument("--harness", choices=("claude", "codex"), default="claude")
@@ -241,10 +275,14 @@ def main(argv=None):
             if not args.suite or not args.host_manifest:
                 raise Blocked("suite and host manifest required")
             print(f"EXECUTED_PENDING_HOST_AUDIT: {paired(args)}")
-        else:
+        elif args.action == "grade-pair":
             if not args.suite or not args.host_manifest or not args.run_dir:
                 raise Blocked("suite, host manifest and run directory required")
             print(f"GRADED_PENDING_HOST_AUDIT: {grade(args)}")
+        else:
+            if not args.suite or not args.run_dir:
+                raise Blocked("suite and run directory required")
+            print(json.dumps(compare(args), indent=2))
         return 0
     except (Blocked, OSError, ValueError, json.JSONDecodeError, TypeError) as exc:
         print(f"BLOCKED_NOT_RUN_OR_INCOMPLETE: {exc}", file=sys.stderr)
