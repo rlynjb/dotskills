@@ -2,7 +2,7 @@
 
 **Refine Skill** is a guided, human-gated workflow for **learning to write evaluations** and improving agent skills based on observed results. It accepts an existing Agent Skill or a raw prompt.
 
-Refine Skill is **not a full skill creator**: Claude/Codex Skill Creator can handle richer authoring. Refine Skill does only the *minimum* structural conversion when needed, then focuses on output quality. Refine Skill now includes an **experimental, skill-local Claude/Codex evaluation adapter** in [`runner/`](runner/README.md) for paired execution, LLM-based grading, and comparison. This is not a verified end-to-end evaluation host: actual Claude/Codex model runs and independent sandbox isolation still need validation.
+Refine Skill is **not a full skill creator**: Claude/Codex Skill Creator can handle richer authoring. Refine Skill does only the *minimum* structural conversion when needed, then focuses on output quality. Refine Skill includes a **skill-local provider-native eval dispatcher** in [`runner/`](runner/README.md): Claude Code uses Claude plugin eval, while Codex uses Promptfoo with the Codex SDK as its runner and LLM grader. Neither route has been validated in a live, independently isolated host.
 
 
 ## Table of contents
@@ -110,7 +110,7 @@ skills/
 ├── refine-skill/
 │   ├── README.md                  # This human-facing overview
 │   ├── SKILL.md                   # Skill entry point
-│   ├── runner/                    # Experimental Claude/Codex adapter + tests
+│   ├── runner/                    # Native provider dispatch, documentation + tests
 │   ├── references/                # Workflow, structure, evals, lenses, approvals
 │   └── evals/                     # Refine Skill's self-eval cases
 └── <target-skill>/
@@ -135,30 +135,55 @@ Describe expected behavior **before** testing, then teach precise assertions aft
 
 ## 5. Claude/Codex evaluation adapter
 
-The [runner README](runner/README.md) documents the **commands, host requirements, outputs, and limitations**. The adapter stays entirely under `skills/refine-skill/runner/`; it does not install a runner across the DotSkills repository or vendor provider code.
+The [native evaluation guide](runner/README.md) and
+[`native_eval.py`](runner/native_eval.py) document a **strict
+provider-specific workflow**, scoped to `skills/refine-skill/runner/`.
+It prepares evaluation cases for the **active coding harness**, without
+mixing evaluators, case formats or reports.
 
-At runtime, select the **current coding harness**: Claude Code uses Claude CLI execution and a reviewed, SHA-256-pinned copy of Anthropic Skill Creator's `agents/grader.md` as the grading instruction; Codex uses `codex exec` for execution and model-based grading with a structured output schema. This **adapts the providers' capabilities**; it does not mean Anthropic's entire Skill Creator runner or an OpenAI evaluation service has been installed. Anthropic's `scripts/run_eval.py` checks skill triggering, not full behavioral execution.
+| Current harness | Evaluation runner | LLM grading | Output |
+| --- | --- | --- | --- |
+| **Claude Code** | `claude plugin eval` with `--ablation with-without` | Claude's `type: llm` graders | Claude evaluation artifacts |
+| **Codex** | Promptfoo with OpenAI's `openai:codex-sdk` provider and paired workspaces | Promptfoo `llm-rubric` using the Codex SDK model | Promptfoo evaluation artifacts |
+
+**Promptfoo is a third-party evaluation framework**, not an OpenAI-owned
+eval runner or first-party grading service. Both execution and grading
+use Codex through its provider integration. Claude stays exclusively
+within its plugin eval workflow. The native dispatcher **does not install**
+either provider's tooling and does not fall back if the selected tool
+is missing.
 
 ```mermaid
 flowchart TD
-    A["Stage 2: approved case + synthetic fixture"] --> B["Select harness: Claude or Codex"]
-    B --> C["Preflight + approved case/provider + independently verified isolated host"]
-    C --> D{"Execution safety gate passes?"}
-    D -->|No / unknown| E["STOP: Stage 3 Blocked — Not Run"]
-    D -->|Yes| F["Stage 3: run-pair in separate fresh contexts"]
-    F --> G["Capture with-skill and without-skill outputs / traces"]
-    G --> H["Stage 4: grade-pair with harness-specific LLM judge"]
-    H --> I["Human review + safety trace/state audit"]
-    I --> J["Stage 10: compare assertion pass rates and differences"]
-    J --> K["Human decision: keep, revise, revert or rerun"]
+    A["Approved synthetic case + assertions"] --> B["Detect active Claude or Codex harness"]
+    B --> C{"Harness known and host independently verified?"}
+    C -->|No| D["Stage 3: Blocked — Not Run"]
+    C -->|Yes| E["Prepare provider-native case via native_eval.py"]
+    E --> F{"Scoped case/provider approval and safety gate pass?"}
+    F -->|No| D
+    F -->|Yes: Claude| G["Claude plugin eval: paired runs + Claude LLM graders"]
+    F -->|Yes: Codex| H["Promptfoo Codex SDK: paired runs + Codex llm-rubric"]
+    G --> I["Preserve Claude results and trusted host traces"]
+    H --> J["Preserve Promptfoo results and trusted host traces"]
+    I --> K["Compare within provider, review regressions, human decision"]
+    J --> K
 ```
 
-- **Execution (`run-pair`):** Paired runs with and without the skill, reusing the same versioned case and synthetic fixture. Evaluator-only answers stay out of agent workspaces.
-- **Grading (`grade-pair`):** Evidence-based assertions using the selected harness's model. The Claude route uses reviewed, hash-pinned Anthropic grader instructions; Codex uses its own grader. Deterministic checks and human review remain important.
-- **Comparison (`compare`):** Writes a provisional `comparison.json` with both arms' assertion pass rates and the percentage-point difference. **Blind comparator and review viewer are not implemented** in this adapter.
-- **Validation status:** Offline adapter tests were reported, but **no real Claude or Codex model evaluation has been verified** and the final committed implementation's full test suite still needs rerunning. No independently verified isolation host is configured here. Treat model runs as **Blocked — Not Run** until that changes.
+The dispatcher offers `inspect`, `prepare`, and `run`. It checks
+`CLAUDECODE` or `CODEX_THREAD_ID`/`CODEX_SESSION_ID` to infer the
+current harness, but environment markers alone are not sufficient for
+trusted execution. `--harness` is an offline preparation option, not a
+runtime provider override. A missing or conflicting harness stops the
+workflow; a model binary on `PATH` does not select the provider.
 
-See [runner setup and CLI examples](runner/README.md), [Stage 3–4 integration guidance](references/eval-runner-integration.md), and [execution safety gate](references/execution-safety-gate.md). These are not authorization to send workplace data to a provider or run untrusted skills with live permissions.
+**Status:** The files and offline tests are committed, but live provider
+execution, grader response handling and independent host isolation remain
+**unverified**. Real model-evaluation status is **Not Run**. Never send
+proprietary work content to an unapproved model provider.
+
+See [native evaluation setup and security](runner/README.md),
+[Stages 3–4 and 9–10 integration](references/eval-runner-integration.md),
+and [mandatory execution safety gate](references/execution-safety-gate.md).
 
 ## 6. Approval, execution, and safety
 
@@ -209,7 +234,7 @@ python3 -m unittest scripts/test_refine_eval_safety.py -v
 [Security regression cases (IDs 4–6)](evals/evals.json).
 
 **What is and is not proven:** Unit tests check this helper's deny/grade logic.
-The security cases are definitions **not live model runs**. DotSkills bundles an **experimental** Claude/Codex adapter, but has not
+The security cases are definitions **not live model runs**. DotSkills bundles an **experimental** provider-native dispatcher, but has not
 verified a live end-to-end model evaluation or host-enforced isolation, nor
 proved your coworker's skill caused the unexpected GitLab post. The execution environment must
 independently enforce controls for real protection.
@@ -225,8 +250,8 @@ the documented tools as of October 2026. Refine Skill is designed to work
 | **Main role** | Guided, human-gated evaluation and diagnosis | Create, evaluate, iterate and optimize skills | Create/update well-scoped skills | Inspect, benchmark and compare skills/plugins |
 | **Skill authoring** | Minimal Agent Skills format normalization | Full creation and revision | Full creation and revision | Not a skill-creation tool |
 | **Eval design** | Learner co-authors cases, expectations and assertions | Creates test prompts and quantitative checks with feedback | Targeted testing when appropriate | Benchmark configurations and test scenarios |
-| **Execute model evals** | Experimental skill-local Claude/Codex CLI adapter; requires an approved, independently isolated host | Supports paired agent runs in compatible Claude environments | Task-specific testing, not a dedicated benchmarking engine | Live benchmarks through **Codex CLI** |
-| **Grade and compare** | Harness-specific model grading and provisional per-case comparison; live verification pending | Automated grading, qualitative review, benchmark summaries | Inspect and verify focused skill changes | Static reports, measured runs, before/after comparison |
+| **Execute model evals** | Native provider routing to Claude plugin eval or Promptfoo with Codex SDK; requires an approved, independently isolated host | Supports paired agent runs in compatible Claude environments | Task-specific testing, not a dedicated benchmarking engine | Live benchmarks through **Codex CLI** |
+| **Grade and compare** | Claude `type: llm` graders or Codex-backed `llm-rubric` in Promptfoo; preserve separate provider reports; live verification pending | Automated grading, qualitative review, benchmark summaries | Inspect and verify focused skill changes | Static reports, measured runs, before/after comparison |
 | **Human oversight** | Explicit learning and approval gates across Stages 0–11 | User feedback and review within its workflow | Scope-sensitive authoring and validation | Human-reviewed CLI/configuration and reports |
 | **Special methodology** | **Five conference-informed lenses**, selective specialist routing, provenance labels | No matching five-lens program described | No matching five-lens program described | Metric-oriented analysis, not the five-lens teaching workflow |
 
@@ -251,7 +276,7 @@ For operational details:
 - [Structure validation](references/structure-validation.md) · [Eval design guide](references/eval-design-guide.md)
 - [Methodology lenses](references/methodology-lenses.md) · [Approval and safety rules](references/approval-gates.md)
 - [Execution Safety Gate](references/execution-safety-gate.md) · [Refine Skill starter and security evals](evals/README.md)
-- [Experimental Claude/Codex runner: setup, commands, security, limitations](runner/README.md)
+- [Provider-native evaluation runner: setup, commands, security, limitations](runner/README.md)
 
 Repository checks, run from DotSkills root:
 
