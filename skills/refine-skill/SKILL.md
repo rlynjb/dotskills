@@ -72,6 +72,11 @@ provider-native evaluations; **never cross providers**.
 | **9 — Rerun** | Repeat approved Claude evaluation with the same case/rubric | Repeat approved Promptfoo + Codex evaluation with the same case/rubric |
 | **10 — Review** | Inspect Claude-native results and trusted traces | Inspect Promptfoo-native results and trusted traces |
 
+A provider-native evaluation command may **execute and grade in one run**.
+Stage 3 collects the observed paired run; Stage 4 verifies the grades and
+trusted evidence produced by that run. Do not invent an additional grader
+invocation or infer that missing outputs exist.
+
 Choose the current harness using [native evaluation integration](references/eval-runner-integration.md);
 verify host identity independently before execution. Promptfoo is a third-party
 framework using the Codex SDK, **not** an OpenAI-owned evaluation runner.
