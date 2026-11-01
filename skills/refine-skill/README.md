@@ -2,7 +2,7 @@
 
 **Refine Skill** is a guided, human-gated workflow for **learning to write evaluations** and improving agent skills based on observed results. It accepts an existing Agent Skill or a raw prompt.
 
-Refine Skill is **not a full skill creator**. It minimally validates Agent Skills structure, then focuses on evaluation design, diagnosis and approved improvements. Its [skill-local dispatcher](runner/native_eval.py) prepares provider-specific evaluation cases: Claude Code uses **Claude plugin eval**, while Codex uses **Promptfoo with the Codex SDK** for execution and LLM rubric grading. Promptfoo is third-party tooling, not an OpenAI-owned runner. Neither route has been verified end to end in a live, independently isolated host.
+Refine Skill is **not a full skill creator**. It minimally validates Agent Skills structure, then focuses on evaluation design, diagnosis and approved improvements. Its [skill-local dispatcher](runner/native_eval.py) prepares provider-specific evaluation cases: Claude Code uses **Claude plugin eval**, while Codex uses **Promptfoo with the Codex SDK** for execution and LLM rubric grading. Promptfoo is [now part of OpenAI](https://www.promptfoo.dev/about/) and remains an [open-source, multi-provider framework](https://www.promptfoo.dev/blog/promptfoo-joining-openai/). In this workflow it is invoked separately with the Codex SDK; it is not an automatic built-in Codex evaluation command. Neither route has been verified end to end in a live, independently isolated host.
 
 
 ## Table of contents
@@ -79,8 +79,9 @@ launch a second grader. Stage 9 repeats the selected provider's evaluation.
 Stage 2 uses the active coding agent to draft cases and locally prepares approved
 cases; it does **not** run an evaluated agent or LLM grader. Stage 10 inspects
 verified native results and does not assume an additional model-based
-comparator exists. Promptfoo is a third-party framework using the
-OpenAI Codex SDK—not an OpenAI-owned evaluation runner. All live runs require
+comparator exists. Promptfoo is an OpenAI-owned, open-source evaluation
+framework used here with the OpenAI Codex SDK; it remains a separate CLI
+and configuration from the Codex SDK itself. All live runs require
 scoped approval and an independently verified isolated host; otherwise Stage
 3 remains **Blocked — Not Run**. See
 [provider-native runner instructions](runner/README.md).
@@ -112,10 +113,12 @@ run; report actual tool calls and consulted sources from observed evidence.
 
 **Important distinctions:** Claude Code and Codex are alternative **active
 coding harnesses**, not two agents triggered together. Anthropic's
-`claude plugin eval` is used only for the Claude route. **Promptfoo is a
-third-party evaluation framework**, and in the Codex route it uses the
-OpenAI Codex SDK for execution and LLM-rubric grading; it is **not** an
-OpenAI-owned eval runner. Agent Skills standards, DotSkills reference
+`claude plugin eval` is used only for the Claude route. **Promptfoo is now
+part of OpenAI**, while remaining an open-source evaluation framework
+supporting multiple model providers. In the Codex route, Promptfoo is
+explicitly invoked as a separate CLI using the OpenAI Codex SDK for
+execution and LLM-rubric grading; this is not an automatic built-in
+Codex evaluation command. Agent Skills standards, DotSkills reference
 guides, and conference notes are **sources of instructions and
 methodology**, not external agents or automatically contacted services.
 Stage 6's five lenses are normally screened locally, not five automatic
