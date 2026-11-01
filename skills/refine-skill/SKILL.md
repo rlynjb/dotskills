@@ -84,6 +84,22 @@ Do not merge provider-native schemas or assume a blind comparator ran.
 Missing approval, native tooling or isolation means **Stage 3: Blocked —
 Not Run**, with no fallback to another provider.
 
+### Plain-English explanation contract (Guided mode)
+
+At **every Stage 0–11**, use the same clear, short flowchart-style explanation,
+rather than only reciting the stage title: **what happens**, **why it matters**,
+and **what happens next**. Explicitly name any **human approval gate** and
+both branches (approve vs revise/stop), plus the stage's output when useful.
+For example, Stage 7 **proposes** a change and waits for approval; Stage 8
+**applies only that edit**; Stage 9 requests fresh run approval and isolation
+before **rerunning the same eval**; Stage 10 **compares before and after**;
+and Stage 11 **asks the human to keep, revise or revert**. Distinguish
+Stage 3's evaluation execution (which may already produce LLM grades)
+from Stage 4's evidence review. Use a small target-specific hypothetical
+example to clarify a confusing step; never present it as an observed run.
+Pause at real approval gates and follow the full [workflow guide](references/workflow.md)
+for required decisions and safety restrictions.
+
 ### Four phases (navigation, not new steps)
 
 - **Phase 1 of 4 — Preparation (Stages 0–2):** Validate the package,
