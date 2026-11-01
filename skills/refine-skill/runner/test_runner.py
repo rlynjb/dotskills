@@ -103,6 +103,29 @@ class RunnerTests(unittest.TestCase):
         final_file.write_text("response", encoding="utf-8")
         self.assertEqual(runner.parse_result("codex", "", final_file), "response")
 
+    def test_compare_requires_matching_real_grading_artifacts(self):
+        import hashlib
+        path = Path(self.temp.name) / "run"
+        path.mkdir()
+        digest = hashlib.sha256(json.dumps(self.case, sort_keys=True).encode()).hexdigest()
+        runner.save(path / "metadata.json", {
+            "status": "EXECUTED_PENDING_HOST_TRACE_AUDIT_AND_GRADING",
+            "case_id": 1, "harness": "claude", "case_sha256": digest})
+        for arm, passed in (("with_skill", True), ("without_skill", False)):
+            directory = path / arm
+            directory.mkdir()
+            expectations = [{"text": "Uses evidence", "passed": passed,
+                             "evidence": "Observed output"}]
+            runner.save(directory / "grading.json",
+                        runner.grade_result({"expectations": expectations},
+                                            ["Uses evidence"]))
+        args = type("Args", (), {"suite": self.suite, "case_id": 1,
+                                "harness": "claude", "run_dir": path})()
+        result = runner.compare(args)
+        self.assertEqual(result["delta_percentage_points"], 100)
+        self.assertIn("PROVISIONAL", result["evaluation_status"])
+        self.assertTrue((path / "comparison.json").is_file())
+
     def test_preflight_does_not_run_agent(self):
         self.assertEqual(runner.main(["preflight", "--suite", str(self.suite),
                                       "--case-id", "1"]), 0)
