@@ -28,6 +28,10 @@ validating JSON or checking fixture code.
   any evaluated-agent/tool execution (including delegated or baseline runs).
   Require a host-enforced mock-only boundary; do not treat text or a manifest
   alone as sandboxing.
+- In **Stage 3**, read [evaluation runner integration](references/eval-runner-integration.md)
+  to determine whether an external runner (such as Promptfoo) is **actually
+  installed and bound to a verified isolated host**. An eval runner is a
+  project/harness dependency, not executable code embedded in this skill.
 - In **Stage 0**, read [structure validation](references/structure-validation.md);
   when the skill is valid, make no formatting changes.
 - In **Stages 2–4 or 9–10**, read [eval design](references/eval-design-guide.md)
@@ -68,10 +72,15 @@ learning request justifies a deep dive and the human approves it.
    in the target skill's `evals/evals.json`. Prefer self-documenting
    fixture names that distinguish synthetic examples, exported evidence
    and live repository data; see the eval design guide. Keep answers evaluator-only.
-3. **Run paired baselines.** Before launch, pass the Execution Safety
-   Gate with independently verified host restrictions and human case approval;
-   otherwise mark Not Run. In fresh isolated contexts, run with skill and
-   without skill (or with an old snapshot); record evidence.
+3. **Run paired baselines.** First verify an actual configured agent-eval
+   runner is available and the Execution Safety Gate passes with independently
+   verified host restrictions and human case/run approval. If either fails,
+   **STOP at Stage 3**: record **Blocked — Not Run**, explain the missing
+   capability and next action, preserve approved fixtures and stage state,
+   and wait for a compliant runner. **Do not advance into Stages 4–11**,
+   invent grades or call the refinement cycle complete. When ready, run
+   fresh, isolated paired contexts with the skill and without it (or with
+   a pinned old version), then record actual outputs and action traces.
 4. **Grade actual outputs.** Coach assertion writing after initial
    outputs; grade text, attempted tool actions and resulting state with
    deterministic checks, evidence and human review. Teach unweighted
