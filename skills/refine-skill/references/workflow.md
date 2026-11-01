@@ -252,6 +252,15 @@ there is evidence that it did.
   describe success in `expected_output` and approve testable `assertions`
   before native case preparation. An after-run rubric change is a new
   approved version, never a silent adjustment.
+  **How to understand grading (teaching, not a new runner feature):**
+  A *deterministic check* is a fixed rule or script, such as checking whether
+  an expected module name appears. An *LLM grader* uses a model and a rubric
+  (a checklist) to judge an explanation; it can be mistaken. *Human review*
+  means a person checks the evidence, especially for nuanced or safety
+  decisions. *Grader calibration* means comparing a few grader judgments with
+  examples a human has already reviewed, then improving the rubric if they
+  disagree. The current dispatcher prepares provider-native LLM rubrics; it
+  does not automatically route assertions among all three grading methods.
   **Next:** Review and approve the case, rubric and fixture; no model has run.
 - **Stage 3 — Run paired baselines.**
   **What:** Perform the same case in separate fresh contexts, once **with the
