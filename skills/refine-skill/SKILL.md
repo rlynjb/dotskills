@@ -37,7 +37,9 @@ Never claim a model run from preparation, JSON validation or offline tests.
   LLM-as-judge and provider-specific results. If Claude Code is active,
   use only Claude `plugin eval` with its LLM graders. If Codex is active,
   use only Promptfoo's Codex SDK runner and Codex-backed `llm-rubric`.
-  Promptfoo is a separate evaluation framework, not an OpenAI-owned service.
+  Promptfoo is now part of OpenAI and remains an open-source,
+  multi-provider evaluation framework. It is used here as a separate CLI
+  with the Codex SDK, not as an automatic Codex evaluation service.
 - In **Stages 3–4 and 9–10**, consult [the native runner guide](runner/README.md)
   and [`native_eval.py`](runner/native_eval.py) for `inspect`, `prepare`,
   and `run`. Detect the active harness from the environment, then require
@@ -78,8 +80,9 @@ trusted evidence produced by that run. Do not invent an additional grader
 invocation or infer that missing outputs exist.
 
 Choose the current harness using [native evaluation integration](references/eval-runner-integration.md);
-verify host identity independently before execution. Promptfoo is a third-party
-framework using the Codex SDK, **not** an OpenAI-owned evaluation runner.
+verify host identity independently before execution. Promptfoo is now part
+of OpenAI and remains an open-source evaluation framework. In this workflow
+its CLI uses the Codex SDK, rather than a built-in Codex grading command.
 Do not merge provider-native schemas or assume a blind comparator ran.
 Missing approval, native tooling or isolation means **Stage 3: Blocked —
 Not Run**, with no fallback to another provider.
