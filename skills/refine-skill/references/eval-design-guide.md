@@ -49,14 +49,17 @@ approved nonempty assertions before `prepare` can succeed**, so provide
 them for any case intended for Claude/Codex model grading. This is a
 dispatcher constraint, not a new core Agent Skills specification rule.
 
-**Known adapter limitation for fixtures:** The current `native_eval.py`
-resolves `files` entries relative to the **evaluation suite directory**,
-whereas the authoring convention above uses paths relative to the **skill
-root**. For example, `evals/files/fixture.txt` in a suite at
-`<skill>/evals/evals.json` will not resolve correctly in the preparer.
-Treat fixture-backed preparation as **unverified/blocked** until this
-path contract is fixed and tested; do not silently alter approved case
-paths to work around the mismatch.
+**Fixture-path contract (implemented and offline-tested):**
+`native_eval.py` now resolves every `files` entry relative to the
+**target skill root**, matching `scripts/validate_evals.py`. For a suite at
+`<skill>/evals/evals.json`, the approved path
+`evals/files/fixture.txt` refers to
+`<skill>/evals/files/fixture.txt`. The path is preserved when staged
+under Claude's case `fixtures/` or Codex's paired `inputs/`.
+The dispatcher validates all fixtures before creating output, denies
+absolute/traversal paths, missing files and symlinked path components,
+and rejects suites outside the target skill. Offline tests cover both
+harness paths; **provider-native live execution remains unverified**.
 
 Validate the authoring suite locally:
 
