@@ -118,6 +118,12 @@ python3 -m unittest discover -s skills/refine-skill/runner -p 'test_*.py' -v
   isolation, actual grader responses, trace integrity, and result parsing
   still require approved-host validation. The preparer requires assertions
   before it can build native grader definitions.
+- **Fixture path contract is not yet reconciled:** `native_eval.py`
+  currently resolves `files` relative to the containing `evals/`
+  directory, while skill-local case files commonly use skill-root-relative
+  paths such as `evals/files/example.txt`. Fixture-backed case preparation
+  may fail; keep it **blocked** until the dispatcher and tests agree with
+  the approved case convention.
 - The prototype does not aggregate native results across providers into a
   single score. Keep provider output schemas separate. Compare revisions
   within each provider using actual supported reports and human review.
