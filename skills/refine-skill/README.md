@@ -2,7 +2,7 @@
 
 **Refine Skill** is a guided, human-gated workflow for **learning to write evaluations** and improving agent skills based on observed results. It accepts an existing Agent Skill or a raw prompt.
 
-Refine Skill is **not a full skill creator**: Claude/Codex Skill Creator can handle richer authoring. Refine Skill does only the *minimum* structural conversion when needed, then focuses on output quality. DotSkills does not bundle a live model-evaluation runner.
+Refine Skill is **not a full skill creator**: Claude/Codex Skill Creator can handle richer authoring. Refine Skill does only the *minimum* structural conversion when needed, then focuses on output quality. Refine Skill now includes an **experimental, skill-local Claude/Codex evaluation adapter** in [`runner/`](runner/README.md) for paired execution, LLM-based grading, and comparison. This is not a verified end-to-end evaluation host: actual Claude/Codex model runs and independent sandbox isolation still need validation.
 
 
 ## Table of contents
@@ -13,9 +13,10 @@ Refine Skill is **not a full skill creator**: Claude/Codex Skill Creator can han
   - [Evaluation and refinement loop](#evaluation-and-refinement-loop)
 - [3. Five conference-informed methodology lenses](#3-five-conference-informed-methodology-lenses)
 - [4. File and evaluation structure](#4-file-and-evaluation-structure)
-- [5. Approval, execution, and safety](#5-approval-execution-and-safety)
-- [6. Comparison with Claude and OpenAI](#6-comparison-with-claude-and-openai)
-- [7. Try it](#7-try-it)
+- [5. Claude/Codex evaluation adapter](#5-claudecodex-evaluation-adapter)
+- [6. Approval, execution, and safety](#6-approval-execution-and-safety)
+- [7. Comparison with Claude and OpenAI](#7-comparison-with-claude-and-openai)
+- [8. Try it](#8-try-it)
 
 ## 1. Workflow at a glance
 
@@ -109,6 +110,7 @@ skills/
 ├── refine-skill/
 │   ├── README.md                  # This human-facing overview
 │   ├── SKILL.md                   # Skill entry point
+│   ├── runner/                    # Experimental Claude/Codex adapter + tests
 │   ├── references/                # Workflow, structure, evals, lenses, approvals
 │   └── evals/                     # Refine Skill's self-eval cases
 └── <target-skill>/
@@ -131,7 +133,34 @@ This uses the [Agent Skills evaluation guide](https://agentskills.io/skill-creat
 
 Describe expected behavior **before** testing, then teach precise assertions after inspecting initial outputs. Preserve original results and comparable case/rubric versions; record real tool attempts, outcomes, and unknowns. Do not invent metrics or grades.
 
-## 5. Approval, execution, and safety
+## 5. Claude/Codex evaluation adapter
+
+The [runner README](runner/README.md) documents the **commands, host requirements, outputs, and limitations**. The adapter stays entirely under `skills/refine-skill/runner/`; it does not install a runner across the DotSkills repository or vendor provider code.
+
+At runtime, select the **current coding harness**: Claude Code uses Claude CLI execution and a reviewed, SHA-256-pinned copy of Anthropic Skill Creator's `agents/grader.md` as the grading instruction; Codex uses `codex exec` for execution and model-based grading with a structured output schema. This **adapts the providers' capabilities**; it does not mean Anthropic's entire Skill Creator runner or an OpenAI evaluation service has been installed. Anthropic's `scripts/run_eval.py` checks skill triggering, not full behavioral execution.
+
+```mermaid
+flowchart TD
+    A["Stage 2: approved case + synthetic fixture"] --> B["Select harness: Claude or Codex"]
+    B --> C["Preflight + approved case/provider + independently verified isolated host"]
+    C --> D{"Execution safety gate passes?"}
+    D -->|No / unknown| E["STOP: Stage 3 Blocked — Not Run"]
+    D -->|Yes| F["Stage 3: run-pair in separate fresh contexts"]
+    F --> G["Capture with-skill and without-skill outputs / traces"]
+    G --> H["Stage 4: grade-pair with harness-specific LLM judge"]
+    H --> I["Human review + safety trace/state audit"]
+    I --> J["Stage 10: compare assertion pass rates and differences"]
+    J --> K["Human decision: keep, revise, revert or rerun"]
+```
+
+- **Execution (`run-pair`):** Paired runs with and without the skill, reusing the same versioned case and synthetic fixture. Evaluator-only answers stay out of agent workspaces.
+- **Grading (`grade-pair`):** Evidence-based assertions using the selected harness's model. The Claude route uses reviewed, hash-pinned Anthropic grader instructions; Codex uses its own grader. Deterministic checks and human review remain important.
+- **Comparison (`compare`):** Writes a provisional `comparison.json` with both arms' assertion pass rates and the percentage-point difference. **Blind comparator and review viewer are not implemented** in this adapter.
+- **Validation status:** Offline adapter tests were reported, but **no real Claude or Codex model evaluation has been verified** and the final committed implementation's full test suite still needs rerunning. No independently verified isolation host is configured here. Treat model runs as **Blocked — Not Run** until that changes.
+
+See [runner setup and CLI examples](runner/README.md), [Stage 3–4 integration guidance](references/eval-runner-integration.md), and [execution safety gate](references/execution-safety-gate.md). These are not authorization to send workplace data to a provider or run untrusted skills with live permissions.
+
+## 6. Approval, execution, and safety
 
 **Mandatory Execution Safety Gate** (before Stage 3 or 9, any delegated run,
 or any earlier execution of an evaluated skill). The GitLab-posting incident
@@ -180,12 +209,12 @@ python3 -m unittest scripts/test_refine_eval_safety.py -v
 [Security regression cases (IDs 4–6)](evals/evals.json).
 
 **What is and is not proven:** Unit tests check this helper's deny/grade logic.
-The security cases are definitions **not live model runs**. DotSkills does not
-yet bundle an eval runner wired into Claude/Codex or prove your coworker's
-skill caused the unexpected GitLab post. The execution environment must
+The security cases are definitions **not live model runs**. DotSkills bundles an **experimental** Claude/Codex adapter, but has not
+verified a live end-to-end model evaluation or host-enforced isolation, nor
+proved your coworker's skill caused the unexpected GitLab post. The execution environment must
 independently enforce controls for real protection.
 
-## 6. Comparison with Claude and OpenAI
+## 7. Comparison with Claude and OpenAI
 
 This is a **capability and workflow comparison**, not a measured ranking. It reflects
 the documented tools as of October 2026. Refine Skill is designed to work
@@ -196,8 +225,8 @@ the documented tools as of October 2026. Refine Skill is designed to work
 | **Main role** | Guided, human-gated evaluation and diagnosis | Create, evaluate, iterate and optimize skills | Create/update well-scoped skills | Inspect, benchmark and compare skills/plugins |
 | **Skill authoring** | Minimal Agent Skills format normalization | Full creation and revision | Full creation and revision | Not a skill-creation tool |
 | **Eval design** | Learner co-authors cases, expectations and assertions | Creates test prompts and quantitative checks with feedback | Targeted testing when appropriate | Benchmark configurations and test scenarios |
-| **Execute model evals** | **No bundled model runner**; requires an authorized harness | Supports paired agent runs in compatible Claude environments | Task-specific testing, not a dedicated benchmarking engine | Live benchmarks through **Codex CLI** |
-| **Grade and compare** | Prescribes evidence-based grades, paired baselines and regressions; no built-in aggregator | Automated grading, qualitative review, benchmark summaries | Inspect and verify focused skill changes | Static reports, measured runs, before/after comparison |
+| **Execute model evals** | Experimental skill-local Claude/Codex CLI adapter; requires an approved, independently isolated host | Supports paired agent runs in compatible Claude environments | Task-specific testing, not a dedicated benchmarking engine | Live benchmarks through **Codex CLI** |
+| **Grade and compare** | Harness-specific model grading and provisional per-case comparison; live verification pending | Automated grading, qualitative review, benchmark summaries | Inspect and verify focused skill changes | Static reports, measured runs, before/after comparison |
 | **Human oversight** | Explicit learning and approval gates across Stages 0–11 | User feedback and review within its workflow | Scope-sensitive authoring and validation | Human-reviewed CLI/configuration and reports |
 | **Special methodology** | **Five conference-informed lenses**, selective specialist routing, provenance labels | No matching five-lens program described | No matching five-lens program described | Metric-oriented analysis, not the five-lens teaching workflow |
 
@@ -212,7 +241,7 @@ a flawed skill, route diagnoses through the five methodology lenses, and let
 the human approve changes. Those gates are instructions and process conventions;
 the actual agent harness must enforce permissions.
 
-## 7. Try it
+## 8. Try it
 
 > Use **refine-skill** on `skills/code-review` in **Guided** mode. Check Stage 0, walk me through writing eval cases, explain evidence and recommendations, and pause at each approval gate. Do not perform live external writes.
 
@@ -222,6 +251,7 @@ For operational details:
 - [Structure validation](references/structure-validation.md) · [Eval design guide](references/eval-design-guide.md)
 - [Methodology lenses](references/methodology-lenses.md) · [Approval and safety rules](references/approval-gates.md)
 - [Execution Safety Gate](references/execution-safety-gate.md) · [Refine Skill starter and security evals](evals/README.md)
+- [Experimental Claude/Codex runner: setup, commands, security, limitations](runner/README.md)
 
 Repository checks, run from DotSkills root:
 
