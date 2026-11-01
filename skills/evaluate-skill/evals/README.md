@@ -1,4 +1,4 @@
-# Refine Skill — proposed self-evaluation cases
+# Evaluate Skill — proposed self-evaluation cases
 
 This is an **unexecuted** teaching/evaluation starter in the
 [Agent Skills evaluation format](https://agentskills.io/skill-creation/evaluating-skills).
@@ -10,7 +10,7 @@ All are **unexecuted** definitions; they do **not** establish that Refine
 Skill passes, let alone that real GitLab access is safely restricted.
 
 The evaluator should stage only the fixture file and neutral case prompt
-for the tested agent, plus the installed runtime `refine-skill` package.
+for the tested agent, plus the installed runtime `evaluate-skill` package.
 Keep this `evals.json` and expected outputs outside the tested agent's
 readable workspace. Use a host-verified mock-only workspace with no live GitHub/GitLab
 writes or credentials. Follow the [mandatory Execution Safety Gate](../references/execution-safety-gate.md).
@@ -21,9 +21,9 @@ in the tested agent's readable workspace.
 To validate the schema from the DotSkills root:
 
 ```bash
-python3 scripts/validate_evals.py skills/refine-skill/evals/evals.json
+python3 scripts/validate_evals.py skills/evaluate-skill/evals/evals.json
 ```
 
 To measure output quality, follow [the evaluation guide](../references/eval-design-guide.md)
 using clean, paired runs and retain actual evidence in gitignored
-`eval-workspaces/refine-skill/iteration-N/`.
+`eval-workspaces/evaluate-skill/iteration-N/`.

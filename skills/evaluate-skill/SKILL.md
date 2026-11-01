@@ -1,9 +1,9 @@
 ---
-name: refine-skill
+name: evaluate-skill
 description: "Validate and minimally format raw prompts or existing skills to Agent Skills conventions, then teach, evaluate, diagnose, and improve skill output quality with human approval and conference-informed methodology. Use when asked to refine a skill, write skill evals, compare outputs, or learn eval-driven skill development."
 ---
 
-# Refine Skill
+# Evaluate Skill
 
 ## Purpose and boundary
 

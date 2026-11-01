@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Provider-native Refine Skill eval dispatch (experimental; isolated host required).
+"""Provider-native Evaluate Skill eval dispatch (experimental; isolated host required).
 
 No cross-provider fallback. Preparing a case never starts a model.
 """
@@ -189,7 +189,7 @@ def prepare(args, *, env=None):
             'approval_policy': 'never', 'network_access_enabled': False,
             'web_search_enabled': False, 'inherit_process_env': False,
             'skip_git_repo_check': True, 'persist_threads': False}}
-        config = {'description': f'Refine Skill synthetic case {case_name}',
+        config = {'description': f'Evaluate Skill synthetic case {case_name}',
                   'prompts': ['{{question}}'],
                   'providers': [provider('with_skill'), provider('without_skill')],
                   'tests': [{'vars': {'question': case['prompt'].strip()},

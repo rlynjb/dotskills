@@ -1,7 +1,7 @@
 # Stage 0 — Agent Skills structure validation and minimal normalization
 
 **Purpose:** check compatibility, not skill quality. Stage 0 runs on *every*
-Refine Skill invocation but should be nearly instantaneous for a valid package.
+Evaluate Skill invocation but should be nearly instantaneous for a valid package.
 
 ## What AgentSkills.io actually requires
 

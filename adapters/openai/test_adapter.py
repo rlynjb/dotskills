@@ -29,27 +29,27 @@ class OpenAIRuntimeCopyTests(unittest.TestCase):
         )
         return process
 
-    def test_copy_omits_refine_skill_evaluator_files(self):
-        self.cli("install_codex.py", "--target", self.root, "--skill", "refine-skill")
-        installed = self.root / ".agents" / "skills" / "refine-skill"
+    def test_copy_omits_evaluate_skill_evaluator_files(self):
+        self.cli("install_codex.py", "--target", self.root, "--skill", "evaluate-skill")
+        installed = self.root / ".agents" / "skills" / "evaluate-skill"
         self.assertTrue((installed / "SKILL.md").is_file())
         self.assertTrue((installed / "references" / "workflow.md").is_file())
         self.assertFalse((installed / "evals").exists())
 
     def test_link_rejected_when_evaluator_material_present(self):
         self.cli(
-            "install_codex.py", "--target", self.root, "--skill", "refine-skill",
+            "install_codex.py", "--target", self.root, "--skill", "evaluate-skill",
             "--link", success=False
         )
-        self.assertFalse((self.root / ".agents" / "skills" / "refine-skill").exists())
+        self.assertFalse((self.root / ".agents" / "skills" / "evaluate-skill").exists())
 
     def test_failed_link_force_does_not_delete_installed_copy(self):
-        self.cli("install_codex.py", "--target", self.root, "--skill", "refine-skill")
-        installed = self.root / ".agents" / "skills" / "refine-skill"
+        self.cli("install_codex.py", "--target", self.root, "--skill", "evaluate-skill")
+        installed = self.root / ".agents" / "skills" / "evaluate-skill"
         marker = installed / "keep.txt"
         marker.write_text("do not erase")
         self.cli(
-            "install_codex.py", "--target", self.root, "--skill", "refine-skill",
+            "install_codex.py", "--target", self.root, "--skill", "evaluate-skill",
             "--link", "--force", success=False
         )
         self.assertTrue((installed / "SKILL.md").is_file())
@@ -57,9 +57,9 @@ class OpenAIRuntimeCopyTests(unittest.TestCase):
 
     def test_plugin_excludes_evals(self):
         output = self.root / "plugin"
-        self.cli("build_plugin.py", "--skill", "refine-skill", "--output", output)
-        self.assertTrue((output / "skills" / "refine-skill" / "SKILL.md").is_file())
-        self.assertFalse((output / "skills" / "refine-skill" / "evals").exists())
+        self.cli("build_plugin.py", "--skill", "evaluate-skill", "--output", output)
+        self.assertTrue((output / "skills" / "evaluate-skill" / "SKILL.md").is_file())
+        self.assertFalse((output / "skills" / "evaluate-skill" / "evals").exists())
         self.assertIn("name", json.loads((output / "plugin.json").read_text()))
 
 

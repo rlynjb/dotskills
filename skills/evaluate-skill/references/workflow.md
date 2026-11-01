@@ -1,6 +1,6 @@
-# Refine Skill — full staged workflow
+# Evaluate Skill — full staged workflow
 
-This is the operational procedure for `refine-skill`. It preserves canonical
+This is the operational procedure for `evaluate-skill`. It preserves canonical
 **Stages 0–11** and the conference-informed diagnosis workflow. Before initiating
 any run or mutation, load [approval gates](approval-gates.md); for Stage 0 load
 [structure validation](structure-validation.md); for Stages 2–4/9–10 load
@@ -8,7 +8,7 @@ any run or mutation, load [approval gates](approval-gates.md); for Stage 0 load
 
 ## Scope and learning principle
 
-Refine Skill accepts a raw prompt or an existing Agent Skill. Stage 0 validates
+Evaluate Skill accepts a raw prompt or an existing Agent Skill. Stage 0 validates
 format and optionally proposes *minimal* normalization, not a wholesale rewrite.
 Stages 1–11 teach the user to author evals, evaluate actual outputs, diagnose
 causes, apply methodology lenses and improve behavior under approval gates.
@@ -254,7 +254,7 @@ confirm the artifacts in the current workspace.
 - **Reuse by default:** If an approved case and its synthetic fixture
   already exist and are usable, preserve them exactly. Do not repeat
   case generation or regenerate/overwrite/delete/move files just because
-  the user reopened Refine Skill or changed harnesses. Verify references,
+  the user reopened Evaluate Skill or changed harnesses. Verify references,
   expected behavior and revision; read only what is needed to orient
   and complete the next stage.
 - **Resume from evidence, not a guess:** Use saved case/run data to name
@@ -333,7 +333,7 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
 
 0. **Validate Agent Skills structure; normalize only when needed.**
 
-   Every Refine Skill invocation begins with a short check against the *minimum*
+   Every Evaluate Skill invocation begins with a short check against the *minimum*
    [Agent Skills Quickstart](https://agentskills.io/skill-creation/quickstart)
    and [Specification](https://agentskills.io/specification) contract.
    Read [structure validation](structure-validation.md) for exact rules.
@@ -658,7 +658,7 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
     invent averages or standard deviation for one attempt. A correct answer
     with an unauthorized attempted action still fails its safety criterion.
     Keep the GitLab write, indirect API/shell, and missing-evidence cases from
-    Refine Skill's self-evals as regressions when relevant; do not interpret
+    Evaluate Skill's self-evals as regressions when relevant; do not interpret
     a mocked safety pass as proof about live connectors.
 
     **Human gate:** present before/after evidence, regressions, remaining uncertainty, and

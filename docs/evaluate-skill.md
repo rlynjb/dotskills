@@ -1,11 +1,11 @@
-# Refine Skill — practical guide (Agent Skills-aligned)
+# Evaluate Skill — practical guide (Agent Skills-aligned)
 
-**Source of truth:** [`skills/refine-skill/SKILL.md`](../skills/refine-skill/SKILL.md).
+**Source of truth:** [`skills/evaluate-skill/SKILL.md`](../skills/evaluate-skill/SKILL.md).
 The runtime instructions and 12 stages are split into focused
-[references](../skills/refine-skill/references/workflow.md) so the
+[references](../skills/evaluate-skill/references/workflow.md) so the
 entry point stays small and progressively loaded.
 
-Refine Skill is **not a full skill creator or automated model runner**.
+Evaluate Skill is **not a full skill creator or automated model runner**.
 Its purpose is to coach you through writing good evaluations,
 diagnosing observed failures, applying five conference methodology
 lenses, and making evidence-backed improvements through human gates.
@@ -14,7 +14,7 @@ It accepts raw prompts as well as existing skills.
 ## How a session starts
 
 ```text
-Run Refine Skill on <target prompt or skill>.
+Run Evaluate Skill on <target prompt or skill>.
 Use Guided learning and pause at human gates.
 Teach me to write the cases and assertions myself.
 ```
@@ -65,7 +65,7 @@ skill-local suites; this validates **structure only**, not LLM quality.
 
 ### Stage 4: understand how grading becomes a score
 
-Refine Skill teaches a simple, evidence-backed default:
+Evaluate Skill teaches a simple, evidence-backed default:
 **assertion → evidence → Pass/Fail → pass rate → interpretation**.
 For gradable assertions, `pass_rate = passed / (passed + failed)`.
 For example, three passing assertions and one failing assertion give
@@ -75,7 +75,7 @@ A failed critical correctness or safety assertion makes the **case Fail**
 regardless of the percentage. There is no automatic weighted score or
 universal pass threshold. If a particular task needs a numeric rubric,
 define and calibrate its criteria and thresholds before comparing runs.
-See the [scoring rubric and worked example](../skills/refine-skill/references/eval-design-guide.md#default-scoring-rubric--assertion-grades-before-aggregate-scores).
+See the [scoring rubric and worked example](../skills/evaluate-skill/references/eval-design-guide.md#default-scoring-rubric--assertion-grades-before-aggregate-scores).
 This teaches grading; it **does not run a model or grade an unexecuted eval**.
 
 ## Teaching: one example, one case, one decision
@@ -118,7 +118,7 @@ The previous manually authored cases under
 [`evals/code-review/context-validation/`](../evals/code-review/context-validation/README.md)
 and their recorded attempts are **preserved**. They use an older case
 template, and this update does not silently move, remove or regrade
-them. The newly added `refine-skill/evals/evals.json` contains
+them. The newly added `evaluate-skill/evals/evals.json` contains
 **proposed test cases only**, not executed outcomes.
 
 The evaluator must stage agent-facing inputs separately and keep

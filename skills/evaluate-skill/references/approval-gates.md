@@ -1,4 +1,4 @@
-# Refine Skill — human gates and execution safety
+# Evaluate Skill — human gates and execution safety
 
 Read this file before any file writes, eval execution, specialist invocation,
 or side-effecting tool call. These requirements apply to the coordinator and

@@ -23,7 +23,7 @@ recommends `skills/<target>/evals/evals.json` with:
 - optional `assertions` added after studying initial outputs.
 
 Copy the [evals.json template](../templates/evals/README.md).
-The [Refine Skill Stage 2–4 guide](../skills/refine-skill/references/eval-design-guide.md)
+The [Evaluate Skill Stage 2–4 guide](../skills/evaluate-skill/references/eval-design-guide.md)
 coaches case writing, safe with-/without-skill or old-skill runs,
 grading with evidence, and human review. Generated `grading.json`,
 `timing.json` and `benchmark.json` belong under gitignored
@@ -32,7 +32,7 @@ grading with evidence, and human review. Generated `grading.json`,
 
 ```bash
 python3 scripts/validate_evals.py --all
-python3 scripts/validate_evals.py skills/refine-skill/evals/evals.json
+python3 scripts/validate_evals.py skills/evaluate-skill/evals/evals.json
 ```
 
 Validation checks JSON fields and fixture paths only, not evaluation

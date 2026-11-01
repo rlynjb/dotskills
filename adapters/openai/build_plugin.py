@@ -85,7 +85,7 @@ def build_manifest(name: str, version: str, description: str) -> dict:
                     "developerName": "DotSkills",
                     "category": "Productivity",
                     "defaultPrompt": [
-                        "Use refine-skill to improve this skill.",
+                        "Use evaluate-skill to improve this skill.",
                         "Start at the first human gate and use guided learning.",
                     ],
                 }

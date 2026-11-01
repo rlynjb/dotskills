@@ -27,7 +27,7 @@ The default selector is `category=methodology`, so the result is:
 ../my-project/
 └── .agents/
     └── skills/
-        ├── refine-skill/
+        ├── evaluate-skill/
         ├── context-engineering/
         ├── correctness-and-verification/
         ├── skill-lifecycle-and-release/
@@ -64,7 +64,7 @@ python3 adapters/openai/install_codex.py --target ../my-project --link
 Copy mode is the default because it is portable and **excludes evaluator-only
 `evals/` folders**. Link mode is only available for packages without local
 `evals/`; it is rejected otherwise to avoid exposing answer keys through
-a symlink. Use copy mode to test Refine Skill safely.
+a symlink. Use copy mode to test Evaluate Skill safely.
 
 ## Build a portable OpenAI plugin
 
@@ -80,7 +80,7 @@ Default output:
 dist/openai/dotskills-methodology/
 ├── plugin.json
 └── skills/
-    ├── refine-skill/
+    ├── evaluate-skill/
     ├── context-engineering/
     ├── correctness-and-verification/
     ├── skill-lifecycle-and-release/
@@ -99,7 +99,7 @@ Other selectors:
 ```bash
 # One or more named skills
 python3 adapters/openai/build_plugin.py \
-  --skill refine-skill \
+  --skill evaluate-skill \
   --skill context-engineering
 
 # Another category

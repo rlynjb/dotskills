@@ -1,6 +1,6 @@
-# Refine Skill
+# Evaluate Skill
 
-**Refine Skill** helps you learn to evaluate an existing Agent Skill (or raw prompt), understand failures, and make evidence-based improvements. It runs in **Claude Code or Codex**, uses **12 stages (0–11)**, and keeps you in control of important decisions.
+**Evaluate Skill** helps you learn to evaluate an existing Agent Skill (or raw prompt), understand failures, and make evidence-based improvements. It runs in **Claude Code or Codex**, uses **12 stages (0–11)**, and keeps you in control of important decisions.
 
 **Start here:** [Try it](#8-try-it) · [12-stage guide](#2-the-12-stages) · [Grading basics](#grading-and-scoring-beginner-reference)
 
@@ -18,16 +18,16 @@
 - [4. Files and evaluation cases](#4-file-and-evaluation-structure)
 - [5. Claude and Codex evaluation routes](#5-provider-specific-evaluation-workflow)
 - [6. Approvals and safety](#6-approval-execution-and-safety)
-- [7. What Refine Skill adds](#7-what-refine-skill-adds)
+- [7. What Evaluate Skill adds](#7-what-evaluate-skill-adds)
 - [8. Try it](#8-try-it)
 
 ## 1. Workflow at a glance
 
-Refine Skill checks a skill's format, agrees on the behavior to test, drafts evaluations for your approval, reviews results, proposes improvements, and checks for regressions. **It is not a full skill creator.**
+Evaluate Skill checks a skill's format, agrees on the behavior to test, drafts evaluations for your approval, reviews results, proposes improvements, and checks for regressions. **It is not a full skill creator.**
 
-**Stage 0** checks the [Agent Skills format](https://agentskills.io/specification). The minimum package is a folder containing a `SKILL.md` file with valid YAML `name` and `description` fields and Markdown instructions. Other folders are optional. **Valid skills proceed unchanged.** If the format is invalid or the input is a raw prompt, Refine Skill proposes only the smallest structural fix and waits for approval.
+**Stage 0** checks the [Agent Skills format](https://agentskills.io/specification). The minimum package is a folder containing a `SKILL.md` file with valid YAML `name` and `description` fields and Markdown instructions. Other folders are optional. **Valid skills proceed unchanged.** If the format is invalid or the input is a raw prompt, Evaluate Skill proposes only the smallest structural fix and waits for approval.
 
-Refine Skill is **Guided by default**: it explains unfamiliar concepts when useful, shows practical examples, and pauses at approval gates. **Deep dive** and **Fast** learning modes are also available.
+Evaluate Skill is **Guided by default**: it explains unfamiliar concepts when useful, shows practical examples, and pauses at approval gates. **Deep dive** and **Fast** learning modes are also available.
 
 ## 2. The 12 stages
 
@@ -117,7 +117,7 @@ Five checks help you judge whether the grade itself is trustworthy:
 | **Evidence and traces** | What did the agent say, access, attempt or change? Is evidence missing? | **3, 4** |
 | **Coverage and repeated trials** | Do cases include boundaries and safety checks? Are passes consistent across repeated runs? | **2, 3, 9, 10** |
 
-**What Refine Skill uses today:** Both configured routes use **LLM graders**: Claude plugin-eval `type: llm` or Promptfoo `llm-rubric` with `openai:codex-sdk`. The active coding agent drafts assertions in Stage 2; that **does not run a grader**. Deterministic checks and human review can verify objective or safety requirements, but the dispatcher **does not automatically select among three grading systems**.
+**What Evaluate Skill uses today:** Both configured routes use **LLM graders**: Claude plugin-eval `type: llm` or Promptfoo `llm-rubric` with `openai:codex-sdk`. The active coding agent drafts assertions in Stage 2; that **does not run a grader**. Deterministic checks and human review can verify objective or safety requirements, but the dispatcher **does not automatically select among three grading systems**.
 
 **Read results in this order:** individual criteria and mandatory failures → actual output and tool traces → overall score. Missing required evidence is **Unknown**, not Pass. Setup errors, incomplete runs and **Not Run** are not agent failures. A single trial cannot establish reliability; compare versioned cases and repeated runs when authorized.
 
@@ -137,15 +137,15 @@ These lenses and approval gates are **DotSkills practices**, not Agent Skills fo
 
 ## 4. File and evaluation structure
 
-`SKILL.md` is the entry point for any skill. **The target skill owns its evaluation cases**, not Refine Skill. The usual layout is:
+`SKILL.md` is the entry point for any skill. **The target skill owns its evaluation cases**, not Evaluate Skill. The usual layout is:
 
 ```text
 skills/
-├── refine-skill/
+├── evaluate-skill/
 │   ├── SKILL.md                  # Runtime instructions
 │   ├── references/              # Detailed guides
 │   ├── runner/native_eval.py    # Provider-specific dispatcher
-│   └── evals/                   # Unexecuted Refine Skill starter cases
+│   └── evals/                   # Unexecuted Evaluate Skill starter cases
 └── <target-skill>/
     ├── SKILL.md
     └── evals/
@@ -161,7 +161,7 @@ See the [evaluation design guide](references/eval-design-guide.md) for case exam
 
 ## 5. Provider-specific evaluation workflow
 
-Refine Skill uses **only the provider of your active coding session**, never a fallback to the other one.
+Evaluate Skill uses **only the provider of your active coding session**, never a fallback to the other one.
 
 | Active session | Evaluation command | LLM grading | Results |
 | --- | --- | --- | --- |
@@ -185,13 +185,13 @@ The **Execution Safety Gate** applies before **Stages 3 and 9** or **any earlier
 
 Approval for an eval is **not** permission to publish to GitHub/GitLab, send messages or deploy. Work data must not be sent to an unapproved provider. See the [Execution Safety Gate](references/execution-safety-gate.md), [approval rules](references/approval-gates.md), and [security starter cases](evals/README.md).
 
-## 7. What Refine Skill adds
+## 7. What Evaluate Skill adds
 
-Refine Skill is a **guided, human-governed improvement workflow**, not just a grader. It adds transparent decisions, diagnosis, five methodology lenses, safe execution checks and regression comparisons around the selected provider's evaluation tooling. It **does not** install provider software, supply a verified sandbox, replace a full Skill Creator, or automatically accept a score as a release decision.
+Evaluate Skill is a **guided, human-governed improvement workflow**, not just a grader. It adds transparent decisions, diagnosis, five methodology lenses, safe execution checks and regression comparisons around the selected provider's evaluation tooling. It **does not** install provider software, supply a verified sandbox, replace a full Skill Creator, or automatically accept a score as a release decision.
 
 ## 8. Try it
 
-> Use **refine-skill** on `skills/code-review` in **Guided** mode. Teach me how the evaluation works, draft cases for my review, name the tools and evidence used, and stop at each approval gate. Do not perform live external writes.
+> Use **evaluate-skill** on `skills/code-review` in **Guided** mode. Teach me how the evaluation works, draft cases for my review, name the tools and evidence used, and stop at each approval gate. Do not perform live external writes.
 
 **Learn more:** [SKILL.md](SKILL.md) · [Workflow guide](references/workflow.md) · [Evaluation design](references/eval-design-guide.md) · [Runner setup](runner/README.md) · [Approval rules](references/approval-gates.md)
 

@@ -9,11 +9,11 @@
   ],
   "skills": [
     {
-      "name": "refine-skill",
+      "name": "evaluate-skill",
       "category": "methodology",
       "purpose": "Optional evidence-driven, conference-informed, human-gated workflow for learning, evaluating, and refining agent skills, with diagnosis-first specialist routing and regression checks.",
       "source": "dotskills",
-      "path": "skills/refine-skill",
+      "path": "skills/evaluate-skill",
       "reference_count": 0
     },
     {

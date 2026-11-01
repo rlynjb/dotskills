@@ -1,4 +1,4 @@
-# Refine Skill — Execution Safety Gate
+# Evaluate Skill — Execution Safety Gate
 
 **Apply this gate before Stage 3, Stage 9, any delegated execution, and any earlier
 step that would execute an evaluated agent or its target scripts.** It is not an

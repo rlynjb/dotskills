@@ -32,7 +32,7 @@ class AdapterTests(unittest.TestCase):
         expected = {s['name'] for s in catalog
                     if s['category'] == 'methodology' and s.get('exposed') is not False}
         self.assertEqual({p.name for p in installed.iterdir()}, expected)
-        self.assertFalse((installed / 'refine-skill' / 'evals').exists())
+        self.assertFalse((installed / 'evaluate-skill' / 'evals').exists())
         for package in installed.iterdir():
             for file in (ROOT / 'skills' / package.name).rglob('*'):
                 if file.is_file():
@@ -41,7 +41,7 @@ class AdapterTests(unittest.TestCase):
                         self.assertFalse((package / relative).exists())
                     else:
                         self.assertEqual(file.read_bytes(), (package / relative).read_bytes())
-        marker = installed / 'refine-skill' / 'local.txt'
+        marker = installed / 'evaluate-skill' / 'local.txt'
         marker.write_text('keep')
         self.run_cli('install_claude.py', '--target', self.target, ok=False)
         self.assertTrue(marker.exists())
@@ -56,7 +56,7 @@ class AdapterTests(unittest.TestCase):
         existing = self.target / '.claude' / 'skills' / 'context-engineering'
         existing.mkdir(parents=True)
         self.run_cli('install_claude.py', '--target', self.target, ok=False)
-        self.assertFalse((existing.parent / 'refine-skill').exists())
+        self.assertFalse((existing.parent / 'evaluate-skill').exists())
 
     def test_plugin_layout_zip_and_hidden_exclusion(self):
         output = self.target / 'plugin'
@@ -67,7 +67,7 @@ class AdapterTests(unittest.TestCase):
         expected = {s['name'] for s in catalog if s.get('exposed') is not False}
         self.assertEqual({p.name for p in (output / 'skills').iterdir()}, expected)
         self.assertFalse((output / 'plugin.json').exists())
-        self.assertFalse((output / 'skills' / 'refine-skill' / 'evals').exists())
+        self.assertFalse((output / 'skills' / 'evaluate-skill' / 'evals').exists())
         with zipfile.ZipFile(self.target / 'plugin.zip') as archive:
             self.assertIn('.claude-plugin/plugin.json', archive.namelist())
             for file in output.rglob('*'):
@@ -94,7 +94,7 @@ class AdapterTests(unittest.TestCase):
         self.run_cli('build_plugin.py', '--output', output, '--dry-run')
         self.assertFalse(output.parent.exists())
         self.run_cli('build_plugin.py', '--output', output, '--name', 'my-skills',
-                     '--skill', 'refine-skill', '--skill', 'refine-skill')
+                     '--skill', 'evaluate-skill', '--skill', 'evaluate-skill')
         self.assertEqual(len(list((output / 'skills').iterdir())), 1)
         self.assertEqual(json.loads((output / '.claude-plugin/plugin.json').read_text())['name'], 'my-skills')
 

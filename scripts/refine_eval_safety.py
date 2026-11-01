@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed Refine Skill eval gate for a *host-enforced mock runner*.
+"""Fail-closed Evaluate Skill eval gate for a *host-enforced mock runner*.
 
 This is a policy checker / trace auditor, not a model runner, sandbox, or
 GitLab API proxy. The host must independently enforce egress, credentials,

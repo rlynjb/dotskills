@@ -19,12 +19,12 @@ be added because a real need exists, not just to match a template.
    and delete unnecessary references and placeholders.
 3. Register the skill in `catalog.json` and run
    `python3 scripts/validate_skill_repository_integrity.py`.
-4. Run Refine Skill. Its Stage 0 performs the minimum format check and
+4. Run Evaluate Skill. Its Stage 0 performs the minimum format check and
    **does not rewrite a valid skill**. In Stage 2, practice writing
    `evals/evals.json` for the target skill using [evals/](evals/README.md).
 5. Validate the JSON with `python3 scripts/validate_evals.py --all`,
    then run safe isolated paired model evals and record actual results
-   through the [workflow](../docs/refine-skill.md).
+   through the [workflow](../docs/evaluate-skill.md).
 
 Tests and answer keys are **evaluator-only**. Install runtime skill copies
 without local `evals/` and do not expose generated run directories.

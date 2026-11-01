@@ -18,7 +18,7 @@ python3 scripts/validate_evals.py skills/<target>/evals/evals.json
 ```
 
 This checks schema and fixture paths, **not agent quality**.
-Evaluate through [Refine Skill](../../docs/refine-skill.md).
+Evaluate through [Evaluate Skill](../../docs/evaluate-skill.md).
 Keep `evals.json` (expected outputs and assertions) and generated
 `grading.json` / `benchmark.json` outside the evaluated agent's
 readable environment. DotSkills runtime installers omit local

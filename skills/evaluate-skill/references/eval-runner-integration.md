@@ -1,4 +1,4 @@
-# Refine Skill — native evaluation integration (experimental)
+# Evaluate Skill — native evaluation integration (experimental)
 
 This guide explains how Stages 3–4 and 9–10 use the coding harness's **own
 evaluation workflow**, with no cross-provider substitution. See
@@ -8,7 +8,7 @@ and command interface.
 
 ## Select the provider before preparing or executing
 
-| If Refine Skill runs in... | Test execution | LLM-as-judge | Result ownership |
+| If Evaluate Skill runs in... | Test execution | LLM-as-judge | Result ownership |
 | --- | --- | --- | --- |
 | **Claude Code** | Claude `plugin eval` with `--ablation with-without` | Claude evaluation grader files (`type: llm`) | Claude evaluation reports/artifacts |
 | **Codex** | Promptfoo with OpenAI's `openai:codex-sdk` provider, paired workspaces | Promptfoo `llm-rubric` with `openai:codex-sdk` as judge | Promptfoo result artifacts |
@@ -95,5 +95,5 @@ No end-to-end live model evaluation has been demonstrated here. Until a
 separate host and run evidence are verified, the correct status is
 **experimental integration — model evaluation Not Run**.
 
-The Refine Skill's twelve stages, guided teaching, methodology lenses,
+The Evaluate Skill's twelve stages, guided teaching, methodology lenses,
 fixture preservation and human approval gates remain unchanged.

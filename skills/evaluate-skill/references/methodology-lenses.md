@@ -1,4 +1,4 @@
-# Refine Skill — conference methodology lenses
+# Evaluate Skill — conference methodology lenses
 
 ## Stage 6: scan every lens; route only when justified
 
@@ -32,7 +32,7 @@ case, diagnosis or change: label that synthesis "Model recommendation".
 
 | Skill | Role | Source session / resource |
 | --- | --- | --- |
-| `refine-skill` | Optional refinement entry point. Human-gated learning and evidence-based evaluations guide diagnosis, approved improvements, and specialist routing. | Agntcon02 — **Stop Vibe Testing**; Agntcon04 — **Beyond Pass/Fail**; Agntcon05 — **Building Production-Ready Agents with a Regression Test Suite**; Agntcon24 — **Building an Agentic Eval Pipeline with EvalBench**. |
+| `evaluate-skill` | Optional refinement entry point. Human-gated learning and evidence-based evaluations guide diagnosis, approved improvements, and specialist routing. | Agntcon02 — **Stop Vibe Testing**; Agntcon04 — **Beyond Pass/Fail**; Agntcon05 — **Building Production-Ready Agents with a Regression Test Suite**; Agntcon24 — **Building an Agentic Eval Pipeline with EvalBench**. |
 | `context-engineering` | Context selection, progressive retrieval, provenance, freshness, conflict handling, and stopping conditions. | Agntcon27 — **How Contexts Fail (and How to Fix Them)**; Agntcon06 — **Trustworthy Context Is Untrusted by Default**. |
 | `correctness-and-verification` | Requirements, invariants, evidence, deterministic checks, and uncertainty. | Agntcon07 — **Cut the Noise: Building a Code Reviewer You Can Trust**; correctness / universal-properties material; Agntcon25 — **Shipping Agent Skills Safely** for verification and guardrail practices. |
 | `skill-lifecycle-and-release` | Versioning, paired evals, regression coverage, portability checks, and release decisions. | Agntcon25 — **Shipping Agent Skills Safely**; Agntcon28 — **Declarative Agent Architecture**. |

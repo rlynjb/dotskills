@@ -1,7 +1,7 @@
-# Refine Skill — learn to design, run and grade evaluations
+# Evaluate Skill — learn to design, run and grade evaluations
 
 Primary guide: [AgentSkills.io: Evaluating skill output quality](https://agentskills.io/skill-creation/evaluating-skills).
-Refine Skill uses skill-local `evals/evals.json` as an authoring convention
+Evaluate Skill uses skill-local `evals/evals.json` as an authoring convention
 and converts approved cases into **provider-native formats** via
 [`native_eval.py`](../runner/native_eval.py). The Agent Skills guide's
 `grading.json`, `timing.json`, and `benchmark.json` are example

@@ -2,7 +2,7 @@
 
 Use the [Agent Skills Quickstart](https://agentskills.io/skill-creation/quickstart)
 and [Specification](https://agentskills.io/specification) as the
-minimum **format** contract. Refine Skill's [Stage 0](refine-skill.md)
+minimum **format** contract. Evaluate Skill's [Stage 0](evaluate-skill.md)
 checks those requirements before evaluation.
 
 A skill can be a single `skills/<name>/SKILL.md` with YAML frontmatter
@@ -24,7 +24,7 @@ A skill can be a single `skills/<name>/SKILL.md` with YAML frontmatter
    register the skill in `catalog.json`, ensure references resolve,
    and run `python3 scripts/validate_skill_repository_integrity.py`.
    If `skills-ref` is available, also run its official format validator.
-5. Use [Refine Skill](refine-skill.md) in Guided mode. It first confirms
+5. Use [Evaluate Skill](evaluate-skill.md) in Guided mode. It first confirms
    minimal Agent Skills compatibility and then teaches case authoring,
    clean paired runs, assertion grading, conference-lens diagnosis,
    approved edits, and regressions.
@@ -45,4 +45,4 @@ workspace; DotSkills copy/build adapters exclude skill-local `evals/`.
 See [runtime safety boundaries](skill-repository-integrity-and-runtime-safety.md).
 
 For the overall workflow and gate checklist, see
-[Refine Skill](refine-skill.md).
+[Evaluate Skill](evaluate-skill.md).

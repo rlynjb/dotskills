@@ -111,4 +111,4 @@ python3 scripts/validate_skill_repository_integrity.py
 python3 scripts/validate_evals.py --all
 ```
 
-These check package/JSON structure, not model teaching quality, deployed endpoint behavior, or real isolation. Run the `refine-skill` evaluation workflow with safe mock-only tooling before treating the skill as behaviorally tested.
+These check package/JSON structure, not model teaching quality, deployed endpoint behavior, or real isolation. Run the `evaluate-skill` evaluation workflow with safe mock-only tooling before treating the skill as behaviorally tested.

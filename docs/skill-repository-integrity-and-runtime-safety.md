@@ -63,7 +63,7 @@ The same validator runs locally and in GitHub Actions. The separate
 skill-local `evals/evals.json` case fields, unique IDs and fixture paths; it
 is also structural only and does not execute a model or verify isolation.
 
-The optional [Refine Skill execution safety helper](../scripts/refine_eval_safety.py)
+The optional [Evaluate Skill execution safety helper](../scripts/refine_eval_safety.py)
 checks a host-supplied mock-only manifest, individual tool calls and action
 traces for policy violations. It is not a model runner or a sandbox. Its
 unit tests validate its deny/grade logic, not real Claude/Codex tool isolation;
@@ -90,7 +90,7 @@ Structural validation is a repository-health prerequisite, not behavioral or saf
 certification.
 
 For behavioral quality, follow
-[Refine Skill](refine-skill.md).
+[Evaluate Skill](evaluate-skill.md).
 
 ## External skill and prompt intake
 
@@ -147,7 +147,7 @@ in this document.
 
 | Need | Methodology owner |
 | --- | --- |
-| Build or improve a skill through reviewed eval cases, preserved evidence, diagnosis, and regression checks | [`refine-skill`](../skills/refine-skill/SKILL.md) |
+| Build or improve a skill through reviewed eval cases, preserved evidence, diagnosis, and regression checks | [`evaluate-skill`](../skills/evaluate-skill/SKILL.md) |
 | Diagnose missing, stale, conflicting, excessive, distracting, or prematurely stopped context | [`context-engineering`](../skills/context-engineering/SKILL.md) |
 | Verify claims, requirements, invariants, failure paths, and evidence-backed conclusions | [`correctness-and-verification`](../skills/correctness-and-verification/SKILL.md) |
 | Compare versions, detect regressions, test portability, and make release/rollback decisions | [`skill-lifecycle-and-release`](../skills/skill-lifecycle-and-release/SKILL.md) |

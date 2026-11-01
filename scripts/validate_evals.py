@@ -5,7 +5,7 @@ Conventions: https://agentskills.io/skill-creation/evaluating-skills
 
 Usage:
     python3 scripts/validate_evals.py --all
-    python3 scripts/validate_evals.py skills/refine-skill/evals/evals.json
+    python3 scripts/validate_evals.py skills/evaluate-skill/evals/evals.json
 
 This checks JSON structure and referenced input files only. It does not run
 models, grade output quality, enforce isolation, or certify safety.

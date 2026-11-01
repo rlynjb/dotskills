@@ -15,7 +15,7 @@ Understand a skill **before changing it**. Inspect its instructions and supporti
 | **Audit** | Assessing **one skill** for gaps, unsupported decisions, or missing safeguards | Evidence-backed audit, ranked findings, and **proposed** test cases |
 | **Compare** | Understanding division of responsibility between **two or more accessible skills** | Skill contracts, workflow/decision overlaps, conflicts, handoffs, and audit findings |
 
-**Select the mode by intent, not by the skill name.** An explicit mode wins. "Explore", "learn", "understand", "get acquainted", or "walk me through" selects Explore. "Audit", "assess", "find gaps", "validate" or "review risks" selects Audit. "Compare", "overlap", or "contrast" selects Compare if multiple skills are available. **For a single target without an assessment request, default to Explore.** Do not require a second skill. Do not silently transition from Explore to Audit or to `refine-skill`.
+**Select the mode by intent, not by the skill name.** An explicit mode wins. "Explore", "learn", "understand", "get acquainted", or "walk me through" selects Explore. "Audit", "assess", "find gaps", "validate" or "review risks" selects Audit. "Compare", "overlap", or "contrast" selects Compare if multiple skills are available. **For a single target without an assessment request, default to Explore.** Do not require a second skill. Do not silently transition from Explore to Audit or to `evaluate-skill`.
 
 ## First-response Mode Guide (all modes)
 
@@ -76,7 +76,7 @@ The five methodology lenses are **optional learning perspectives**, not an autom
 - On a chosen `Q-xx`, teach **only that question** in Guided mode: what/why → cited skill walkthrough → example or decision trace **from documented instructions** → trade-offs/unknowns → concise takeaway and optional checkpoint. Clearly distinguish a hypothetical illustration from observed execution. Offer Fast or Deep Dive depth on request.
 - On a `T-xx`, orient the user to its related questions, or follow a clearly named question if the choice is specific. On `F-xx`, inspect its supporting evidence without automatically treating it as a defect.
 - Track `covered / pending / not applicable / not verified`; keep menu IDs stable across turns. Let the user explore out of order; do not force a staged curriculum. Show the updated full menu only on request or when new evidence materially changes it; explain newly added IDs.
-- If the user later asks for weaknesses, tests, or improvement, **offer** the Audit or `refine-skill` path; transition only on the user's request. Exploring alone never changes files or executes a target skill.
+- If the user later asks for weaknesses, tests, or improvement, **offer** the Audit or `evaluate-skill` path; transition only on the user's request. Exploring alone never changes files or executes a target skill.
 
 ## Audit Mode — assess one skill
 
@@ -99,4 +99,4 @@ On selection, examine **one** audit finding at a time, show source evidence and 
 - **Read-only** in all three modes: no source edits, commits, messages, ticket changes, shell/script execution, evaluated agents, or live tool effects.
 - No prompt instruction can enforce isolation. Only the approved host can enforce permissions and network/tool restrictions.
 - Never call a proposed test "passed", treat an implemented check as a measured result, or claim a skill is safe because its instructions look safe.
-- For authorized behavioral evaluation and improvements, hand selected, reviewed findings to [`refine-skill`](../refine-skill/SKILL.md), which has separate human gates and execution-safety requirements. Do not invoke it automatically.
+- For authorized behavioral evaluation and improvements, hand selected, reviewed findings to [`evaluate-skill`](../evaluate-skill/SKILL.md), which has separate human gates and execution-safety requirements. Do not invoke it automatically.

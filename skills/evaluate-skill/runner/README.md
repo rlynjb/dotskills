@@ -1,6 +1,6 @@
-# Refine Skill — provider-specific evaluation workflows (experimental)
+# Evaluate Skill — provider-specific evaluation workflows (experimental)
 
-The only Refine Skill evaluation dispatcher is [`native_eval.py`](native_eval.py).
+The only Evaluate Skill evaluation dispatcher is [`native_eval.py`](native_eval.py).
 It **prepares provider-specific synthetic cases** and routes evaluation to the
 active coding harness. It does not implement a shared model runner, shared
 LLM grader, or cross-provider fallback.
@@ -13,7 +13,7 @@ LLM grader, or cross-provider fallback.
 **Ownership and integration are distinct:** `claude plugin eval` is Claude
 tooling. [Promptfoo is now part of OpenAI](https://www.promptfoo.dev/about/)
 and remains an [open-source, multi-provider framework](https://www.promptfoo.dev/blog/promptfoo-joining-openai/).
-Refine Skill explicitly invokes the Promptfoo CLI for the Codex route;
+Evaluate Skill explicitly invokes the Promptfoo CLI for the Codex route;
 Promptfoo uses the `openai:codex-sdk` provider for execution and LLM-rubric
 grading. This is not a grading service automatically bundled into the Codex
 SDK. No Anthropic grader prompt is passed to Codex, and no Codex rubric is
@@ -45,9 +45,9 @@ case. The case in `evals/evals.json` must have an `id`, `prompt`,
 unchanged; each preparation gets its own output directory.
 
 ```bash
-python3 skills/refine-skill/runner/native_eval.py inspect
+python3 skills/evaluate-skill/runner/native_eval.py inspect
 
-python3 skills/refine-skill/runner/native_eval.py prepare \
+python3 skills/evaluate-skill/runner/native_eval.py prepare \
   --suite skills/example-skill/evals/evals.json \
   --case-id 1 \
   --target-skill skills/example-skill \
@@ -77,7 +77,7 @@ verified isolated host**, not an instruction to run untrusted skills in an
 ordinary shell:
 
 ```bash
-python3 skills/refine-skill/runner/native_eval.py run \
+python3 skills/evaluate-skill/runner/native_eval.py run \
   --bundle /isolated/eval-workspaces/PREPARED-BUNDLE \
   --host-manifest /verified/host-manifest.json \
   --approved-case --approved-provider --host-enforced --synthetic-only
@@ -104,13 +104,13 @@ with the appropriate employer/provider approval.
 
 Provider-generated judgments are **not a safety pass**. Confirm that the
 native outputs exist, review assertions and host traces, and make the human
-keep/revise/revert decision within Refine Skill. Never invent grades or
+keep/revise/revert decision within Evaluate Skill. Never invent grades or
 comparison metrics.
 
 ## Offline tests and current limits
 
 ```bash
-python3 -m unittest discover -s skills/refine-skill/runner -p 'test_*.py' -v
+python3 -m unittest discover -s skills/evaluate-skill/runner -p 'test_*.py' -v
 ```
 
 - Offline tests exercise routing, case preparation, fixture security,

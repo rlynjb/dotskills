@@ -44,7 +44,7 @@ The central idea: **understand first → choose an angle → investigate with ev
        |                  |                 |
   Guided deep dive    Review next step   Review next step
            \                |               /
-           Human decides whether to request Refine Skill
+           Human decides whether to request Evaluate Skill
 ```
 
 ## First-response mode guide
@@ -213,11 +213,11 @@ Keep the first report concise; do not execute tests or edit files.
 | Skill | Responsibility |
 | --- | --- |
 | **Audit Skill** (this skill) | **Explore** how one skill works; **Audit** its documented safeguards and gaps; **Compare** skill responsibilities. Read-only, overview-first. |
-| [Refine Skill](../refine-skill/SKILL.md) | Teaches eval design, supports authorized behavior testing, diagnoses failures with five lenses, and makes human-approved improvements. No bundled model runner. |
+| [Evaluate Skill](../evaluate-skill/SKILL.md) | Teaches eval design, supports authorized behavior testing, diagnoses failures with five lenses, and makes human-approved improvements. No bundled model runner. |
 | [Learn Repo](../learn-repo/SKILL.md) | Teaches an **entire codebase** with a question-first learning menu and repo/book lenses. |
 | [Refine Requirements](../refine-requirements/SKILL.md) | Refines feature requirements and design inputs; a possible **target** of Audit Skill. |
 
-**Recommended sequence:** Explore to understand → Audit to assess (if needed) → Refine Skill to evaluate/improve (only after a separate, approved request). Modes are not automatically chained.
+**Recommended sequence:** Explore to understand → Audit to assess (if needed) → Evaluate Skill to evaluate/improve (only after a separate, approved request). Modes are not automatically chained.
 
 ## Files and status
 

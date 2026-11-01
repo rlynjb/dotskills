@@ -21,11 +21,11 @@ python3 adapters/claude/install_claude.py --target ../my-project --dry-run
 python3 adapters/claude/install_claude.py --target ../my-project
 ```
 
-This copies the exposed methodology skills, including `refine-skill` and
+This copies the exposed methodology skills, including `evaluate-skill` and
 `audit-skill`, into
 `../my-project/.claude/skills/<name>/`, with runtime supporting files.
 Evaluator-only `evals/` folders are deliberately excluded.
-Start `claude` from that project and invoke `/refine-skill`. Confirm that the
+Start `claude` from that project and invoke `/evaluate-skill`. Confirm that the
 skill appears in the command menu; managed policies can restrict loading.
 
 The default target is the current directory. Copy mode preserves source bytes;
@@ -46,7 +46,7 @@ The generated folder contains `.claude-plugin/plugin.json` and
 `skills/<name>/SKILL.md` with each skill's runtime files, excluding
 skill-local `evals/` answer keys and grader instructions. An optional ZIP is
 written beside it, with the manifest and skills at the archive root.
-In that Claude session, invoke `/dotskills-methodology:refine-skill`.
+In that Claude session, invoke `/dotskills-methodology:evaluate-skill`.
 `--plugin-dir` loads the plugin for that session; it is not a marketplace install.
 Use an absolute plugin path when launching Claude from another project.
 Choose one installation path to avoid loading duplicate copies of these skills.
@@ -74,7 +74,7 @@ python3 adapters/claude/build_plugin.py --all --name dotskills-all
 Without a selector, the `methodology` category is used. Catalog entries marked
 `exposed: false` are excluded from categories and `--all`; explicitly selecting
 one fails. Selection does not infer dependencies: install the methodology family
-when you need Refine Skill's specialist routing. Unknown names and empty
+when you need Evaluate Skill's specialist routing. Unknown names and empty
 categories fail before files are written. Symlinked package contents and output
 paths are rejected to avoid copying or replacing unexpected locations.
 
