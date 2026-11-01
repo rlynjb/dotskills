@@ -48,6 +48,16 @@ example may omit assertions, but **the current native preparer requires
 approved nonempty assertions before `prepare` can succeed**, so provide
 them for any case intended for Claude/Codex model grading. This is a
 dispatcher constraint, not a new core Agent Skills specification rule.
+
+**Known adapter limitation for fixtures:** The current `native_eval.py`
+resolves `files` entries relative to the **evaluation suite directory**,
+whereas the authoring convention above uses paths relative to the **skill
+root**. For example, `evals/files/fixture.txt` in a suite at
+`<skill>/evals/evals.json` will not resolve correctly in the preparer.
+Treat fixture-backed preparation as **unverified/blocked** until this
+path contract is fixed and tested; do not silently alter approved case
+paths to work around the mismatch.
+
 Validate the authoring suite locally:
 
 ```bash
