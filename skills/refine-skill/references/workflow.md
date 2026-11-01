@@ -346,6 +346,27 @@ confirm the artifacts in the current workspace.
   incomplete run stays Not Run/Unknown rather than treated as a pass.
   When the stage is ambiguous, explain the evidence and ask a targeted
   question rather than silently resetting the workflow.
+- **Existing-eval choices:** When an accessible saved case exists and
+  the learner needs a next action, present **Continue Eval** (default:
+  resume from evidence), **New Run** (same case and fixture; fresh
+  isolated outputs), or **Reset Eval** (new case/fixture version).
+  Explain that these are distinct choices: a new run is **not** a new
+  test case, and Reset Eval is **not** a destructive delete command.
+- **Reset Eval (on explicit request only):** Treat this as a new Stage 2
+  design iteration, not a new numbered stage. Before any write, identify
+  exactly which case or suite is being reset, the old case/fixture
+  paths, any previous outputs, the new version/path, and the expected
+  effect on comparisons. Show a short preservation/archival plan and a
+  precise **HUMAN GATE — Approve Reset Eval**. A request to *show or
+  include* the option is not approval to execute a reset.
+  After approval, preserve old `evals.json` case definitions,
+  assertions, fixtures and run outputs as immutable historical evidence;
+  write newly generated cases/fixtures to a separate versioned path
+  and update only the approved references after verifying the archive.
+  If safe preservation or unique path allocation cannot be ensured,
+  stop and report the blocker rather than overwriting anything. Recheck
+  the new case's expected behavior and obtain its Stage 2 approval
+  before any new Stage 3 execution or safety gate.
 - **No destructive reset by default:** For changed requirements, broken
   fixtures, missing referenced paths, or a desired fresh start, first
   show what would change, the evidence for it, and alternatives.
