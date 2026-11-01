@@ -149,13 +149,21 @@ learning request justifies a deep dive and the human approves it.
    propose minimal Agent Skills formatting, obtain approval, and validate.
 1. **Frame one observable behavior.** Define the intended task, scope,
    permitted/prohibited tool effects and measurable success with the human.
-2. **Design and write eval cases.** Teach the human to author two or
-   three realistic prompts, expected outcomes and optional input files
-   in the target skill's `evals/evals.json`. Prefer self-documenting
-   fixture names that distinguish synthetic examples, exported evidence
-   and live repository data; see the eval design guide. Keep answers evaluator-only.
-   Before preparing native evaluations, confirm approved nonempty assertions
-   so the selected provider can generate its grading definitions. In Guided
+2. **Automatically draft eval cases for human review.** After Stage 1
+   behavior is agreed, the **active coding agent** proposes two or three
+   realistic prompts, expected outcomes, testable `assertions` and optional
+   synthetic input fixtures based on the target's actual requirements.
+   Explain in plain English: the agent is drafting exam questions and the
+   marking checklist, **not running the exam, grading, or changing the skill**.
+   Show drafts and their evidence/assumptions before writing case or fixture
+   files. The human can edit, replace, write their own, or reject them.
+   **Human gate:** explicitly approve the cases, assertions and fixture plan
+   before persisting to the target skill's `evals/evals.json` or calling
+   `native_eval.py prepare`. Prefer self-documenting fixture names that
+   distinguish synthetic examples, exported evidence and live repository data;
+   see the eval design guide. Keep expected answers evaluator-only. Once
+   approved, prepare the selected provider's grading definitions locally;
+   **do not execute an evaluated-agent run or LLM grader** in Stage 2. In Guided
    mode, explain that deterministic checks use fixed rules, an LLM grader
    judges against a rubric, and humans inspect uncertain or high-impact
    outcomes. Define *grader calibration* as comparing judgments against
@@ -263,8 +271,11 @@ safety approvals. See [workflow](references/workflow.md) and
   prompts in [workflow](references/workflow.md); define unfamiliar terms on
   first use and distinguish a proposed action from an executed result.
   At meaningful gates show the concrete input/evidence and one recommended
-  bounded next action. Let the human write or challenge cases, expectations,
-  assertions and diagnoses. Offer Deep dive or Fast on request.
+  bounded next action. In Stage 2 proactively draft cases and assertions for
+  human review (without writing or running anything before approval), then
+  let the human revise, replace, author or challenge them. Invite the human
+  to challenge diagnoses and other recommendations. Offer Deep dive or Fast
+  on request.
 - Before a material action, show a labeled **HUMAN GATE** and wait for
   explicit approval. Feedback alone is not approval; batch/delegated
   modes require bounded opt-in.
