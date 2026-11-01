@@ -50,20 +50,35 @@ Folders such as `references/`, `scripts/`, `assets/`, and `evals/` are **optiona
 
 ## 2. The 12 stages
 
-| Stage | Action | Outcome |
-| --- | --- | --- |
-| **0** | Validate structure; minimally normalize if needed | Valid package or approved format conversion |
-| **1** | Define one observable behavior | Success criteria and scope |
-| **2** | Learn to write 2–3 realistic cases | Prompts, expected outcomes, optional fixtures |
-| **3** | Run paired baselines in fresh contexts | With-skill vs. without-skill (or old-skill) evidence |
-| **4** | Grade actual outputs | Assertions, grading evidence, uncertainty |
-| **5** | Diagnose before editing | Identify case, grader, context, harness, trust, or skill issues |
-| **6** | Screen five methodology lenses | Evidence-backed diagnosis and optional specialist route |
-| **7** | Propose the smallest improvement | Rationale, trade-offs, and **human approval** |
-| **8** | Apply only approved edits | Versioned change and diff |
-| **9** | Rerun comparable evaluations | New results for the same cases and rubric |
-| **10** | Check regressions and independent coverage | Before/after comparison and limits |
-| **11** | Human decides: keep, revise, revert, or iterate | Recorded decision and lessons |
+The **same 12 stages** apply in Claude Code and Codex. Refine Skill uses the
+**active, independently verified harness** for provider-specific evaluations;
+it never switches providers to complete an evaluation. A dash (—) below means
+**no provider-specific eval runner or LLM grader** is invoked at that stage;
+the guided work still happens in the active coding agent.
+
+| Stage | Action | Outcome | Claude Code | Codex |
+| --- | --- | --- | --- | --- |
+| **0** | Validate structure; minimally normalize if needed | Valid package or approved format conversion | — | — |
+| **1** | Define one observable behavior | Success criteria and scope | — | — |
+| **2** | Learn to write 2–3 realistic cases and approve assertions | Prompts, expected outcomes, optional fixtures; native case prepared without execution | Prepare Claude plugin-eval cases + `type: llm` grader files | Prepare Promptfoo config + `llm-rubric` assertions for Codex SDK |
+| **3** | Run paired baselines in fresh contexts | With-skill vs. without-skill (or old-skill) evidence | **Execute:** `claude plugin eval` paired runs | **Execute:** Promptfoo with `openai:codex-sdk` paired runs |
+| **4** | Grade actual outputs | Assertions, grading evidence, uncertainty | **Grade:** Claude plugin-eval `type: llm` graders | **Grade:** Promptfoo `llm-rubric` using Codex SDK |
+| **5** | Diagnose before editing | Identify case, grader, context, harness, trust, or skill issues | — | — |
+| **6** | Screen five methodology lenses | Evidence-backed diagnosis and optional specialist route | — | — |
+| **7** | Propose the smallest improvement | Rationale, trade-offs, and **human approval** | — | — |
+| **8** | Apply only approved edits | Versioned change and diff | — | — |
+| **9** | Rerun comparable evaluations | New results for the same cases and rubric | **Rerun:** Claude plugin eval with matching case/rubric | **Rerun:** Promptfoo + Codex SDK with matching case/rubric |
+| **10** | Check regressions and independent coverage | Before/after comparison and limits | **Review:** Claude-native reports + human evidence review | **Review:** Promptfoo-native reports + human evidence review |
+| **11** | Human decides: keep, revise, revert, or iterate | Recorded decision and lessons | — | — |
+
+**Execution and LLM grading are specific to Stages 3–4, repeated as needed in
+Stage 9.** Stage 2 prepares provider-native cases but does **not** run a model;
+Stage 10 inspects verified native results and does not assume an additional
+model-based comparator exists. Promptfoo is a third-party framework using the
+OpenAI Codex SDK—not an OpenAI-owned evaluation runner. All live runs require
+scoped approval and an independently verified isolated host; otherwise Stage
+3 remains **Blocked — Not Run**. See
+[provider-native runner instructions](runner/README.md).
 
 Learning is **Guided by default**: explain *what, why, how*, show a target-specific example, and help the human write or challenge cases and assertions. **Deep dive** and **Fast** learning modes are available.
 
