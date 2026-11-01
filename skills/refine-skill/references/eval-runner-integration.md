@@ -13,11 +13,13 @@ and command interface.
 | **Claude Code** | Claude `plugin eval` with `--ablation with-without` | Claude evaluation grader files (`type: llm`) | Claude evaluation reports/artifacts |
 | **Codex** | Promptfoo with OpenAI's `openai:codex-sdk` provider, paired workspaces | Promptfoo `llm-rubric` with `openai:codex-sdk` as judge | Promptfoo result artifacts |
 
-Promptfoo is **not an OpenAI-owned eval runner**. It is a separate evaluation
-framework that can execute and grade through the Codex SDK. Do not claim that
-the Codex route invokes an official first-party OpenAI grading system.
-Likewise, the Claude route invokes Claude's plugin evaluation interface,
-not the standalone description-trigger test.
+Promptfoo is [now part of OpenAI](https://www.promptfoo.dev/about/), but it
+remains a separate, open-source, multi-provider evaluation framework. In the
+Codex route, the **Promptfoo CLI explicitly invokes the Codex SDK** to run
+cases and obtain LLM-rubric grading judgments. Ownership does not mean the
+Codex SDK automatically invokes Promptfoo or provides a built-in evaluation
+service. Likewise, the Claude route invokes Claude's plugin evaluation
+interface, not the standalone description-trigger test.
 
 The dispatcher detects `CLAUDECODE` or `CODEX_THREAD_ID` /
 `CODEX_SESSION_ID`. The active host must independently verify its identity;
