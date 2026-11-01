@@ -31,16 +31,18 @@ results when only drafting cases, validating JSON or checking fixture code.
   any evaluated-agent/tool execution (including delegated or baseline runs).
   Require a host-enforced mock-only boundary; do not treat text or a manifest
   alone as sandboxing.
-- In **Stages 3–4 and 9–10**, read [Anthropic Skill Creator evaluation
-  integration](references/eval-runner-integration.md) for the verified
-  division between behavioral subagent execution, evidence-based LLM
-  grading, optional blind comparison, and benchmark review. These are
-  adapters to **separately installed/approved tools**, not components
-  automatically supplied or made safe by this SKILL.md.
+- In **Stages 3–4 and 9–10**, read [Claude/Codex evaluation integration](references/eval-runner-integration.md)
+  to distinguish each harness's actual CLI execution and LLM grading path
+  from Anthropic/OpenAI upstream evaluation tooling. Claude uses reviewed
+  Anthropic Skill Creator grader instructions; Codex uses its own model
+  with schema-constrained grading. Neither provider's full eval framework,
+  blind comparator, or viewer is installed by our adapter.
 - In **Stages 3–4 and 9–10**, consult [the skill-local runner guide](runner/README.md)
-  for the Claude/Codex harness choice, `preflight`, `run-pair`, `grade-pair`,
-  and `compare` command contracts. Do not invoke a model without a separately
-  approved and independently verified isolated host.
+  for `preflight`, `run-pair`, `grade-pair`, and `compare`. Pass
+  `--harness claude` or `--harness codex` explicitly to match the current
+  approved coding host; there is no automatic harness detection. Do not
+  invoke a model without a separately approved and independently verified
+  isolated execution host.
 - In **Stage 0**, read [structure validation](references/structure-validation.md);
   when the skill is valid, make no formatting changes.
 - In **Stages 2–4 or 9–10**, read [eval design](references/eval-design-guide.md)
@@ -111,9 +113,10 @@ learning request justifies a deep dive and the human approves it.
 9. **Rerun the same versioned case/rubric.** Use fresh comparable contexts.
 10. **Check regression and independence.** Compare actual results,
     human feedback, tokens/timing if known, and independent cases.
-    If supported by verified host tools, optionally use Skill Creator's
-    blind comparator, benchmark aggregator, and review viewer. None of
-    these supplies missing agent-run evidence or overrides safety checks.
+    The experimental `compare` action reports assertion pass-rate differences,
+    not an LLM blind comparison. Anthropic's optional blind comparator,
+    benchmark aggregator, and review viewer are **not wired into the adapter**.
+    None of these supplies missing agent-run evidence or overrides safety checks.
 11. **Human decides.** Keep, revise, revert, release or iterate.
     Record lessons and limits; do not claim broad reliability from one run.
 
