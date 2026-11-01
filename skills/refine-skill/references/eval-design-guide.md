@@ -9,14 +9,36 @@ conventions, **not required outputs** of the current dispatcher or
 requirements of the core Agent Skills specification. Claude and Codex
 retain their distinct result schemas.
 
-## Stage 2 — teach the learner to write the case
+## Stage 2 — automatically draft cases, then teach through review
 
-Ask the human to try writing a realistic prompt and describe successful
-behavior in plain English. Provide a concrete example after their attempt
-or if they ask for assistance; recommend two or three varied cases,
-including an edge/missing-context or tool-boundary case.
+**In plain English:** The active coding agent drafts the first version of
+exam questions and the answer-checking checklist. A beginner can review
+concrete examples instead of inventing every test from a blank page.
 
-Save hand-authored cases in the **target skill's** `evals/evals.json`:
+**Why we do this:** It helps the learner understand what a fair, measurable
+test looks like while keeping the learner responsible for approving it.
+
+**How it works:** Based on the approved Stage 1 behavior and the target
+skill's documented requirements, the agent **proposes** two or three
+realistic prompts, expected outcomes, testable `assertions`, and optional
+synthetic fixture plans. Include a boundary or missing-context case.
+Explain each case's purpose, expected evidence and any assumptions;
+do not present guessed requirements as established facts.
+
+**Hypothetical Learn Repo example:** Draft one case testing whether the
+skill identifies real repository modules with evidence and another testing
+whether it pauses at the agreed learning checkpoint. Show what would count
+as Pass, Fail or Unknown. These are proposals, not observed outcomes.
+
+**Human gate:** Present the drafts for review, revision, replacement or
+approval. Do **not** save or overwrite cases/fixtures or call the local
+preparer before approval. Once approved, save cases to the target skill's
+`evals/evals.json` and prepare provider-specific grader definitions.
+Drafting and local preparation do **not** run an evaluated agent or an
+LLM grader; Stage 3 still requires separate approval and verified isolation.
+The learner may write their own cases instead.
+
+For approved cases, use this shape in the **target skill's** `evals/evals.json`:
 
 ```json
 {
@@ -329,9 +351,10 @@ A one-off PASS is one observation, not evidence of reliability.
 
 ## Teaching response at every gate
 
-Briefly tell the learner: **what we're writing; why; a target-specific
-example; what to inspect; what decision they are approving**. Let the
-human write or revise the case, assertions and diagnosis. Show
+Briefly tell the learner: **what we're drafting; why; a target-specific
+example; what to inspect; what decision they are approving**. The agent
+offers first drafts; let the learner revise, replace, reject or author
+cases and assertions and challenge diagnoses. Show
 source labels: AgentSkills.io convention (with URL), exact verified
 conference talk if applicable, target-skill source, real run evidence,
 or "Model recommendation" for your own synthesis.
