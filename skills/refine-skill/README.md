@@ -12,6 +12,7 @@ Refine Skill is **not a full skill creator**. It minimally validates Agent Skill
 - [2. The 12 stages](#2-the-12-stages)
   - [Agent, tool, and source map](#agent-tool-and-source-map)
   - [Evaluation and refinement loop](#evaluation-and-refinement-loop)
+  - [Grading and scoring: beginner reference](#grading-and-scoring-beginner-reference)
 - [3. Five conference-informed methodology lenses](#3-five-conference-informed-methodology-lenses)
 - [4. File and evaluation structure](#4-file-and-evaluation-structure)
 - [5. Provider-specific evaluation workflow](#5-provider-specific-evaluation-workflow)
@@ -140,7 +141,7 @@ An example is a teaching illustration, **not** evidence that an eval ran.
 
 **Beginner example — what does automatic drafting mean?** Think of the agent as helping write an exam, not taking the exam. If Stage 1 says *“Learn Repo explains real modules accurately and pauses at learning checkpoints,”* the agent might draft one case that checks module explanations and another that checks checkpoint behavior. It proposes the question, what a correct answer should demonstrate, and the checklist used to judge it. You decide whether those are fair tests and can rewrite them. **The agent has not changed Learn Repo, executed a test, or graded an answer.** The Stage 2 human gate is still required; a separate execution/safety approval is still required at Stage 3.
 
-**Beginner note — how do we check an answer?** A *deterministic check* is a fixed rule or script, such as checking that the result names a module known to exist in the test files. An *LLM grader* is another model judging whether an explanation meets a written checklist; its judgment can be wrong. *Human review* means a person checks the answer and evidence, especially for quality or safety questions. *Grader calibration* means trying a few examples whose correct outcomes you already know and seeing whether the grader agrees with a trusted human judgment. **These are grading choices to understand, not three automatic graders in Refine Skill:** the current dispatcher prepares provider-native LLM grading definitions, while deterministic checks and human review are supporting verification methods. Choosing more grading routes would require separately designed and verified implementation.
+For a quick reminder of how rubrics, grading, scores, and confidence in results connect, see [Grading and scoring: beginner reference](#grading-and-scoring-beginner-reference).
 
 **Phase 2 — Evaluation (Stages 3–4)**
 
@@ -196,6 +197,38 @@ flowchart LR
     M -->|Iterate| B
     M -->|Keep / revert| N["Record outcome"]
 ```
+
+### Grading and scoring: beginner reference
+
+**Think of an eval as a test with an answer-checking guide.** We agree on what matters *before* running the test. A grader then judges the observed response against those rules; scores can summarize results, but **acceptance rules** decide whether the result is good enough. There is no universal AI pass percentage or A–F scale.
+
+#### Core components: how a grade is decided
+
+| Component | Plain-English meaning | Where it fits in Refine Skill |
+| --- | --- | --- |
+| **Rubric criteria** | The individual requirements to check, such as “name actual repository modules” or “pause at a checkpoint.” | Draft and approve in **Stage 2**, based on the behavior agreed in Stage 1. |
+| **Grading rules** | What counts as Pass, Fail, or Unknown for each criterion; for subjective judgments, describe what different quality levels mean. | Define before execution in **Stage 2**; check whether they were applied correctly in **Stage 4**. |
+| **Grader and grading** | The *grader* is the checker (code, an LLM, or a human); *grading* is the act of applying the rubric to the actual output. | Choose/check the method in **Stage 2**; the configured evaluation can execute **and** produce LLM grades in **Stage 3**; inspect them in **Stage 4**. |
+| **Points and scores** | Optional numbers derived from individual judgments (for example, Pass = 1 and Fail = 0). A percentage is a summary, **not** proof of correctness. | Define any scoring rule before a run in **Stage 2**; interpret actual results in **Stages 4 and 10**. |
+| **Acceptance rules** | The final decision rule: a required threshold, *must-pass* criteria, and what to do when evidence is missing. Mandatory safety or correctness failures cannot be averaged away. | Agree on rules in **Stage 2**; evaluate the evidence in **Stages 4 and 10**; the **human decides in Stage 11**. |
+
+**Hypothetical Learn Repo example:** The rubric checks (1) correct modules — **Pass**, (2) file evidence — **Pass**, and (3) pause at the checkpoint — **Fail (must-pass)**. If we *chose* an illustrative one-point-per-pass scheme, that is 2 out of 3, about **67%**. **The case still fails** because the checkpoint was mandatory. Refine Skill does **not** impose this scoring formula or a default passing threshold; use the provider's actual report and the approved acceptance rules.
+
+#### Five checks that make grading results trustworthy
+
+| Check | Question to ask when you inspect an eval | When to consider it |
+| --- | --- | --- |
+| **1. Ground truth / reference answer** | What reliable evidence establishes what “correct” looks like? For Learn Repo, do the actual test repository files support the expected modules? Some tasks need criteria rather than one exact answer. | **Stage 2** case design; verify against evidence in **Stage 4**. |
+| **2. Grader selection** | Is this best checked by a fixed code rule, an LLM judge, or a person? Objective facts often suit deterministic checks; clarity and usefulness may need an LLM rubric and human review. | **Stage 2** design; inspect the chosen method in **Stage 4**. |
+| **3. Grader calibration** | Does the grader agree with trusted, human-reviewed examples? If it marks an incorrect example as correct, are its rubric instructions unclear? | Design a calibration check in **Stage 2**; review any authorized calibration evidence in **Stage 4**. |
+| **4. Evidence and execution traces** | What did the agent *actually* say, access, attempt, and change? Can the final answer and tool actions be verified, or is evidence missing? | Collect during the approved **Stage 3** run; inspect in **Stage 4**. |
+| **5. Test coverage and repeated trials** | Do cases cover normal behavior, edge cases, missing context, and important safety boundaries? Do repeated runs show consistent results rather than one lucky pass? | Plan in **Stage 2**; use approved runs in **Stages 3 and 9**, then compare in **Stage 10**. |
+
+**Which grader does Refine Skill use today?** In the configured provider routes, **yes: it is an LLM grader**. Claude Code uses Claude plugin-eval `type: llm` graders; Codex uses Promptfoo `llm-rubric` with the `openai:codex-sdk` grading provider. The **active coding agent drafts** the criteria in Stage 2, but that is not the same as executing a grader. The current dispatcher prepares these provider-native LLM grading definitions; it does **not** automatically route criteria through three different grader types. Deterministic verification and human review remain important supporting checks, especially for safety and factual claims. Stage 4 reads grades already produced by Stage 3; it does not automatically invoke a second grader.
+
+**How to read the report:** Start with the individual criterion judgments and any *must-pass* failures. Then inspect the output, underlying evidence, and attempted tool actions. Only then use a score or percentage to summarize or compare runs. If important evidence is missing, record **Unknown**, not Pass. A setup failure or an unexecuted run is **Invalid / Incomplete / Not Run**, not an agent failure. When comparing versions, keep cases and rubrics comparable; repeated trials are required before making reliability claims.
+
+**Memory aid:** **Rubric = what matters · Grader = who checks · Grade = judgment · Score = summary · Acceptance rule = decision.** The five checks above help determine how much confidence to place in that decision.
 
 ## 3. Five conference-informed methodology lenses
 
