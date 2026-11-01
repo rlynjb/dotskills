@@ -10,6 +10,7 @@ Refine Skill is **not a full skill creator**. It minimally validates Agent Skill
 - [1. Workflow at a glance](#1-workflow-at-a-glance)
   - [Minimum valid skill](#minimum-valid-skill)
 - [2. The 12 stages](#2-the-12-stages)
+  - [Agent, tool, and source map](#agent-tool-and-source-map)
   - [Evaluation and refinement loop](#evaluation-and-refinement-loop)
 - [3. Five conference-informed methodology lenses](#3-five-conference-informed-methodology-lenses)
 - [4. File and evaluation structure](#4-file-and-evaluation-structure)
@@ -82,6 +83,44 @@ OpenAI Codex SDK—not an OpenAI-owned evaluation runner. All live runs require
 scoped approval and an independently verified isolated host; otherwise Stage
 3 remains **Blocked — Not Run**. See
 [provider-native runner instructions](runner/README.md).
+
+### Agent, tool, and source map
+
+**Which agent is active?** Refine Skill runs in the **current coding-agent
+session**—Claude Code *or* Codex—throughout all 12 stages. The agent
+guides the workflow; it does **not** launch a separate Claude/Codex model
+for every stage. At approved evaluation stages, it invokes only the
+selected provider's configured tools. A resource **referenced** below is
+not proof that it was downloaded, consulted, or executed in a particular
+run; report actual tool calls and consulted sources from observed evidence.
+
+| Stage | Agent / tool used or conditionally invoked | Sources and supporting resources | External call? |
+| --- | --- | --- | --- |
+| **0 · Validate** | Active Claude Code or Codex agent; local structural check | Target `SKILL.md`, [Agent Skills Quickstart](https://agentskills.io/skill-creation/quickstart) / [specification](https://agentskills.io/specification), [structure guide](references/structure-validation.md) | **No model eval.** Agent Skills links are reference material, not automatic network calls. |
+| **1 · Define behavior** | Active coding agent and human | Target skill, task requirements, human constraints and approvals | **No provider eval.** |
+| **2 · Prepare cases** | Active agent + local `native_eval.py prepare`; **Claude path:** plugin-eval case/`type: llm` grader definitions; **Codex path:** Promptfoo config/`llm-rubric` definitions for Codex SDK | Target `evals/evals.json`, approved synthetic fixtures, [eval design guide](references/eval-design-guide.md), [provider integration](references/eval-runner-integration.md) | **No model run or grading yet.** Only local preparation. |
+| **3 · Run baselines** | Selected native evaluation tool: **Claude:** `claude plugin eval`; **Codex:** `promptfoo eval` with `openai:codex-sdk`; invoked by the dispatcher inside an independently verified safe host | Prepared case, approved rubric, selected provider, [runner guide](runner/README.md), [execution safety gate](references/execution-safety-gate.md), host audit traces | **Yes, conditional:** paired provider runs and possibly LLM grading, only after scoped approval and verified isolation. Otherwise **Blocked — Not Run**. |
+| **4 · Review grades** | Active agent + human review; **Claude:** native `type: llm` grader results; **Codex:** Promptfoo `llm-rubric` results backed by Codex | Real Stage 3 reports, assertions, attempted-action traces and verified resulting state | **No second grader automatically:** grades may already have been produced in Stage 3. |
+| **5 · Diagnose** | Active coding agent; no specialist automatically invoked | Actual failing cases, rubric, fixtures, run logs, traces and skill instructions | **No new provider eval by default.** |
+| **6 · Screen five lenses** | Active coding agent screens five **local DotSkills methodology skills**; specialist skill invoked **only if justified and approved** | [Methodology lens guide](references/methodology-lenses.md), local specialist instructions, available conference/session notes with provenance, observed case evidence | **No automatic third-party agent or model eval.** Specialist handoff is conditional. |
+| **7 · Propose change** | Active coding agent + human approval gate | Diagnosed findings, target `SKILL.md` and references, proposed diff and trade-offs | **No edit or external call automatically.** |
+| **8 · Apply edit** | Active coding agent, after human approval | Approved target files, local version history and diff | **Approved local edit only.** No automatic remote publish or other external write. |
+| **9 · Rerun** | Same selected provider tool as Stage 3: Claude plugin eval **or** Promptfoo + Codex SDK | Approved original case/rubric, revised skill, fresh isolated workspace, [safety gate](references/execution-safety-gate.md), provider-native results | **Yes, conditional:** fresh run approval and verified host isolation required; may produce grading in same command. |
+| **10 · Compare** | Active coding agent + human evidence review; **no automatic blind comparator** | Before/after **Claude-native** reports or **Promptfoo-native** reports, regression cases, trusted traces | **No additional model call by default.** |
+| **11 · Decide** | **Human decision**, recorded by the active agent | Results, regressions, proposed/actual diff, remaining uncertainty and decisions | **No automatic eval, release, or external write.** |
+
+**Important distinctions:** Claude Code and Codex are alternative **active
+coding harnesses**, not two agents triggered together. Anthropic's
+`claude plugin eval` is used only for the Claude route. **Promptfoo is a
+third-party evaluation framework**, and in the Codex route it uses the
+OpenAI Codex SDK for execution and LLM-rubric grading; it is **not** an
+OpenAI-owned eval runner. Agent Skills standards, DotSkills reference
+guides, and conference notes are **sources of instructions and
+methodology**, not external agents or automatically contacted services.
+Stage 6's five lenses are normally screened locally, not five automatic
+specialist invocations. Actual provider model runs and source access
+must be reported only when evidenced; live end-to-end evaluation remains
+unverified.
 
 ### Plain-English walkthrough: what happens next at each stage
 
