@@ -134,6 +134,8 @@ An example is a teaching illustration, **not** evidence that an eval ran.
 - **Stage 1 — Decide what good behavior looks like.** We agree on one observable behavior, its success criteria, and any actions the agent must avoid. **Why:** We need a clear target before designing tests. **Next:** Turn that target into concrete cases in Stage 2; no model is run here.
 - **Stage 2 — Create the test and grading checklist.** We write realistic cases, expected outcomes, assertions (individual checks), and any safe example files. **Why:** Everyone should know what counts as success *before* seeing results. **Next:** Obtain your approval, then prepare the matching Claude or Codex case format without executing a model.
 
+**Beginner note — how do we check an answer?** A *deterministic check* is a fixed rule or script, such as checking that the result names a module known to exist in the test files. An *LLM grader* is another model judging whether an explanation meets a written checklist; its judgment can be wrong. *Human review* means a person checks the answer and evidence, especially for quality or safety questions. *Grader calibration* means trying a few examples whose correct outcomes you already know and seeing whether the grader agrees with a trusted human judgment. **These are grading choices to understand, not three automatic graders in Refine Skill:** the current dispatcher prepares provider-native LLM grading definitions, while deterministic checks and human review are supporting verification methods. Choosing more grading routes would require separately designed and verified implementation.
+
 **Phase 2 — Evaluation (Stages 3–4)**
 
 - **Stage 3 — Run the test safely.** With separate, fresh contexts, the active provider runs a case **with the skill** and **without the skill**. Claude uses Claude plugin eval; Codex uses Promptfoo with the Codex SDK. **Why:** Comparing matched runs helps show what the skill actually changes. **Next:** Only run after approval and verified host isolation; otherwise record **Blocked — Not Run**. An authorized run may also produce LLM grades in the same command.
@@ -148,9 +150,22 @@ An example is a teaching illustration, **not** evidence that an eval ran.
 
 **Phase 4 — Verification and decision (Stages 9–11)**
 
-- **Stage 9 — Rerun the same evaluation.** We use the same approved case and rubric, the same provider, and fresh isolated contexts, saving a **new** result bundle. **Why:** Keeping the test comparable shows whether the edit helped. **Next:** Run only after renewed approval and verified isolation; otherwise record **Blocked — Not Run**.
-- **Stage 10 — Compare before and after.** We read the old and new provider-native results, check whether the targeted issue improved, and look for regressions or gaps in independent coverage. **Why:** Fixing one problem is not useful if something else breaks. **Next:** Present the evidence and limits to you in Stage 11.
-- **Stage 11 — You make the decision.** You choose to keep, revise, revert, release, or iterate; the skill never approves itself. **Why:** Test results support a human decision rather than replacing it. **Next:** If revising the edit, return to Stage 7 and approve a new proposal; if redesigning the eval, return to Stage 2 with the required case approval.
+- **Stage 9 — Rerun the approved evaluations.** We repeat the case we tried to fix **and relevant previously passing cases**, using their original approved prompts and rubrics, the same provider, and fresh isolated contexts. Save a **new** result bundle; never replace old results. **Why:** The fix might help one behavior but accidentally break another. **Next:** Confirm exactly which cases are approved for the rerun and verify safe isolation again; otherwise record **Blocked — Not Run**.
+- **Stage 10 — Compare before and after.** We read the old and new provider-native results for each comparable case. A *regression* means something that passed before now fails, even if the original problem is fixed. If a case lacks a comparable earlier result, say so rather than claiming a regression. **Why:** Fixing one problem is not useful if something else breaks. **Next:** Present the evidence, gaps, and limitations to you in Stage 11.
+- **Stage 11 — You make the decision.** You choose to keep, revise, revert, release, or iterate; the skill never approves itself. **Why:** Test results support a human decision rather than replacing it. **Next:** Preserve approved cases, grading rules, and versioned results for future regression checks. If revising the edit, return to Stage 7 and approve a new proposal; if redesigning the eval, return to Stage 2 with the required case approval.
+
+### Beginner example — how regression testing protects an improvement
+
+Imagine that Learn Repo sometimes explains a repository's architecture incorrectly. We improve its instructions and rerun the architecture evaluation. But Learn Repo also has a separate rule: **pause at the learner's checkpoint**. Fixing the first problem must not silently break the second.
+
+| Approved evaluation case | Before the edit | After the edit | What it means |
+| --- | --- | --- | --- |
+| Explain the correct architecture | Fail | Pass | The intended improvement worked. |
+| Pause at the learning checkpoint | Pass | Fail | **Regression:** something that used to work broke. |
+
+These results are **hypothetical teaching examples**, not real model runs. In **Stage 9**, request scoped approval and rerun both cases in fresh, safely isolated contexts using their original approved grading rules. In **Stage 10**, compare the actual evidence for each case rather than treating one pass as proof that everything works. In **Stage 11**, the human decides whether to keep the change, revise it, or revert it.
+
+**Continuous regression testing after Stage 11** means keeping those approved cases and results so they can be run again after a future skill edit, model update, or coding-agent environment change. It is **not a new numbered stage and not permission to automatically run live agents**. Each new provider run still needs scoped approval and verified isolation; static checks can be run separately when permitted. A model or harness change can affect comparability, so record what changed before interpreting the results.
 
 **In short:** propose → **approve** → edit → **approve safe rerun** → compare → **you decide**. Provider-specific runs remain separated; nothing in this walkthrough authorizes live execution or external writes.
 
