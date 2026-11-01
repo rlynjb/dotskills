@@ -101,6 +101,38 @@ evaluation took place. Reusing fixtures can reduce prompt-generation
 work and token usage, but supplying them to an evaluated agent still
 costs context and tokens.
 
+### Reset Eval — optional fresh case and fixture
+
+**Reset Eval** means intentionally starting a **new version of a test case
+and its synthetic fixture**, not simply running the existing test again.
+Make the choice explicit when revisiting an existing evaluation:
+
+- **Continue Eval** (default): reuse the approved case and fixture, and
+  resume from the last confirmed step.
+- **New Run**: use the same approved case/fixture but save new observed
+  outputs in an unused, isolated iteration/run directory.
+- **Reset Eval**: return to Stage 2 to design a replacement case/fixture
+  **version**. Do not automatically delete, overwrite or mutate the
+  original inputs and prior outputs.
+
+For Reset Eval, first show the exact case ID or suite scope, existing
+paths, planned archive/versioned destination, and which references
+would change. **Wait at HUMAN GATE — Approve Reset Eval** before
+generating or writing anything. Keep an immutable copy of the original
+case definition (including its expected output and assertions), its
+fixture files, and past run evidence; record the prior version/revision
+so later comparisons don't mix old and new test inputs. Use distinct
+versioned fixture paths and ensure a fresh filename/directory is
+available before writing, especially when multiple harnesses share the
+same repository. If the preservation or destination can't be verified,
+do not perform the reset. Validate the new case and request normal
+case approval; any actual agent run still needs the separate Stage 3
+approval and verified execution safety gate.
+
+**A different fixture is a different test.** Do not treat scores for
+the old and reset case as directly comparable evidence of an
+improvement unless differences are explicitly accounted for.
+
 ## Stage 3 — reproducible paired runs
 
 **Plain-English explanation (Guided Mode):** A *baseline* is the starting
