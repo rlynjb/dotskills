@@ -145,6 +145,12 @@ attempted actions. **Stage 3 collects evidence; Stage 4 writes/refines
 semantic assertions and grades both outputs fairly.** The example describes
 a proposed evaluation, not a run that has already happened.
 
+**Execution prerequisite:** Verify a real runner (see
+[runner integration](eval-runner-integration.md)), run approval, and independently
+host-enforced mock-only isolation **before** attempting either arm. If unavailable,
+mark **Blocked — Not Run** and **remain at Stage 3**; fixture validation alone
+cannot move the workflow into grading, diagnosis or release decisions.
+
 For each case, in a new clean context execute:
 - `with_skill` — the current unchanged skill package.
 - `without_skill` — no skill, when useful for its added value; or
