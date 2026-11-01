@@ -13,12 +13,13 @@ format; it is **not** a substitute for Claude/Codex Skill Creator.
 A valid package goes straight to evaluation. A raw/invalid package gets
 only an explicitly approved, minimal structural proposal.
 
-An experimental skill-local [Claude/Codex evaluation adapter](runner/README.md)
-is available for paired CLI runs, model grading and provisional comparison.
-It is **not** a verified isolated execution host or a substitute for host-
-enforced tool restrictions and human approvals. No live end-to-end model
-evaluation has been verified. Never claim to have run a model or verified
-results when only drafting cases, validating JSON or checking fixture code.
+An experimental skill-local [native evaluation dispatcher](runner/README.md)
+prepares separate provider-specific cases: **Claude Code uses Claude plugin
+eval**, and **Codex uses Promptfoo with the OpenAI Codex SDK** for execution
+and LLM grading. Never mix their graders or output formats. This dispatcher
+is not an isolated execution host; provider tools and approvals must be
+separately configured. No live end-to-end model evaluation has been verified.
+Never claim a model run from preparation, JSON validation or offline tests.
 
 ## Load references progressively
 
@@ -31,18 +32,18 @@ results when only drafting cases, validating JSON or checking fixture code.
   any evaluated-agent/tool execution (including delegated or baseline runs).
   Require a host-enforced mock-only boundary; do not treat text or a manifest
   alone as sandboxing.
-- In **Stages 3–4 and 9–10**, read [Claude/Codex evaluation integration](references/eval-runner-integration.md)
-  to distinguish each harness's actual CLI execution and LLM grading path
-  from Anthropic/OpenAI upstream evaluation tooling. Claude uses reviewed
-  Anthropic Skill Creator grader instructions; Codex uses its own model
-  with schema-constrained grading. Neither provider's full eval framework,
-  blind comparator, or viewer is installed by our adapter.
-- In **Stages 3–4 and 9–10**, consult [the skill-local runner guide](runner/README.md)
-  for `preflight`, `run-pair`, `grade-pair`, and `compare`. Pass
-  `--harness claude` or `--harness codex` explicitly to match the current
-  approved coding host; there is no automatic harness detection. Do not
-  invoke a model without a separately approved and independently verified
-  isolated execution host.
+- In **Stages 3–4 and 9–10**, read [provider-native evaluation integration](references/eval-runner-integration.md)
+  for the **strict** harness boundary, native case formats, execution,
+  LLM-as-judge and provider-specific results. If Claude Code is active,
+  use only Claude `plugin eval` with its LLM graders. If Codex is active,
+  use only Promptfoo's Codex SDK runner and Codex-backed `llm-rubric`.
+  Promptfoo is a separate evaluation framework, not an OpenAI-owned service.
+- In **Stages 3–4 and 9–10**, consult [the native runner guide](runner/README.md)
+  and [`native_eval.py`](runner/native_eval.py) for `inspect`, `prepare`,
+  and `run`. Detect the active harness from the environment, then require
+  host verification of that identity. `--harness` is a convenience for
+  offline preparation only; never silently fall back to another provider.
+  Do not invoke a model without an approved, independently isolated host.
 - In **Stage 0**, read [structure validation](references/structure-validation.md);
   when the skill is valid, make no formatting changes.
 - In **Stages 2–4 or 9–10**, read [eval design](references/eval-design-guide.md)
@@ -83,25 +84,24 @@ learning request justifies a deep dive and the human approves it.
    in the target skill's `evals/evals.json`. Prefer self-documenting
    fixture names that distinguish synthetic examples, exported evidence
    and live repository data; see the eval design guide. Keep answers evaluator-only.
-3. **Run paired baselines.** First verify an actual configured agent-eval
-   runner is available and the Execution Safety Gate passes with independently
-   verified host restrictions and human case/run approval. If either fails,
-   **STOP at Stage 3**: record **Blocked — Not Run**, explain the missing
-   capability and next action, preserve approved fixtures and stage state,
-   and wait for a compliant runner. **Do not advance into Stages 4–11**,
-   invent grades or call the refinement cycle complete. When ready, run
-   fresh, isolated paired contexts with the skill and without it (or with
-   a pinned old version), then record actual outputs and action traces.
-4. **Grade actual outputs.** Require observed, trusted Stage 3 outputs
-   first. Coach assertion writing after initial outputs; use deterministic
-   checks and, when available and approved, the selected harness's
-   **LLM-as-judge** path: Claude with reviewed, SHA-256-pinned Anthropic
-   Skill Creator `agents/grader.md` instructions, or Codex with structured
-   grader output. Evaluate actual transcripts and outputs. Grade text, attempted tool actions and
-   resulting state with evidence and human review. Teach unweighted
-   assertion pass rates, keep ungraded evidence separate, and never
-   average away a failed required or safety criterion. Do not invent
-   universal weights or a passing cutoff.
+   Before preparing native evaluations, confirm approved nonempty assertions
+   so the selected provider can generate its grading definitions.
+3. **Run paired baselines.** Detect and independently verify the active
+   harness. Prepare native evaluation cases with `native_eval.py prepare`.
+   Require the corresponding tool (Claude plugin eval or Promptfoo with
+   Codex SDK), independent host isolation, scoped case/provider approval,
+   and synthetic fixtures. If any check fails, **STOP at Stage 3**:
+   record **Blocked — Not Run** and preserve approved work. Never switch
+   providers, proceed into Stages 4–11, or invent outputs. When approved,
+   use the selected provider's paired execution workflow and preserve its
+   real results alongside trusted host action traces.
+4. **Grade actual outputs.** Require observed, trusted Stage 3 outputs.
+   Use the selected provider's own LLM grader: Claude plugin-eval
+   `type: llm` grader files or Codex-backed Promptfoo `llm-rubric`.
+   Keep provider-native result schemas separate. Grade output evidence,
+   attempted tool actions and resulting state with deterministic checks
+   and human review. Missing trusted traces remain Unknown; never
+   average away a failed required or safety criterion or invent a cutoff.
 5. **Diagnose before editing.** Distinguish test/rubric, context,
    harness, permission, model and real guidance failures.
 6. **Screen five methodology lenses.** Context; correctness;
@@ -111,12 +111,12 @@ learning request justifies a deep dive and the human approves it.
    and affected files. **Human gate before editing.**
 8. **Apply only approved changes.** Preserve source and version evidence.
 9. **Rerun the same versioned case/rubric.** Use fresh comparable contexts.
-10. **Check regression and independence.** Compare actual results,
-    human feedback, tokens/timing if known, and independent cases.
-    The experimental `compare` action reports assertion pass-rate differences,
-    not an LLM blind comparison. Anthropic's optional blind comparator,
-    benchmark aggregator, and review viewer are **not wired into the adapter**.
-    None of these supplies missing agent-run evidence or overrides safety checks.
+10. **Check regression and independence.** Compare actual provider-native
+    outputs within the same harness, human feedback, timing/tokens when
+    available, and independent cases. Use only comparison and reporting
+    features verified for that provider; do not normalize unrelated schemas
+    or claim a blind comparison from incomplete evidence. No metrics or
+    grader score can override a failed safety check.
 11. **Human decides.** Keep, revise, revert, release or iterate.
     Record lessons and limits; do not claim broad reliability from one run.
 
