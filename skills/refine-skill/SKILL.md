@@ -155,7 +155,12 @@ learning request justifies a deep dive and the human approves it.
    fixture names that distinguish synthetic examples, exported evidence
    and live repository data; see the eval design guide. Keep answers evaluator-only.
    Before preparing native evaluations, confirm approved nonempty assertions
-   so the selected provider can generate its grading definitions.
+   so the selected provider can generate its grading definitions. In Guided
+   mode, explain that deterministic checks use fixed rules, an LLM grader
+   judges against a rubric, and humans inspect uncertain or high-impact
+   outcomes. Define *grader calibration* as comparing judgments against
+   human-reviewed examples. Do not imply that the dispatcher automatically
+   selects or runs all three types; its native artifacts use LLM rubrics.
 3. **Run paired baselines.** Detect and independently verify the active
    harness. Prepare native evaluation cases with `native_eval.py prepare`.
    Require the corresponding tool (Claude plugin eval or Promptfoo with
@@ -180,19 +185,29 @@ learning request justifies a deep dive and the human approves it.
 7. **Propose the smallest general improvement.** Explain trade-offs
    and affected files. **Human gate before editing.**
 8. **Apply only approved changes.** Preserve source and version evidence.
-9. **Rerun the same versioned case/rubric.** Use fresh comparable contexts.
+9. **Rerun approved versioned cases and rubrics.** Use fresh comparable
+   contexts. Include the case targeted by the edit **and relevant previously
+   passing cases** to detect breakage elsewhere. Keep each case's original
+   approved prompt and rubric; any new or revised case needs Stage 2 approval.
    Repeat the **same active provider's** evaluated workflow: Claude plugin
    eval in Claude Code, or Promptfoo with the Codex SDK in Codex. Preserve
-   the native results; require execution approval and isolation again.
-10. **Check regression and independence.** Review Claude-native results
-    when in Claude, or Promptfoo-native results when in Codex; compare
-    within that provider, with human feedback, timing/tokens when
-    available, and independent cases. Use only comparison and reporting
+   separate native results; require fresh scoped execution approval and
+   independently verified isolation for the complete rerun scope.
+10. **Check regression and independence.** Explain that a *regression* is a
+    previously passing behavior that fails after a change. Review Claude-native
+    results when in Claude, or Promptfoo-native results when in Codex;
+    compare the targeted case **and previously passing cases** within that
+    provider, with human feedback, timing/tokens when available, and
+    independent cases. Do not claim a regression without comparable evidence. Use only comparison and reporting
     features verified for that provider; do not normalize unrelated schemas
     or claim a blind comparison from incomplete evidence. No metrics or
     grader score can override a failed safety check.
 11. **Human decides.** Keep, revise, revert, release or iterate.
-    Record lessons and limits; do not claim broad reliability from one run.
+    Preserve the approved evaluation suite, rubrics, and versioned evidence
+    for later regression checks after skill, model, or harness changes;
+    explain this in plain English. Future model runs are **not automatic**:
+    each requires its own scoped approval and verified isolation. Record
+    lessons and limits; do not claim broad reliability from one run.
 
 ## Resume and reuse saved evaluation work
 
