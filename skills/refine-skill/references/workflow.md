@@ -517,6 +517,11 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    allowed environment and model/harness where comparable. A fresh session
    for each arm prevents leakage; do not share skill-specific instructions
    with the no-skill arm.
+   Before presenting a launch option, inspect the available **runner adapter**
+   (see [runner integration](eval-runner-integration.md)). Validate that a real
+   model runner is installed/configured, can use the approved input fixture,
+   and will produce raw outputs plus trustworthy host tool/action/state traces.
+   A config file or successfully validated fixture is **not** a runner.
    Save outputs and available trace, errors, metadata, tokens and duration in
    separate per-iteration workspaces; see [eval design](eval-design-guide.md).
    Never claim a paired run happened when only one arm was executed.
@@ -531,8 +536,17 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    interposed tool authorization, and complete trace/state verification.
    When available, run `python3 scripts/refine_eval_safety.py preflight
    <host-manifest.json>`. `MANIFEST_VALID` alone is not proof of enforcement.
-   If controls cannot actually be verified, do **not** launch: mark **Not Run**,
-   document gaps, and continue with static analysis.
+   **Blocking rule:** If the runner is absent/unconfigured, scoped approval is
+   absent, isolation is not independently verified, or the required traces
+   cannot be captured, **stop the refinement workflow at Stage 3**. Record
+   **Blocked — Not Run**, identify the exact missing prerequisite, and preserve
+   the case, fixture, stage and any prior evidence for later resumption.
+   Present a runner-setup/safety-remediation path and wait there. Do **not**
+   auto-advance through Stages 4–11, produce speculative skill edits,
+   or report a completed behavioral evaluation. A separate optional **static
+   review** can be offered, but must be labeled non-behavioral and must not
+   advance the numbered evaluation stages. If the host later becomes ready,
+   require a fresh scoped run approval and execution safety check.
 
    Execution review checklist:
    - Are live write paths disabled and the mock/disposable environment verified?
