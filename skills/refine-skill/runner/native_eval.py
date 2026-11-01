@@ -41,9 +41,19 @@ def choose_harness(explicit, env=None, *, for_execution=False):
 
 
 def safe_file(src, root):
+    """Only accept regular files within root, with no symlinked path component."""
     src = Path(src)
     root = Path(root).resolve()
-    if src.is_symlink() or not src.is_file() or not src.resolve().is_relative_to(root):
+    try:
+        relative = src.relative_to(root)
+    except ValueError:
+        raise Blocked(f'Source file outside target skill: {src}') from None
+    current = root
+    for part in relative.parts:
+        current = current / part
+        if current.is_symlink():
+            raise Blocked(f'Symlinked source path denied: {src}')
+    if not src.is_file() or not src.resolve().is_relative_to(root):
         raise Blocked(f'Unsafe/missing source file: {src}')
     return src
 
@@ -86,13 +96,25 @@ def get_case(suite, case_id):
     return case, inputs
 
 
-def copy_inputs(suite, inputs, dst):
-    root = suite.parent.resolve()
+def fixture_sources(skill_root, inputs):
+    """Resolve approved fixture paths relative to the *target skill root*.
+
+    The evals.json convention, including scripts/validate_evals.py, uses
+    skill-root-relative paths such as evals/files/fixture.txt. Never fall
+    back to the suite directory or silently rewrite approved paths.
+    """
+    root = Path(skill_root).resolve()
+    files = []
     for rel in inputs:
         relpath = Path(rel)
-        if relpath.is_absolute() or '..' in relpath.parts:
-            raise Blocked('Absolute/parent traversal fixture path refused')
-        src = safe_file(root / relpath, root)
+        if relpath.is_absolute() or not relpath.parts or '..' in relpath.parts:
+            raise Blocked(f'Absolute/parent traversal fixture path refused: {rel}')
+        files.append((safe_file(root / relpath, root), relpath))
+    return files
+
+
+def copy_inputs(skill_root, inputs, dst):
+    for src, relpath in fixture_sources(skill_root, inputs):
         out = dst / relpath
         out.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(src, out)
@@ -110,8 +132,10 @@ def prepare(args, *, env=None):
     source = args.target_skill.resolve()
     if not source.is_dir():
         raise Blocked('Target skill directory does not exist')
-    suite = args.suite.resolve()
+    suite = safe_file(args.suite.resolve(), source)
     case, inputs = get_case(suite, args.case_id)
+    # Fail before creating the output bundle when any fixture is unsafe/missing.
+    fixture_sources(source, inputs)
     name = slug(source.name)
     case_name = slug(case['id'])
     base = args.output.resolve()
@@ -135,7 +159,7 @@ def prepare(args, *, env=None):
         prompt = '---\nruns: 3\nmax_turns: 10\nallowed_tools: [Read, Glob, Grep, Skill]\n---\n' + case['prompt'].strip() + '\n'
         (case_dir / 'prompt.md').write_text(prompt, encoding='utf-8')
         if inputs:
-            copy_inputs(suite, inputs, case_dir / 'fixtures')
+            copy_inputs(source, inputs, case_dir / 'fixtures')
             (case_dir / 'case.yaml').write_text('schema_version: "1.1"\nname: ' + case_name + '\ncontext:\n  add_dirs: [fixtures]\n', encoding='utf-8')
         for i, assertion in enumerate(case['assertions'], 1):
             (grader_dir / f'criterion-{i:02}.md').write_text(
@@ -153,7 +177,7 @@ def prepare(args, *, env=None):
         copy_skill(source, cd / 'with_skill' / '.agents' / 'skills' / name)
         if inputs:
             for arm in ('with_skill', 'without_skill'):
-                copy_inputs(suite, inputs, cd / arm / 'inputs')
+                copy_inputs(source, inputs, cd / arm / 'inputs')
         def provider(dir_name):
             return {'id': 'openai:codex-sdk', 'label': dir_name,
                     'config': {'working_dir': f'./{dir_name}', 'sandbox_mode': 'read-only',
