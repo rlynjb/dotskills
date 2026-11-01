@@ -61,7 +61,7 @@ the guided work still happens in the active coding agent.
 | --- | --- | --- | --- | --- |
 | **0** | Validate structure; minimally normalize if needed | Valid package or approved format conversion | — | — |
 | **1** | Define one observable behavior | Success criteria and scope | — | — |
-| **2** | Learn to write 2–3 realistic cases and approve assertions | Prompts, expected outcomes, optional fixtures; prepare native case without running models | Prepare Claude plugin-eval case + `type: llm` grader files | Prepare Promptfoo config + `llm-rubric` assertions for Codex SDK |
+| **2** | Agent drafts 2–3 realistic cases and grading assertions; learner reviews and approves | Proposed prompts, expected outcomes, assertions, optional fixture plans; after approval, prepare native cases without executing an eval | Prepare Claude plugin-eval case + `type: llm` grader files | Prepare Promptfoo config + `llm-rubric` assertions for Codex SDK |
 | **3** | Run paired baselines in fresh contexts | With-skill vs. without-skill evidence; old-version comparisons need separate setup | **Execute:** `claude plugin eval` paired runs | **Execute:** Promptfoo with `openai:codex-sdk` paired runs |
 | **4** | Grade actual outputs | Assertions, grading evidence, uncertainty | **Grade:** Claude plugin-eval `type: llm` graders | **Grade:** Promptfoo `llm-rubric` using Codex SDK |
 | **5** | Diagnose before editing | Identify case, grader, context, harness, trust, or skill issues | — | — |
@@ -76,7 +76,8 @@ the guided work still happens in the active coding agent.
 execute the paired runs **and** produce LLM grades in one invocation. Stage 4
 reviews the actual grading artifacts and evidence; it does not automatically
 launch a second grader. Stage 9 repeats the selected provider's evaluation.
-Stage 2 only prepares cases, without running a model; Stage 10 inspects
+Stage 2 uses the active coding agent to draft cases and locally prepares approved
+cases; it does **not** run an evaluated agent or LLM grader. Stage 10 inspects
 verified native results and does not assume an additional model-based
 comparator exists. Promptfoo is a third-party framework using the
 OpenAI Codex SDK—not an OpenAI-owned evaluation runner. All live runs require
@@ -98,7 +99,7 @@ run; report actual tool calls and consulted sources from observed evidence.
 | --- | --- | --- | --- |
 | **0 · Validate** | Active Claude Code or Codex agent; local structural check | Target `SKILL.md`, [Agent Skills Quickstart](https://agentskills.io/skill-creation/quickstart) / [specification](https://agentskills.io/specification), [structure guide](references/structure-validation.md) | **No model eval.** Agent Skills links are reference material, not automatic network calls. |
 | **1 · Define behavior** | Active coding agent and human | Target skill, task requirements, human constraints and approvals | **No provider eval.** |
-| **2 · Prepare cases** | Active agent + local `native_eval.py prepare`; **Claude path:** plugin-eval case/`type: llm` grader definitions; **Codex path:** Promptfoo config/`llm-rubric` definitions for Codex SDK | Target `evals/evals.json`, approved synthetic fixtures, [eval design guide](references/eval-design-guide.md), [provider integration](references/eval-runner-integration.md) | **No model run or grading yet.** Only local preparation. |
+| **2 · Draft and prepare cases** | Active agent proposes prompts, expected behavior and assertions for human review; **after approval**, local `native_eval.py prepare`; **Claude path:** plugin-eval case/`type: llm` grader definitions; **Codex path:** Promptfoo config/`llm-rubric` definitions for Codex SDK | Approved Stage 1 behavior, target skill/requirements, target `evals/evals.json` if already present, synthetic fixture plans, [eval design guide](references/eval-design-guide.md), [provider integration](references/eval-runner-integration.md) | **No evaluated-agent run or grading.** Drafting is done by the current coding agent; native preparation happens only after case approval. |
 | **3 · Run baselines** | Selected native evaluation tool: **Claude:** `claude plugin eval`; **Codex:** `promptfoo eval` with `openai:codex-sdk`; invoked by the dispatcher inside an independently verified safe host | Prepared case, approved rubric, selected provider, [runner guide](runner/README.md), [execution safety gate](references/execution-safety-gate.md), host audit traces | **Yes, conditional:** paired provider runs and possibly LLM grading, only after scoped approval and verified isolation. Otherwise **Blocked — Not Run**. |
 | **4 · Review grades** | Active agent + human review; **Claude:** native `type: llm` grader results; **Codex:** Promptfoo `llm-rubric` results backed by Codex | Real Stage 3 reports, assertions, attempted-action traces and verified resulting state | **No second grader automatically:** grades may already have been produced in Stage 3. |
 | **5 · Diagnose** | Active coding agent; no specialist automatically invoked | Actual failing cases, rubric, fixtures, run logs, traces and skill instructions | **No new provider eval by default.** |
@@ -132,7 +133,9 @@ An example is a teaching illustration, **not** evidence that an eval ran.
 
 - **Stage 0 — Check the skill's structure.** We check whether its `SKILL.md` meets the required Agent Skills format. **Why:** A valid skill does not need formatting changes. **Next:** If valid, leave it alone and go to Stage 1; otherwise, show the smallest repair and request approval before editing.
 - **Stage 1 — Decide what good behavior looks like.** We agree on one observable behavior, its success criteria, and any actions the agent must avoid. **Why:** We need a clear target before designing tests. **Next:** Turn that target into concrete cases in Stage 2; no model is run here.
-- **Stage 2 — Create the test and grading checklist.** We write realistic cases, expected outcomes, assertions (individual checks), and any safe example files. **Why:** Everyone should know what counts as success *before* seeing results. **Next:** Obtain your approval, then prepare the matching Claude or Codex case format without executing a model.
+- **Stage 2 — Automatically draft test cases for your review.** The active coding agent uses the behavior agreed in Stage 1 and the target skill's instructions to **propose** 2–3 realistic test questions, expected behavior, and assertions (individual checks). It also suggests safe example files if needed. **Why:** Beginners don't have to invent tests from a blank page; they can learn by checking whether each suggested test really measures the goal. **Next:** You review, change, replace or approve the drafts **before** any case/fixture is written or prepared. Only approved cases are saved to the target skill's `evals/evals.json` and converted into the selected Claude or Codex format. No evaluated agent or grader is run at this stage.
+
+**Beginner example — what does automatic drafting mean?** Think of the agent as helping write an exam, not taking the exam. If Stage 1 says *“Learn Repo explains real modules accurately and pauses at learning checkpoints,”* the agent might draft one case that checks module explanations and another that checks checkpoint behavior. It proposes the question, what a correct answer should demonstrate, and the checklist used to judge it. You decide whether those are fair tests and can rewrite them. **The agent has not changed Learn Repo, executed a test, or graded an answer.** The Stage 2 human gate is still required; a separate execution/safety approval is still required at Stage 3.
 
 **Beginner note — how do we check an answer?** A *deterministic check* is a fixed rule or script, such as checking that the result names a module known to exist in the test files. An *LLM grader* is another model judging whether an explanation meets a written checklist; its judgment can be wrong. *Human review* means a person checks the answer and evidence, especially for quality or safety questions. *Grader calibration* means trying a few examples whose correct outcomes you already know and seeing whether the grader agrees with a trusted human judgment. **These are grading choices to understand, not three automatic graders in Refine Skill:** the current dispatcher prepares provider-native LLM grading definitions, while deterministic checks and human review are supporting verification methods. Choosing more grading routes would require separately designed and verified implementation.
 
@@ -169,7 +172,7 @@ These results are **hypothetical teaching examples**, not real model runs. In **
 
 **In short:** propose → **approve** → edit → **approve safe rerun** → compare → **you decide**. Provider-specific runs remain separated; nothing in this walkthrough authorizes live execution or external writes.
 
-Learning is **Guided by default**: explain *what, why, how*, show a target-specific example, and help the human write or challenge cases and assertions. **Deep dive** and **Fast** learning modes are available.
+Learning is **Guided by default**: explain *what, why, how*, draft a target-specific example, and help the human review, challenge, revise or author cases and assertions. **Deep dive** and **Fast** learning modes are available.
 
 ### Evaluation and refinement loop
 
