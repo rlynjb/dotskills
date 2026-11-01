@@ -116,6 +116,27 @@ were reused or recreate them without approval. Reusing fixtures can
 avoid repeated generation tokens, but reading them during execution
 still consumes context and tokens. See [workflow](references/workflow.md).
 
+### Existing-eval choices (show when existing work is found)
+
+After inspecting a saved case, briefly offer these explicit paths when a
+choice is needed: **Continue Eval** (default: resume the existing case),
+**New Run** (same case and fixture, new isolated run outputs), or
+**Reset Eval** (author a **new version** of the case and synthetic
+fixture). `Reset Eval` is a **guided workflow option**, not an
+automatic CLI command and not another numbered stage.
+
+For **Reset Eval**, identify the target case or suite and the files
+affected, explain why a fresh fixture is wanted, and show a versioned
+destination/archival plan. **HUMAN GATE — Approve Reset Eval** comes
+*before* creating or replacing any files. Preserve the existing case,
+fixtures, assertions, and run evidence; never silently delete or
+overwrite them. Create the new draft under a distinct version/path and
+validate its references, then continue at Stage 2 for case approval.
+If prior material cannot be preserved, stop and explain the limitation.
+Resetting does not authorize an evaluated-agent run or bypass Stage 3
+safety approvals. See [workflow](references/workflow.md) and
+[eval design](references/eval-design-guide.md).
+
 ## Default collaboration
 
 - **Guided learning + per-gate approval by default.** At the opening of
