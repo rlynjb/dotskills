@@ -320,7 +320,9 @@ class EnforcementReceipt:
     verified_by: str
     verifier_version: str
     provider: str
+    provider_version: str
     model: str
+    model_version: str
     adapter: str
     adapter_version: str
     backend: str
@@ -344,7 +346,9 @@ class EnforcementReceipt:
                 "verified_by",
                 "verifier_version",
                 "provider",
+                "provider_version",
                 "model",
+                "model_version",
                 "adapter",
                 "adapter_version",
                 "backend",
@@ -368,7 +372,9 @@ class EnforcementReceipt:
                 "verified_by",
                 "verifier_version",
                 "provider",
+                "provider_version",
                 "model",
+                "model_version",
                 "adapter",
                 "adapter_version",
                 "backend",
