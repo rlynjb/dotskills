@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from types import MappingProxyType
+from types import SimpleNamespace
 import unittest
 
 import capability_inventory as ci
@@ -455,6 +456,47 @@ class ProviderProofTests(unittest.TestCase):
 
         self.assertFalse(pair.completed)
         self.assertFalse(n.next_stage_decision(pair, current_stage=3).advance)
+
+    def test_supervised_pair_uses_distinct_arm_state_under_one_host_binding(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            plan = self.plan()
+            supervised_arms = []
+            for arm_name in ("with-skill", "without-skill"):
+                result = root / f"{arm_name}.json"
+                result.write_text(
+                    json.dumps({"response": arm_name}), encoding="utf-8"
+                )
+                bundle = self.state_bundle(
+                    root,
+                    plan,
+                    result,
+                    run_id="shared-host-run",
+                    arm_name=arm_name,
+                    workspace_id="shared-host-workspace",
+                )
+                supervised_arms.append(SimpleNamespace(
+                    arm_name=arm_name,
+                    provider_result_path=result,
+                    quality_status="PASS",
+                    execution_status="COMPLETED",
+                    safety_status="PASS",
+                    evidence=bundle,
+                ))
+            supervised = SimpleNamespace(
+                run_id="shared-host-run", arms=tuple(supervised_arms)
+            )
+
+            pair = n.proof_pair_from_supervised(supervised)
+            self.assertTrue(pair.completed)
+            self.assertEqual(
+                {arm.evidence_bundle.workspace_id for arm in pair.arms},
+                {"shared-host-workspace"},
+            )
+            self.assertEqual(
+                len({arm.evidence_bundle.before.disposable.root_id for arm in pair.arms}),
+                2,
+            )
 
 
 if __name__ == "__main__":

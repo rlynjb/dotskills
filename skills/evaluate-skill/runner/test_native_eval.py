@@ -319,6 +319,28 @@ class NativeRouteTests(unittest.TestCase):
                 with self.assertRaises(n.Blocked): n.execute(run,env={'CODEX_THREAD_ID':'1'})
                 self.assertFalse(mock_run.called)
 
+    def test_supervised_claim_revalidates_and_consumes_nonce_before_dispatch(self):
+        with TemporaryDirectory() as temp:
+            args = self.run_opts(Path(temp), verified=True)
+            plan = c.RunPlan.from_dict(json.loads(args.run_plan.read_text()))
+            enforcement = c.EnforcementReceipt.from_dict(
+                json.loads(args.enforcement_receipt.read_text())
+            )
+
+            execution_id, manifest = n.claim_supervised_execution(
+                args.bundle, plan, enforcement, args.nonce_ledger
+            )
+
+            self.assertTrue(execution_id)
+            self.assertEqual(manifest["status"], "RUNNING")
+            self.assertEqual(manifest["execution_id"], execution_id)
+            self.assertEqual(manifest["run_nonce"], enforcement.run_nonce)
+            self.assertEqual(len(list(args.nonce_ledger.glob("*.json"))), 1)
+            with self.assertRaisesRegex(n.Blocked, "fresh bound"):
+                n.claim_supervised_execution(
+                    args.bundle, plan, enforcement, args.nonce_ledger
+                )
+
     def test_assess_prints_blocked_reasons_without_model_call(self):
         with TemporaryDirectory() as temp:
             root = Path(temp)

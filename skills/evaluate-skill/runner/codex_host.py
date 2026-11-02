@@ -10,17 +10,35 @@ import os
 from pathlib import Path
 import re
 import stat
+import subprocess
+import tempfile
+import time
 from types import MappingProxyType
 from typing import Any, Callable, Mapping, Optional, Sequence, Tuple
 
 from capability_inventory import CapabilityInventory, PlatformFingerprint
 from contracts import ApprovalReceipt, ContractError, EnforcementReceipt, RunPlan
-from evidence import EvidenceError, StateSnapshot, snapshot_tree
+from evidence import (
+    EvidenceBundle,
+    EvidenceError,
+    StateEntry,
+    StateSnapshot,
+    StateSnapshots,
+    evidence_bundle_digest,
+    evidence_bundle_payload,
+    snapshot_tree,
+)
 from native_boundary import (
     BoundaryError,
     NativeBoundaryResult,
     provider_config_digest as boundary_config_digest,
     run_native_preflight,
+)
+from provider_trace import (
+    ObservedSessionIdentity,
+    ParsedArm,
+    ProviderTraceBinding,
+    parse_promptfoo_result,
 )
 
 
@@ -415,6 +433,50 @@ class PreflightResult:
     receipt_artifact: Path
 
 
+@dataclass(frozen=True)
+class SupervisedRunRequest:
+    plan: RunPlan
+    policy: CodexHostPolicy
+    preflight: PreflightResult
+    bundle: Path
+    command: Tuple[str, ...]
+    nonce_ledger: Path
+    artifact_directory: Path
+    known_secret_values: Tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class SupervisedProcessResult:
+    returncode: int
+    stdout: bytes
+    stderr: bytes
+    observed_sessions: Tuple[ObservedSessionIdentity, ...]
+
+
+@dataclass(frozen=True)
+class SupervisedArmResult:
+    arm_name: str
+    provider_result_path: Path
+    quality_path: Path
+    evidence_path: Path
+    execution_status: str
+    quality_status: str
+    safety_status: str
+    evidence: EvidenceBundle
+
+
+@dataclass(frozen=True)
+class SupervisedRunResult:
+    run_id: str
+    execution_id: str
+    execution_status: str
+    quality_status: str
+    safety_status: str
+    source_result_digest: str
+    trace_artifact: Path
+    arms: Tuple[SupervisedArmResult, ...]
+
+
 def _timestamp(value: str, name: str) -> datetime:
     if not isinstance(value, str) or not value:
         raise CodexHostError(f"{name} must be an ISO-8601 timestamp")
@@ -789,4 +851,608 @@ def run_trusted_preflight(
         snapshot_artifact=snapshot_path,
         probe_artifact=probe_path,
         receipt_artifact=receipt_path,
+    )
+
+
+def _write_bytes_exclusive(path: Path, payload: bytes) -> Path:
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    descriptor = None
+    try:
+        descriptor = os.open(path, flags, 0o600)
+        offset = 0
+        while offset < len(payload):
+            offset += os.write(descriptor, payload[offset:])
+        os.fsync(descriptor)
+        os.close(descriptor)
+        descriptor = None
+        directory = os.open(path.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory)
+        finally:
+            os.close(directory)
+    except FileExistsError:
+        raise CodexHostError(f"trusted host artifact already exists: {path.name}") from None
+    except OSError as exc:
+        raise CodexHostError(
+            f"cannot durably publish trusted host artifact {path.name}: {type(exc).__name__}"
+        ) from None
+    finally:
+        if descriptor is not None:
+            os.close(descriptor)
+    return path
+
+
+class _TransitionRecorder:
+    def __init__(
+        self,
+        directory: Path,
+        base_payload: Mapping[str, Any],
+        hook: Optional[Callable[[str], None]],
+    ) -> None:
+        self.directory = directory
+        self.base_payload = dict(base_payload)
+        self.hook = hook
+        self.sequence = 0
+
+    def record(self, state: str, payload: Mapping[str, Any] = MappingProxyType({})) -> Path:
+        self.sequence += 1
+        path = self.directory / f"run-state-{self.sequence:02d}-{state}.json"
+        value = dict(self.base_payload)
+        value.update({"sequence": self.sequence, "state": state})
+        value.update(dict(payload))
+        _write_json_exclusive(path, value)
+        if self.hook is not None:
+            self.hook(state)
+        return path
+
+
+def _combined_snapshot(snapshots: Sequence[StateSnapshot]) -> StateSnapshot:
+    snapshots = tuple(snapshots)
+    if not snapshots:
+        raise CodexHostError("at least one protected snapshot is required")
+    if len(snapshots) == 1:
+        return snapshots[0]
+    entries = []
+    for index, snapshot in enumerate(snapshots):
+        prefix = f"root-{index:02d}"
+        entries.append(StateEntry(prefix, "directory", 0, snapshot.digest))
+        entries.extend(
+            StateEntry(
+                f"{prefix}/{entry.path}",
+                entry.entry_type,
+                entry.mode,
+                entry.content_digest,
+            )
+            for entry in snapshot.entries
+        )
+    entries_tuple = tuple(entries)
+    payload = [asdict(entry) for entry in entries_tuple]
+    return StateSnapshot(
+        root_id=_canonical_digest({
+            "roots": [snapshot.root_id for snapshot in snapshots]
+        }),
+        entries=entries_tuple,
+        digest=hashlib.sha256(_canonical_json_bytes(payload)).hexdigest(),
+    )
+
+
+def _canonical_json_bytes(value: Any) -> bytes:
+    return json.dumps(
+        value, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode("utf-8")
+
+
+def _remove_tree_no_follow(path: Path) -> bool:
+    """Remove a host-owned tree without following links; return whether links existed."""
+    path = Path(path)
+    metadata = os.lstat(path)
+    if stat.S_ISLNK(metadata.st_mode):
+        path.unlink()
+        return True
+    if not stat.S_ISDIR(metadata.st_mode):
+        raise OSError("cleanup target is not a directory")
+    found_link = False
+    with os.scandir(path) as iterator:
+        entries = list(iterator)
+    for entry in entries:
+        child = Path(entry.path)
+        child_metadata = entry.stat(follow_symlinks=False)
+        if stat.S_ISLNK(child_metadata.st_mode):
+            child.unlink()
+            found_link = True
+        elif stat.S_ISDIR(child_metadata.st_mode):
+            found_link = _remove_tree_no_follow(child) or found_link
+        else:
+            child.unlink()
+    path.rmdir()
+    return found_link
+
+
+def _cleanup_disposable_workspaces(
+    bundle: Path, arm_paths: Mapping[str, Path]
+) -> bool:
+    found_link = False
+    for path in (*arm_paths.values(), bundle / "codex" / "judge"):
+        if not os.path.lexists(path):
+            continue
+        found_link = _remove_tree_no_follow(path) or found_link
+    if any(os.path.lexists(path) for path in (
+        *arm_paths.values(), bundle / "codex" / "judge"
+    )):
+        raise OSError("workspace removal could not be verified")
+    return found_link
+
+
+def _bounded_process_runner(
+    argv: Sequence[str],
+    *,
+    cwd: Path,
+    environment: Mapping[str, str],
+    timeout: int,
+    max_output_bytes: int,
+) -> SupervisedProcessResult:
+    """Run a process with disk-backed output, killing it on time or output overflow."""
+    with tempfile.TemporaryFile() as stdout_file, tempfile.TemporaryFile() as stderr_file:
+        process = subprocess.Popen(
+            list(argv),
+            cwd=cwd,
+            env=dict(environment),
+            stdin=subprocess.DEVNULL,
+            stdout=stdout_file,
+            stderr=stderr_file,
+            close_fds=True,
+        )
+        deadline = time.monotonic() + timeout
+        failure = None
+        while process.poll() is None:
+            total_size = (
+                os.fstat(stdout_file.fileno()).st_size
+                + os.fstat(stderr_file.fileno()).st_size
+            )
+            if total_size > max_output_bytes:
+                failure = "output-limit"
+                process.kill()
+                break
+            if time.monotonic() >= deadline:
+                failure = "timeout"
+                process.kill()
+                break
+            time.sleep(0.01)
+        process.wait()
+        total_size = (
+            os.fstat(stdout_file.fileno()).st_size
+            + os.fstat(stderr_file.fileno()).st_size
+        )
+        if total_size > max_output_bytes:
+            failure = "output-limit"
+        if failure == "timeout":
+            raise TimeoutError("provider process exceeded the approved timeout")
+        if failure == "output-limit":
+            raise CodexHostError("provider process exceeded the approved output limit")
+        stdout_file.seek(0)
+        stderr_file.seek(0)
+        return SupervisedProcessResult(
+            returncode=process.returncode,
+            stdout=stdout_file.read(max_output_bytes + 1),
+            stderr=stderr_file.read(max_output_bytes + 1),
+            observed_sessions=(),
+        )
+
+
+def _supervised_artifact_paths(directory: Path) -> tuple[Path, ...]:
+    paths = []
+    for arm in ("with-skill", "without-skill"):
+        paths.extend((
+            directory / f"{arm}-provider-result.json",
+            directory / f"{arm}-quality.json",
+            directory / f"{arm}-evidence.json",
+        ))
+    paths.append(directory / "host-trace.json")
+    return tuple(paths)
+
+
+def _validate_supervised_request(
+    request: SupervisedRunRequest,
+) -> tuple[Path, Path, dict[str, Any], Mapping[str, Any]]:
+    if not isinstance(request, SupervisedRunRequest):
+        raise CodexHostError("a SupervisedRunRequest is required")
+    if not isinstance(request.plan, RunPlan):
+        raise CodexHostError("supervision requires a RunPlan")
+    if not isinstance(request.policy, CodexHostPolicy):
+        raise CodexHostError("supervision requires a CodexHostPolicy")
+    if not isinstance(request.preflight, PreflightResult):
+        raise CodexHostError("supervision requires a trusted preflight result")
+    plan = request.plan
+    receipt = request.preflight.receipt
+    if (
+        receipt.plan_digest != plan.digest()
+        or receipt.provider != plan.provider
+        or receipt.provider_version != plan.provider_version
+        or receipt.model != plan.model
+        or receipt.model_version != plan.model_version
+        or receipt.adapter != plan.adapter
+        or receipt.adapter_version != plan.adapter_version
+        or receipt.backend != plan.backend
+    ):
+        raise CodexHostError("preflight receipt identity does not match the run plan")
+    now = datetime.now(timezone.utc)
+    if now < _timestamp(receipt.issued_at, "receipt issued_at"):
+        raise CodexHostError("preflight receipt is not yet valid")
+    if now >= _timestamp(receipt.expires_at, "receipt expires_at"):
+        raise CodexHostError("preflight receipt expired before dispatch")
+    if (
+        request.preflight.policy_digest != request.policy.digest()
+        or request.preflight.bundle_digest != receipt.prepared_bundle_digest
+        or request.preflight.provider_config_digest != receipt.provider_config_digest
+        or receipt.workspace_id != request.policy.workspace_id
+        or not request.preflight.boundary.complete
+    ):
+        raise CodexHostError("preflight policy, boundary, bundle, or receipt binding changed")
+
+    bundle = _real_workspace(request.bundle)
+    if bundle != request.policy.workspace or _path_identity(bundle) != receipt.workspace_id:
+        raise CodexHostError("supervised bundle identity changed")
+    artifacts = Path(request.artifact_directory)
+    if not artifacts.is_absolute() or artifacts.is_symlink() or not artifacts.is_dir():
+        raise CodexHostError("supervised artifact directory must be real and absolute")
+    artifacts = artifacts.resolve()
+    if artifacts != request.preflight.receipt_artifact.parent.resolve():
+        raise CodexHostError("supervision artifact directory differs from preflight")
+    if _paths_overlap(bundle, artifacts):
+        raise CodexHostError("supervision artifacts must remain outside the evaluated workspace")
+    ledger = Path(request.nonce_ledger)
+    if not ledger.is_absolute() or ledger.is_symlink() or not ledger.is_dir():
+        raise CodexHostError("nonce ledger must be a real absolute directory")
+    ledger = ledger.resolve()
+    if _paths_overlap(bundle, ledger):
+        raise CodexHostError("nonce ledger must remain outside the evaluated workspace")
+
+    import native_eval
+
+    manifest = _read_json_object(bundle / "manifest.json", "bound bundle manifest")
+    if manifest.get("status") != "BOUND_NOT_RUN":
+        raise CodexHostError("supervised bundle is not a fresh bound execution")
+    if manifest.get("plan_digest") != plan.digest():
+        raise CodexHostError("bound bundle plan digest changed")
+    if manifest.get("host_policy_digest") != request.policy.digest():
+        raise CodexHostError("bound bundle host policy changed")
+    try:
+        bundle_digest = native_eval._bundle_digest(bundle)
+        provider_digest = native_eval._provider_config_digest(bundle, manifest)
+        native_eval.validate_configured_host_policy(bundle, request.policy)
+        expected_command = tuple(native_eval.native_command(bundle, manifest))
+    except native_eval.Blocked as exc:
+        raise CodexHostError(f"bound bundle cannot be revalidated: {exc}") from None
+    if (
+        bundle_digest != manifest.get("bundle_digest")
+        or bundle_digest != request.preflight.bundle_digest
+        or provider_digest != manifest.get("provider_config_digest")
+        or provider_digest != request.preflight.provider_config_digest
+    ):
+        raise CodexHostError("bound bundle or provider config digest changed")
+
+    if not isinstance(request.command, tuple) or len(request.command) < 2:
+        raise CodexHostError("exact supervised provider command is required")
+    binary = _real_path(Path(request.command[0]), "Promptfoo command", directory=False)
+    if not os.access(binary, os.X_OK):
+        raise CodexHostError("Promptfoo command must be executable")
+    exact_command = (str(binary), *expected_command[1:])
+    if request.command != exact_command:
+        raise CodexHostError("supervised command differs from the bound Promptfoo command")
+    result_path = bundle / "codex-results.json"
+    if os.path.lexists(result_path):
+        raise CodexHostError("fresh supervised bundle already contains provider output")
+    for path in _supervised_artifact_paths(artifacts):
+        if os.path.lexists(path):
+            raise CodexHostError(f"trusted host artifact already exists: {path.name}")
+    promptfoo_config = _read_json_object(
+        bundle / "codex" / "promptfooconfig.yaml", "bound Promptfoo config"
+    )
+    return bundle, ledger, manifest, promptfoo_config
+
+
+def _quality_status(arm: ParsedArm) -> str:
+    quality = arm.quality
+    grading = quality.get("grading_result")
+    if grading is None:
+        return "NOT_GRADED"
+    if quality.get("success") is True and grading.get("pass") is True:
+        return "PASS"
+    if quality.get("success") is False or grading.get("pass") is False:
+        return "FAIL"
+    return "UNKNOWN"
+
+
+def run_supervised_provider(
+    request: SupervisedRunRequest,
+    *,
+    process_runner: Optional[Callable[..., SupervisedProcessResult]] = None,
+    transition_hook: Optional[Callable[[str], None]] = None,
+) -> SupervisedRunResult:
+    """Consume one receipt and supervise exactly one paired Promptfoo execution."""
+    bundle, ledger, manifest, promptfoo_config = _validate_supervised_request(request)
+    import native_eval
+
+    try:
+        execution_id, manifest = native_eval.claim_supervised_execution(
+            bundle, request.plan, request.preflight.receipt, ledger
+        )
+    except native_eval.Blocked as exc:
+        raise CodexHostError(f"cannot consume supervised execution nonce: {exc}") from None
+    recorder = _TransitionRecorder(
+        request.artifact_directory,
+        {
+            "schema_version": POLICY_SCHEMA_VERSION,
+            "plan_digest": request.plan.digest(),
+            "run_nonce": request.preflight.receipt.run_nonce,
+            "execution_id": execution_id,
+        },
+        transition_hook,
+    )
+    secrets = tuple(sorted(
+        {
+            value for value in request.known_secret_values
+            if isinstance(value, str) and value
+        },
+        key=len,
+        reverse=True,
+    ))
+    arm_paths = {
+        "with-skill": bundle / "codex" / "with_skill",
+        "without-skill": bundle / "codex" / "without_skill",
+    }
+    try:
+        before_arms = {
+            arm: snapshot_tree(path, ()) for arm, path in arm_paths.items()
+        }
+        before_protected = _combined_snapshot(request.preflight.protected_snapshots)
+        recorder.record("run-started", {"command_digest": hashlib.sha256(
+            "\0".join(request.command).encode("utf-8")
+        ).hexdigest()})
+
+        runner = _bounded_process_runner if process_runner is None else process_runner
+        environment = {
+            **dict(request.policy.process_environment),
+            **dict(native_eval._PROMPTFOO_SAFE_ENV),
+        }
+        process = runner(
+            request.command,
+            cwd=bundle,
+            environment=environment,
+            timeout=int(request.plan.resource_limits["max_seconds"]),
+            max_output_bytes=int(request.plan.resource_limits["max_output_bytes"]),
+        )
+        if not isinstance(process, SupervisedProcessResult):
+            raise CodexHostError("trusted process runner returned an invalid result")
+        if isinstance(process.returncode, bool) or not isinstance(process.returncode, int):
+            raise CodexHostError("provider process return code is invalid")
+        if not isinstance(process.stdout, bytes) or not isinstance(process.stderr, bytes):
+            raise CodexHostError("provider process output must be captured as bytes")
+        if len(process.stdout) + len(process.stderr) > int(
+            request.plan.resource_limits["max_output_bytes"]
+        ):
+            raise CodexHostError("provider process exceeded the approved output limit")
+        recorder.record("provider-exited", {
+            "returncode": process.returncode,
+            "stdout_digest": hashlib.sha256(process.stdout).hexdigest(),
+            "stdout_bytes": len(process.stdout),
+            "stderr_digest": hashlib.sha256(process.stderr).hexdigest(),
+            "stderr_bytes": len(process.stderr),
+        })
+        if process.returncode != 0:
+            raise CodexHostError(f"provider process exited nonzero: {process.returncode}")
+
+        binding = ProviderTraceBinding(
+            provider_config_digest=request.preflight.provider_config_digest,
+            promptfoo_config=promptfoo_config,
+            observed_sessions=process.observed_sessions,
+        )
+        parsed = parse_promptfoo_result(
+            bundle / "codex-results.json",
+            request.plan,
+            binding,
+            known_secret_values=secrets,
+        )
+        recorder.record("result-parsed", {
+            "source_result_digest": parsed.source_file_digest,
+            "arm_source_result_digests": {
+                arm.arm_name: arm.source_result_digest for arm in parsed.arms
+            },
+        })
+
+        after_arms = {
+            arm: snapshot_tree(path, ()) for arm, path in arm_paths.items()
+        }
+        after_protected_snapshots = tuple(
+            snapshot_tree(path, ()) for path in request.policy.protected_roots
+        )
+        after_protected = _combined_snapshot(after_protected_snapshots)
+        if after_protected != before_protected:
+            raise CodexHostError("protected state changed during provider execution")
+        if any(after_arms[arm] != before_arms[arm] for arm in arm_paths):
+            raise CodexHostError("read-only arm workspace changed during provider execution")
+        recorder.record("state-verified", {
+            "protected_digest": after_protected.digest,
+            "arm_digests": {arm: value.digest for arm, value in after_arms.items()},
+        })
+
+        try:
+            found_link = _cleanup_disposable_workspaces(bundle, arm_paths)
+        except OSError as exc:
+            raise CodexHostError(
+                f"workspace cleanup failed: {type(exc).__name__}"
+            ) from None
+        if found_link:
+            raise CodexHostError("workspace cleanup found an unexpected symlink")
+        recorder.record("cleanup-verified")
+
+        supervised_arms = []
+        trace_payload = {
+            "schema_version": POLICY_SCHEMA_VERSION,
+            "plan_digest": request.plan.digest(),
+            "run_nonce": request.preflight.receipt.run_nonce,
+            "execution_id": execution_id,
+            "source_result_digest": parsed.source_file_digest,
+            "arm_events": {},
+        }
+        for parsed_arm in parsed.arms:
+            arm_name = parsed_arm.arm_name
+            provider_path = (
+                request.artifact_directory / f"{arm_name}-provider-result.json"
+            )
+            quality_path = request.artifact_directory / f"{arm_name}-quality.json"
+            evidence_path = request.artifact_directory / f"{arm_name}-evidence.json"
+            provider_payload = _canonical_json_bytes(parsed_arm.provider_result)
+            _write_bytes_exclusive(provider_path, provider_payload)
+            _write_json_exclusive(quality_path, _redact(parsed_arm.quality, secrets))
+            events = [
+                {
+                    "type": "run_start",
+                    "plan_digest": request.plan.digest(),
+                    "run_id": request.preflight.receipt.run_nonce,
+                    "receipt_nonce": request.preflight.receipt.run_nonce,
+                    "execution_id": execution_id,
+                    "arm_name": arm_name,
+                    "workspace_id": request.preflight.receipt.workspace_id,
+                },
+                *parsed_arm.events,
+                {
+                    "type": "model_result",
+                    "run_id": request.preflight.receipt.run_nonce,
+                    "receipt_nonce": request.preflight.receipt.run_nonce,
+                    "execution_id": execution_id,
+                    "arm_name": arm_name,
+                    "workspace_id": request.preflight.receipt.workspace_id,
+                    "provider_result_digest": parsed_arm.provider_result_digest,
+                    "source_result_digest": parsed_arm.source_result_digest,
+                },
+                {
+                    "type": "run_end",
+                    "trace_complete": True,
+                    "cleanup_complete": True,
+                    "state_verified_unchanged": True,
+                },
+            ]
+            states_before = StateSnapshots(
+                protected=before_protected,
+                disposable=before_arms[arm_name],
+                workspace_id=request.preflight.receipt.workspace_id,
+            )
+            states_after = StateSnapshots(
+                protected=after_protected,
+                disposable=after_arms[arm_name],
+                workspace_id=request.preflight.receipt.workspace_id,
+            )
+            evidence = EvidenceBundle.from_run(
+                request.plan,
+                request.preflight.receipt,
+                events,
+                states_before,
+                states_after,
+                run_id=request.preflight.receipt.run_nonce,
+                execution_id=execution_id,
+                source_result_digest=parsed_arm.source_result_digest,
+                arm_name=arm_name,
+                provider_result=provider_path,
+                known_secret_values=secrets,
+            )
+            _write_json_exclusive(
+                evidence_path, _redact(evidence_bundle_payload(evidence), secrets)
+            )
+            quality_status = _quality_status(parsed_arm)
+            supervised_arms.append(SupervisedArmResult(
+                arm_name=arm_name,
+                provider_result_path=provider_path,
+                quality_path=quality_path,
+                evidence_path=evidence_path,
+                execution_status=evidence.audit.execution_status.value,
+                quality_status=quality_status,
+                safety_status=evidence.audit.safety_status.value,
+                evidence=evidence,
+            ))
+            trace_payload["arm_events"][arm_name] = events
+
+        trace_path = request.artifact_directory / "host-trace.json"
+        _write_json_exclusive(trace_path, _redact(trace_payload, secrets))
+        recorder.record("evidence-published", {
+            "trace_digest": hashlib.sha256(trace_path.read_bytes()).hexdigest(),
+            "arm_evidence_digests": {
+                arm.arm_name: evidence_bundle_digest(arm.evidence)
+                for arm in supervised_arms
+            },
+        })
+        manifest.update({
+            "status": "HOST_AUDIT_COMPLETE",
+            "execution_id": execution_id,
+            "run_nonce": request.preflight.receipt.run_nonce,
+            "provider_result_digest": parsed.source_file_digest,
+            "arm_source_result_digests": {
+                arm.arm_name: arm.source_result_digest for arm in parsed.arms
+            },
+            "arm_provider_identities": {
+                arm.arm_name: dict(arm.provider_result["provider_identity"])
+                for arm in parsed.arms
+            },
+            "arm_evidence_digests": {
+                arm.arm_name: evidence_bundle_digest(arm.evidence)
+                for arm in supervised_arms
+            },
+        })
+        native_eval._write_manifest_atomic(bundle / "manifest.json", manifest)
+        recorder.record("complete")
+    except Exception as exc:
+        cleanup_error = None
+        try:
+            found_link = _cleanup_disposable_workspaces(bundle, arm_paths)
+            if found_link:
+                cleanup_error = "unexpected-symlink"
+        except (OSError, CodexHostError) as cleanup_exc:
+            cleanup_error = type(cleanup_exc).__name__
+        try:
+            recorder.record("incomplete", {
+                "error": type(exc).__name__,
+                "failure_cleanup": (
+                    "PASS" if cleanup_error is None else f"FAIL:{cleanup_error}"
+                ),
+            })
+        except (CodexHostError, OSError, InterruptedError):
+            pass
+        if isinstance(exc, CodexHostError):
+            raise
+        raise CodexHostError(
+            f"supervised provider execution remained incomplete: {type(exc).__name__}"
+        ) from None
+
+    arms_tuple = tuple(supervised_arms)
+    execution_status = (
+        "COMPLETED" if all(arm.execution_status == "COMPLETED" for arm in arms_tuple)
+        else "INCOMPLETE"
+    )
+    safety_status = (
+        "FAIL" if any(arm.safety_status == "FAIL" for arm in arms_tuple)
+        else "PASS" if all(arm.safety_status == "PASS" for arm in arms_tuple)
+        else "UNKNOWN"
+    )
+    quality_values = {arm.quality_status for arm in arms_tuple}
+    if "FAIL" in quality_values:
+        quality_status = "FAIL"
+    elif "UNKNOWN" in quality_values:
+        quality_status = "UNKNOWN"
+    elif "NOT_GRADED" in quality_values:
+        quality_status = "NOT_GRADED"
+    elif quality_values == {"PASS"}:
+        quality_status = "PASS"
+    else:
+        quality_status = "UNKNOWN"
+    return SupervisedRunResult(
+        run_id=request.preflight.receipt.run_nonce,
+        execution_id=execution_id,
+        execution_status=execution_status,
+        quality_status=quality_status,
+        safety_status=safety_status,
+        source_result_digest=parsed.source_file_digest,
+        trace_artifact=trace_path,
+        arms=arms_tuple,
     )

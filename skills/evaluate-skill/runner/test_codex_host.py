@@ -13,6 +13,7 @@ import codex_host as ch
 import contracts as c
 import native_boundary as nb
 import native_eval as ne
+import provider_trace as pt
 
 
 class CodexHostPolicyTests(unittest.TestCase):
@@ -249,6 +250,12 @@ class TrustedPreflightTests(unittest.TestCase):
         bundle = (root / "configured-bundle").resolve()
         codex_root = bundle / "codex"
         codex_root.mkdir(parents=True)
+        for name in ("with_skill", "without_skill", "judge"):
+            workspace = codex_root / name
+            workspace.mkdir()
+            (workspace / "fixture.txt").write_text(
+                f"synthetic {name}\n", encoding="utf-8"
+            )
         (codex_root / "promptfooconfig.yaml").write_text(
             json.dumps(
                 {
@@ -566,6 +573,371 @@ class TrustedPreflightTests(unittest.TestCase):
             self.assertIn("sandbox", command)
             self.assertNotIn("exec", command)
             self.assertFalse(any("promptfoo" in str(item) for item in command))
+
+
+class TrustedSupervisorTests(unittest.TestCase):
+    plan = TrustedPreflightTests.plan
+    approval = TrustedPreflightTests.approval
+    configured_bundle = TrustedPreflightTests.configured_bundle
+    fixture = TrustedPreflightTests.fixture
+    boundary_result = TrustedPreflightTests.boundary_result
+    def promptfoo_document(self, request, *, omit_arm=None, malformed_raw=False,
+                           quality_fail=False):
+        config = json.loads(
+            (request.bundle / "codex" / "promptfooconfig.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        results = []
+        for label, session in (
+            ("with_skill", "session-with"),
+            ("without_skill", "session-without"),
+        ):
+            if label == omit_arm:
+                continue
+            answer = f"answer from {label}"
+            raw = {
+                "items": [
+                    {"id": f"reason-{label}", "type": "reasoning",
+                     "text": "read the fixture"},
+                    {"id": f"message-{label}", "type": "agent_message",
+                     "text": answer},
+                ],
+                "finalResponse": answer,
+            }
+            raw_value = "not-json" if malformed_raw and label == "with_skill" else json.dumps(raw)
+            failed = quality_fail and label == "with_skill"
+            results.append({
+                "promptIdx": 0,
+                "testIdx": 0,
+                "testCase": {"vars": {"question": "synthetic"}},
+                "promptId": "prompt-sha256",
+                "provider": {"id": "openai:codex-sdk", "label": label},
+                "prompt": {"raw": "{{question}}", "label": "{{question}}"},
+                "vars": {"question": "synthetic"},
+                "response": {
+                    "output": answer,
+                    "raw": raw_value,
+                    "sessionId": session,
+                    "tokenUsage": {"prompt": 10, "completion": 5, "total": 15},
+                },
+                "failureReason": "assertion-failed" if failed else "none",
+                "success": not failed,
+                "score": 0.0 if failed else 1.0,
+                "latencyMs": 10,
+                "gradingResult": {
+                    "pass": not failed,
+                    "score": 0.0 if failed else 1.0,
+                    "reason": "quality only",
+                },
+                "namedScores": {"criterion": 0.0 if failed else 1.0},
+            })
+        return {
+            "evalId": "eval-trusted-supervisor",
+            "results": {
+                "version": 3,
+                "timestamp": "2026-11-02T12:00:00Z",
+                "results": results,
+                "prompts": [],
+                "stats": {
+                    "successes": 1 if quality_fail else 2,
+                    "failures": 1 if quality_fail else 0,
+                    "errors": 0,
+                    "cacheHits": 0,
+                    "tokenUsage": {"prompt": 20, "completion": 10, "total": 30},
+                },
+            },
+            "config": config,
+            "shareableUrl": None,
+            "metadata": {
+                "promptfooVersion": "0.125.1",
+                "nodeVersion": "22.23.1",
+                "platform": "darwin",
+                "arch": "arm64",
+                "exportedAt": "2026-11-02T12:01:00Z",
+            },
+            "runtimeOptions": {"cache": False},
+        }
+
+    def observed_sessions(self, request):
+        plan = request.plan
+        return tuple(
+            pt.ObservedSessionIdentity(
+                arm_name=arm,
+                session_id=session,
+                provider=plan.provider,
+                provider_version=plan.provider_version,
+                model=plan.model,
+                model_version=plan.model_version,
+                adapter=plan.adapter,
+                adapter_version=plan.adapter_version,
+                provider_config_digest=request.preflight.provider_config_digest,
+            )
+            for arm, session in (
+                ("with-skill", "session-with"),
+                ("without-skill", "session-without"),
+            )
+        )
+
+    def supervised_fixture(self, root):
+        root = Path(root)
+        preflight_request = self.fixture(root)
+        preflight = ch.run_trusted_preflight(
+            preflight_request,
+            boundary_runner=lambda *_args: self.boundary_result(preflight_request),
+        )
+        ne.bind_prepared_bundle(
+            preflight_request.bundle, preflight_request.plan, preflight.receipt
+        )
+        binary = root / "promptfoo"
+        binary.write_text("synthetic binary\n", encoding="utf-8")
+        binary.chmod(0o700)
+        manifest = json.loads(
+            (preflight_request.bundle / "manifest.json").read_text(encoding="utf-8")
+        )
+        command = (
+            str(binary.resolve()),
+            *ne.native_command(preflight_request.bundle, manifest)[1:],
+        )
+        ledger = root / "nonce-ledger"
+        ledger.mkdir()
+        request = ch.SupervisedRunRequest(
+            plan=preflight_request.plan,
+            policy=preflight_request.policy,
+            preflight=preflight,
+            bundle=preflight_request.bundle,
+            command=command,
+            nonce_ledger=ledger,
+            artifact_directory=preflight_request.artifact_directory,
+            known_secret_values=(),
+        )
+        return request
+
+    def runner(self, request, *, omit_arm=None, malformed_raw=False,
+               quality_fail=False, returncode=0, stdout=b"provider stdout",
+               stderr=b""):
+        def run(argv, **kwargs):
+            document = self.promptfoo_document(
+                request,
+                omit_arm=omit_arm,
+                malformed_raw=malformed_raw,
+                quality_fail=quality_fail,
+            )
+            (request.bundle / "codex-results.json").write_text(
+                json.dumps(document), encoding="utf-8"
+            )
+            return ch.SupervisedProcessResult(
+                returncode=returncode,
+                stdout=stdout,
+                stderr=stderr,
+                observed_sessions=self.observed_sessions(request),
+            )
+        return run
+
+    def test_supervisor_runs_only_exact_bound_command_with_minimal_environment(self):
+        with TemporaryDirectory() as temp:
+            request = self.supervised_fixture(temp)
+            calls = []
+
+            def capturing_runner(argv, **kwargs):
+                calls.append((argv, kwargs))
+                return self.runner(request)(argv, **kwargs)
+
+            result = ch.run_supervised_provider(request, process_runner=capturing_runner)
+
+        self.assertEqual(len(calls), 1)
+        argv, kwargs = calls[0]
+        self.assertEqual(tuple(argv), request.command)
+        self.assertEqual(kwargs["cwd"], request.bundle)
+        self.assertEqual(kwargs["timeout"], 120)
+        self.assertEqual(kwargs["max_output_bytes"], 200000)
+        self.assertEqual(kwargs["environment"], {
+            **dict(request.policy.process_environment),
+            **ne._PROMPTFOO_SAFE_ENV,
+        })
+        self.assertEqual(result.execution_status, "COMPLETED")
+
+    def test_supervisor_revalidates_single_use_nonce_plan_bundle_policy_and_receipt(self):
+        mutators = (
+            lambda request: replace(request, plan=replace(request.plan, case_id="wrong")),
+            lambda request: replace(request, policy=replace(
+                request.policy, workspace_id="wrong-workspace"
+            )),
+            lambda request: replace(request, preflight=replace(
+                request.preflight,
+                receipt=replace(request.preflight.receipt, plan_digest="wrong-plan"),
+            )),
+        )
+        for mutate in mutators:
+            with self.subTest(mutate=mutate), TemporaryDirectory() as temp:
+                request = self.supervised_fixture(temp)
+                with self.assertRaises(ch.CodexHostError):
+                    ch.run_supervised_provider(
+                        mutate(request), process_runner=self.runner(request)
+                    )
+
+        with TemporaryDirectory() as temp:
+            request = self.supervised_fixture(temp)
+            ch.run_supervised_provider(request, process_runner=self.runner(request))
+            with self.assertRaisesRegex(ch.CodexHostError, "nonce|fresh|already"):
+                ch.run_supervised_provider(request, process_runner=self.runner(request))
+
+    def test_supervisor_records_start_before_dispatch_and_end_after_cleanup(self):
+        with TemporaryDirectory() as temp:
+            request = self.supervised_fixture(temp)
+
+            def asserting_runner(argv, **kwargs):
+                transitions = list(request.artifact_directory.glob("run-state-*.json"))
+                self.assertTrue(any("run-started" in path.name for path in transitions))
+                return self.runner(request)(argv, **kwargs)
+
+            result = ch.run_supervised_provider(request, process_runner=asserting_runner)
+            trace = json.loads(result.trace_artifact.read_text(encoding="utf-8"))
+            self.assertTrue(all(events[0]["type"] == "run_start"
+                                for events in trace["arm_events"].values()))
+            self.assertTrue(all(events[-1]["type"] == "run_end"
+                                for events in trace["arm_events"].values()))
+            for name in ("with_skill", "without_skill", "judge"):
+                self.assertFalse((request.bundle / "codex" / name).exists())
+            self.assertTrue(any("complete" in path.name
+                                for path in request.artifact_directory.glob("run-state-*.json")))
+
+        interrupt_stages = (
+            "run-started", "provider-exited", "result-parsed",
+            "state-verified", "cleanup-verified", "evidence-published",
+        )
+        for stage in interrupt_stages:
+            with self.subTest(stage=stage), TemporaryDirectory() as temp:
+                request = self.supervised_fixture(temp)
+
+                def interrupt(observed_stage):
+                    if observed_stage == stage:
+                        raise InterruptedError(stage)
+
+                with self.assertRaises(ch.CodexHostError):
+                    ch.run_supervised_provider(
+                        request,
+                        process_runner=self.runner(request),
+                        transition_hook=interrupt,
+                    )
+                states = [path.name for path in request.artifact_directory.glob(
+                    "run-state-*.json"
+                )]
+                self.assertFalse(any(name.endswith("-complete.json") for name in states))
+
+    def test_supervisor_enforces_timeout_output_limit_and_nonzero_exit_failure(self):
+        cases = (
+            lambda request: (lambda *_args, **_kwargs: (_ for _ in ()).throw(
+                TimeoutError("synthetic timeout")
+            )),
+            lambda request: self.runner(
+                request, stdout=b"x" * 200001
+            ),
+            lambda request: self.runner(request, returncode=7),
+        )
+        for make_runner in cases:
+            with self.subTest(make_runner=make_runner), TemporaryDirectory() as temp:
+                request = self.supervised_fixture(temp)
+                with self.assertRaises(ch.CodexHostError):
+                    ch.run_supervised_provider(
+                        request, process_runner=make_runner(request)
+                    )
+                self.assertFalse(any(
+                    path.name.endswith("-complete.json")
+                    for path in request.artifact_directory.glob("run-state-*.json")
+                ))
+                for name in ("with_skill", "without_skill", "judge"):
+                    self.assertFalse((request.bundle / "codex" / name).exists())
+
+    def test_supervisor_blocks_partial_malformed_or_interrupted_provider_output(self):
+        cases = (
+            lambda request: self.runner(request, omit_arm="without_skill"),
+            lambda request: self.runner(request, malformed_raw=True),
+            lambda request: (lambda *_args, **_kwargs: (_ for _ in ()).throw(
+                InterruptedError("synthetic interruption")
+            )),
+        )
+        for make_runner in cases:
+            with self.subTest(make_runner=make_runner), TemporaryDirectory() as temp:
+                request = self.supervised_fixture(temp)
+                with self.assertRaises(ch.CodexHostError):
+                    ch.run_supervised_provider(
+                        request, process_runner=make_runner(request)
+                    )
+
+    def test_supervisor_blocks_protected_state_change_or_cleanup_failure(self):
+        with TemporaryDirectory() as temp:
+            request = self.supervised_fixture(temp)
+            protected = request.policy.protected_roots[0]
+
+            def mutate_protected(argv, **kwargs):
+                (protected / "changed").write_text("unsafe\n", encoding="utf-8")
+                return self.runner(request)(argv, **kwargs)
+
+            with self.assertRaisesRegex(ch.CodexHostError, "protected"):
+                ch.run_supervised_provider(request, process_runner=mutate_protected)
+
+        with TemporaryDirectory() as temp:
+            request = self.supervised_fixture(temp)
+            with patch("codex_host._remove_tree_no_follow",
+                       side_effect=OSError("synthetic cleanup failure")):
+                with self.assertRaisesRegex(ch.CodexHostError, "cleanup"):
+                    ch.run_supervised_provider(
+                        request, process_runner=self.runner(request)
+                    )
+
+    def test_supervisor_publishes_per_arm_results_and_evidence_without_overwrite(self):
+        with TemporaryDirectory() as temp:
+            request = self.supervised_fixture(temp)
+            result = ch.run_supervised_provider(
+                request, process_runner=self.runner(request)
+            )
+            self.assertEqual(len(result.arms), 2)
+            for arm in result.arms:
+                self.assertTrue(arm.provider_result_path.is_file())
+                self.assertTrue(arm.evidence_path.is_file())
+                self.assertEqual(arm.evidence.audit.execution_status.value, "COMPLETED")
+                self.assertEqual(arm.evidence.audit.safety_status.value, "PASS")
+            pair = ne.proof_pair_from_supervised(result)
+            checkpoint = ne.write_stage_checkpoint(
+                request.plan,
+                pair,
+                current_stage=3,
+                destination=Path(temp) / "stage-3.json",
+                execution_manifest=request.bundle / "manifest.json",
+            )
+            checkpoint_payload = json.loads(checkpoint.read_text(encoding="utf-8"))
+            self.assertTrue(checkpoint_payload["advance"])
+            self.assertEqual(checkpoint_payload["execution_status"], "COMPLETED")
+            self.assertEqual(checkpoint_payload["safety_status"], "PASS")
+
+        with TemporaryDirectory() as temp:
+            request = self.supervised_fixture(temp)
+            occupied = request.artifact_directory / "with-skill-provider-result.json"
+            occupied.write_text("preserve me", encoding="utf-8")
+            fake = self.runner(request)
+            with self.assertRaisesRegex(ch.CodexHostError, "already exists"):
+                ch.run_supervised_provider(request, process_runner=fake)
+            self.assertEqual(occupied.read_text(encoding="utf-8"), "preserve me")
+
+    def test_supervisor_never_marks_execution_quality_or_safety_from_each_other(self):
+        with TemporaryDirectory() as temp:
+            request = self.supervised_fixture(temp)
+            result = ch.run_supervised_provider(
+                request,
+                process_runner=self.runner(request, quality_fail=True),
+            )
+
+        self.assertEqual(result.execution_status, "COMPLETED")
+        self.assertEqual(result.safety_status, "PASS")
+        self.assertEqual(result.quality_status, "FAIL")
+        self.assertEqual(
+            {arm.execution_status for arm in result.arms}, {"COMPLETED"}
+        )
+        self.assertEqual({arm.safety_status for arm in result.arms}, {"PASS"})
+        self.assertEqual(
+            {arm.quality_status for arm in result.arms}, {"PASS", "FAIL"}
+        )
 
 
 if __name__ == "__main__":

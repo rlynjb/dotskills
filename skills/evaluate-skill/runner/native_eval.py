@@ -100,6 +100,7 @@ class ProofPairResult:
         ):
             return False
         workspace_ids = set()
+        disposable_root_ids = set()
         result_paths = set()
         execution_ids = set()
         receipt_nonces = set()
@@ -125,17 +126,20 @@ class ProofPairResult:
                 return False
             if digest != bundle.provider_result_digest:
                 return False
+            if bundle.before.disposable is None:
+                return False
             workspace_ids.add(bundle.workspace_id)
+            disposable_root_ids.add(bundle.before.disposable.root_id)
             result_paths.add(result_path)
             execution_ids.add(bundle.execution_id)
             receipt_nonces.add(bundle.receipt_nonce)
             source_result_digests.add(bundle.source_result_digest)
         return (
-            len(workspace_ids) == 2
+            (len(workspace_ids) == 2 or len(disposable_root_ids) == 2)
             and len(result_paths) == 2
             and len(execution_ids) == 1
             and receipt_nonces == {self.run_id}
-            and len(source_result_digests) == 1
+            and 1 <= len(source_result_digests) <= 2
         )
 
     @property
@@ -244,13 +248,27 @@ def write_stage_checkpoint(
         raise Blocked(f"execution source result cannot be revalidated: {exc}") from None
     if source_digest != manifest.get('provider_result_digest'):
         raise Blocked("execution source result changed after host finalization")
-    observed_identity = _verified_provider_identity(
-        source_result,
-        plan,
-        max_bytes=int(plan.resource_limits['max_output_bytes']),
+    arm_source_digests = manifest.get('arm_source_result_digests')
+    arm_provider_identities = manifest.get('arm_provider_identities')
+    normalized_host_result = (
+        isinstance(arm_source_digests, dict)
+        and isinstance(arm_provider_identities, dict)
     )
-    if manifest.get('observed_provider_identity') != observed_identity:
-        raise Blocked("execution manifest provider identity is missing or changed")
+    if normalized_host_result:
+        expected_names = {arm.name for arm in pair.arms}
+        if (
+            set(arm_source_digests) != expected_names
+            or set(arm_provider_identities) != expected_names
+        ):
+            raise Blocked("execution manifest normalized arm identity set is not exact")
+    else:
+        observed_identity = _verified_provider_identity(
+            source_result,
+            plan,
+            max_bytes=int(plan.resource_limits['max_output_bytes']),
+        )
+        if manifest.get('observed_provider_identity') != observed_identity:
+            raise Blocked("execution manifest provider identity is missing or changed")
     expected_arm_digests = manifest.get('arm_evidence_digests')
     if not isinstance(expected_arm_digests, dict):
         raise Blocked("execution manifest is missing finalized arm evidence digests")
@@ -260,13 +278,26 @@ def write_stage_checkpoint(
             raise Blocked("completed arm requires a host evidence bundle")
         if bundle is not None and bundle.plan_digest != plan.digest():
             raise Blocked("arm evidence does not match checkpoint run plan")
-        if bundle is not None and (
-            bundle.execution_id != manifest.get('execution_id')
-            or bundle.receipt_nonce != manifest.get('run_nonce')
-            or bundle.source_result_digest != source_digest
-            or expected_arm_digests.get(arm.name) != evidence_bundle_digest(bundle)
-        ):
-            raise Blocked("arm evidence does not match host-finalized execution")
+        if bundle is not None:
+            expected_source_digest = (
+                arm_source_digests.get(arm.name)
+                if normalized_host_result else source_digest
+            )
+            if (
+                bundle.execution_id != manifest.get('execution_id')
+                or bundle.receipt_nonce != manifest.get('run_nonce')
+                or bundle.source_result_digest != expected_source_digest
+                or expected_arm_digests.get(arm.name) != evidence_bundle_digest(bundle)
+            ):
+                raise Blocked("arm evidence does not match host-finalized execution")
+            if normalized_host_result:
+                observed_arm_identity = _verified_provider_identity(
+                    arm.provider_result,
+                    plan,
+                    max_bytes=int(plan.resource_limits['max_output_bytes']),
+                )
+                if arm_provider_identities.get(arm.name) != observed_arm_identity:
+                    raise Blocked("arm provider identity changed after host finalization")
     if set(expected_arm_digests) != {arm.name for arm in pair.arms}:
         raise Blocked("execution manifest arm evidence set is not exact")
     decision = next_stage_decision(pair, current_stage=current_stage)
@@ -712,6 +743,38 @@ def finalize_proof_arm(
         evidence_bundle.audit.safety_status,
         evidence_bundle,
     )
+
+
+def proof_pair_from_supervised(result):
+    """Adapt a trusted-host result without collapsing its three status dimensions."""
+    run_id = getattr(result, 'run_id', None)
+    supervised_arms = getattr(result, 'arms', None)
+    if not isinstance(run_id, str) or not run_id or not isinstance(supervised_arms, tuple):
+        raise Blocked('Trusted host result is malformed')
+    arms = []
+    for supervised in supervised_arms:
+        try:
+            quality = QualityStatus(supervised.quality_status)
+        except (AttributeError, ValueError):
+            raise Blocked('Trusted host quality status is malformed') from None
+        arm = finalize_proof_arm(
+            supervised.arm_name,
+            supervised.provider_result_path,
+            quality,
+            supervised.evidence,
+        )
+        if (
+            arm.execution_status.value != supervised.execution_status
+            or arm.safety_status.value != supervised.safety_status
+        ):
+            raise Blocked('Trusted host arm statuses do not match durable evidence')
+        arms.append(arm)
+    pair = ProofPairResult(run_id, tuple(arms))
+    if len(pair.arms) != 2 or {arm.name for arm in pair.arms} != {
+        'with-skill', 'without-skill'
+    }:
+        raise Blocked('Trusted host result does not contain the exact comparison pair')
+    return pair
 
 
 def slug(value):
@@ -1323,6 +1386,44 @@ def _claim_execution(bundle, plan, enforcement, nonce_ledger):
     if not local_id:
         raise Blocked('Cannot record local execution claim')
     return execution_id
+
+
+def claim_supervised_execution(bundle, plan, enforcement, nonce_ledger):
+    """Revalidate and atomically claim one host-supervised bound execution."""
+    if not isinstance(plan, RunPlan):
+        raise TypeError('run plan is required')
+    if not isinstance(enforcement, EnforcementReceipt):
+        raise TypeError('enforcement receipt is required')
+    bundle = Path(bundle).resolve()
+    manifest_path = bundle / 'manifest.json'
+    manifest = _json_file(manifest_path, 'prepared bundle manifest')
+    if manifest.get('status') != 'BOUND_NOT_RUN':
+        raise Blocked('Bundle is not a fresh bound case')
+    bundle_digest = _bundle_digest(bundle)
+    provider_config_digest = _provider_config_digest(bundle, manifest)
+    if manifest.get('plan_digest') != plan.digest():
+        raise Blocked('Bound bundle plan digest changed before supervised execution')
+    if manifest.get('bundle_digest') != bundle_digest:
+        raise Blocked('Bound bundle digest changed before supervised execution')
+    if manifest.get('provider_config_digest') != provider_config_digest:
+        raise Blocked('Bound provider config changed before supervised execution')
+    if enforcement.plan_digest != plan.digest():
+        raise Blocked('Enforcement receipt plan changed before supervised execution')
+    if enforcement.prepared_bundle_digest != bundle_digest:
+        raise Blocked('Enforcement receipt bundle changed before supervised execution')
+    if enforcement.provider_config_digest != provider_config_digest:
+        raise Blocked('Enforcement receipt provider config changed before supervised execution')
+    result_path = _result_path(bundle, manifest)
+    if result_path.exists() or result_path.is_symlink():
+        raise Blocked('Fresh bound bundle already contains provider results')
+    execution_id = _claim_execution(bundle, plan, enforcement, nonce_ledger)
+    manifest.update({
+        'status': 'RUNNING',
+        'execution_id': execution_id,
+        'run_nonce': enforcement.run_nonce,
+    })
+    _write_manifest_atomic(manifest_path, manifest)
+    return execution_id, manifest
 
 
 def bind_prepared_bundle(bundle, plan, enforcement):
