@@ -4,11 +4,20 @@
   "model_executed": false,
   "provider_results": [],
   "capability_updates": [],
+  "native_preflight": {
+    "status": "FAIL",
+    "model_executed": false,
+    "profile": "evaluate-skill-read-only",
+    "probe_count": 6,
+    "passed_probe_count": 5,
+    "failed_probes": ["secondary-tool-route"],
+    "provider_dispatched": false
+  },
   "reasons": [
-    "native runtime confinement remains unverified",
-    "no independently operated native boundary launcher is configured",
-    "no provider-auth gateway has proved credentials absent from the tested workload",
-    "no trusted provider-result identity parser is configured",
-    "no trusted action-trace collector is configured"
+    "the installed native boundary passed five local probes but allowed the host-owned inert secondary-process canary",
+    "native read-only execution is blocked; the conditional Docker fallback requires separate implementation and approval before execution",
+    "no live paired provider run has been authorized or executed",
+    "no independently operated live process/session observer has supplied accepted provider identity evidence",
+    "Claude, writable, mock-external, connector, MCP, and Docker execution remain unsupported"
   ]
 }

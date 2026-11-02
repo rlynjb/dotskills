@@ -1,6 +1,8 @@
 from dataclasses import replace
 import json
 from pathlib import Path
+import subprocess
+import sys
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 import unittest
@@ -157,6 +159,32 @@ class NativeBoundaryTests(unittest.TestCase):
                 "evaluate-skill-host-canary-"
             )
         )
+
+    def test_secondary_tool_probe_attempts_only_the_host_owned_inert_canary(self):
+        script = Path(nb.__file__).with_name("probes") / "secondary_tool_route.py"
+        with TemporaryDirectory() as temp:
+            canary = Path(temp) / "inert-canary"
+            canary.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+            canary.chmod(0o700)
+            allowed = subprocess.run(
+                [sys.executable, str(script), "--command", str(canary)],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            unavailable = subprocess.run(
+                [sys.executable, str(script), "--command", str(Path(temp) / "missing")],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+
+        self.assertEqual(json.loads(allowed.stdout), {
+            "status": "FAIL", "observation": "allowed"
+        })
+        self.assertEqual(json.loads(unavailable.stdout), {
+            "status": "PASS", "observation": "unavailable"
+        })
 
     def test_probe_failure_or_missing_result_blocks_receipt(self):
         with TemporaryDirectory() as temp:

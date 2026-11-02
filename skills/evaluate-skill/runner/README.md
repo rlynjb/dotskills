@@ -1,9 +1,10 @@
 # Evaluate Skill — provider-specific evaluation workflows (experimental)
 
-The only Evaluate Skill evaluation dispatcher is [`native_eval.py`](native_eval.py).
-It **prepares provider-specific synthetic cases** and routes evaluation to the
-active coding harness. It does not implement a shared model runner, shared
-LLM grader, or cross-provider fallback.
+[`native_eval.py`](native_eval.py) prepares and digest-binds provider-specific
+synthetic cases. [`trusted_host.py`](trusted_host.py) is the separate native
+Codex enforcement entry point. It compiles the deny-by-default profile, runs
+the six local probes, issues bound preflight artifacts, and supervises the
+single-use paired command. Neither entry point provides cross-provider fallback.
 
 Before dispatch, the runner now loads a versioned run plan, scoped human
 approval receipt, independent enforcement receipt, and pinned capability
@@ -145,6 +146,52 @@ single-use; interrupted and completed attempts cannot be silently replayed.
 
 ## Live execution — approved host only
 
+### Trusted Codex preflight — no model call
+
+After `configure`, run the native boundary preflight with explicit absolute
+paths. The full command requires `--run-plan`, `--approval-receipt`,
+`--capability-inventory`, `--bundle`, `--artifact-directory`, `--codex-path`,
+`--promptfoo-path`, `--command-line-tools-root`, `--home`, at least one
+`--protected-root`, `--provider-config`, `--issued-at`, `--expires-at`, and
+`--verifier-version`:
+
+```bash
+python3 skills/evaluate-skill/runner/trusted_host.py preflight \
+  --run-plan /trusted/run-plan.json \
+  --approval-receipt /trusted/approval.json \
+  --capability-inventory /trusted/provider-capabilities.json \
+  --bundle /isolated/PREPARED-BUNDLE \
+  --artifact-directory /trusted/RUN-ARTIFACTS \
+  --codex-path /absolute/bin/codex \
+  --promptfoo-path /absolute/bin/promptfoo \
+  --command-line-tools-root /Library/Developer/CommandLineTools \
+  --home /trusted/codex-home \
+  --protected-root /protected/source \
+  --provider-config /trusted/native-boundary-config.json \
+  --issued-at 2026-11-02T12:00:00Z \
+  --expires-at 2026-11-02T12:30:00Z \
+  --verifier-version 0.3.0
+```
+
+`READY_NOT_RUN` means only that the exact local policy, versions, login mode,
+MCP inventory, bundle, snapshots, and six no-model probes were bound and
+published. It does not authorize or start Promptfoo. The artifacts are
+`host-policy.json`, `preflight-snapshots.json`, `preflight-probes.json`, and
+`enforcement-receipt.json`, plus a digest printed for the complete set.
+
+After review, bind that receipt with `native_eval.py bind`. A live `run`
+additionally requires a short-lived `APPROVED_LIVE_RUN` authorization bound to
+the plan, nonce, receipt digest, and complete preflight-artifact digest. The
+standalone CLI deliberately returns `BLOCKED_NOT_RUN` unless an approved host
+embedding supplies the trusted process runner and independent Codex session
+observer. Promptfoo's own result cannot self-attest that identity.
+
+On 2026-11-02 the installed profile passed five of six probes. The inert
+secondary-process canary was executable, so preflight correctly remained
+blocked and no receipt-ready live route was accepted. This verified gap must
+not be waived; it is the trigger for the separately approved conditional
+Docker fallback.
+
 The following accepts only a fresh `BOUND_NOT_RUN` bundle and is a command contract for a **separately provisioned, independently
 verified isolated host**, not an instruction to run untrusted skills in an
 ordinary shell:
@@ -159,7 +206,8 @@ python3 skills/evaluate-skill/runner/native_eval.py run \
   --capability-inventory /trusted/provider-capabilities.json
 ```
 
-This dispatcher invokes only the selected native command:
+The legacy dispatcher invokes only the selected native command, but it does
+not replace `trusted_host.py` supervision:
 
 - Claude: `claude plugin eval <prepared-plugin> --ablation with-without
   --model <approved-snapshot> --no-publish --json <output>`
@@ -199,10 +247,12 @@ native outputs exist, review assertions and host traces, and make the human
 keep/revise/revert decision within Evaluate Skill. Never invent grades or
 comparison metrics.
 
-After the provider result is parsed by the trusted host into both arms,
-`finalize_executed_pair` requires every arm's receipt nonce, execution ID, and
-source-result digest to match the single-use execution manifest before it can
-record `HOST_AUDIT_COMPLETE`. `next_stage_decision` then keeps execution, quality,
+After the provider result is parsed by the trusted host into both arms, the
+supervisor records `HOST_AUDIT_COMPLETE` only after exact session identity,
+protected state, cleanup, and durable per-arm evidence all pass.
+`proof_pair_from_supervised` and `write_stage_checkpoint` revalidate every
+arm's receipt nonce, execution ID, source-result digest, provider identity and
+evidence digest. `next_stage_decision` then keeps execution, quality,
 and safety independent. Stage 3/9 advances only when the exact pair completed
 with safety `PASS`. `write_stage_checkpoint` records that decision with the
 schema version, plan digest, run/receipt/execution IDs, provider-result and
@@ -218,12 +268,13 @@ failure; consumers must not infer success from a failed publication call.
 python3 -m unittest discover -s skills/evaluate-skill/runner -p 'test_*.py' -v
 ```
 
-- Offline tests exercise contracts, inventory loading, fail-closed policy,
+- Offline tests exercise contracts, inventory loading, compiled host policy,
   routing, case preparation, fixture security, immutable probes, host evidence,
   expanded-profile authorization/audit interfaces, transition gates,
   append-only recovery records, and refusal paths only.
 - No real Claude or Codex evaluation has been verified end to end in this
-  environment, and no independently verified isolated host is configured.
+  environment. The native Codex host implementation and no-model probes exist;
+  a live independent session observer and approved paired proof are still absent.
 - Native tool compatibility, ablation behavior, evaluator-only rubric
   isolation, actual grader responses, trace integrity, and result parsing
   still require approved-host validation. The preparer requires assertions
@@ -243,8 +294,9 @@ python3 -m unittest discover -s skills/evaluate-skill/runner -p 'test_*.py' -v
 - The prototype does not aggregate native results across providers into a
   single score. Keep provider output schemas separate. Compare revisions
   within each provider using actual supported reports and human review.
-- This offline foundation does not provision a native sandbox, Docker backend,
-  independent verifier, model credentials, or action-trace collector.
-  The committed v0.2 inventory intentionally leaves runtime confinement
-  unverified, so it cannot authorize a live run until later proof work produces
-  independently supported claims.
+- The trusted host compiles a native read-only Codex profile, normalizes Codex
+  turn items, snapshots state, cleans workspaces, and publishes no-replace
+  evidence. It does not implement Claude, writable, mock-external, connector,
+  MCP, or Docker execution, and it never supplies model credentials. The
+  committed inventory remains unverified until a separately approved paired
+  live proof completes with an independently observed session identity.

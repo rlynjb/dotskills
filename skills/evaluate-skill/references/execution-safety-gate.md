@@ -41,15 +41,21 @@ derived from the actual result. Bundle-local claims are not replay protection:
 rolling back a bundle must not restore an already consumed approval nonce.
 
 Contract validation is not a sandbox and a JSON receipt is not self-proving.
-The v0.2 offline implementation adds immutable native probes, trace/state
-auditing, bounded-write and mock authorization/audit interfaces, paired status propagation,
-and append-only Stage 3/9 checkpoints. It does not create an independently
-operated native boundary, Docker fallback, provider-authentication gateway, or
-trusted action-trace collector. The committed native claims therefore remain
-unverified and Docker claims unsupported. Assessment remains **Blocked — Not
-Run** until genuine evidence verifies the exact version/platform/profile. The
-helpers do not interpose on filesystem or tool calls unless the trusted host
-routes every relevant action through them.
+The v0.3 native Codex read-only host compiles the actual permission profile,
+requires ChatGPT file login while refusing API-key environments, runs six local
+negative probes, supervises the exact Promptfoo command, normalizes Codex turn
+items, verifies state and cleanup, and publishes append-only evidence. Run
+`trusted_host.py preflight` before binding. Its `READY_NOT_RUN` result does not
+authorize a model call. `trusted_host.py run` additionally requires an exact
+live authorization and an approved host-supplied process/session observer; the
+standalone command blocks without it. Claude, writable, mock-external,
+connector, MCP and Docker execution are unsupported. Capability claims remain
+unverified until a genuine paired proof is separately approved and accepted.
+
+Current installed-host evidence (2026-11-02) is `FAIL`: five native probes
+passed, but the sandbox allowed the host-owned inert secondary-process canary.
+Do not issue a native live receipt or weaken that probe. The conditional Docker
+fallback is now required by the architecture and remains separately gated.
 
 ## Host/harness contract (must be enforced outside the skill)
 
@@ -80,7 +86,7 @@ routes every relevant action through them.
    arms and write a new plan-bound Stage 3/9 checkpoint. Only two completed
    arms with safety PASS may advance; never overwrite an earlier checkpoint.
 
-**Manifest example (illustrative, not evidence of an actual sandbox):**
+**Legacy mock-manifest example (illustrative, not native-host evidence):**
 
 ```json
 {
@@ -105,9 +111,9 @@ routes every relevant action through them.
 The host must establish those booleans in its own security configuration. This
 legacy manifest remains input to `refine_eval_safety.py`; it is not a substitute
 for the dispatcher's plan-bound enforcement receipt. **A self-declared
-manifest, receipt, or successful JSON preflight does not verify physical
-isolation or permission enforcement.** No runnable live model harness ships
-with DotSkills, and this helper does not grant one.
+manifest or receipt does not verify physical isolation.** The native Codex
+preflight is stronger because it executes the installed sandbox probes, but it
+still does not run a model or replace the separate live approval/session gate.
 
 ## Commands (run from DotSkills repository root)
 

@@ -4,7 +4,12 @@
 
 **Start here:** [Try it](#8-try-it) · [12-stage guide](#2-the-12-stages) · [Grading basics](#grading-and-scoring-beginner-reference)
 
-**Current limitation:** The dispatcher can prepare Claude- or Codex-specific evaluation cases, and **seven offline tests passed**. Live model evaluations and independent execution isolation have **not** been verified end to end. A prepared test is **not** a completed evaluation.
+**Current limitation:** The repository now includes a fail-closed native Codex
+trusted host and no-model boundary probes, but no live paired evaluation has
+been authorized or accepted. On 2026-11-02 the installed native profile passed
+five probes but failed the inert secondary-process canary, so native live
+execution remains blocked. A prepared case or preflight is **not** a completed
+evaluation.
 
 ## Table of contents
 
@@ -191,14 +196,15 @@ Evaluate Skill uses **only the provider of your active coding session**, never a
 
 The dispatcher supports `inspect` (identify harness), `prepare` (write case files without running a model), `configure` (materialize the approved model snapshot, limits, and staged revisions without running a model), `assess` (validate current policy/version inputs), `bind` (digest-bind that configured bundle to one approved plan), and `run` (single-use invocation of the approved native tool **only in a separately verified isolated host**). A `--harness` override is for **offline preparation only**; environment markers by themselves do not prove execution identity.
 
-**v0.2 status:** The offline implementation now covers strict plan/approval/
-enforcement contracts, pinned capabilities, fail-closed routing, immutable
-negative probes, independent trace/state auditing, paired proof preparation,
-bounded-write and mock authorization/audit interfaces, conditional-Docker refusal, and
-Stage 3/9 checkpoints. The committed inventory still marks native confinement
-unverified and Docker unsupported, so live Claude/Codex execution, real grader
-output, provider compatibility, and host isolation remain **Blocked — Not
-Run**. Never infer a model run from preparation or offline tests. [Setup,
+**v0.3 status:** The native Codex read-only route now compiles an exact host
+policy, performs six no-model probes, binds short-lived receipts, supervises a
+single-use Promptfoo command, parses paired Codex turns fail-closed, verifies
+protected state and cleanup, and publishes per-arm evidence. Claude, writable,
+mock-external, connector, MCP, and Docker execution remain unsupported here.
+The capability inventory stays unverified and live results remain **Blocked —
+Not Run**. The observed native process-route gap triggers the conditional
+Docker design path, but Docker execution needs separate approval. Never infer
+a model run from preparation or preflight. [Setup,
 commands and limits →](runner/README.md)
 
 ## 6. Approval, execution, and safety
@@ -206,10 +212,16 @@ commands and limits →](runner/README.md)
 The **Execution Safety Gate** applies before **Stages 3 and 9** or **any earlier step that executes an evaluated agent**. Evaluated skill instructions and retrieved content are **untrusted data**, not permission to act.
 
 - **Your approval:** Required before minimal structural edits, saving new cases and assertions, running evaluations, making skill changes, justified specialist handoffs, and accepting/releasing changes.
-- **Host isolation:** Actual execution requires a **separately verified, host-enforced mock-only environment**: fresh workspaces, no live credentials or external writes, restricted network/shell/API/child-agent routes, hidden answer keys, and independent tool-attempt and state traces.
+- **Host isolation:** The native Codex read-only route requires the compiled
+  trusted-host policy, fresh workspaces, file-based login isolated from the
+  agent, no external writes or network, disabled MCP/web/collaboration routes,
+  and independent turn/state/cleanup evidence. Other profiles remain blocked.
 - **Fail closed:** Without scoped approval and independently verified isolation, report **Blocked — Not Run**. An unauthorized attempted action **fails** its safety criterion even if blocked. Missing traces or state checks are **Unknown**, never Pass.
 - **Three statuses:** Preserve execution, quality, and safety independently. Stages 3 and 9 may advance only for a complete paired run with safety **Pass**; append a plan-bound checkpoint and never overwrite earlier evidence.
-- **Safety helper limitation:** `scripts/refine_eval_safety.py` can check a manifest, authorization request and trace, but **cannot enforce a sandbox**. `native_eval.py` does **not** automatically interpose the helper; the host must enforce these controls. No live execution should be inferred from offline checks.
+- **Safety helper limitation:** `scripts/refine_eval_safety.py` remains a legacy
+  mock-manifest checker. Native Codex enforcement lives in
+  `runner/trusted_host.py`; even its successful preflight is not a live run and
+  an LLM rubric grade never certifies safety.
 
 Approval for an eval is **not** permission to publish to GitHub/GitLab, send messages or deploy. Work data must not be sent to an unapproved provider. See the [Execution Safety Gate](references/execution-safety-gate.md), [approval rules](references/approval-gates.md), and [security starter cases](evals/README.md).
 

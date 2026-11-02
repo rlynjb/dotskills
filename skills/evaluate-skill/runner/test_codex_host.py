@@ -327,6 +327,10 @@ class TrustedPreflightTests(unittest.TestCase):
         protected = root / "protected"
         protected.mkdir()
         (protected / "read-canary").write_text("host-owned\n", encoding="utf-8")
+        (protected / "write-canary").write_text("host-owned\n", encoding="utf-8")
+        secondary_canary = protected / "secondary-tool-canary"
+        secondary_canary.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+        secondary_canary.chmod(0o700)
         codex = root / "codex"
         codex.write_text("binary placeholder\n", encoding="utf-8")
         codex.chmod(0o700)
@@ -405,7 +409,7 @@ class TrustedPreflightTests(unittest.TestCase):
             "network_host": "192.0.2.1",
             "network_port": 9,
             "secret_names": ["SYNTHETIC_PROBE_SECRET"],
-            "forbidden_commands": ["codex", "docker", "osascript"],
+            "forbidden_commands": [str(secondary_canary)],
             "connectors_enabled": [],
             "mcp_servers": [],
         }

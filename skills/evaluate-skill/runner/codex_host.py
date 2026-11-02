@@ -682,6 +682,38 @@ def _validate_preflight_request(request: PreflightRequest) -> tuple[Path, Path, 
         raise CodexHostError("native boundary permission profile does not match the policy")
     if request.provider_config.get("connectors_enabled") or request.provider_config.get("mcp_servers"):
         raise CodexHostError("connectors and MCP servers must be disabled for preflight")
+    for field in ("outside_read_path", "outside_write_path"):
+        probe_path = Path(str(request.provider_config.get(field, "")))
+        if (
+            not probe_path.is_absolute()
+            or probe_path.is_symlink()
+            or not probe_path.is_file()
+        ):
+            raise CodexHostError(f"{field} must be a host-owned regular canary file")
+        resolved_probe = probe_path.resolve()
+        if not any(
+            resolved_probe.is_relative_to(protected)
+            for protected in request.policy.protected_roots
+        ):
+            raise CodexHostError(f"{field} must be inside a protected root")
+    secondary_canaries = request.provider_config.get("forbidden_commands")
+    if not isinstance(secondary_canaries, list) or not secondary_canaries:
+        raise CodexHostError("secondary tool canaries are required")
+    for value in secondary_canaries:
+        canary = Path(value) if isinstance(value, str) else Path()
+        if (
+            not canary.is_absolute()
+            or canary.is_symlink()
+            or not canary.is_file()
+            or not os.access(canary, os.X_OK)
+        ):
+            raise CodexHostError("secondary tool canaries must be host-owned executables")
+        resolved_canary = canary.resolve()
+        if not any(
+            resolved_canary.is_relative_to(protected)
+            for protected in request.policy.protected_roots
+        ):
+            raise CodexHostError("secondary tool canaries must be inside a protected root")
 
     manifest = _read_json_object(bundle / "manifest.json", "configured bundle manifest")
     if manifest.get("status") != "CONFIGURED_NOT_BOUND":

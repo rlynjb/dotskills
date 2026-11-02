@@ -62,17 +62,24 @@ Preserve the approved source case and fixture files unmodified.
 7. Inspect the generated artifacts, then run `native_eval.py bind` to bind the
    prepared bundle's artifact digest and resource limits to the exact approved
    plan. A changed or reused bundle is **Blocked — Not Run**.
-8. When all gates are independently verified, invoke `native_eval.py run`
-   **inside the approved host** with a protected consumed-nonce ledger outside
-   the bundle. Preserve the provider's raw results and the host's audit traces.
-   Require the actual result's observed provider/model/adapter identity to
-   match the plan. Do not infer results from a prepared config file.
-9. Finalize both arms against the manifest execution ID, receipt nonce, and raw
+8. For the native Codex read-only route, run `trusted_host.py preflight` first.
+   It compiles the exact permission profile and runs six local sandbox probes
+   without Promptfoo or a model. Review its four no-replace artifacts and bind
+   the issued receipt with `native_eval.py bind`. `READY_NOT_RUN` is not live
+   authorization.
+9. Live dispatch additionally requires a fresh `APPROVED_LIVE_RUN` object bound
+   to the complete preflight digest and an approved host embedding that supplies
+   the trusted process runner plus independent session observer. Then invoke
+   `trusted_host.py run` with the protected consumed-nonce ledger. The standalone
+   CLI blocks if that observer is absent. Preserve raw Promptfoo output,
+   normalized per-arm results, quality data, traces, state and cleanup evidence.
+   Never infer identity from expected config or Promptfoo's own claim alone.
+10. Finalize both arms against the manifest execution ID, receipt nonce, and raw
    source-result digest with separate provider and host-evidence outcomes. Apply
    `next_stage_decision` and persist an append-only `write_stage_checkpoint`
    record bound to the plan digest. Stage 4 is available only when both arms
    completed and aggregate safety is `PASS`.
-10. If a requirement fails, stop **Stage 3 — Blocked / Not Run** and preserve
+11. If a requirement fails, stop **Stage 3 — Blocked / Not Run** and preserve
    the case, approvals, and any observed errors. Never use a different provider
    as a fallback.
 
@@ -104,23 +111,22 @@ execution or failed/unknown safety.
 
 ## What is implemented and what remains unverified
 
-The v0.2 offline implementation prepares provider-specific case definitions,
-selects a harness without runtime fallback, validates strict contracts against
-the pinned inventory, runs immutable native-boundary probes, audits host traces
-and protected/disposable/mock state, evaluates bounded-write and mock
-authorization decisions, preserves paired status dimensions, and writes atomic append-only Stage
-3/9 checkpoints. Legacy boolean authorization and self-declared host manifests
-are insufficient. It does not bundle or install provider tools, provision an
-independently isolated host or Docker backend, supply model credentials, or
-operate a trusted action-trace collector. The authorization helpers are not
-tool interposition; the independently restricted host must call them.
+The v0.3 implementation adds the native Codex read-only trusted host: exact
+policy compilation, file-login/API-key refusal, six immutable local probes,
+single-use supervision, strict Promptfoo/Codex parsing, bounded process output,
+protected/disposable snapshots, no-follow cleanup, append-only recovery states,
+and durable paired evidence. Legacy boolean authorization and self-declared
+host manifests remain insufficient. It does not bundle or install provider
+tools, supply credentials, or support live Claude, writable, mock-external,
+connector, MCP, or Docker routes.
 
 The acceptance suite is
 [`test_acceptance_v0_2.py`](../runner/test_acceptance_v0_2.py). No end-to-end
-live model evaluation has been demonstrated. The committed native claims are
-unverified and Docker claims unsupported, so the release decision for live
-execution is **Blocked — Not Run** until a separate host, authentication
-boundary and genuine run evidence are verified.
+live model evaluation has been demonstrated. The local native boundary may be
+probed without a model. The 2026-11-02 run passed five probes and failed the
+inert secondary-process route, so native live execution is blocked. That
+documented gap triggers the conditional Docker design path; Docker remains
+unimplemented and must not be executed without separate approval.
 
 The Evaluate Skill's twelve stages, guided teaching, methodology lenses,
 fixture preservation and human approval gates remain unchanged.

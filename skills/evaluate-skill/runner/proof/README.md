@@ -20,11 +20,19 @@ cross-provider or cross-dimension score is produced.
 
 ## Current status
 
-**BLOCKED — NOT RUN.** The offline coordinator and tests exist, but no real
-Claude or Codex proof has been authorized or executed. The committed
-capability inventory still marks native runtime confinement as unverified,
-and this repository does not yet provide an independently operated native
-boundary launcher, provider-auth gateway, or trusted action-trace collector.
+**BLOCKED — NOT RUN.** No real Claude or Codex paired proof has been authorized
+or executed. The native Codex read-only trusted host now compiles the boundary,
+runs the six local no-model probes, supervises a single-use command, parses
+turns and verifies state/cleanup. The committed capability inventory remains
+unverified until a live paired proof completes with an independently operated
+process/session observer. Claude and all other profiles remain unsupported.
+
+The 2026-11-02 local run executed all six probes without Promptfoo or a model.
+Five passed; `secondary-tool-route` failed because the sandbox allowed the
+host-owned inert executable canary. The status is therefore `FAIL`, not a
+partial pass. Native live dispatch remains blocked. This is the documented
+condition for designing the separately approved Docker fallback; Docker has
+not been built or run by this proof.
 
 Before a real proof, the human gate must identify and approve all of the
 following for each provider separately:

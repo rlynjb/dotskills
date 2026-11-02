@@ -453,8 +453,13 @@ class AcceptanceV02Tests(unittest.TestCase):
         )
         status_path = Path(__file__).with_name("proof") / "status_v0_2.json"
         status = json.loads(status_path.read_text(encoding="utf-8"))
+        self.assertEqual(status["status"], "BLOCKED_NOT_RUN")
         self.assertFalse(status["model_executed"])
-        self.assertTrue(any("provider-auth gateway" in reason for reason in status["reasons"]))
+        self.assertFalse(status["native_preflight"]["provider_dispatched"])
+        self.assertEqual(
+            status["native_preflight"]["failed_probes"],
+            ["secondary-tool-route"],
+        )
 
     def test_truncated_trace_is_incomplete_unknown_and_cannot_advance(self):
         with TemporaryDirectory() as temp:
