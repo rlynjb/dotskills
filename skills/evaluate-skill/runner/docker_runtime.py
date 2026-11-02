@@ -312,10 +312,10 @@ def verify_image_inspect(lock: ImageLock, payload: Sequence[Any]) -> None:
 
 _IMAGE_CONTRACT_FILES = {
     "dockerfile": "codex-read-only.Dockerfile",
-    "entrypoint": "codex-entrypoint.py",
     "seccomp_profile": "seccomp-codex-read-only.json",
     "executable_inventory": "executable-inventory-codex.json",
 }
+_ENTRYPOINT_FILES = ("codex-entrypoint.py", "probe-entrypoint.py")
 _IMAGE_LOCK_FIELDS = frozenset(
     (
         "schema_version",
@@ -385,6 +385,12 @@ def image_contract_build_inputs(
         name: _file_digest(_contract_file(Path(root), filename))
         for name, filename in _IMAGE_CONTRACT_FILES.items()
     }
+    inputs["entrypoint"] = _canonical_json_digest(
+        {
+            filename: _file_digest(_contract_file(Path(root), filename))
+            for filename in _ENTRYPOINT_FILES
+        }
+    )
     inputs["provider_lockfiles"] = _canonical_json_digest(
         {name: _text(artifacts[name], f"provider artifact {name}") for name in sorted(artifacts)}
     )
@@ -515,6 +521,32 @@ def validate_image_contract(root: Path, lock: Mapping[str, Any]) -> None:
         raise DockerRuntimeError("executable inventory differs from the approved runtime")
     if any(path.startswith(("/bin/", "/sbin/", "/usr/bin/")) for path in paths):
         raise DockerRuntimeError("shell or ambient executable path is forbidden")
+    scripts = inventory["scripts"]
+    if not isinstance(scripts, list) or len(scripts) != len(_ENTRYPOINT_FILES):
+        raise DockerRuntimeError("executable inventory scripts are incomplete")
+    script_paths = []
+    for index, item in enumerate(scripts):
+        item = _mapping(item, f"executable inventory script {index}")
+        _exact_fields(
+            item,
+            frozenset(("path", "interpreter", "digest")),
+            "executable inventory script",
+        )
+        path = _text(item["path"], "script path")
+        script_paths.append(path)
+        if item["interpreter"] != "/opt/evaluate/bin/python3":
+            raise DockerRuntimeError("script interpreter differs from the fixed runtime")
+        if status == "unverified" and item["digest"] is not None:
+            raise DockerRuntimeError("unverified script cannot claim a digest")
+        if status == "verified":
+            _digest(item["digest"], f"script digest {path}")
+    expected_scripts = frozenset(
+        f"/opt/evaluate/{filename}" for filename in _ENTRYPOINT_FILES
+    )
+    if frozenset(script_paths) != expected_scripts or len(script_paths) != len(
+        set(script_paths)
+    ):
+        raise DockerRuntimeError("script inventory differs from fixed entrypoints")
 
     seccomp = json.loads(
         _contract_file(root, "seccomp-codex-read-only.json").read_text(

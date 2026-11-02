@@ -16,6 +16,7 @@ COPY --from=reviewed-runtime /opt/evaluate/bin/node /opt/evaluate/bin/node
 COPY --from=reviewed-runtime /opt/evaluate/bin/codex /opt/evaluate/bin/codex
 COPY --from=reviewed-runtime /opt/evaluate/bin/promptfoo /opt/evaluate/bin/promptfoo
 COPY --chown=65532:65532 codex-entrypoint.py /opt/evaluate/codex-entrypoint.py
+COPY --chown=65532:65532 probe-entrypoint.py /opt/evaluate/probe-entrypoint.py
 
 USER 65532:65532
 WORKDIR /workspace

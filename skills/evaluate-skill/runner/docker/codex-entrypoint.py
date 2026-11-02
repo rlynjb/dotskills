@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import importlib.util
 from pathlib import Path
 import sys
 from typing import Any, Mapping, Sequence
@@ -16,6 +17,7 @@ class EntrypointError(ValueError):
 _ACTIONS = frozenset(("probe", "evaluate"))
 _BINDING_PATH = Path("/run/evaluate/binding.json")
 _ALLOWED_TOOLS = ("list", "read", "search")
+_PROBE_ENTRYPOINT = Path("/opt/evaluate/probe-entrypoint.py")
 _ARMS = frozenset(("with-skill", "without-skill"))
 _SHELL_META = frozenset(";&|`$<>(){}[]*?~\\\n\r")
 _BINDING_FIELDS = frozenset(
@@ -95,6 +97,18 @@ def main(argv: Sequence[str] | None = None) -> int:
             tuple(sys.argv[1:] if argv is None else argv)
         )
         binding = load_binding(binding_path)
+        if action == "probe":
+            if _PROBE_ENTRYPOINT.is_symlink() or not _PROBE_ENTRYPOINT.is_file():
+                raise EntrypointError("fixed probe entrypoint is unavailable")
+            spec = importlib.util.spec_from_file_location(
+                "evaluate_probe_entrypoint", _PROBE_ENTRYPOINT
+            )
+            if spec is None or spec.loader is None:
+                raise EntrypointError("fixed probe entrypoint cannot be loaded")
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            print(json.dumps(module.collect_probe_observations(binding), sort_keys=True))
+            return 0
     except EntrypointError as exc:
         print(json.dumps({"status": "BLOCKED_NOT_RUN", "reason": str(exc)}))
         return 2

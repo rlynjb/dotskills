@@ -701,7 +701,9 @@ def verify_effective_container(
     ]
     if list(effective_mounts) != expected_mounts:
         raise DockerPolicyError("effective container mounts drifted")
-    if tuple(networks) != expected.networks:
+    if len(networks) != len(expected.networks) or frozenset(networks) != frozenset(
+        expected.networks
+    ):
         raise DockerPolicyError("effective container networks drifted")
 
 

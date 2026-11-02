@@ -165,6 +165,7 @@ class DockerImageContractTests(unittest.TestCase):
         files = (
             "codex-read-only.Dockerfile",
             "codex-entrypoint.py",
+            "probe-entrypoint.py",
             "seccomp-codex-read-only.json",
             "executable-inventory-codex.json",
         )

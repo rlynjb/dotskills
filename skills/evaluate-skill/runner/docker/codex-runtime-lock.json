@@ -14,10 +14,10 @@
     "python": "3.9.6"
   },
   "build_inputs": {
-    "dockerfile": "88b8f6ff9ae3a6ec918d26df263aeee9df455fc0bb70b74f99ac09f104a9c526",
+    "dockerfile": "73563002875b471c1380558ce5f87ebd66a7f08e54a396b83e0eb9f2f1f68fb4",
     "provider_lockfiles": "45c598e48da3a4f14755e5c3fbd4ebdb51cd6bec1cea02dfc74ab738c3446ee0",
-    "entrypoint": "3fc348eebfd488a601b721c307d1fdca053be5c50b2b60ad9a2566542013e32d",
+    "entrypoint": "3f1a4a543ea954592701fbc24b511b2a5cc687aa73fc681eb430db85832a8c01",
     "seccomp_profile": "391255d4f38027e3beb85a94f5bde020af33e3d36c1d8062aaf03ef2001a7b95",
-    "executable_inventory": "bcf88d064350b35003c8028139372bb2d0078446d7e3e7b63a9d3091957d5c54"
+    "executable_inventory": "05da9ee52fd5aeec4e0a6c1a410c45118a8fec7a36ac09ea94cddf97ef3a911e"
   }
 }

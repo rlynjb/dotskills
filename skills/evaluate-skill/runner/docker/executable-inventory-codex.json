@@ -30,6 +30,11 @@
       "path": "/opt/evaluate/codex-entrypoint.py",
       "interpreter": "/opt/evaluate/bin/python3",
       "digest": null
+    },
+    {
+      "path": "/opt/evaluate/probe-entrypoint.py",
+      "interpreter": "/opt/evaluate/bin/python3",
+      "digest": null
     }
   ]
 }
