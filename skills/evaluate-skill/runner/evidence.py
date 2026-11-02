@@ -3,19 +3,222 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+from datetime import datetime
 from enum import Enum
 import hashlib
+import hmac
 import json
 import os
 from pathlib import Path, PurePosixPath
+import re
 import stat
 from typing import Any, Callable, Mapping, Optional, Sequence, Tuple
 
 from contracts import EnforcementReceipt, RunPlan
+from docker_contracts import DockerEvidenceBinding
 
 
 class EvidenceError(ValueError):
     """Evidence is malformed or cannot be captured without following links."""
+
+
+@dataclass(frozen=True)
+class EvidenceSigningKey:
+    path: Path
+    key_id: str
+    rotation_epoch: int
+    material: bytes
+    material_digest: str
+
+
+def load_evidence_signing_key(
+    path: Path,
+    *,
+    key_id: str,
+    rotation_epoch: int,
+    forbidden_roots: Sequence[Path],
+) -> EvidenceSigningKey:
+    """Load one operator key that is external, regular, mode 0600, and 32 bytes."""
+
+    path = Path(path)
+    if not path.is_absolute() or path.is_symlink() or not path.is_file():
+        raise EvidenceError("evidence signing key must be a real absolute file")
+    if not isinstance(key_id, str) or not key_id or key_id != key_id.strip():
+        raise EvidenceError("evidence signing key_id is invalid")
+    if isinstance(rotation_epoch, bool) or not isinstance(rotation_epoch, int) or rotation_epoch < 1:
+        raise EvidenceError("evidence signing rotation epoch must be positive")
+    resolved = path.resolve()
+    for root in forbidden_roots:
+        root_path = Path(root)
+        if not root_path.is_absolute():
+            raise EvidenceError("evidence key forbidden roots must be absolute")
+        root_resolved = root_path.resolve()
+        if resolved == root_resolved or root_resolved in resolved.parents:
+            raise EvidenceError("evidence signing key is inside forbidden run storage")
+    for parent in (path.parent, *path.parent.parents):
+        if (parent / ".git").exists():
+            raise EvidenceError("evidence signing key must be outside source repositories")
+    descriptor = None
+    try:
+        flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
+        descriptor = os.open(path, flags)
+        metadata = os.fstat(descriptor)
+        if not stat.S_ISREG(metadata.st_mode):
+            raise EvidenceError("evidence signing key must be a regular file")
+        if stat.S_IMODE(metadata.st_mode) != 0o600:
+            raise EvidenceError("evidence signing key mode must be 0600")
+        material = os.read(descriptor, 33)
+    except EvidenceError:
+        raise
+    except OSError as exc:
+        raise EvidenceError(f"cannot read evidence signing key: {type(exc).__name__}") from None
+    finally:
+        if descriptor is not None:
+            os.close(descriptor)
+    if len(material) != 32:
+        raise EvidenceError("evidence signing key must contain exactly 32 bytes")
+    return EvidenceSigningKey(
+        path=path,
+        key_id=key_id,
+        rotation_epoch=rotation_epoch,
+        material=material,
+        material_digest=hashlib.sha256(material).hexdigest(),
+    )
+
+
+@dataclass(frozen=True)
+class AuthenticatedEnforcementReceipt:
+    schema_version: str
+    status: str
+    plan_digest: str
+    run_nonce: str
+    arm: str
+    evidence_binding_digest: str
+    execution_binding_digest: str
+    launch_digest: str
+    gateway_digest: str
+    observer_policy_digest: str
+    state_policy_digest: str
+    cleanup_policy_digest: str
+    provider_result_digest: str
+    observer_attestation_digest: str
+    state_snapshot_digest: str
+    cleanup_evidence_digest: str
+    issued_at: str
+    key_id: str
+    rotation_epoch: int
+    signature: str
+
+    def unsigned_payload(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "status": self.status,
+            "plan_digest": self.plan_digest,
+            "run_nonce": self.run_nonce,
+            "arm": self.arm,
+            "evidence_binding_digest": self.evidence_binding_digest,
+            "execution_binding_digest": self.execution_binding_digest,
+            "launch_digest": self.launch_digest,
+            "gateway_digest": self.gateway_digest,
+            "observer_policy_digest": self.observer_policy_digest,
+            "state_policy_digest": self.state_policy_digest,
+            "cleanup_policy_digest": self.cleanup_policy_digest,
+            "provider_result_digest": self.provider_result_digest,
+            "observer_attestation_digest": self.observer_attestation_digest,
+            "state_snapshot_digest": self.state_snapshot_digest,
+            "cleanup_evidence_digest": self.cleanup_evidence_digest,
+            "issued_at": self.issued_at,
+            "key_id": self.key_id,
+            "rotation_epoch": self.rotation_epoch,
+        }
+
+    def canonical_payload(self) -> dict[str, Any]:
+        return {**self.unsigned_payload(), "signature": self.signature}
+
+    def verify(self, signing_key: EvidenceSigningKey) -> bool:
+        if not isinstance(signing_key, EvidenceSigningKey):
+            return False
+        if (
+            signing_key.key_id != self.key_id
+            or signing_key.rotation_epoch != self.rotation_epoch
+        ):
+            return False
+        expected = hmac.new(
+            signing_key.material,
+            json.dumps(
+                self.unsigned_payload(),
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+            ).encode("utf-8"),
+            hashlib.sha256,
+        ).hexdigest()
+        return hmac.compare_digest(self.signature, expected)
+
+
+def issue_authenticated_enforcement_receipt(
+    binding: DockerEvidenceBinding,
+    *,
+    status: str,
+    arm: str,
+    provider_result_digest: str,
+    observer_attestation_digest: str,
+    state_snapshot_digest: str,
+    cleanup_evidence_digest: str,
+    issued_at: str,
+    signing_key: EvidenceSigningKey,
+) -> AuthenticatedEnforcementReceipt:
+    if not isinstance(binding, DockerEvidenceBinding):
+        raise EvidenceError("DockerEvidenceBinding is required")
+    if status not in ("PASS", "FAIL"):
+        raise EvidenceError("only conclusive safety evidence may be authenticated")
+    if arm not in ("with-skill", "without-skill"):
+        raise EvidenceError("authenticated evidence arm is invalid")
+    if not isinstance(signing_key, EvidenceSigningKey):
+        raise EvidenceError("EvidenceSigningKey is required")
+    digests = {
+        "provider_result_digest": provider_result_digest,
+        "observer_attestation_digest": observer_attestation_digest,
+        "state_snapshot_digest": state_snapshot_digest,
+        "cleanup_evidence_digest": cleanup_evidence_digest,
+    }
+    for name, value in digests.items():
+        if not isinstance(value, str) or re.fullmatch(r"[0-9a-f]{64}", value) is None:
+            raise EvidenceError(f"{name} must be a lowercase SHA-256 digest")
+    if not isinstance(issued_at, str) or not issued_at:
+        raise EvidenceError("authenticated evidence issued_at is required")
+    try:
+        issued = datetime.fromisoformat(issued_at.replace("Z", "+00:00"))
+    except ValueError:
+        raise EvidenceError("authenticated evidence issued_at is invalid") from None
+    if issued.tzinfo is None or issued.utcoffset() is None:
+        raise EvidenceError("authenticated evidence issued_at must include a timezone")
+    unsigned = {
+        "schema_version": "0.4",
+        "status": status,
+        "plan_digest": binding.plan_digest,
+        "run_nonce": binding.run_nonce,
+        "arm": arm,
+        "evidence_binding_digest": binding.digest(),
+        "execution_binding_digest": binding.execution_binding_digest,
+        "launch_digest": binding.launch_digest,
+        "gateway_digest": binding.gateway_digest,
+        "observer_policy_digest": binding.observer_digest,
+        "state_policy_digest": binding.state_digest,
+        "cleanup_policy_digest": binding.cleanup_digest,
+        **digests,
+        "issued_at": issued_at,
+        "key_id": signing_key.key_id,
+        "rotation_epoch": signing_key.rotation_epoch,
+    }
+    signature = hmac.new(
+        signing_key.material,
+        json.dumps(
+            unsigned, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+        ).encode("utf-8"),
+        hashlib.sha256,
+    ).hexdigest()
+    return AuthenticatedEnforcementReceipt(**unsigned, signature=signature)
 
 
 class ExecutionStatus(str, Enum):

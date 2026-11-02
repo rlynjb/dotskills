@@ -579,6 +579,44 @@ class ProviderTraceTests(unittest.TestCase):
                 ).encode("utf-8")).hexdigest(),
             )
 
+    def test_provider_trace_commands_match_observed_container_and_gateway_events(self):
+        import docker_observer as docker_observer
+
+        attestation = docker_observer.DockerObserverAttestation.synthetic_for_test(
+            run_id="run-001",
+            arm="with-skill",
+            provider_session_id="provider-session-1",
+            provider_result_digest="8" * 64,
+            command_decisions=(
+                docker_observer.DockerCommandDecision(
+                    session_id="provider-session-1",
+                    item_id_digest="a" * 64,
+                    command_digest="b" * 64,
+                    decision="ALLOW",
+                ),
+            ),
+        )
+        events = (
+            {
+                "type": "tool_attempt",
+                "session_id": "provider-session-1",
+                "item_id_digest": "a" * 64,
+                "command_digest": "b" * 64,
+                "decision": "ALLOW",
+            },
+            {
+                "type": "gateway_session",
+                "session_id": "provider-session-1",
+                "provider_result_digest": "8" * 64,
+            },
+        )
+
+        self.assertTrue(p.validate_docker_provider_trace(events, attestation))
+        changed = deepcopy(events)
+        changed[0]["command_digest"] = "c" * 64
+        with self.assertRaises(p.ProviderTraceError):
+            p.validate_docker_provider_trace(changed, attestation)
+
 
 if __name__ == "__main__":
     unittest.main()

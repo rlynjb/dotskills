@@ -1,9 +1,11 @@
+from dataclasses import replace
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 
 import contracts as c
+import docker_contracts as dc
 import evidence as e
 
 
@@ -326,6 +328,49 @@ class EvidenceTests(unittest.TestCase):
         serialized = json.dumps(audit.sanitized_events)
         self.assertNotIn(secret, serialized)
         self.assertIn("[REDACTED]", serialized)
+
+    def test_receipt_hmac_binds_key_id_epoch_launch_gateway_observer_state_and_cleanup(self):
+        binding = dc.DockerEvidenceBinding.from_dict(
+            {
+                "schema_version": "0.4",
+                "plan_digest": "1" * 64,
+                "run_nonce": "run-001",
+                "execution_binding_digest": "2" * 64,
+                "launch_digest": "3" * 64,
+                "gateway_digest": "4" * 64,
+                "observer_digest": "5" * 64,
+                "state_digest": "6" * 64,
+                "cleanup_digest": "7" * 64,
+            }
+        )
+        with TemporaryDirectory() as temp:
+            key_path = Path(temp) / "evidence.key"
+            key_path.write_bytes(b"e" * 32)
+            key_path.chmod(0o600)
+            key = e.load_evidence_signing_key(
+                key_path,
+                key_id="evidence-key-1",
+                rotation_epoch=3,
+                forbidden_roots=(),
+            )
+            receipt = e.issue_authenticated_enforcement_receipt(
+                binding,
+                status="PASS",
+                arm="with-skill",
+                provider_result_digest="8" * 64,
+                observer_attestation_digest="9" * 64,
+                state_snapshot_digest="a" * 64,
+                cleanup_evidence_digest="b" * 64,
+                issued_at="2026-11-02T16:31:00Z",
+                signing_key=key,
+            )
+
+        self.assertEqual(receipt.key_id, "evidence-key-1")
+        self.assertEqual(receipt.rotation_epoch, 3)
+        self.assertTrue(receipt.verify(key))
+        self.assertFalse(
+            replace(receipt, cleanup_evidence_digest="c" * 64).verify(key)
+        )
 
 
 if __name__ == "__main__":

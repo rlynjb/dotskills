@@ -599,7 +599,9 @@ def compile_docker_topology(
         _create_command(docker, workload),
         _lifecycle_command(docker, "inspect", "workload", workload.name),
         _lifecycle_command(docker, "start", "gateway", gateway.name),
-        _lifecycle_command(docker, "start", "workload", workload.name),
+        _lifecycle_command(
+            docker, "start", "workload", "--attach", workload.name
+        ),
         _lifecycle_command(docker, "inspect", "workload", workload.name),
         _lifecycle_command(docker, "stop", "workload", "--time", "10", workload.name),
         _lifecycle_command(docker, "stop", "gateway", "--time", "10", gateway.name),

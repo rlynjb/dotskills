@@ -13,10 +13,82 @@ import stat
 from typing import Any, Mapping, Sequence, Tuple
 
 from contracts import RunPlan
+from docker_observer import DockerObserverAttestation
 
 
 class ProviderTraceError(ValueError):
     """Provider output is incomplete, ambiguous, unsafe, or outside the pinned schema."""
+
+
+def validate_docker_provider_trace(
+    events: Sequence[Mapping[str, Any]],
+    attestation: DockerObserverAttestation,
+) -> bool:
+    """Require normalized provider commands and gateway session to match host events."""
+
+    if not isinstance(attestation, DockerObserverAttestation):
+        raise ProviderTraceError("Docker observer attestation is required")
+    if not isinstance(events, (list, tuple)):
+        raise ProviderTraceError("Docker provider trace must be an array")
+    commands = []
+    gateway_sessions = []
+    for event in events:
+        if not isinstance(event, Mapping):
+            raise ProviderTraceError("Docker provider trace event is invalid")
+        event_type = event.get("type")
+        if event_type == "tool_attempt":
+            if frozenset(event) != frozenset(
+                (
+                    "type",
+                    "session_id",
+                    "item_id_digest",
+                    "command_digest",
+                    "decision",
+                )
+            ):
+                raise ProviderTraceError("Docker tool attempt shape is not exact")
+            commands.append(
+                (
+                    event["session_id"],
+                    event["item_id_digest"],
+                    event["command_digest"],
+                    event["decision"],
+                )
+            )
+        elif event_type == "gateway_session":
+            if frozenset(event) != frozenset(
+                ("type", "session_id", "provider_result_digest")
+            ):
+                raise ProviderTraceError("Docker gateway session shape is not exact")
+            gateway_sessions.append(
+                (event["session_id"], event["provider_result_digest"])
+            )
+        else:
+            raise ProviderTraceError("Docker provider trace event type is unapproved")
+    expected_commands = [
+        (
+            item.session_id,
+            item.item_id_digest,
+            item.command_digest,
+            item.decision,
+        )
+        for item in attestation.command_decisions
+    ]
+    if commands != expected_commands or len(commands) != len(set(commands)):
+        raise ProviderTraceError(
+            "provider trace commands differ from observed container decisions"
+        )
+    expected_gateway = [
+        (
+            attestation.provider_session_id,
+            attestation.provider_result_digest,
+        )
+    ]
+    if gateway_sessions != expected_gateway:
+        raise ProviderTraceError(
+            "provider trace gateway session differs from observed gateway events"
+        )
+    return True
 
 
 @dataclass(frozen=True)
