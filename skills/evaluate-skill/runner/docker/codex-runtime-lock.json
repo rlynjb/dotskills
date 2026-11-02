@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.4",
+  "status": "unverified",
+  "provider": "codex",
+  "profile": "read-only",
+  "base_image": null,
+  "final_image": null,
+  "target_platform": "linux/arm64",
+  "provider_artifacts": {
+    "codex": "0.163.0",
+    "promptfoo": "0.125.1",
+    "codex_sdk": "0.125.1",
+    "node": "22.23.1",
+    "python": "3.9.6"
+  },
+  "build_inputs": {
+    "dockerfile": "88b8f6ff9ae3a6ec918d26df263aeee9df455fc0bb70b74f99ac09f104a9c526",
+    "provider_lockfiles": "45c598e48da3a4f14755e5c3fbd4ebdb51cd6bec1cea02dfc74ab738c3446ee0",
+    "entrypoint": "3fc348eebfd488a601b721c307d1fdca053be5c50b2b60ad9a2566542013e32d",
+    "seccomp_profile": "391255d4f38027e3beb85a94f5bde020af33e3d36c1d8062aaf03ef2001a7b95",
+    "executable_inventory": "bcf88d064350b35003c8028139372bb2d0078446d7e3e7b63a9d3091957d5c54"
+  }
+}

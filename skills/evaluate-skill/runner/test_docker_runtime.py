@@ -69,6 +69,13 @@ class DockerRuntimeTests(unittest.TestCase):
             "base_image": f"registry.invalid/python-runtime@sha256:{digest('1')}",
             "final_image": f"registry.invalid/evaluate-codex@sha256:{digest('2')}",
             "target_platform": "linux/arm64",
+            "provider_artifacts": {
+                "codex": "0.163.0",
+                "promptfoo": "0.125.1",
+                "codex_sdk": "0.125.1",
+                "node": "22.23.1",
+                "python": "3.9.6",
+            },
             "build_inputs": {
                 "dockerfile": digest("3"),
                 "provider_lockfiles": digest("4"),
@@ -190,6 +197,11 @@ class DockerRuntimeTests(unittest.TestCase):
         module = self.require_runtime()
         lock = self.load_lock(module)
         self.assertIsInstance(lock.build_inputs, MappingProxyType)
+        self.assertIsInstance(lock.provider_artifacts, MappingProxyType)
+        self.assertEqual(
+            set(lock.provider_artifacts),
+            {"codex", "promptfoo", "codex_sdk", "node", "python"},
+        )
         self.assertEqual(
             set(lock.build_inputs),
             {

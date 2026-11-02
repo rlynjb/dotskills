@@ -1,0 +1,35 @@
+{
+  "schema_version": "0.4",
+  "status": "unverified",
+  "target_platform": "linux/arm64",
+  "allowed_tools": ["list", "read", "search"],
+  "executables": [
+    {
+      "path": "/opt/evaluate/bin/python3",
+      "role": "entrypoint-runtime",
+      "digest": null
+    },
+    {
+      "path": "/opt/evaluate/bin/node",
+      "role": "provider-runtime",
+      "digest": null
+    },
+    {
+      "path": "/opt/evaluate/bin/codex",
+      "role": "provider-harness",
+      "digest": null
+    },
+    {
+      "path": "/opt/evaluate/bin/promptfoo",
+      "role": "provider-harness",
+      "digest": null
+    }
+  ],
+  "scripts": [
+    {
+      "path": "/opt/evaluate/codex-entrypoint.py",
+      "interpreter": "/opt/evaluate/bin/python3",
+      "digest": null
+    }
+  ]
+}
