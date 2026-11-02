@@ -43,6 +43,19 @@ class ObservedSessionIdentity:
 
 
 @dataclass(frozen=True)
+class ObservedCommandDecision:
+    """Canonical command authorization emitted by the trusted boundary."""
+
+    session_id: str
+    process_id: int
+    item_id_digest: str
+    command_digest: str
+    capability: str
+    canonical_resource: str
+    decision: str
+
+
+@dataclass(frozen=True)
 class ObserverAttestation:
     """One host-observer document from which every session identity is derived."""
 
@@ -54,6 +67,7 @@ class ObserverAttestation:
     executable_digest: str
     provider_config_digest: str
     sessions: Tuple[ObservedSessionIdentity, ...]
+    command_decisions: Tuple[ObservedCommandDecision, ...]
 
     def canonical_payload(self) -> dict[str, Any]:
         return {
@@ -65,6 +79,9 @@ class ObserverAttestation:
             "executable_digest": self.executable_digest,
             "provider_config_digest": self.provider_config_digest,
             "sessions": [session.__dict__ for session in self.sessions],
+            "command_decisions": [
+                decision.__dict__ for decision in self.command_decisions
+            ],
         }
 
 
@@ -78,6 +95,7 @@ class ProviderTraceBinding:
     executable_digest: str
     observer_attestation_digest: str
     observed_sessions: Tuple[ObservedSessionIdentity, ...]
+    observed_command_decisions: Tuple[ObservedCommandDecision, ...]
 
 
 @dataclass(frozen=True)
@@ -168,14 +186,22 @@ _PROHIBITED_ITEMS = frozenset((
     "dynamic_tool_call", "spawn_agent", "send_input", "agent_wait", "todo_list",
     "error", "user_message",
 ))
-OBSERVER_SCHEMA_VERSION = "0.3"
+OBSERVER_SCHEMA_VERSION = "0.4"
 OBSERVER_ID = "evaluate-skill-session-observer"
-OBSERVER_VERSION = "0.3.0"
+OBSERVER_VERSION = "0.4.0"
 _OBSERVER_FIELDS = frozenset((
     "schema_version", "observer_id", "observer_version", "execution_id",
     "promptfoo_process_id", "executable_digest", "provider_config_digest",
-    "sessions",
+    "sessions", "command_decisions",
 ))
+_COMMAND_DECISION_FIELDS = frozenset((
+    "session_id", "process_id", "item_id_digest", "command_digest",
+    "capability", "canonical_resource", "decision",
+))
+_COMMAND_CAPABILITIES = frozenset((
+    "credentials", "filesystem_read", "filesystem_write", "network", "shell",
+))
+_CANONICAL_RESOURCE = re.compile(r"[a-z][a-z0-9._:/-]{0,127}")
 _SESSION_FIELDS = frozenset((
     "role", "arm_name", "result_index", "assertion_index", "session_id",
     "execution_id", "process_id", "parent_process_id", "executable_digest",
@@ -328,6 +354,7 @@ def parse_observer_attestation(
         raise ProviderTraceError("observer sessions must be a non-empty array")
     sessions = []
     process_ids = set()
+    session_ids = set()
     for index, item in enumerate(session_values):
         session = _object(item, f"observer session {index}")
         if set(session) != _SESSION_FIELDS:
@@ -338,6 +365,9 @@ def parse_observer_attestation(
             raise ProviderTraceError("observer session is invalid") from None
         if observed.execution_id != expected_execution_id:
             raise ProviderTraceError("observer session belongs to another execution")
+        if observed.session_id in session_ids:
+            raise ProviderTraceError("observer session identities must be unique")
+        session_ids.add(observed.session_id)
         if observed.executable_digest != expected_executable_digest:
             raise ProviderTraceError("observer session executable identity changed")
         if observed.provider_config_digest != expected_provider_config_digest:
@@ -359,6 +389,53 @@ def parse_observer_attestation(
         if observed_at < started or observed_at > completed:
             raise ProviderTraceError("observer session timestamp is outside this run")
         sessions.append(observed)
+    sessions_by_id = {session.session_id: session for session in sessions}
+    decision_values = document.get("command_decisions")
+    if not isinstance(decision_values, list):
+        raise ProviderTraceError("observer command decisions must be an array")
+    command_decisions = []
+    decision_keys = set()
+    for index, item in enumerate(decision_values):
+        value = _object(item, f"observer command decision {index}")
+        if set(value) != _COMMAND_DECISION_FIELDS:
+            raise ProviderTraceError("observer command decision shape is not exact")
+        try:
+            decision = ObservedCommandDecision(**value)
+        except TypeError:
+            raise ProviderTraceError("observer command decision is invalid") from None
+        session = sessions_by_id.get(decision.session_id)
+        if session is None or decision.process_id != session.process_id:
+            raise ProviderTraceError(
+                "observer command decision is not bound to an observed session"
+            )
+        for digest, label in (
+            (decision.item_id_digest, "item id digest"),
+            (decision.command_digest, "command digest"),
+        ):
+            if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+                raise ProviderTraceError(
+                    f"observer command decision {label} is invalid"
+                )
+        if decision.capability not in _COMMAND_CAPABILITIES:
+            raise ProviderTraceError("observer command decision capability is invalid")
+        if (
+            not isinstance(decision.canonical_resource, str)
+            or _CANONICAL_RESOURCE.fullmatch(decision.canonical_resource) is None
+        ):
+            raise ProviderTraceError(
+                "observer command decision canonical resource is invalid"
+            )
+        if decision.decision not in ("ALLOW", "DENY"):
+            raise ProviderTraceError("observer command decision value is invalid")
+        key = (
+            decision.session_id,
+            decision.item_id_digest,
+            decision.command_digest,
+        )
+        if key in decision_keys:
+            raise ProviderTraceError("observer command decisions must be unique")
+        decision_keys.add(key)
+        command_decisions.append(decision)
     return ObserverAttestation(
         schema_version=document["schema_version"],
         observer_id=document["observer_id"],
@@ -368,18 +445,27 @@ def parse_observer_attestation(
         executable_digest=document["executable_digest"],
         provider_config_digest=document["provider_config_digest"],
         sessions=tuple(sessions),
+        command_decisions=tuple(command_decisions),
     )
 
 
 def _validate_binding(
     plan: RunPlan, binding: ProviderTraceBinding
-) -> tuple[dict[str, ObservedSessionIdentity], Tuple[ObservedSessionIdentity, ...]]:
+) -> tuple[
+    dict[str, ObservedSessionIdentity],
+    Tuple[ObservedSessionIdentity, ...],
+    dict[tuple[str, str, str], ObservedCommandDecision],
+]:
     if not isinstance(binding, ProviderTraceBinding):
         raise ProviderTraceError("trusted provider trace binding is required")
     digest = _nonempty_text(binding.provider_config_digest, "provider config digest")
     _object(binding.promptfoo_config, "bound Promptfoo config")
     if not isinstance(binding.observed_sessions, tuple):
         raise ProviderTraceError("observed sessions must be an immutable tuple")
+    if not isinstance(binding.observed_command_decisions, tuple):
+        raise ProviderTraceError(
+            "observed command decisions must be an immutable tuple"
+        )
     expected_arms = tuple(plan.comparison_arms)
     if expected_arms != ("with-skill", "without-skill"):
         raise ProviderTraceError("run plan comparison arms are not the approved pair")
@@ -462,7 +548,58 @@ def _validate_binding(
             sessions[arm] = observed
     if set(sessions) != set(expected_arms) or observed_keys != expected_keys:
         raise ProviderTraceError("observed session arms are incomplete")
-    return sessions, binding.observed_sessions
+    sessions_by_id = {
+        observed.session_id: observed for observed in binding.observed_sessions
+    }
+    command_decisions = {}
+    for decision in binding.observed_command_decisions:
+        if not isinstance(decision, ObservedCommandDecision):
+            raise ProviderTraceError("observed command decision has an invalid type")
+        session = sessions_by_id.get(decision.session_id)
+        if (
+            session is None
+            or session.role != "arm"
+            or decision.process_id != session.process_id
+        ):
+            raise ProviderTraceError(
+                "observed command decision is not bound to an arm session"
+            )
+        for value, label in (
+            (decision.item_id_digest, "item id digest"),
+            (decision.command_digest, "command digest"),
+        ):
+            if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value):
+                raise ProviderTraceError(f"observed command {label} is invalid")
+        if decision.capability not in _COMMAND_CAPABILITIES:
+            raise ProviderTraceError("observed command capability is invalid")
+        if (
+            not isinstance(decision.canonical_resource, str)
+            or _CANONICAL_RESOURCE.fullmatch(decision.canonical_resource) is None
+        ):
+            raise ProviderTraceError("observed command canonical resource is invalid")
+        if decision.decision not in ("ALLOW", "DENY"):
+            raise ProviderTraceError("observed command decision value is invalid")
+        if decision.decision == "ALLOW":
+            approved = {
+                "credentials": set(plan.capabilities.credentials),
+                "filesystem_read": set(plan.capabilities.filesystem_read),
+                "filesystem_write": set(plan.capabilities.filesystem_write),
+                "network": set(plan.capabilities.network),
+                "shell": {"restricted-shell"} if plan.capabilities.shell else set(),
+            }
+            if decision.canonical_resource not in approved[decision.capability]:
+                raise ProviderTraceError(
+                    "observer allowed a command resource outside the run plan"
+                )
+        key = (
+            decision.session_id,
+            decision.item_id_digest,
+            decision.command_digest,
+        )
+        if key in command_decisions:
+            raise ProviderTraceError("observed command decisions are duplicated")
+        command_decisions[key] = decision
+    return sessions, binding.observed_sessions, command_decisions
 
 
 def _validate_metadata(metadata_value: Any, adapter_version: str) -> None:
@@ -559,7 +696,8 @@ def _passive_event(
 def _command_event(
     item: Mapping[str, Any],
     source_digest: str,
-    plan: RunPlan,
+    observed: ObservedSessionIdentity,
+    command_decisions: Mapping[tuple[str, str, str], ObservedCommandDecision],
     secrets: Tuple[str, ...],
 ) -> dict[str, Any]:
     required = {
@@ -582,21 +720,28 @@ def _command_event(
         raise ProviderTraceError("command item status and exit code disagree")
     sanitized_command = _redact(command, secrets)
     sanitized_output = _redact(output, secrets)
-    normalized_command = command.lower()
-    credential_attempt = any(marker in normalized_command for marker in (
-        ".codex/auth.json",
-        "openai_api_key",
-        "anthropic_api_key",
-        "aws_secret_access_key",
+    item_id_digest = _text_digest(item_id)
+    command_digest = _text_digest(sanitized_command)
+    decision = command_decisions.get((
+        observed.session_id,
+        item_id_digest,
+        command_digest,
     ))
-    capability = "credentials" if credential_attempt else "shell"
+    capability = decision.capability if decision is not None else "shell"
+    canonical_resource = (
+        decision.canonical_resource if decision is not None else "unattested-command"
+    )
     return {
         "type": "tool_attempt",
         "tool": "sandboxed_command",
         "capability": capability,
-        "authorized": plan.capabilities.shell and not credential_attempt,
-        "item_id_digest": _text_digest(item_id),
-        "command_digest": _text_digest(sanitized_command),
+        "authorized": decision is not None and decision.decision == "ALLOW",
+        "authorization_decision": (
+            decision.decision if decision is not None else "MISSING"
+        ),
+        "canonical_resource": canonical_resource,
+        "item_id_digest": item_id_digest,
+        "command_digest": command_digest,
         "command_bytes": len(sanitized_command.encode("utf-8")),
         "output_digest": _text_digest(sanitized_output),
         "output_bytes": len(sanitized_output.encode("utf-8")),
@@ -611,7 +756,8 @@ def _turn_events(
     raw: Any,
     response_output: str,
     source_digest: str,
-    plan: RunPlan,
+    observed: ObservedSessionIdentity,
+    command_decisions: Mapping[tuple[str, str, str], ObservedCommandDecision],
     secrets: Tuple[str, ...],
 ) -> Tuple[dict[str, Any], ...]:
     if not isinstance(raw, str) or not raw:
@@ -650,7 +796,9 @@ def _turn_events(
             if item_type == "agent_message":
                 messages.append(item["text"])
         else:
-            event = _command_event(item, source_digest, plan, secrets)
+            event = _command_event(
+                item, source_digest, observed, command_decisions, secrets
+            )
         events.append(event)
     if not messages or messages[-1] != final_response:
         raise ProviderTraceError("Codex final response lacks a matching agent message")
@@ -661,6 +809,7 @@ def _parse_arm(
     result_value: Any,
     plan: RunPlan,
     observed: ObservedSessionIdentity,
+    command_decisions: Mapping[tuple[str, str, str], ObservedCommandDecision],
     arm_name: str,
     secrets: Tuple[str, ...],
 ) -> ParsedArm:
@@ -701,7 +850,12 @@ def _parse_arm(
         raise ProviderTraceError(f"{arm_name} provider output must be text")
     source_digest = _digest(result)
     events = _turn_events(
-        response.get("raw"), response_output, source_digest, plan, secrets
+        response.get("raw"),
+        response_output,
+        source_digest,
+        observed,
+        command_decisions,
+        secrets,
     )
     quality = _quality(result, secrets)
     identity = {
@@ -749,7 +903,7 @@ def parse_promptfoo_result(
         raise ProviderTraceError("approved run plan is required")
     if plan.provider != "openai" or plan.adapter != "promptfoo-codex-sdk":
         raise ProviderTraceError("only the pinned Codex provider route is supported")
-    sessions, observed_sessions = _validate_binding(plan, binding)
+    sessions, observed_sessions, command_decisions = _validate_binding(plan, binding)
     secrets = tuple(sorted(
         {value for value in known_secret_values if isinstance(value, str) and value},
         key=len,
@@ -811,9 +965,30 @@ def parse_promptfoo_result(
             raise ProviderTraceError("observed session result index does not match output")
 
     arms = tuple(
-        _parse_arm(by_label[_ARM_LABELS[arm]][0], plan, sessions[arm], arm, secrets)
+        _parse_arm(
+            by_label[_ARM_LABELS[arm]][0],
+            plan,
+            sessions[arm],
+            command_decisions,
+            arm,
+            secrets,
+        )
         for arm in plan.comparison_arms
     )
+    observed_command_keys = {
+        (
+            arm.session_id,
+            event["item_id_digest"],
+            event["command_digest"],
+        )
+        for arm in arms
+        for event in arm.events
+        if event.get("type") == "tool_attempt"
+    }
+    if set(command_decisions) - observed_command_keys:
+        raise ProviderTraceError(
+            "observer command decisions contain extra or mismatched evidence"
+        )
     return ParsedProviderRun(
         eval_id=eval_id,
         source_file_digest=hashlib.sha256(payload).hexdigest(),

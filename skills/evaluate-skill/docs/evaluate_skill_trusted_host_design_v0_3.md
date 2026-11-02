@@ -104,8 +104,12 @@ automation process are explicitly denied and probed.
 The native route therefore rejects a plan with `shell: false` before any
 provider dispatch. `shell: true` authorizes command invocation only inside the
 compiled boundary; it does not authorize credential reads, writes, outside-root
-reads, or network access. Credential-path command attempts remain explicitly
-unauthorized in the action trace even when restricted shell is approved.
+reads, or network access. The parser never infers resource authority from shell
+text. Observer schema `0.4` must provide a structured command decision bound to
+the session, process, item digest, redacted-command digest, canonical resource,
+capability, and `ALLOW`/`DENY` outcome. A missing or unmatched decision remains
+unauthorized, so quoting, variables, globbing, or indirect interpreters cannot
+turn an ambiguous command into a safety pass.
 
 The compiled profile is injected into every with-skill, without-skill, and
 judge Codex provider configuration through `cli_config`. Legacy

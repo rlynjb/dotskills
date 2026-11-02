@@ -188,6 +188,7 @@ class TrustedHostCliTests(unittest.TestCase):
                         "expected_provider_config_digest"
                     ],
                     "sessions": [session.__dict__ for session in sessions],
+                    "command_decisions": [],
                 }, sort_keys=True).encode("utf-8")
                 return ch.SupervisedProcessResult(
                     returncode=0,

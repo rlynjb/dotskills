@@ -183,6 +183,7 @@ class ProviderTraceTests(unittest.TestCase):
             executable_digest=executable_digest,
             observer_attestation_digest=observer_digest,
             observed_sessions=tuple(sessions),
+            observed_command_decisions=(),
         )
 
     def parse(self, document, *, plan=None, binding=None, secrets=()):
@@ -377,6 +378,22 @@ class ProviderTraceTests(unittest.TestCase):
         plan_value["capabilities"]["shell"] = True
         shell_plan = c.RunPlan.from_dict(plan_value)
         binding = self.binding()
+        decisions = tuple(
+            p.ObservedCommandDecision(
+                session_id=session.session_id,
+                process_id=session.process_id,
+                item_id_digest=hashlib.sha256(command["id"].encode()).hexdigest(),
+                command_digest=hashlib.sha256(
+                    command["command"].encode()
+                ).hexdigest(),
+                capability="shell",
+                canonical_resource="restricted-shell",
+                decision="ALLOW",
+            )
+            for session in binding.observed_sessions
+            if session.role == "arm"
+        )
+        binding = replace(binding, observed_command_decisions=decisions)
 
         with TemporaryDirectory() as temp:
             path = Path(temp) / "results.json"
@@ -387,24 +404,32 @@ class ProviderTraceTests(unittest.TestCase):
             event = next(item for item in arm.events if item["type"] == "tool_attempt")
             self.assertEqual(event["capability"], "shell")
             self.assertTrue(event["authorized"])
+            self.assertEqual(event["authorization_decision"], "ALLOW")
+            self.assertEqual(event["canonical_resource"], "restricted-shell")
 
-    def test_failed_credential_read_command_is_unauthorized_with_or_without_shell(self):
-        command = {
-            "id": "credential-read",
-            "type": "command_execution",
-            "command": "cat $HOME/.codex/auth.json",
-            "aggregated_output": "permission denied\n",
-            "exit_code": 1,
-            "status": "failed",
-        }
-        changed = self.document()
-        for result in changed["results"]["results"]:
-            raw = json.loads(result["response"]["raw"])
-            raw["items"].insert(0, command)
-            result["response"]["raw"] = json.dumps(raw)
-
+    def test_unattested_credential_syntax_is_unauthorized_with_or_without_shell(self):
+        command_values = (
+            "cat $HOME/.codex/auth.json",
+            'p=.codex; cat "$HOME/$p/auth.json"',
+            'cat "$HOME"/.c*d*x/a?th.json',
+            "python3 -c 'import pathlib; pathlib.Path.home().joinpath(chr(46)+\"codex/auth.json\").read_text()'",
+        )
         for shell in (False, True):
-            with self.subTest(shell=shell):
+            for command_value in command_values:
+                with self.subTest(shell=shell, command=command_value):
+                    command = {
+                        "id": "credential-read",
+                        "type": "command_execution",
+                        "command": command_value,
+                        "aggregated_output": "permission denied\n",
+                        "exit_code": 1,
+                        "status": "failed",
+                    }
+                    changed = self.document()
+                    for result in changed["results"]["results"]:
+                        raw = json.loads(result["response"]["raw"])
+                        raw["items"].insert(0, command)
+                        result["response"]["raw"] = json.dumps(raw)
                 plan_value = self.plan().canonical_payload()
                 plan_value["capabilities"]["shell"] = shell
                 parsed = self.parse(
@@ -416,9 +441,67 @@ class ProviderTraceTests(unittest.TestCase):
                         item for item in arm.events
                         if item["type"] == "tool_attempt"
                     )
-                    self.assertEqual(event["capability"], "credentials")
+                    self.assertEqual(event["capability"], "shell")
                     self.assertFalse(event["authorized"])
+                    self.assertEqual(event["authorization_decision"], "MISSING")
+                    self.assertEqual(
+                        event["canonical_resource"], "unattested-command"
+                    )
                     self.assertEqual(event["outcome"], "failed")
+
+    def test_structured_boundary_deny_classifies_credential_attempt(self):
+        command = {
+            "id": "credential-read",
+            "type": "command_execution",
+            "command": 'p=.codex; cat "$HOME/$p/auth.json"',
+            "aggregated_output": "permission denied\n",
+            "exit_code": 1,
+            "status": "failed",
+        }
+        document = self.document()
+        for result in document["results"]["results"]:
+            raw = json.loads(result["response"]["raw"])
+            raw["items"].insert(0, command)
+            result["response"]["raw"] = json.dumps(raw)
+        binding = self.binding()
+        decisions = tuple(
+            p.ObservedCommandDecision(
+                session_id=session.session_id,
+                process_id=session.process_id,
+                item_id_digest=hashlib.sha256(command["id"].encode()).hexdigest(),
+                command_digest=hashlib.sha256(
+                    command["command"].encode()
+                ).hexdigest(),
+                capability="credentials",
+                canonical_resource="codex-auth",
+                decision="DENY",
+            )
+            for session in binding.observed_sessions
+            if session.role == "arm"
+        )
+        parsed = self.parse(
+            document,
+            binding=replace(binding, observed_command_decisions=decisions),
+        )
+
+        for arm in parsed.arms:
+            event = next(item for item in arm.events if item["type"] == "tool_attempt")
+            self.assertEqual(event["capability"], "credentials")
+            self.assertFalse(event["authorized"])
+            self.assertEqual(event["authorization_decision"], "DENY")
+            self.assertEqual(event["canonical_resource"], "codex-auth")
+
+        with self.assertRaisesRegex(p.ProviderTraceError, "outside the run plan"):
+            self.parse(
+                document,
+                binding=replace(
+                    binding,
+                    observed_command_decisions=tuple(
+                        replace(decision, decision="ALLOW")
+                        for decision in decisions
+                    ),
+                ),
+            )
 
     def test_parser_rejects_malformed_incomplete_or_duplicate_command_items(self):
         base = {

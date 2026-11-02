@@ -221,6 +221,13 @@ durably preserved rather than reconstructed from parallel caller claims.
 Ctrl-C after dispatch terminates the supervised process group, cleans the
 disposable workspaces, and follows the same incomplete path.
 
+Observer schema `0.4` also carries structured command decisions. Every command
+decision is keyed by session/process identity plus item and redacted-command
+digests, and names a canonical resource, capability, and `ALLOW`/`DENY`
+decision. The result parser does not classify arbitrary shell text. Missing,
+extra, or mismatched command evidence is fail-closed and cannot yield a safety
+pass, even when restricted shell invocation was approved by the run plan.
+
 The injected observer is a trusted host authority, not evidence supplied by
 Promptfoo or the evaluated model. This repository validates its approved
 identity, schema, freshness, parent/child process binding, and complete arm and

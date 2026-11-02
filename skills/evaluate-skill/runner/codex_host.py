@@ -1737,6 +1737,7 @@ def run_supervised_provider(
             expected_observer_id=request.observer_id,
             expected_observer_version=request.observer_version,
             observation_started_at=dispatch_started_at.isoformat(),
+            known_secret_values=secrets,
         )
         if (
             not isinstance(handle, SupervisedProcessHandle)
@@ -1812,6 +1813,7 @@ def run_supervised_provider(
             executable_digest=request.policy.codex_executable.digest,
             observer_attestation_digest=observer_trace_digest,
             observed_sessions=observer_attestation.sessions,
+            observed_command_decisions=observer_attestation.command_decisions,
         )
         parsed = parse_promptfoo_result(
             bundle / "codex-results.json",
