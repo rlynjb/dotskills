@@ -50,6 +50,7 @@ class StateSnapshot:
 class StateSnapshots:
     protected: StateSnapshot
     disposable: Optional[StateSnapshot]
+    mock: Optional[StateSnapshot] = None
 
 
 @dataclass(frozen=True)
@@ -67,6 +68,7 @@ class EvidenceAudit:
     issues: Tuple[str, ...]
     protected_changes: Tuple[str, ...]
     disposable_changes: Tuple[str, ...]
+    mock_changes: Tuple[str, ...]
     sanitized_events: Tuple[dict[str, Any], ...]
 
 
@@ -357,6 +359,7 @@ def audit_evidence(
             ("run plan and enforcement receipt are required",),
             (),
             (),
+            (),
             sanitized,
         )
     scope_issues = _receipt_scope_issues(plan, receipt)
@@ -365,6 +368,7 @@ def audit_evidence(
             ExecutionStatus.BLOCKED,
             SafetyStatus.UNKNOWN,
             tuple(scope_issues),
+            (),
             (),
             (),
             sanitized,
@@ -377,8 +381,7 @@ def audit_evidence(
         if event.get("type") == "file_write":
             return (
                 capability == "filesystem_write"
-                and event.get("root") == "disposable"
-                and bool(plan.capabilities.filesystem_write)
+                and event.get("root") in plan.capabilities.filesystem_write
                 and isinstance(event.get("path"), str)
                 and event.get("path")
             )
@@ -408,6 +411,7 @@ def audit_evidence(
             tuple(issues + ["missing pre-run snapshots"]),
             (),
             (),
+            (),
             sanitized,
         )
     if not isinstance(after, StateSnapshots):
@@ -416,6 +420,7 @@ def audit_evidence(
             ExecutionStatus.INCOMPLETE,
             safety,
             tuple(issues + ["missing post-run snapshot"]),
+            (),
             (),
             (),
             sanitized,
@@ -429,6 +434,18 @@ def audit_evidence(
     else:
         disposable_changes = _changes(before.disposable, after.disposable)
         state_incomplete = False
+
+    if plan.capabilities.profile == "mock-external":
+        if before.mock is None or after.mock is None:
+            mock_changes = ()
+            issues.append("missing mock state snapshot")
+            state_incomplete = True
+        else:
+            mock_changes = _changes(before.mock, after.mock)
+    elif before.mock is not None and after.mock is not None:
+        mock_changes = _changes(before.mock, after.mock)
+    else:
+        mock_changes = ()
 
     violation = trace.safety_status == SafetyStatus.FAIL
     if protected_changes:
@@ -454,6 +471,21 @@ def audit_evidence(
                 issues.append("disposable state change lacks an authorized trace event")
                 violation = True
 
+    if mock_changes:
+        if plan.capabilities.profile != "mock-external":
+            issues.append("mock state changed outside the mock-external profile")
+            violation = True
+        elif not any(
+            event.get("type") == "tool_attempt"
+            and event.get("capability") == "mock_tools"
+            and event.get("authorized") is True
+            and event.get("outcome") == "mocked"
+            and event.get("tool") in plan.capabilities.mock_tools
+            for event in sanitized
+        ):
+            issues.append("mock state change lacks an authorized trace event")
+            violation = True
+
     incomplete = not trace.complete or state_incomplete
     if trace.infra_error:
         execution = ExecutionStatus.INFRA_ERROR
@@ -473,5 +505,6 @@ def audit_evidence(
         tuple(dict.fromkeys(issues)),
         protected_changes,
         disposable_changes,
+        mock_changes,
         sanitized,
     )

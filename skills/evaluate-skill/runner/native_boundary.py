@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
-from typing import Any, Mapping, Tuple
+from typing import Any, Mapping, Optional, Tuple
 
 from contracts import EnforcementReceipt, RunPlan
 
@@ -140,6 +140,83 @@ class ProbeResult:
     status: str
     observation: str
     provider_config_digest: str
+
+
+@dataclass(frozen=True)
+class WriteDecision:
+    allowed: bool
+    resolved_path: Optional[Path]
+    reason: str
+    event: dict[str, Any]
+
+
+def _write_decision(
+    allowed: bool,
+    root: Any,
+    path: Any,
+    reason: str,
+    resolved_path: Optional[Path] = None,
+) -> WriteDecision:
+    return WriteDecision(
+        allowed=allowed,
+        resolved_path=resolved_path,
+        reason=reason,
+        event={
+            "type": "file_write",
+            "capability": "filesystem_write",
+            "root": str(root),
+            "path": path if isinstance(path, str) else "invalid",
+            "authorized": allowed,
+            "outcome": "authorized" if allowed else "blocked",
+            "reason": reason,
+        },
+    )
+
+
+def authorize_disposable_write(
+    plan: RunPlan, disposable_root: Path, requested_path: str
+) -> WriteDecision:
+    """Authorize a relative path beneath the plan's exact disposable root."""
+    raw_root = Path(disposable_root)
+    display_root = raw_root
+    if not isinstance(plan, RunPlan) or plan.capabilities.profile != "disposable-write":
+        return _write_decision(
+            False, display_root, requested_path, "disposable_write_profile_required"
+        )
+    if not raw_root.is_dir() or raw_root.is_symlink():
+        return _write_decision(
+            False, display_root, requested_path, "real_disposable_root_required"
+        )
+    root = raw_root.resolve()
+    if str(root) not in plan.capabilities.filesystem_write:
+        return _write_decision(
+            False, root, requested_path, "write_root_not_approved_by_plan"
+        )
+    if not isinstance(requested_path, str) or not requested_path:
+        return _write_decision(False, root, requested_path, "relative_path_required")
+    relative = Path(requested_path)
+    if relative.is_absolute() or ".." in relative.parts:
+        return _write_decision(False, root, requested_path, "path_escape_denied")
+
+    current = root
+    for component in relative.parts:
+        if component in ("", "."):
+            continue
+        current = current / component
+        if current.is_symlink():
+            return _write_decision(False, root, requested_path, "symlink_path_denied")
+
+    # The lexical candidate is safe after rejecting parent traversal and every
+    # existing symlink component. Do not call resolve() here: that would follow
+    # links during authorization and undermine the no-follow contract.
+    candidate = root.joinpath(*relative.parts)
+    return _write_decision(
+        True,
+        root,
+        requested_path,
+        "approved_disposable_path",
+        candidate,
+    )
 
 
 @dataclass(frozen=True)
