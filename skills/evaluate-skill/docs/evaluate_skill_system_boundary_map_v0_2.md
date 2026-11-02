@@ -1,5 +1,8 @@
 # Evaluate Skill — System Boundary Map v0.2
 
+> **Historical:** The active canonical map is the
+> [Docker-Only System Boundary Map v0.4](./evaluate_skill_system_boundary_map_v0_4.md).
+
 **Status:** Offline control/evidence foundation implemented; live execution paths unverified and Blocked — Not Run.
 **Scope:** Provider-native evaluation first; Docker only when independently verified native isolation is insufficient.
 

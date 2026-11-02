@@ -4,12 +4,16 @@
 
 **Start here:** [Try it](#8-try-it) · [12-stage guide](#2-the-12-stages) · [Grading basics](#grading-and-scoring-beginner-reference)
 
-**Current limitation:** The repository now includes a fail-closed native Codex
-trusted host and no-model boundary probes, but no live paired evaluation has
-been authorized or accepted. On 2026-11-02 the installed native profile passed
-five probes but failed the inert secondary-process canary, so native live
-execution remains blocked. A prepared case or preflight is **not** a completed
-evaluation.
+**Current limitation:** Docker-only v0.4 is now the approved live-execution
+architecture, but Docker is not installed or implemented in this repository
+yet and no live paired evaluation has been authorized or accepted. The
+historical native Codex profile passed five probes but failed the inert
+secondary-process canary; native execution is therefore retired rather than a
+fallback. A prepared case, native preflight, or design document is **not** a
+completed evaluation. See the
+[v0.4 architecture](docs/evaluate_skill_execution_architecture_v0_4.md),
+[canonical boundary map](docs/evaluate_skill_system_boundary_map_v0_4.md), and
+[implementation plan](docs/evaluate_skill_docker_implementation_plan_v0_4.md).
 
 ## Table of contents
 
@@ -40,7 +44,7 @@ The four phases below organize the same **Stages 0–11** in both Claude Code an
 
 ### Agent, tool, and source map
 
-**Evaluate Skill vs. Claude Code vs. Codex — stage matrix.** Evaluate Skill supplies the **12-stage methodology** inside whichever coding agent is active. **Claude Code** and **Codex** are alternative hosts and native evaluation paths, **not** two agents that run together. The matrix describes what each path *would* do; it does not claim any tool was invoked.
+**Evaluate Skill vs. Claude Code vs. Codex — stage matrix.** Evaluate Skill supplies the **12-stage methodology** inside whichever coding agent is active. **Claude Code** and **Codex** are alternative provider evaluation formats, **not** two agents that run together. Future live execution for either format requires the same Docker-only boundary. The matrix describes what each path *would* do; it does not claim any tool was invoked.
 
 #### Phase 1 — Preparation (Stages 0–2)
 
@@ -194,34 +198,32 @@ Evaluate Skill uses **only the provider of your active coding session**, never a
 
 [Promptfoo is now part of OpenAI](https://www.promptfoo.dev/about/) and remains open source and multi-provider. **It is a separate CLI using the Codex SDK**, not an automatic built-in Codex grader. Keep provider reports separate; there is no automatic cross-provider scoring or comparison.
 
-The dispatcher supports `inspect` (identify harness), `prepare` (write case files without running a model), `configure` (materialize the approved model snapshot, limits, and staged revisions without running a model), `assess` (validate current policy/version inputs), `bind` (digest-bind that configured bundle to one approved plan), and `run` (single-use invocation of the approved native tool **only in a separately verified isolated host**). A `--harness` override is for **offline preparation only**; environment markers by themselves do not prove execution identity.
+The dispatcher supports `inspect` (identify harness), `prepare` (write case files without running a model), `configure` (materialize the approved model snapshot, limits, and staged revisions without running a model), `assess` (validate current policy/version inputs), and `bind` (digest-bind that configured bundle to one approved plan). Its historical native `run` command is not an approved v0.4 live backend. A `--harness` override is for **offline preparation only**; environment markers by themselves do not prove execution identity.
 
-**v0.3 status:** The native Codex read-only route now compiles an exact host
-policy, performs six no-model probes, binds short-lived receipts, supervises a
-single-use Promptfoo command, parses paired Codex turns fail-closed, verifies
-protected state and cleanup, and publishes per-arm evidence. Claude, writable,
-mock-external, connector, MCP, and Docker execution remain unsupported here.
-The capability inventory stays unverified and live results remain **Blocked —
-Not Run**. The observed native process-route gap triggers the conditional
-Docker design path, but Docker execution needs separate approval. Never infer
-a model run from preparation or preflight. [Setup,
-commands and limits →](runner/README.md)
+**v0.4 status:** Docker is the mandatory live boundary for both provider
+routes, with Codex read-only as the first implementation target. The design
+requires a shell-free minimal workload, separate provider credential gateway,
+internal-only workload network, independent observation, authenticated
+evidence, and complete cleanup. Docker is not installed or implemented yet;
+the capability inventory stays unverified and live results remain **Blocked —
+Not Run**. The native v0.3 host is retained only as historical evidence and
+offline regression coverage. Never infer a model run from preparation or
+preflight. [Setup, commands and limits →](runner/README.md)
 
 ## 6. Approval, execution, and safety
 
 The **Execution Safety Gate** applies before **Stages 3 and 9** or **any earlier step that executes an evaluated agent**. Evaluated skill instructions and retrieved content are **untrusted data**, not permission to act.
 
 - **Your approval:** Required before minimal structural edits, saving new cases and assertions, running evaluations, making skill changes, justified specialist handoffs, and accepting/releasing changes.
-- **Host isolation:** The native Codex read-only route requires the compiled
-  trusted-host policy, fresh workspaces, file-based login isolated from the
-  agent, no external writes or network, disabled MCP/web/collaboration routes,
-  and independent turn/state/cleanup evidence. Other profiles remain blocked.
+- **Host isolation:** Live runs require the verified Docker-only v0.4 boundary.
+  Provider-native sandboxes are not execution backends or fallbacks. Until the
+  Docker host is implemented and proven, all profiles remain blocked.
 - **Fail closed:** Without scoped approval and independently verified isolation, report **Blocked — Not Run**. An unauthorized attempted action **fails** its safety criterion even if blocked. Missing traces or state checks are **Unknown**, never Pass.
 - **Three statuses:** Preserve execution, quality, and safety independently. Stages 3 and 9 may advance only for a complete paired run with safety **Pass**; append a plan-bound checkpoint and never overwrite earlier evidence.
 - **Safety helper limitation:** `scripts/refine_eval_safety.py` remains a legacy
-  mock-manifest checker. Native Codex enforcement lives in
-  `runner/trusted_host.py`; even its successful preflight is not a live run and
-  an LLM rubric grade never certifies safety.
+  mock-manifest checker, and `runner/trusted_host.py` is historical native
+  evidence. Neither supplies the active Docker boundary. An LLM rubric grade
+  never certifies safety.
 
 Approval for an eval is **not** permission to publish to GitHub/GitLab, send messages or deploy. Work data must not be sent to an unapproved provider. See the [Execution Safety Gate](references/execution-safety-gate.md), [approval rules](references/approval-gates.md), and [security starter cases](evals/README.md).
 

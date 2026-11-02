@@ -41,24 +41,19 @@ derived from the actual result. Bundle-local claims are not replay protection:
 rolling back a bundle must not restore an already consumed approval nonce.
 
 Contract validation is not a sandbox and a JSON receipt is not self-proving.
-The v0.3 native Codex read-only host compiles the actual permission profile,
-requires ChatGPT file login while refusing API-key environments, runs six local
-negative probes, supervises the exact Promptfoo command, normalizes Codex turn
-items, verifies state and cleanup, and publishes append-only evidence. Run
-`trusted_host.py preflight` before binding. Its `READY_NOT_RUN` result does not
-authorize a model call. `trusted_host.py run` additionally requires an exact
-live authorization, sealed Node/Promptfoo/Codex SDK identities without a
-shadowing SDK package, and one approved host-supplied process/session observer
-attestation covering both arms and every judge; the standalone command blocks
-without them. Preserve the exact observer attestation and report any
-post-dispatch failure or interruption as `INCOMPLETE`. Claude, writable, mock-external,
-connector, MCP and Docker execution are unsupported. Capability claims remain
-unverified until a genuine paired proof is separately approved and accepted.
+The [Docker-only v0.4 architecture](../docs/evaluate_skill_execution_architecture_v0_4.md)
+is now the sole approved live-execution design. It requires a digest-pinned,
+shell-free Codex read-only workload, a separate credential gateway, internal
+network, independent host observation, complete cleanup, and authenticated
+evidence. Docker is not installed or implemented yet, so all live runs remain
+`BLOCKED_NOT_RUN`.
 
-Current installed-host evidence (2026-11-02) is `FAIL`: five native probes
-passed, but the sandbox allowed the host-owned inert secondary-process canary.
-Do not issue a native live receipt or weaken that probe. The conditional Docker
-fallback is now required by the architecture and remains separately gated.
+The v0.3 native Codex host is retained only as historical evidence and offline
+regression coverage. Its installed-host probe passed five checks but allowed
+the inert secondary-process canary. Do not issue a native live receipt, weaken
+that probe, or fall back to a provider-native sandbox. Capability claims remain
+unverified until the exact Docker route completes separately approved no-model
+and live paired acceptance.
 
 ## Host/harness contract (must be enforced outside the skill)
 

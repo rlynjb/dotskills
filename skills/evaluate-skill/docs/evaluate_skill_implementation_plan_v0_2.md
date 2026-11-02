@@ -1,5 +1,9 @@
 # Evaluate Skill v0.2 End-to-End Implementation Plan
 
+> **Historical:** Superseded for new live-execution work by the
+> [Docker-Only v0.4 Implementation Plan](./evaluate_skill_docker_implementation_plan_v0_4.md).
+> Completed v0.2 contracts and offline evidence remain supported.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Implement the complete v0.2 evaluation architecture: trusted run planning, verified provider-native execution, independent evidence, bounded mutation and mock profiles, conditional Docker fallback, and full Evaluate Skill workflow integration.

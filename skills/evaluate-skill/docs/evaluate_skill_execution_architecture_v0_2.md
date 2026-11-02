@@ -1,5 +1,10 @@
 # Evaluate Skill — Execution Architecture v0.2
 
+> **Historical:** Superseded for live execution by the
+> [Docker-Only Execution Architecture v0.4](./evaluate_skill_execution_architecture_v0_4.md).
+> This file remains the record of the implemented offline foundation and the
+> earlier native-first decision.
+
 **Status:** Offline foundation implemented · **Scope:** Core reusable execution · **Live release:** Blocked — Not Run
 **Decision:** Provider-native evaluation first; independently verified Docker only when required by the test's capabilities and risk.
 

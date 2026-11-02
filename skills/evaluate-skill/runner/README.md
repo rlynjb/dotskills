@@ -1,5 +1,11 @@
 # Evaluate Skill — provider-specific evaluation workflows (experimental)
 
+> **Active execution decision:** Offline preparation and historical native
+> evidence remain here, but all future live evaluated-agent execution follows
+> the [Docker-only v0.4 architecture](../docs/evaluate_skill_execution_architecture_v0_4.md)
+> and [implementation plan](../docs/evaluate_skill_docker_implementation_plan_v0_4.md).
+> Docker is not installed or implemented yet; native dispatch is not a fallback.
+
 [`native_eval.py`](native_eval.py) prepares and digest-binds provider-specific
 synthetic cases. [`trusted_host.py`](trusted_host.py) is the separate native
 Codex enforcement entry point. It compiles the deny-by-default profile, runs

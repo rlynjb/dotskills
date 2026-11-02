@@ -1,5 +1,10 @@
 # Evaluate Skill Trusted Host Design v0.3
 
+> **Historical native study:** Superseded for live execution by the
+> [Docker-Only Execution Architecture v0.4](./evaluate_skill_execution_architecture_v0_4.md).
+> The implementation and failed secondary-process probe remain preserved as
+> evidence for rejecting native fallback.
+
 **Status:** Implemented and offline-tested; live native acceptance blocked.
 
 **Scope:** A fail-closed, Codex-first trusted host for the native `read-only`

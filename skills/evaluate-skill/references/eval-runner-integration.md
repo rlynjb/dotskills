@@ -1,4 +1,10 @@
-# Evaluate Skill — native evaluation integration (experimental)
+# Evaluate Skill — provider evaluation integration (experimental)
+
+> **Active execution decision:** Provider-specific case and result formats are
+> retained, but the [Docker-only v0.4 architecture](../docs/evaluate_skill_execution_architecture_v0_4.md)
+> requires every live evaluated arm to run inside the verified Docker boundary.
+> Native provider sandboxes are not execution backends or fallbacks. Until the
+> Docker route is implemented and proven, live status is **Blocked — Not Run**.
 
 This guide explains how Stages 3–4 and 9–10 use the coding harness's **own
 evaluation workflow**, with no cross-provider substitution. See
@@ -62,18 +68,17 @@ Preserve the approved source case and fixture files unmodified.
 7. Inspect the generated artifacts, then run `native_eval.py bind` to bind the
    prepared bundle's artifact digest and resource limits to the exact approved
    plan. A changed or reused bundle is **Blocked — Not Run**.
-8. For the native Codex read-only route, run `trusted_host.py preflight` first.
-   It compiles the exact permission profile and runs six local sandbox probes
-   without Promptfoo or a model. Review its four no-replace artifacts and bind
-   the issued receipt with `native_eval.py bind`. `READY_NOT_RUN` is not live
-   authorization.
-9. Live dispatch additionally requires a fresh `APPROVED_LIVE_RUN` object bound
-   to the complete preflight digest and an approved host embedding that supplies
-   the trusted process runner plus independent session observer. Then invoke
-   `trusted_host.py run` with the protected consumed-nonce ledger. The standalone
-   CLI blocks if that observer is absent. Preserve raw Promptfoo output,
-   normalized per-arm results, quality data, traces, state and cleanup evidence.
-   Never infer identity from expected config or Promptfoo's own claim alone.
+8. Require the Docker-only v0.4 preflight: exact runtime/image provenance,
+   shell-free tool surface, internal workload network, provider gateway,
+   negative probes, observer, state method, and cleanup policy. That preflight
+   is not implemented yet, so current execution stops as **Blocked — Not Run**.
+   Do not substitute the historical `trusted_host.py` native preflight.
+9. When implemented, live dispatch additionally requires a fresh
+   `APPROVED_LIVE_RUN` object bound to the complete Docker preflight, a protected
+   consumed-nonce ledger, and the approved Docker supervisor/gateway/observer.
+   Preserve provider-native output, normalized per-arm results, quality data,
+   gateway and tool decisions, container evidence, state, and cleanup. Never
+   infer identity from expected config or the provider's own claim alone.
 10. Finalize both arms against the manifest execution ID, receipt nonce, and raw
    source-result digest with separate provider and host-evidence outcomes. Apply
    `next_stage_decision` and persist an append-only `write_stage_checkpoint`
@@ -111,6 +116,11 @@ execution or failed/unknown safety.
 
 ## What is implemented and what remains unverified
 
+Docker-only v0.4 is the approved live architecture but remains an implementation
+plan. Docker is not installed in the current environment, no image has been
+built or probed, and no provider route is verified. Live status is therefore
+**Blocked — Not Run** with no native fallback.
+
 The v0.3 implementation adds the native Codex read-only trusted host: exact
 policy compilation; isolated file-login/API-key refusal; pinned Node, Codex,
 and Promptfoo executables; sealed Promptfoo and Codex SDK runtime trees; six
@@ -125,11 +135,10 @@ connector, MCP, or Docker routes.
 
 The acceptance suite is
 [`test_acceptance_v0_2.py`](../runner/test_acceptance_v0_2.py). No end-to-end
-live model evaluation has been demonstrated. The local native boundary may be
-probed without a model. The 2026-11-02 run passed five probes and failed the
-inert secondary-process route, so native live execution is blocked. That
-documented gap triggers the conditional Docker design path; Docker remains
-unimplemented and must not be executed without separate approval.
+live model evaluation has been demonstrated. The 2026-11-02 native run passed
+five probes and failed the inert secondary-process route. That implementation
+is retained as historical evidence and regression coverage, not as an active
+execution option.
 
 The Evaluate Skill's twelve stages, guided teaching, methodology lenses,
 fixture preservation and human approval gates remain unchanged.

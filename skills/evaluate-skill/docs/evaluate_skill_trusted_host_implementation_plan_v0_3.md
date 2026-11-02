@@ -1,5 +1,9 @@
 # Evaluate Skill Trusted Host v0.3 Implementation Plan
 
+> **Historical:** The native implementation is retained for evidence and
+> regression tests, but new execution work follows the
+> [Docker-Only v0.4 Implementation Plan](./evaluate_skill_docker_implementation_plan_v0_4.md).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add the trusted native host that can independently enforce and prove a pinned, read-only Codex evaluation boundary before Evaluate Skill runs a live paired case.
