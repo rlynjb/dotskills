@@ -1,0 +1,127 @@
+{
+  "schema_version": "0.2",
+  "platform": "darwin-local-baseline",
+  "required_versions": {
+    "promptfoo": "0.125.1",
+    "codex": "0.163.0",
+    "claude": "2.1.302"
+  },
+  "capabilities": [
+    "filesystem_read",
+    "filesystem_write",
+    "shell",
+    "network",
+    "mock_tools",
+    "credentials",
+    "side_effects",
+    "action_trace",
+    "state_verification",
+    "cleanup"
+  ],
+  "claim_sets": {
+    "native-unverified": {
+      "filesystem_read": {
+        "status": "unverified",
+        "required_probes": ["read-outside-workspace"]
+      },
+      "filesystem_write": {
+        "status": "unverified",
+        "required_probes": ["write-outside-workspace"]
+      },
+      "shell": {
+        "status": "unverified",
+        "required_probes": ["secondary-tool-route"]
+      },
+      "network": {
+        "status": "unverified",
+        "required_probes": ["network-egress"]
+      },
+      "mock_tools": {
+        "status": "unverified",
+        "required_probes": ["secondary-tool-route"]
+      },
+      "credentials": {
+        "status": "unverified",
+        "required_probes": ["environment-secret"]
+      },
+      "side_effects": {
+        "status": "unverified",
+        "required_probes": ["secondary-tool-route"]
+      },
+      "action_trace": {
+        "status": "unverified",
+        "required_probes": ["action-trace-completeness"]
+      },
+      "state_verification": {
+        "status": "unverified",
+        "required_probes": ["state-snapshot"]
+      },
+      "cleanup": {
+        "status": "unverified",
+        "required_probes": ["cleanup-verification"]
+      }
+    },
+    "docker-unsupported": {
+      "filesystem_read": {"status": "unsupported", "required_probes": []},
+      "filesystem_write": {"status": "unsupported", "required_probes": []},
+      "shell": {"status": "unsupported", "required_probes": []},
+      "network": {"status": "unsupported", "required_probes": []},
+      "mock_tools": {"status": "unsupported", "required_probes": []},
+      "credentials": {"status": "unsupported", "required_probes": []},
+      "side_effects": {"status": "unsupported", "required_probes": []},
+      "action_trace": {"status": "unsupported", "required_probes": []},
+      "state_verification": {"status": "unsupported", "required_probes": []},
+      "cleanup": {"status": "unsupported", "required_probes": []}
+    }
+  },
+  "providers": {
+    "codex": {
+      "provider_id": "openai",
+      "provider_version": "0.163.0",
+      "adapter_id": "promptfoo-codex-sdk",
+      "adapter_version": "0.125.1",
+      "backends": {
+        "native": {
+          "profiles": {
+            "no-tool": "native-unverified",
+            "read-only": "native-unverified",
+            "disposable-write": "native-unverified",
+            "mock-external": "native-unverified"
+          }
+        },
+        "docker": {
+          "profiles": {
+            "no-tool": "docker-unsupported",
+            "read-only": "docker-unsupported",
+            "disposable-write": "docker-unsupported",
+            "mock-external": "docker-unsupported"
+          }
+        }
+      }
+    },
+    "claude": {
+      "provider_id": "anthropic",
+      "provider_version": "2.1.302",
+      "adapter_id": "promptfoo-claude-agent-sdk",
+      "adapter_version": "0.125.1",
+      "backends": {
+        "native": {
+          "profiles": {
+            "no-tool": "native-unverified",
+            "read-only": "native-unverified",
+            "disposable-write": "native-unverified",
+            "mock-external": "native-unverified"
+          }
+        },
+        "docker": {
+          "profiles": {
+            "no-tool": "docker-unsupported",
+            "read-only": "docker-unsupported",
+            "disposable-write": "docker-unsupported",
+            "mock-external": "docker-unsupported"
+          }
+        }
+      }
+    }
+  }
+}
