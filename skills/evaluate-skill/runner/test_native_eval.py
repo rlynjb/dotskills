@@ -1,4 +1,5 @@
 from contextlib import redirect_stderr, redirect_stdout
+import copy
 from datetime import datetime, timedelta, timezone
 from io import StringIO
 import json
@@ -9,6 +10,7 @@ import unittest
 from unittest.mock import patch
 
 import contracts as c
+import codex_host as ch
 import native_eval as n
 
 class NativeRouteTests(unittest.TestCase):
@@ -69,8 +71,8 @@ class NativeRouteTests(unittest.TestCase):
             (inputs/'input.txt').write_text('synthetic fixture\n', encoding='utf-8')
         (bundle/'codex'/'promptfooconfig.yaml').write_text(json.dumps({
             'providers': [
-                {'id': 'openai:codex-sdk', 'config': {}},
-                {'id': 'openai:codex-sdk', 'config': {}},
+                {'id': 'openai:codex-sdk', 'label': 'with_skill', 'config': {}},
+                {'id': 'openai:codex-sdk', 'label': 'without_skill', 'config': {}},
             ],
             'tests': [{'vars': {'question': 'synthetic prompt'}, 'assert': [{
                 'type': 'llm-rubric',
@@ -84,6 +86,28 @@ class NativeRouteTests(unittest.TestCase):
         manifest.update(n._staged_revisions(bundle, manifest))
         (bundle/'manifest.json').write_text(json.dumps(manifest), encoding='utf-8')
         return bundle
+
+    def host_policy(self, root, bundle, *, mcp_servers=("cua_repl", "node_repl")):
+        host_root = root / "trusted-host-inputs"
+        host_root.mkdir(exist_ok=True)
+        command_line_tools = host_root / "CommandLineTools"
+        command_line_tools.mkdir(exist_ok=True)
+        home = host_root / "home"
+        home.mkdir(exist_ok=True)
+        protected = host_root / "protected"
+        protected.mkdir(exist_ok=True)
+        codex = host_root / "codex"
+        if not codex.exists():
+            codex.write_text("binary placeholder\n", encoding="utf-8")
+            codex.chmod(0o700)
+        return ch.compile_read_only_policy(
+            workspace=bundle.resolve(),
+            codex_path=codex,
+            command_line_tools_root=command_line_tools,
+            home=home,
+            mcp_servers=mcp_servers,
+            protected_roots=(protected,),
+        )
 
     def plan_value(self):
         return {
@@ -227,7 +251,9 @@ class NativeRouteTests(unittest.TestCase):
         bundle = self.prepared_bundle(root)
         value = self.plan_value_for_bundle(bundle)
         plan = c.RunPlan.from_dict(value)
-        configured = n.configure_prepared_bundle(bundle, plan)
+        configured = n.configure_prepared_bundle(
+            bundle, plan, self.host_policy(root, bundle)
+        )
         policy = self.policy_files(
             root,
             verified=verified,
@@ -362,7 +388,9 @@ class NativeRouteTests(unittest.TestCase):
             bundle = self.prepared_bundle(root)
             original_value = self.plan_value_for_bundle(bundle)
             original_plan = c.RunPlan.from_dict(original_value)
-            configured = n.configure_prepared_bundle(bundle, original_plan)
+            configured = n.configure_prepared_bundle(
+                bundle, original_plan, self.host_policy(root, bundle)
+            )
             policy = self.policy_files(
                 root,
                 verified=True,
@@ -414,7 +442,8 @@ class NativeRouteTests(unittest.TestCase):
                 value[field] = prepared[field]
             plan = c.RunPlan.from_dict(value)
 
-            configured = n.configure_prepared_bundle(bundle, plan)
+            policy = self.host_policy(root, bundle)
+            configured = n.configure_prepared_bundle(bundle, plan, policy)
             config = json.loads(
                 (bundle / 'codex' / 'promptfooconfig.yaml').read_text(
                     encoding='utf-8'
@@ -439,6 +468,168 @@ class NativeRouteTests(unittest.TestCase):
                 self.assertEqual(
                     provider_config['max_turns'], plan.resource_limits['max_turns']
                 )
+                self.assertEqual(
+                    provider_config['cli_config'], policy.canonical_payload()['cli_config']
+                )
+
+    def test_configure_injects_exact_host_policy_into_both_arms_and_judge(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            bundle = self.prepared_bundle(root)
+            plan = c.RunPlan.from_dict(self.plan_value_for_bundle(bundle))
+            policy = self.host_policy(root, bundle)
+
+            n.configure_prepared_bundle(bundle, plan, policy)
+            config = json.loads(
+                (bundle / 'codex' / 'promptfooconfig.yaml').read_text(encoding='utf-8')
+            )
+            provider_configs = [item['config'] for item in config['providers']]
+            provider_configs.extend(
+                assertion['provider']['config']
+                for test in config['tests']
+                for assertion in test['assert']
+            )
+
+            self.assertEqual(len(provider_configs), 3)
+            expected_cli_config = policy.canonical_payload()['cli_config']
+            expected_cli_env = dict(policy.process_environment)
+            for provider_config in provider_configs:
+                self.assertEqual(provider_config['cli_config'], expected_cli_config)
+                self.assertEqual(provider_config['cli_env'], expected_cli_env)
+                self.assertEqual(provider_config['approval_policy'], 'never')
+                self.assertEqual(provider_config['web_search_mode'], 'disabled')
+                self.assertFalse(provider_config['persist_threads'])
+                self.assertFalse(provider_config['inherit_process_env'])
+                self.assertTrue(provider_config['enable_streaming'])
+
+    def test_configure_removes_legacy_sandbox_mode_and_ambient_network_fields(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            bundle = self.prepared_bundle(root)
+            config_path = bundle / 'codex' / 'promptfooconfig.yaml'
+            config = json.loads(config_path.read_text(encoding='utf-8'))
+            configs = [item['config'] for item in config['providers']]
+            configs.extend(
+                assertion['provider']['config']
+                for test in config['tests']
+                for assertion in test['assert']
+            )
+            for provider_config in configs:
+                provider_config.update(
+                    sandbox_mode='read-only',
+                    network_access_enabled=True,
+                    web_search_enabled=True,
+                )
+            config_path.write_text(json.dumps(config) + '\n', encoding='utf-8')
+            plan = c.RunPlan.from_dict(self.plan_value_for_bundle(bundle))
+
+            n.configure_prepared_bundle(bundle, plan, self.host_policy(root, bundle))
+            configured = json.loads(config_path.read_text(encoding='utf-8'))
+            configured_values = [item['config'] for item in configured['providers']]
+            configured_values.extend(
+                assertion['provider']['config']
+                for test in configured['tests']
+                for assertion in test['assert']
+            )
+            for provider_config in configured_values:
+                self.assertNotIn('sandbox_mode', provider_config)
+                self.assertNotIn('network_access_enabled', provider_config)
+                self.assertNotIn('web_search_enabled', provider_config)
+
+    def test_configure_disables_cache_sharing_telemetry_updates_and_remote_generation(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            bundle = self.prepared_bundle(root)
+            plan = c.RunPlan.from_dict(self.plan_value_for_bundle(bundle))
+
+            n.configure_prepared_bundle(
+                bundle, plan, self.host_policy(root, bundle)
+            )
+            config = json.loads(
+                (bundle / 'codex' / 'promptfooconfig.yaml').read_text(encoding='utf-8')
+            )
+
+            self.assertEqual(
+                config['commandLineOptions'], {'cache': False, 'share': False}
+            )
+            self.assertEqual(
+                config['env'],
+                {
+                    'PROMPTFOO_DISABLE_REMOTE_GENERATION': '1',
+                    'PROMPTFOO_DISABLE_SHARING': '1',
+                    'PROMPTFOO_DISABLE_TELEMETRY': '1',
+                    'PROMPTFOO_DISABLE_UPDATE': '1',
+                },
+            )
+
+    def test_configure_rejects_mismatched_arm_or_judge_policy(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            bundle = self.prepared_bundle(root)
+            plan = c.RunPlan.from_dict(self.plan_value_for_bundle(bundle))
+            policy = self.host_policy(root, bundle)
+            n.configure_prepared_bundle(bundle, plan, policy)
+            config_path = bundle / 'codex' / 'promptfooconfig.yaml'
+            config = json.loads(config_path.read_text(encoding='utf-8'))
+            config['providers'][0]['config']['cli_config']['features']['apps'] = True
+            config_path.write_text(json.dumps(config) + '\n', encoding='utf-8')
+
+            with self.assertRaisesRegex(n.Blocked, 'host policy'):
+                n.validate_configured_host_policy(bundle, policy)
+
+    def test_configure_digest_changes_for_any_host_policy_field(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            bundle = self.prepared_bundle(root)
+            plan = c.RunPlan.from_dict(self.plan_value_for_bundle(bundle))
+            policy = self.host_policy(root, bundle)
+            manifest = n.configure_prepared_bundle(bundle, plan, policy)
+            original = manifest['provider_config_digest']
+            config_path = bundle / 'codex' / 'promptfooconfig.yaml'
+            config = json.loads(config_path.read_text(encoding='utf-8'))
+            config['providers'][0]['config']['cli_config']['features']['apps'] = True
+            config_path.write_text(json.dumps(config) + '\n', encoding='utf-8')
+
+            self.assertNotEqual(original, n._provider_config_digest(bundle, manifest))
+
+    def test_configure_rejects_enabled_mcp_web_app_collaboration_or_thread_reuse(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            bundle = self.prepared_bundle(root)
+            plan = c.RunPlan.from_dict(self.plan_value_for_bundle(bundle))
+            policy = self.host_policy(root, bundle)
+            n.configure_prepared_bundle(bundle, plan, policy)
+            config_path = bundle / 'codex' / 'promptfooconfig.yaml'
+            original = json.loads(config_path.read_text(encoding='utf-8'))
+
+            def enable_mcp(value):
+                value['cli_config']['mcp_servers']['cua_repl']['enabled'] = True
+
+            def enable_app(value):
+                value['cli_config']['features']['apps'] = True
+
+            def enable_web(value):
+                value['web_search_mode'] = 'live'
+
+            def enable_collaboration(value):
+                value['collaboration_mode'] = 'coding'
+
+            def enable_thread_reuse(value):
+                value['persist_threads'] = True
+
+            for name, mutate in (
+                ('mcp', enable_mcp),
+                ('app', enable_app),
+                ('web', enable_web),
+                ('collaboration', enable_collaboration),
+                ('thread', enable_thread_reuse),
+            ):
+                with self.subTest(name=name):
+                    changed = copy.deepcopy(original)
+                    mutate(changed['providers'][0]['config'])
+                    config_path.write_text(json.dumps(changed) + '\n', encoding='utf-8')
+                    with self.assertRaises(n.Blocked):
+                        n.validate_configured_host_policy(bundle, policy)
 
     def test_configure_recomputes_staged_revisions_instead_of_trusting_manifest(self):
         with TemporaryDirectory() as temp:
@@ -454,7 +645,9 @@ class NativeRouteTests(unittest.TestCase):
             staged_skill.write_text('tampered after preparation\n', encoding='utf-8')
 
             with self.assertRaisesRegex(n.Blocked, 'skill_revision claim'):
-                n.configure_prepared_bundle(bundle, plan)
+                n.configure_prepared_bundle(
+                    bundle, plan, self.host_policy(root, bundle)
+                )
 
     def test_claude_command_selects_approved_model_version(self):
         with TemporaryDirectory() as temp:
@@ -491,7 +684,9 @@ class NativeRouteTests(unittest.TestCase):
             bundle = self.prepared_bundle(root)
             plan_value = self.plan_value_for_bundle(bundle)
             plan = c.RunPlan.from_dict(plan_value)
-            configured = n.configure_prepared_bundle(bundle, plan)
+            configured = n.configure_prepared_bundle(
+                bundle, plan, self.host_policy(root, bundle)
+            )
             policy = self.policy_files(
                 root,
                 verified=True,

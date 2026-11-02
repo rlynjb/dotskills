@@ -643,8 +643,11 @@ def _validate_preflight_request(request: PreflightRequest) -> tuple[Path, Path, 
     try:
         bundle_digest = native_eval._bundle_digest(bundle)
         provider_digest = native_eval._provider_config_digest(bundle, manifest)
+        native_eval.validate_configured_host_policy(bundle, request.policy)
     except native_eval.Blocked as exc:
         raise CodexHostError(f"configured bundle cannot be revalidated: {exc}") from None
+    if manifest.get("host_policy_digest") != request.policy.digest():
+        raise CodexHostError("configured bundle host policy digest changed")
     if manifest.get("bundle_digest") != bundle_digest:
         raise CodexHostError("configured bundle digest changed")
     if manifest.get("provider_config_digest") != provider_digest:

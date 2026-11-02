@@ -253,10 +253,21 @@ class TrustedPreflightTests(unittest.TestCase):
             json.dumps(
                 {
                     "providers": [
-                        {"id": "openai:codex-sdk", "config": {}},
-                        {"id": "openai:codex-sdk", "config": {}},
+                        {"id": "openai:codex-sdk", "label": "with_skill", "config": {}},
+                        {"id": "openai:codex-sdk", "label": "without_skill", "config": {}},
                     ],
-                    "tests": [],
+                    "tests": [
+                        {
+                            "vars": {"question": "synthetic"},
+                            "assert": [
+                                {
+                                    "type": "llm-rubric",
+                                    "value": "synthetic rubric",
+                                    "provider": {"id": "openai:codex-sdk", "config": {}},
+                                }
+                            ],
+                        }
+                    ],
                 }
             )
             + "\n",
@@ -319,6 +330,34 @@ class TrustedPreflightTests(unittest.TestCase):
             home=home,
             mcp_servers=("cua_repl", "node_repl"),
             protected_roots=(protected,),
+        )
+        execution_path = bundle / "execution-config.json"
+        execution_config = json.loads(execution_path.read_text(encoding="utf-8"))
+        execution_config["host_policy_digest"] = policy.digest()
+        execution_path.write_text(
+            json.dumps(execution_config, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        promptfoo_path = bundle / "codex" / "promptfooconfig.yaml"
+        promptfoo = json.loads(promptfoo_path.read_text(encoding="utf-8"))
+        for provider in promptfoo["providers"]:
+            provider["config"] = ne._expected_codex_provider_config(
+                policy, execution_config, f"./{provider['label']}"
+            )
+        promptfoo["tests"][0]["assert"][0]["provider"]["config"] = (
+            ne._expected_codex_provider_config(policy, execution_config, "./judge")
+        )
+        promptfoo["commandLineOptions"] = {"share": False, "cache": False}
+        promptfoo["env"] = dict(ne._PROMPTFOO_SAFE_ENV)
+        promptfoo_path.write_text(
+            json.dumps(promptfoo, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        manifest_path = bundle / "manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["host_policy_digest"] = policy.digest()
+        manifest["provider_config_digest"] = ne._provider_config_digest(bundle, manifest)
+        manifest["bundle_digest"] = ne._bundle_digest(bundle)
+        manifest_path.write_text(
+            json.dumps(manifest, sort_keys=True) + "\n", encoding="utf-8"
         )
         inventory = ci.load_inventory(Path(__file__).with_name("provider_capabilities_v0_2.json"))
         attestation = ch.attest_host(

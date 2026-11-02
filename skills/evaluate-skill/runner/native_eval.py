@@ -23,6 +23,7 @@ from capability_inventory import (
     load_inventory,
 )
 from contracts import ApprovalReceipt, EnforcementReceipt, RunPlan
+from codex_host import CodexHostPolicy
 from evidence import (
     EvidenceBundle,
     EvidenceError,
@@ -37,6 +38,14 @@ from evidence import (
 )
 from execution_policy import assess_run
 from native_boundary import NativeBoundaryResult
+
+
+_PROMPTFOO_SAFE_ENV = {
+    'PROMPTFOO_DISABLE_REMOTE_GENERATION': '1',
+    'PROMPTFOO_DISABLE_SHARING': '1',
+    'PROMPTFOO_DISABLE_TELEMETRY': '1',
+    'PROMPTFOO_DISABLE_UPDATE': '1',
+}
 
 class Blocked(Exception):
     pass
@@ -844,14 +853,13 @@ def prepare(args, *, env=None):
                 copy_inputs(source, inputs, cd / arm / 'inputs')
         def provider(dir_name):
             return {'id': 'openai:codex-sdk', 'label': dir_name,
-                    'config': {'working_dir': f'./{dir_name}', 'sandbox_mode': 'read-only',
-                               'approval_policy': 'never', 'network_access_enabled': False,
-                               'web_search_enabled': False, 'persist_threads': False,
+                    'config': {'working_dir': f'./{dir_name}',
+                               'approval_policy': 'never', 'web_search_mode': 'disabled',
+                               'persist_threads': False,
                                'inherit_process_env': False, 'skip_git_repo_check': True}}
         judge = {'id': 'openai:codex-sdk', 'config': {
-            'working_dir': './judge', 'sandbox_mode': 'read-only',
-            'approval_policy': 'never', 'network_access_enabled': False,
-            'web_search_enabled': False, 'inherit_process_env': False,
+            'working_dir': './judge', 'approval_policy': 'never',
+            'web_search_mode': 'disabled', 'inherit_process_env': False,
             'skip_git_repo_check': True, 'persist_threads': False}}
         config = {'description': f'Evaluate Skill synthetic case {case_name}',
                   'prompts': ['{{question}}'],
@@ -988,7 +996,119 @@ def _provider_config_digest(bundle, manifest):
     return _canonical_sha256({'files': records})
 
 
-def configure_prepared_bundle(bundle, plan):
+def _expected_codex_provider_config(host_policy, execution_config, working_dir):
+    limits = execution_config['resource_limits']
+    return {
+        'working_dir': working_dir,
+        'approval_policy': 'never',
+        'web_search_mode': 'disabled',
+        'persist_threads': False,
+        'inherit_process_env': False,
+        'skip_git_repo_check': True,
+        'enable_streaming': True,
+        'deep_tracing': False,
+        'cli_config': host_policy.canonical_payload()['cli_config'],
+        'cli_env': dict(host_policy.process_environment),
+        'model': execution_config['model_version'],
+        'max_turns': int(limits['max_turns']),
+        'max_cost_usd': limits['max_cost_usd'],
+    }
+
+
+def _validate_codex_host_config(config, host_policy, execution_config):
+    if not isinstance(config, dict):
+        raise Blocked('Configured Promptfoo file must contain an object')
+    allowed_top = frozenset(
+        ('description', 'prompts', 'providers', 'tests', 'commandLineOptions', 'env')
+    )
+    unknown_top = sorted(set(config) - allowed_top)
+    if unknown_top:
+        raise Blocked('Configured Promptfoo file has unsafe top-level fields')
+    if config.get('commandLineOptions') != {'share': False, 'cache': False}:
+        raise Blocked('Configured Promptfoo cache and sharing controls are incomplete')
+    if config.get('env') != _PROMPTFOO_SAFE_ENV:
+        raise Blocked('Configured Promptfoo host environment controls are incomplete')
+
+    providers = config.get('providers')
+    tests = config.get('tests')
+    if not isinstance(providers, list) or len(providers) != 2 or not isinstance(tests, list):
+        raise Blocked('Configured Promptfoo comparison structure is invalid')
+    expected_arms = {
+        'with_skill': './with_skill',
+        'without_skill': './without_skill',
+    }
+    observed_labels = set()
+    for provider in providers:
+        if not isinstance(provider, dict) or set(provider) != {'id', 'label', 'config'}:
+            raise Blocked('Configured Promptfoo arm provider shape is invalid')
+        if provider.get('id') != 'openai:codex-sdk':
+            raise Blocked('Configured Promptfoo arm provider changed')
+        label = provider.get('label')
+        if label not in expected_arms or label in observed_labels:
+            raise Blocked('Configured Promptfoo arm labels are not exact')
+        observed_labels.add(label)
+        expected = _expected_codex_provider_config(
+            host_policy, execution_config, expected_arms[label]
+        )
+        if provider.get('config') != expected:
+            raise Blocked('Configured Promptfoo arm host policy does not match')
+    if observed_labels != set(expected_arms):
+        raise Blocked('Configured Promptfoo comparison arms are incomplete')
+
+    judge_count = 0
+    for test in tests:
+        if not isinstance(test, dict) or set(test) != {'vars', 'assert'}:
+            raise Blocked('Configured Promptfoo test shape is invalid')
+        assertions = test.get('assert')
+        if not isinstance(test.get('vars'), dict) or not isinstance(assertions, list):
+            raise Blocked('Configured Promptfoo assertions are malformed')
+        for assertion in assertions:
+            if (
+                not isinstance(assertion, dict)
+                or set(assertion) != {'type', 'value', 'provider'}
+                or assertion.get('type') != 'llm-rubric'
+            ):
+                raise Blocked('Configured Promptfoo rubric assertion shape is invalid')
+            judge = assertion.get('provider')
+            if not isinstance(judge, dict) or set(judge) != {'id', 'config'}:
+                raise Blocked('Configured Promptfoo judge shape is invalid')
+            if judge.get('id') != 'openai:codex-sdk':
+                raise Blocked('Configured Promptfoo judge provider changed')
+            expected = _expected_codex_provider_config(
+                host_policy, execution_config, './judge'
+            )
+            if judge.get('config') != expected:
+                raise Blocked('Configured Promptfoo judge host policy does not match')
+            judge_count += 1
+    if judge_count < 1:
+        raise Blocked('Configured Promptfoo judge is missing')
+
+
+def validate_configured_host_policy(bundle, host_policy):
+    """Re-read and fail closed on any Codex arm or judge policy drift."""
+    if not isinstance(host_policy, CodexHostPolicy):
+        raise Blocked('A compiled Codex host policy is required')
+    bundle = Path(bundle).resolve()
+    if bundle != host_policy.workspace:
+        raise Blocked('Codex host policy workspace does not match the bundle')
+    execution_path = bundle / 'execution-config.json'
+    config_path = bundle / 'codex' / 'promptfooconfig.yaml'
+    if (
+        not execution_path.is_file()
+        or execution_path.is_symlink()
+        or not config_path.is_file()
+        or config_path.is_symlink()
+    ):
+        raise Blocked('Configured Codex host policy files must be regular files')
+    execution_config = _json_file(execution_path, 'provider execution config')
+    if execution_config.get('host_policy_digest') != host_policy.digest():
+        raise Blocked('Configured execution host policy digest does not match')
+    config = _json_file(config_path, 'configured Promptfoo config')
+    _validate_codex_host_config(config, host_policy, execution_config)
+    return host_policy.digest()
+
+
+def configure_prepared_bundle(bundle, plan, host_policy=None):
     """Materialize an exact, reviewable provider config from the approved plan."""
     if not isinstance(plan, RunPlan):
         raise TypeError('run plan is required')
@@ -1027,6 +1147,12 @@ def configure_prepared_bundle(bundle, plan):
         'resource_limits': dict(plan.resource_limits),
         'comparison_arms': list(plan.comparison_arms),
     }
+    if expected_harness == 'codex':
+        if not isinstance(host_policy, CodexHostPolicy):
+            raise Blocked('A compiled Codex host policy is required')
+        if host_policy.workspace != bundle:
+            raise Blocked('Codex host policy workspace does not match prepared bundle')
+        execution_config['host_policy_digest'] = host_policy.digest()
     execution_path = bundle / 'execution-config.json'
     execution_path.write_text(
         json.dumps(execution_config, indent=2, sort_keys=True) + '\n',
@@ -1040,10 +1166,24 @@ def configure_prepared_bundle(bundle, plan):
         tests = config.get('tests')
         if not isinstance(providers, list) or len(providers) != 2 or not isinstance(tests, list):
             raise Blocked('Prepared Promptfoo config has unexpected comparison structure')
+        arm_working_directories = {
+            'with_skill': './with_skill',
+            'without_skill': './without_skill',
+        }
+        observed_labels = set()
         for provider in providers:
             if not isinstance(provider, dict) or provider.get('id') != 'openai:codex-sdk':
                 raise Blocked('Prepared Promptfoo provider is not the approved adapter')
-            provider_configs.append(provider.get('config'))
+            label = provider.get('label')
+            if label not in arm_working_directories or label in observed_labels:
+                raise Blocked('Prepared Promptfoo comparison labels are not exact')
+            observed_labels.add(label)
+            provider['config'] = _expected_codex_provider_config(
+                host_policy, execution_config, arm_working_directories[label]
+            )
+            provider_configs.append(provider['config'])
+        if observed_labels != set(arm_working_directories):
+            raise Blocked('Prepared Promptfoo comparison arms are incomplete')
         for test in tests:
             assertions = test.get('assert') if isinstance(test, dict) else None
             if not isinstance(assertions, list):
@@ -1052,14 +1192,15 @@ def configure_prepared_bundle(bundle, plan):
                 judge = assertion.get('provider') if isinstance(assertion, dict) else None
                 if not isinstance(judge, dict) or judge.get('id') != 'openai:codex-sdk':
                     raise Blocked('Prepared Promptfoo judge is not the approved adapter')
-                provider_configs.append(judge.get('config'))
-        for provider_config in provider_configs:
-            if not isinstance(provider_config, dict):
-                raise Blocked('Prepared Promptfoo provider config is malformed')
-            provider_config['model'] = plan.model_version
-            provider_config['max_turns'] = int(plan.resource_limits['max_turns'])
-            provider_config['max_cost_usd'] = plan.resource_limits['max_cost_usd']
+                judge['config'] = _expected_codex_provider_config(
+                    host_policy, execution_config, './judge'
+                )
+                provider_configs.append(judge['config'])
+        config['commandLineOptions'] = {'share': False, 'cache': False}
+        config['env'] = dict(_PROMPTFOO_SAFE_ENV)
+        _validate_codex_host_config(config, host_policy, execution_config)
         config_path.write_text(json.dumps(config, indent=2) + '\n', encoding='utf-8')
+        validate_configured_host_policy(bundle, host_policy)
     else:
         prompts = sorted((bundle / 'plugin' / 'evals').glob('*/prompt.md'))
         if len(prompts) != 1:
@@ -1085,6 +1226,8 @@ def configure_prepared_bundle(bundle, plan):
         'adapter_version': plan.adapter_version,
         'resource_limits': dict(plan.resource_limits),
     })
+    if expected_harness == 'codex':
+        manifest['host_policy_digest'] = host_policy.digest()
     manifest['provider_config_digest'] = _provider_config_digest(bundle, manifest)
     manifest['bundle_digest'] = _bundle_digest(bundle)
     _write_manifest_atomic(manifest_path, manifest)
