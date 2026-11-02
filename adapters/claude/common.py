@@ -50,6 +50,14 @@ def select(args):
 def safe_destination(path):
     """Do not follow links or let an output overwrite canonical repository files."""
     path = path.expanduser().absolute()
+    # macOS exposes root-owned compatibility aliases such as /var -> /private/var.
+    # Canonicalize only that first, administrator-controlled component so normal
+    # tempfile paths work while links deeper in the requested destination remain
+    # visible to (and rejected by) the check below.
+    if len(path.parts) > 1:
+        root_alias = Path(path.anchor) / path.parts[1]
+        if root_alias.is_symlink():
+            path = root_alias.resolve() / Path(*path.parts[2:])
     if any(p.is_symlink() for p in (path, *path.parents)):
         raise ValueError(f'Destination contains a symlink: {path}')
     path = path.resolve()

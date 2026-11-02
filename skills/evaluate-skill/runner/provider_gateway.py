@@ -570,4 +570,3 @@ def probe_codex_gateway_compatibility(
     status = "READY_NOT_RUN" if response.get("synthetic") is True else "BLOCKED_NOT_RUN"
     return MappingProxyType({"status": status, "model_executed": False})
 
-
