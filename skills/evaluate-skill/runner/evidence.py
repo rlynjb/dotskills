@@ -394,9 +394,10 @@ def audit_trace(
     trace_complete = False
     cleanup_complete = False
     infra_error = False
-    known_types = frozenset(
-        ("run_start", "tool_attempt", "file_write", "model_result", "run_error", "run_end")
-    )
+    known_types = frozenset((
+        "run_start", "tool_attempt", "file_write", "provider_item",
+        "model_result", "run_error", "run_end",
+    ))
     for index, event in enumerate(events, 1):
         if not isinstance(event, Mapping):
             issues.append(f"event {index}: invalid event")
@@ -424,6 +425,33 @@ def audit_trace(
                 violation = True
             if event.get("outcome") not in ("blocked", "mocked", "failed", "completed"):
                 issues.append(f"event {index}: effect outcome not proved safe")
+                violation = True
+        elif kind == "provider_item":
+            expected_fields = {
+                "type", "item_type", "item_id_digest", "content_digest",
+                "content_bytes", "source_result_digest",
+            }
+            digests = (
+                event.get("item_id_digest"),
+                event.get("content_digest"),
+                event.get("source_result_digest"),
+            )
+            valid_digests = all(
+                isinstance(value, str)
+                and len(value) == 64
+                and all(character in "0123456789abcdef" for character in value)
+                for value in digests
+            )
+            content_bytes = event.get("content_bytes")
+            if (
+                set(event) != expected_fields
+                or event.get("item_type") not in ("reasoning", "agent_message")
+                or not valid_digests
+                or isinstance(content_bytes, bool)
+                or not isinstance(content_bytes, int)
+                or content_bytes < 0
+            ):
+                issues.append(f"event {index}: malformed provider_item")
                 violation = True
         elif kind == "run_error":
             infra_error = True

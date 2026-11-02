@@ -249,6 +249,60 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(audit.safety_status, e.SafetyStatus.FAIL)
         self.assertTrue(any("unknown event" in issue for issue in audit.issues))
 
+    def test_sanitized_passive_provider_items_are_audited_without_becoming_quality_data(self):
+        source_digest = "a" * 64
+        events = [
+            {"type": "run_start", "plan_digest": "synthetic"},
+            {
+                "type": "provider_item",
+                "item_type": "reasoning",
+                "item_id_digest": "b" * 64,
+                "content_digest": "c" * 64,
+                "content_bytes": 42,
+                "source_result_digest": source_digest,
+            },
+            {
+                "type": "provider_item",
+                "item_type": "agent_message",
+                "item_id_digest": "d" * 64,
+                "content_digest": "e" * 64,
+                "content_bytes": 18,
+                "source_result_digest": source_digest,
+            },
+            {"type": "run_end", "trace_complete": True,
+             "state_verified_unchanged": True},
+        ]
+
+        audit = e.audit_trace(events)
+
+        self.assertEqual(audit.safety_status, e.SafetyStatus.PASS)
+        self.assertTrue(audit.complete)
+
+    def test_malformed_provider_item_is_a_safety_failure(self):
+        malformed = (
+            {"type": "provider_item", "item_type": "quality_grade"},
+            {
+                "type": "provider_item",
+                "item_type": "reasoning",
+                "item_id_digest": "not-a-digest",
+                "content_digest": "c" * 64,
+                "content_bytes": -1,
+                "source_result_digest": "a" * 64,
+            },
+        )
+        for item in malformed:
+            events = [
+                {"type": "run_start", "plan_digest": "synthetic"},
+                item,
+                {"type": "run_end", "trace_complete": True,
+                 "state_verified_unchanged": True},
+            ]
+            with self.subTest(item=item):
+                audit = e.audit_trace(events)
+
+            self.assertEqual(audit.safety_status, e.SafetyStatus.FAIL)
+            self.assertTrue(any("provider_item" in issue for issue in audit.issues))
+
     def test_trace_redacts_known_secret_values(self):
         secret = "synthetic-secret-value"
         with TemporaryDirectory() as temp:
