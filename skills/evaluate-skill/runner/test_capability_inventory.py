@@ -64,6 +64,25 @@ class CapabilityInventoryTests(unittest.TestCase):
             )
         )
 
+    def test_inventory_stays_unsupported_until_real_probe_evidence_is_accepted(self):
+        inventory = ci.load_inventory(self.inventory_path())
+
+        claims = inventory.claims_for("codex", "docker", "read-only")
+        self.assertTrue(claims)
+        for capability, claim in claims.items():
+            with self.subTest(capability=capability):
+                self.assertEqual(claim.status, "unsupported")
+                self.assertTrue(claim.required_probes)
+                self.assertFalse(
+                    inventory.is_enforced(
+                        "codex",
+                        "docker",
+                        "read-only",
+                        capability,
+                        passed_probes=claim.required_probes,
+                    )
+                )
+
     def test_missing_cli_is_reported_as_version_mismatch(self):
         inventory = ci.load_inventory(self.inventory_path())
         observed = {

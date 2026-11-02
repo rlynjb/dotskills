@@ -159,11 +159,19 @@ class ExecutionPolicyTests(unittest.TestCase):
         return dc.DockerExecutionBinding.from_dict(value)
 
     def docker_enforcement(self, plan, binding, **changes):
+        probe_results = dict(self.enforcement(plan).probe_results)
+        for claim in self.inventory(False).claims_for(
+            "codex", "docker", plan.capabilities.profile
+        ).values():
+            probe_results.update(
+                {probe_id: "PASS" for probe_id in claim.required_probes}
+            )
         value = {
             "schema_version": "0.4",
             "execution_binding_digest": binding.digest(),
             "effective_policy_digest": binding.digest(),
             "backend_version": "docker-v0.4",
+            "probe_results": probe_results,
         }
         value.update(changes)
         return self.enforcement(plan, **value)

@@ -67,16 +67,46 @@
       }
     },
     "docker-unsupported": {
-      "filesystem_read": {"status": "unsupported", "required_probes": []},
-      "filesystem_write": {"status": "unsupported", "required_probes": []},
-      "shell": {"status": "unsupported", "required_probes": []},
-      "network": {"status": "unsupported", "required_probes": []},
-      "mock_tools": {"status": "unsupported", "required_probes": []},
-      "credentials": {"status": "unsupported", "required_probes": []},
-      "side_effects": {"status": "unsupported", "required_probes": []},
-      "action_trace": {"status": "unsupported", "required_probes": []},
-      "state_verification": {"status": "unsupported", "required_probes": []},
-      "cleanup": {"status": "unsupported", "required_probes": []}
+      "filesystem_read": {
+        "status": "unsupported",
+        "required_probes": ["docker-mount-boundary", "docker-tool-broker"]
+      },
+      "filesystem_write": {
+        "status": "unsupported",
+        "required_probes": ["docker-readonly-filesystem"]
+      },
+      "shell": {
+        "status": "unsupported",
+        "required_probes": ["docker-executable-inventory"]
+      },
+      "network": {
+        "status": "unsupported",
+        "required_probes": ["docker-network-boundary"]
+      },
+      "mock_tools": {
+        "status": "unsupported",
+        "required_probes": ["docker-tool-broker"]
+      },
+      "credentials": {
+        "status": "unsupported",
+        "required_probes": ["docker-gateway-credential-isolation"]
+      },
+      "side_effects": {
+        "status": "unsupported",
+        "required_probes": ["docker-protected-state"]
+      },
+      "action_trace": {
+        "status": "unsupported",
+        "required_probes": ["docker-observer-completeness"]
+      },
+      "state_verification": {
+        "status": "unsupported",
+        "required_probes": ["docker-protected-state"]
+      },
+      "cleanup": {
+        "status": "unsupported",
+        "required_probes": ["docker-cleanup"]
+      }
     }
   },
   "providers": {

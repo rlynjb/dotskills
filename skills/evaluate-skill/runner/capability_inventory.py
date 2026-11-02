@@ -1,4 +1,4 @@
-"""Strict, pinned provider capability inventory for Evaluate Skill v0.2."""
+"""Strict, pinned provider capability inventory with v0.4 Docker probes."""
 
 from __future__ import annotations
 
@@ -22,6 +22,18 @@ _BACKENDS = frozenset(("native", "docker"))
 _PROFILES = frozenset(("no-tool", "read-only", "disposable-write", "mock-external"))
 _TOOLS = ("promptfoo", "codex", "claude", "node")
 _VERSION_PATTERN = re.compile(r"(?<![0-9])([0-9]+\.[0-9]+\.[0-9]+)(?![0-9])")
+_DOCKER_REQUIRED_PROBES = {
+    "filesystem_read": ("docker-mount-boundary", "docker-tool-broker"),
+    "filesystem_write": ("docker-readonly-filesystem",),
+    "shell": ("docker-executable-inventory",),
+    "network": ("docker-network-boundary",),
+    "mock_tools": ("docker-tool-broker",),
+    "credentials": ("docker-gateway-credential-isolation",),
+    "side_effects": ("docker-protected-state",),
+    "action_trace": ("docker-observer-completeness",),
+    "state_verification": ("docker-protected-state",),
+    "cleanup": ("docker-cleanup",),
+}
 
 
 def _mapping(value: Any, name: str) -> Mapping[str, Any]:
@@ -139,8 +151,8 @@ def _load_claim(value: Mapping[str, Any], name: str) -> CapabilityClaim:
     if status not in _STATUSES:
         raise InventoryError(f"{name}.status is unknown: {status}")
     probes = _strings(value["required_probes"], f"{name}.required_probes")
-    if status == "unverified" and not probes:
-        raise InventoryError(f"{name} is unverified but has no required probes")
+    if status in ("unverified", "unsupported") and not probes:
+        raise InventoryError(f"{name} is {status} but has no required probes")
     return CapabilityClaim(status=status, required_probes=probes)
 
 
@@ -281,6 +293,11 @@ def load_inventory(path: Path) -> CapabilityInventory:
                 if set_name not in claim_sets:
                     raise InventoryError(f"unknown claim set: {set_name}")
                 for capability, claim in claim_sets[set_name].items():
+                    if backend == "docker" and claim.required_probes != _DOCKER_REQUIRED_PROBES[capability]:
+                        raise InventoryError(
+                            "Docker capability probe requirements differ from v0.4: "
+                            f"{provider_name}/{profile}/{capability}"
+                        )
                     claims[(provider_name, backend, profile, capability)] = claim
 
     schema_version = _text(document["schema_version"], "inventory.schema_version")
