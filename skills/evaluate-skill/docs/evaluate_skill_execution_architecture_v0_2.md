@@ -207,45 +207,6 @@ Do **not** implement a general Docker-based runner as a prerequisite. A small po
 
 ## System boundary map v0.2
 
-```mermaid
-flowchart TD
-  subgraph CONTROL["Trusted control plane"]
-    A["Evaluate Skill<br/>Stages 0–11 + human checkpoints"]
-    B["Coordinator<br/>Versioned case + capability needs"]
-    C{"Policy assessment<br/>Native restrictions verified?"}
-    D{"Docker fallback<br/>Verified and supported?"}
-    X["BLOCKED — NOT RUN"]
-    AP["Approved immutable run plan<br/>Provider + backend + scope"]
-    E["Existing eval integration<br/>Promptfoo + Claude/Codex SDK adapter"]
-  end
-
-  subgraph EXEC["Restricted execution plane · choose ONE path"]
-    N["NATIVE PATH<br/>Verified provider sandbox<br/>Fresh disposable fixture"]
-    K["DOCKER PATH<br/>Verified restricted container<br/>Fresh disposable fixture"]
-    M["Controlled mock MCP/API tools<br/>Only approved routes"]
-  end
-
-  subgraph EVID["Trusted evidence + grading plane"]
-    H["Independent host evidence<br/>Tool visibility, policy checks, state/cleanup"]
-    G["Deterministic assertions + LLM/agent rubrics<br/>Safety checked independently"]
-    R["Versioned results<br/>Human review + regression decision"]
-  end
-
-  A --> B --> C
-  C -->|"Yes"| AP
-  C -->|"No"| D
-  D -->|"Yes"| AP
-  D -->|"No"| X
-  AP --> E
-  E -->|"Approved native route"| N
-  E -->|"Approved Docker route"| K
-  N -.->|"Only if case needs mocks"| M
-  K -.->|"Only if case needs mocks"| M
-  N --> H
-  K --> H
-  M --> H
-  E --> H
-  H --> G --> R --> A
-```
+See the canonical [System Boundary Map v0.2](./evaluate_skill_system_boundary_map_v0_2.md).
 
 **Map interpretation:** The coordinator determines and approves *one* execution route; the existing evaluation/provider integration invokes that route. The tested agent is restricted to the chosen path and any approved mocks. Host-observed evidence is assessed outside the untrusted agent. The map does not imply that Promptfoo itself provisions a Docker container or that native sandbox settings prove full safety.
