@@ -1,6 +1,7 @@
-# Provider-native proof artifacts
+# Evaluate Skill proof artifacts
 
-This directory documents the v0.2 proof boundary. It intentionally contains
+This directory documents historical native evidence and the active Docker-only
+v0.4 proof boundary. It intentionally contains
 no provider output, authentication material, fixture content, or claimed live
 result.
 
@@ -20,19 +21,27 @@ cross-provider or cross-dimension score is produced.
 
 ## Current status
 
-**BLOCKED — NOT RUN.** No real Claude or Codex paired proof has been authorized
-or executed. The native Codex read-only trusted host now compiles the boundary,
-runs the six local no-model probes, supervises a single-use command, parses
-turns and verifies state/cleanup. The committed capability inventory remains
-unverified until a live paired proof completes with an independently operated
-process/session observer. Claude and all other profiles remain unsupported.
+**DOCKER_DESIGN_PENDING / BLOCKED — NOT RUN.** The v0.4 implementation is
+present and covered by offline tests, including contracts, immutable image and
+runtime identity, the shell-free workload, credential gateway, hardened
+topology, nine no-model probes, host observer, signed evidence, cleanup, and
+the active [`eval_runner.py`](../eval_runner.py) command surface. No real
+Docker client/daemon, image, or container has been approved or used by this
+workflow, so `real_docker_probes_passed` remains false and the production
+capability inventory stays unverified. No Claude or Codex model ran.
 
 The 2026-11-02 local run executed all six probes without Promptfoo or a model.
 Five passed; `secondary-tool-route` failed because the sandbox allowed the
 host-owned inert executable canary. The status is therefore `FAIL`, not a
-partial pass. Native live dispatch remains blocked. This is the documented
-condition for designing the separately approved Docker fallback; Docker has
-not been built or run by this proof.
+partial pass. This is historical evidence only. Native live dispatch is
+retired with no fallback. The Docker implementation has not yet been
+provisioned or exercised against a real daemon.
+
+The next gate is a separate human decision covering Docker provisioning,
+reviewed image build or download, and the real no-model probe command. Only a
+complete `READY_NOT_RUN` artifact containing all nine accepted v0.4 probes may
+replace `DOCKER_DESIGN_PENDING`. Provider execution requires another fresh,
+separate live authorization after that review.
 
 Before a real proof, the human gate must identify and approve all of the
 following for each provider separately:

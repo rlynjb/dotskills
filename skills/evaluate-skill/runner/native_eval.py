@@ -876,10 +876,14 @@ def prepare(args, *, env=None):
     case_name = slug(case['id'])
     base = args.output.resolve()
     base.mkdir(parents=True, exist_ok=True)
-    bundle = base / f'{harness}-native-{case_name}-{uuid.uuid4().hex[:12]}'
+    execution_backend = getattr(args, 'execution_backend', 'native')
+    if execution_backend not in ('native', 'docker'):
+        raise Blocked('Preparation backend is unsupported')
+    bundle = base / f'{harness}-{execution_backend}-{case_name}-{uuid.uuid4().hex[:12]}'
     bundle.mkdir(exist_ok=False)
     metadata = dict(status='PREPARED_NOT_RUN', harness=harness, case_id=case['id'],
                     target_skill=str(source), suite=str(suite), native_result=None,
+                    execution_backend=execution_backend,
                     note='Preparation does not verify host isolation or run a model')
     if harness == 'claude':
         plugin = bundle / 'plugin'
@@ -1084,6 +1088,69 @@ def _expected_codex_provider_config(host_policy, execution_config, working_dir):
     }
 
 
+def _expected_docker_codex_provider_config(execution_config, working_dir):
+    """Provider settings staged for the v0.4 workload, without host credentials."""
+    limits = execution_config['resource_limits']
+    return {
+        'working_dir': working_dir,
+        'approval_policy': 'never',
+        'web_search_mode': 'disabled',
+        'persist_threads': False,
+        'inherit_process_env': False,
+        'skip_git_repo_check': True,
+        'enable_streaming': True,
+        'deep_tracing': False,
+        'model': execution_config['model_version'],
+        'max_turns': int(limits['max_turns']),
+        'max_cost_usd': limits['max_cost_usd'],
+        'provider_transport': 'trusted-gateway',
+        'provider_base_url': 'http://provider-gateway:8080/v1',
+        'tool_surface': ['list', 'read', 'search'],
+    }
+
+
+def _validate_docker_codex_config(config, execution_config):
+    if not isinstance(config, dict):
+        raise Blocked('Configured Promptfoo file must contain an object')
+    if config.get('commandLineOptions') != {'share': False, 'cache': False}:
+        raise Blocked('Configured Promptfoo cache and sharing controls are incomplete')
+    if config.get('env') != _PROMPTFOO_SAFE_ENV:
+        raise Blocked('Configured Promptfoo environment controls are incomplete')
+    providers = config.get('providers')
+    tests = config.get('tests')
+    if not isinstance(providers, list) or len(providers) != 2 or not isinstance(tests, list):
+        raise Blocked('Configured Promptfoo comparison structure is invalid')
+    expected_arms = {'with_skill': './with_skill', 'without_skill': './without_skill'}
+    seen = set()
+    for provider in providers:
+        if not isinstance(provider, dict) or provider.get('id') != 'openai:codex-sdk':
+            raise Blocked('Configured Promptfoo provider changed')
+        label = provider.get('label')
+        if label not in expected_arms or label in seen:
+            raise Blocked('Configured Promptfoo comparison labels are not exact')
+        seen.add(label)
+        if provider.get('config') != _expected_docker_codex_provider_config(
+            execution_config, expected_arms[label]
+        ):
+            raise Blocked('Configured Promptfoo Docker arm policy does not match')
+    judge_count = 0
+    for test in tests:
+        assertions = test.get('assert') if isinstance(test, dict) else None
+        if not isinstance(assertions, list):
+            raise Blocked('Configured Promptfoo assertions are malformed')
+        for assertion in assertions:
+            judge = assertion.get('provider') if isinstance(assertion, dict) else None
+            if not isinstance(judge, dict) or judge.get('id') != 'openai:codex-sdk':
+                raise Blocked('Configured Promptfoo judge changed')
+            if judge.get('config') != _expected_docker_codex_provider_config(
+                execution_config, './judge'
+            ):
+                raise Blocked('Configured Promptfoo Docker judge policy does not match')
+            judge_count += 1
+    if seen != set(expected_arms) or judge_count < 1:
+        raise Blocked('Configured Promptfoo Docker comparison is incomplete')
+
+
 def _validate_codex_host_config(config, host_policy, execution_config):
     if not isinstance(config, dict):
         raise Blocked('Configured Promptfoo file must contain an object')
@@ -1188,8 +1255,9 @@ def configure_prepared_bundle(bundle, plan, host_policy=None):
         raise Blocked('Bundle is not an unconfigured prepared case')
     if str(manifest.get('case_id')) != str(plan.case_id):
         raise Blocked('Prepared bundle case does not match approved run plan case')
-    if plan.backend != 'native':
-        raise Blocked('Native prepared bundle cannot configure another backend')
+    prepared_backend = manifest.get('execution_backend', 'native')
+    if prepared_backend not in ('native', 'docker') or plan.backend != prepared_backend:
+        raise Blocked('Prepared bundle backend does not match the approved run plan')
     expected_harness = {
         ('openai', 'promptfoo-codex-sdk'): 'codex',
         ('anthropic', 'promptfoo-claude-agent-sdk'): 'claude',
@@ -1217,11 +1285,12 @@ def configure_prepared_bundle(bundle, plan, host_policy=None):
         'comparison_arms': list(plan.comparison_arms),
     }
     if expected_harness == 'codex':
-        if not isinstance(host_policy, CodexHostPolicy):
-            raise Blocked('A compiled Codex host policy is required')
-        if host_policy.workspace != bundle:
-            raise Blocked('Codex host policy workspace does not match prepared bundle')
-        execution_config['host_policy_digest'] = host_policy.digest()
+        if plan.backend == 'native':
+            if not isinstance(host_policy, CodexHostPolicy):
+                raise Blocked('A compiled Codex host policy is required')
+            if host_policy.workspace != bundle:
+                raise Blocked('Codex host policy workspace does not match prepared bundle')
+            execution_config['host_policy_digest'] = host_policy.digest()
     execution_path = bundle / 'execution-config.json'
     execution_path.write_text(
         json.dumps(execution_config, indent=2, sort_keys=True) + '\n',
@@ -1247,9 +1316,14 @@ def configure_prepared_bundle(bundle, plan, host_policy=None):
             if label not in arm_working_directories or label in observed_labels:
                 raise Blocked('Prepared Promptfoo comparison labels are not exact')
             observed_labels.add(label)
-            provider['config'] = _expected_codex_provider_config(
-                host_policy, execution_config, arm_working_directories[label]
-            )
+            if plan.backend == 'native':
+                provider['config'] = _expected_codex_provider_config(
+                    host_policy, execution_config, arm_working_directories[label]
+                )
+            else:
+                provider['config'] = _expected_docker_codex_provider_config(
+                    execution_config, arm_working_directories[label]
+                )
             provider_configs.append(provider['config'])
         if observed_labels != set(arm_working_directories):
             raise Blocked('Prepared Promptfoo comparison arms are incomplete')
@@ -1261,15 +1335,24 @@ def configure_prepared_bundle(bundle, plan, host_policy=None):
                 judge = assertion.get('provider') if isinstance(assertion, dict) else None
                 if not isinstance(judge, dict) or judge.get('id') != 'openai:codex-sdk':
                     raise Blocked('Prepared Promptfoo judge is not the approved adapter')
-                judge['config'] = _expected_codex_provider_config(
-                    host_policy, execution_config, './judge'
-                )
+                if plan.backend == 'native':
+                    judge['config'] = _expected_codex_provider_config(
+                        host_policy, execution_config, './judge'
+                    )
+                else:
+                    judge['config'] = _expected_docker_codex_provider_config(
+                        execution_config, './judge'
+                    )
                 provider_configs.append(judge['config'])
         config['commandLineOptions'] = {'share': False, 'cache': False}
         config['env'] = dict(_PROMPTFOO_SAFE_ENV)
-        _validate_codex_host_config(config, host_policy, execution_config)
+        if plan.backend == 'native':
+            _validate_codex_host_config(config, host_policy, execution_config)
+        else:
+            _validate_docker_codex_config(config, execution_config)
         config_path.write_text(json.dumps(config, indent=2) + '\n', encoding='utf-8')
-        validate_configured_host_policy(bundle, host_policy)
+        if plan.backend == 'native':
+            validate_configured_host_policy(bundle, host_policy)
     else:
         prompts = sorted((bundle / 'plugin' / 'evals').glob('*/prompt.md'))
         if len(prompts) != 1:
@@ -1295,7 +1378,7 @@ def configure_prepared_bundle(bundle, plan, host_policy=None):
         'adapter_version': plan.adapter_version,
         'resource_limits': dict(plan.resource_limits),
     })
-    if expected_harness == 'codex':
+    if expected_harness == 'codex' and plan.backend == 'native':
         manifest['host_policy_digest'] = host_policy.digest()
     manifest['provider_config_digest'] = _provider_config_digest(bundle, manifest)
     manifest['bundle_digest'] = _bundle_digest(bundle)
@@ -1623,6 +1706,17 @@ def execute(args, env=None):
 
 
 def main(argv=None):
+    requested_argv = list(sys.argv[1:] if argv is None else argv)
+    if requested_argv and requested_argv[0] == 'run':
+        print(json.dumps({
+            'status': 'BLOCKED_NOT_RUN',
+            'model_executed': False,
+            'reason': (
+                'provider-native live execution is retired; use eval_runner.py '
+                'docker-run with the Docker-only v0.4 boundary'
+            ),
+        }, sort_keys=True))
+        return 2
     ap = argparse.ArgumentParser(description=__doc__)
     sub = ap.add_subparsers(dest='action', required=True)
     sub.add_parser('inspect', help='detect active harness; never runs model')
@@ -1652,7 +1746,7 @@ def main(argv=None):
     run.add_argument('--bundle', type=Path, required=True)
     run.add_argument('--nonce-ledger', type=Path, required=True)
     add_policy_inputs(run)
-    opts = ap.parse_args(argv)
+    opts = ap.parse_args(requested_argv)
     try:
         if opts.action == 'inspect':
             print(json.dumps({'active_harness': active_harness(), 'model_executed': False}))

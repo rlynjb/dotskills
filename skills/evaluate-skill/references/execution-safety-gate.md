@@ -20,10 +20,11 @@ network access to "try" an eval.
 
 ## Control-plane contracts
 
-The v0.2 dispatcher requires four trusted inputs before provider executable
-discovery: a versioned run plan, an exact-scope approval receipt, an
-enforcement receipt, and a pinned capability inventory. First use
-`native_eval.py configure` with the approved plan so the exact model snapshot,
+The active [`eval_runner.py`](../runner/eval_runner.py) facade requires explicit
+trusted inputs before any Docker operation: a versioned run plan, exact-scope
+approval, prepared bundle, pinned inventory, three Docker bindings, reviewed
+image lock, Docker identity, gateway/evidence keys, policies, protected roots,
+and expected digests. First use `eval_runner.py configure` with the approved plan so the exact model snapshot,
 limits, and staged revisions become inspectable executable settings. The
 independent host issues its receipt only after verifying those exact digests.
 Use `native_eval.py assess` to validate all trusted inputs without running a
@@ -45,8 +46,9 @@ The [Docker-only v0.4 architecture](../docs/evaluate_skill_execution_architectur
 is now the sole approved live-execution design. It requires a digest-pinned,
 shell-free Codex read-only workload, a separate credential gateway, internal
 network, independent host observation, complete cleanup, and authenticated
-evidence. Docker is not installed or implemented yet, so all live runs remain
-`BLOCKED_NOT_RUN`.
+evidence. The v0.4 implementation and offline tests are present, but real
+Docker provisioning and probes remain `DOCKER_DESIGN_PENDING`, so all live
+runs remain `BLOCKED_NOT_RUN`.
 
 The v0.3 native Codex host is retained only as historical evidence and offline
 regression coverage. Its installed-host probe passed five checks but allowed

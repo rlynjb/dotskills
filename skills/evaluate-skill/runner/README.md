@@ -4,13 +4,49 @@
 > evidence remain here, but all future live evaluated-agent execution follows
 > the [Docker-only v0.4 architecture](../docs/evaluate_skill_execution_architecture_v0_4.md)
 > and [implementation plan](../docs/evaluate_skill_docker_implementation_plan_v0_4.md).
-> Docker is not installed or implemented yet; native dispatch is not a fallback.
+> The v0.4 implementation is offline tested. Status is
+> `DOCKER_DESIGN_PENDING` until separately approved Docker provisioning and all
+> real no-model probes pass; native dispatch is not a fallback.
 
-[`native_eval.py`](native_eval.py) prepares and digest-binds provider-specific
-synthetic cases. [`trusted_host.py`](trusted_host.py) is the separate native
-Codex enforcement entry point. It compiles the deny-by-default profile, runs
-the six local probes, issues bound preflight artifacts, and supervises the
-single-use paired command. Neither entry point provides cross-provider fallback.
+[`eval_runner.py`](eval_runner.py) is the active workflow facade. Its public
+commands are exactly `inspect`, `prepare`, `configure`, `docker-preflight`, and
+`docker-run`. Preparation and configuration are offline. The Docker commands
+require every security-relevant path, key, policy, protected root, and digest,
+and the standalone CLI fails closed unless embedded by the approved trusted
+host. It never installs or starts Docker, pulls/builds an image, or falls back
+to a native provider sandbox.
+
+[`native_eval.py`](native_eval.py) retains provider-specific artifact helpers
+and historical tests. [`trusted_host.py`](trusted_host.py) retains the failed
+v0.3 native proof for regression evidence. Their live entry points return
+`BLOCKED_NOT_RUN` by default.
+
+## Active Docker-only workflow
+
+Inspecting status performs no Docker or model operation:
+
+```bash
+python3 skills/evaluate-skill/runner/eval_runner.py inspect
+```
+
+The current committed result is `DOCKER_DESIGN_PENDING`: the code exists, but
+the image lock and capability inventory intentionally remain unverified until
+a separately approved Task 9 provisioning session produces one accepted
+`READY_NOT_RUN` artifact with all nine no-model probes. Only after review of
+that artifact may a different, fresh live authorization be used with
+`docker-run`.
+
+`docker-preflight` consumes explicit paths to the run plan, approval, prepared
+bundle, capability inventory, execution/gateway/evidence bindings, image lock,
+Docker client, gateway key/config, evidence signing key, seccomp policy,
+executable inventory, artifact directory, protected roots, Docker
+context/endpoint, and expected runtime/image/gateway/observer/cleanup digests.
+`docker-run` requires the same scope plus the accepted preflight artifact and a
+fresh single-use live authorization. Missing or mismatched input returns stable
+JSON `BLOCKED_NOT_RUN`; post-dispatch failures are `INCOMPLETE`.
+
+The remaining native instructions in this file describe historical artifact
+formats and proof behavior. They are not approved live commands.
 
 Before dispatch, the runner now loads a versioned run plan, scoped human
 approval receipt, independent enforcement receipt, and pinned capability
@@ -35,7 +71,7 @@ SDK. No Anthropic grader prompt is passed to Codex, and no Codex rubric is
 substituted for Claude's native graders. Do not describe these paths as
 identical implementations.
 
-## Harness selection: no substitution
+## Historical native harness selection: no substitution
 
 - `native_eval.py inspect` checks for a Claude session via `CLAUDECODE`,
   or a Codex session via `CODEX_THREAD_ID` / `CODEX_SESSION_ID`.
@@ -51,7 +87,7 @@ These environment markers are a convenience, not a trusted attestation of
 the actual caller. The separately enforced host must verify provider identity
 and routing before running a model.
 
-## Prepare synthetic cases — no model calls
+## Historical preparation detail — no model calls
 
 Run these commands from the DotSkills repository root with a saved, approved
 case. The case in `evals/evals.json` must have an `id`, `prompt`,
@@ -60,19 +96,21 @@ case. The case in `evals/evals.json` must have an `id`, `prompt`,
 unchanged; each preparation gets its own output directory.
 
 ```bash
-python3 skills/evaluate-skill/runner/native_eval.py inspect
+python3 skills/evaluate-skill/runner/eval_runner.py inspect
 
-python3 skills/evaluate-skill/runner/native_eval.py prepare \
+python3 skills/evaluate-skill/runner/eval_runner.py prepare \
+  --provider openai \
   --suite skills/example-skill/evals/evals.json \
   --case-id 1 \
   --target-skill skills/example-skill \
   --output eval-workspaces
 ```
 
-`inspect` will fail if a known harness is not exposed in the environment.
-For **offline-only** fixture preparation, `prepare` also accepts
-`--harness claude` or `--harness codex`, but a live evaluation must still
-prove the actual current harness. The example paths are placeholders.
+`eval_runner.py inspect` reports the active Docker architecture and current
+proof gate; it does not infer security identity from session environment
+variables. `prepare --provider` selects only the provider-specific artifact
+format. A live evaluation must separately prove its actual provider route.
+The example paths are placeholders.
 
 The preparer writes a manifest with `PREPARED_NOT_RUN` status and one of:
 
@@ -91,7 +129,8 @@ After approving a `RunPlan` whose case, rubric, skill, and fixture revision
 pins match the prepared manifest, materialize the executable provider settings:
 
 ```bash
-python3 skills/evaluate-skill/runner/native_eval.py configure \
+python3 skills/evaluate-skill/runner/eval_runner.py configure \
+  --provider openai \
   --bundle /isolated/eval-workspaces/PREPARED-BUNDLE \
   --run-plan /trusted/run-plan.json
 ```
@@ -104,7 +143,7 @@ digests. The independent host verifier must inspect this exact configuration
 before issuing its enforcement receipt. A staged revision mismatch blocks
 configuration; manifest claims alone are not trusted.
 
-## Assess a pinned run — no model calls
+## Historical v0.2/v0.3 assessment — no model calls
 
 ```bash
 python3 skills/evaluate-skill/runner/native_eval.py assess \
@@ -130,7 +169,7 @@ cannot make a run safe by authoring JSON that says its probes passed. Receipt
 provenance and the controls it describes must be established outside the
 evaluated workload.
 
-## Bind the inspected bundle — no model calls
+## Historical v0.2/v0.3 binding — no model calls
 
 After `configure`, inspect the staged configuration and fixtures, obtain the
 independent receipt for those exact digests, and run `assess`. Then bind that
@@ -150,7 +189,7 @@ records the plan digest, resource limits, and a digest of every staged input.
 Changing a staged file after binding blocks execution. A bound bundle is
 single-use; interrupted and completed attempts cannot be silently replayed.
 
-## Live execution — approved host only
+## Historical native execution evidence — never an active fallback
 
 ### Trusted Codex preflight — no model call
 

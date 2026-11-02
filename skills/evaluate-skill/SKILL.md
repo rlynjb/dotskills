@@ -22,8 +22,10 @@ boundary, with no provider-native fallback. The existing offline control and
 evidence planes validate immutable plans,
 approvals, enforcement receipts, exact capability claims, bounded-write and
 mock authorization/audit decisions, paired outcomes, and Stage 3/9 transitions. Never mix provider
-graders or output formats. Docker is not installed or implemented yet, and no
-live end-to-end model evaluation has been verified. Never claim a model run
+graders or output formats. The Docker-only code and active
+[`eval_runner.py`](runner/eval_runner.py) facade are implemented and offline
+tested, but real Docker provisioning and no-model probes remain
+`DOCKER_DESIGN_PENDING`; no live end-to-end model evaluation has been verified. Never claim a model run
 from preparation, policy approval, a receipt, or passing offline tests.
 
 ## Load references progressively
@@ -46,12 +48,12 @@ from preparation, policy approval, a receipt, or passing offline tests.
   multi-provider evaluation framework. It is used here as a separate CLI
   with the Codex SDK, not as an automatic Codex evaluation service.
 - In **Stages 3–4 and 9–10**, consult [the runner guide](runner/README.md)
-  and [`native_eval.py`](runner/native_eval.py) only for the currently
-  implemented offline `inspect`, `prepare`, `configure`, `assess`, and `bind`
-  workflow. Its historical live `run` path is not the v0.4 execution backend.
-  `--harness` is a convenience for offline preparation only; never silently
-  fall back to another provider. Do not invoke a model until the approved
-  Docker-only host is implemented and independently verified.
+  and active [`eval_runner.py`](runner/eval_runner.py) for `inspect`, `prepare`,
+  `configure`, `docker-preflight`, and `docker-run`. The first three are
+  offline. The latter two require an approved trusted-host embedding and every
+  explicit path, policy, key, and digest. `native_eval.py` and
+  `trusted_host.py` are historical helpers and cannot launch a native live
+  run. Never silently fall back to another provider.
 - In **Stage 0**, read [structure validation](references/structure-validation.md);
   when the skill is valid, make no formatting changes.
 - In **Stages 2–4 or 9–10**, read [eval design](references/eval-design-guide.md)
@@ -165,7 +167,7 @@ learning request justifies a deep dive and the human approves it.
    files. The human can edit, replace, write their own, or reject them.
    **Human gate:** explicitly approve the cases, assertions and fixture plan
    before persisting to the target skill's `evals/evals.json` or calling
-   `native_eval.py prepare`. Prefer self-documenting fixture names that
+   `eval_runner.py prepare`. Prefer self-documenting fixture names that
    distinguish synthetic examples, exported evidence and live repository data;
    see the eval design guide. Keep expected answers evaluator-only. Once
    approved, prepare the selected provider's grading definitions locally;
@@ -175,10 +177,11 @@ learning request justifies a deep dive and the human approves it.
    outcomes. Define *grader calibration* as comparing judgments against
    human-reviewed examples. Do not imply that the dispatcher automatically
    selects or runs all three types; its native artifacts use LLM rubrics.
-3. **Run paired baselines.** Detect and independently verify the active
-   harness. Prepare native evaluation cases with `native_eval.py prepare`.
+3. **Run paired baselines.** Select and independently verify the approved
+   provider. Prepare provider-specific Docker evaluation cases with
+   `eval_runner.py prepare`.
    Build and approve the exact versioned `RunPlan`, then use
-   `native_eval.py configure` to materialize the approved model snapshot,
+   `eval_runner.py configure` to materialize the approved model snapshot,
    budgets, and staged revision pins. Have the independent host verify that
    exact configuration and issue a fresh `EnforcementReceipt` binding its
    provider-config and bundle digests. Before executable discovery, require the
@@ -198,8 +201,9 @@ learning request justifies a deep dive and the human approves it.
    real results alongside trusted host action traces. Under v0.4, require the
    separately implemented and verified Docker preflight, provider gateway,
    live-run authorization, and trusted observer before dispatch. Because that
-   route is not implemented yet, current Stage 3 execution is **Blocked — Not
-   Run**; do not invoke `trusted_host.py run` as a native fallback.
+   route has not passed real no-model probes, current status is
+   `DOCKER_DESIGN_PENDING` and Stage 3 execution is **Blocked — Not Run**; do
+   not invoke `trusted_host.py run` as a native fallback.
    Finalize both arms against the manifest execution ID, receipt nonce, and
    per-arm source-result digests,
    then persist a new plan-bound stage checkpoint containing immutable evidence

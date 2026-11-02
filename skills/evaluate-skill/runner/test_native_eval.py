@@ -902,6 +902,40 @@ class NativeRouteTests(unittest.TestCase):
                 self.assertEqual(manifest['harness'], harness)
                 self.assertEqual(manifest['status'], 'PREPARED_NOT_RUN')
 
+    def test_docker_prepare_and_configure_materialize_provider_bundle_without_host_policy(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            target, suite = self.fixtures(root)
+            opts = self.opts(target, suite, root)
+            opts.harness = 'codex'
+            opts.execution_backend = 'docker'
+            bundle = n.prepare(opts, env={})
+            manifest = json.loads((bundle / 'manifest.json').read_text(encoding='utf-8'))
+            self.assertEqual(manifest['execution_backend'], 'docker')
+            self.assertIn('-docker-', bundle.name)
+
+            value = self.plan_value_for_bundle(bundle)
+            value['schema_version'] = '0.4'
+            value['backend'] = 'docker'
+            value['resource_limits'].update({
+                'max_cpus': 1.0,
+                'max_memory_bytes': 536870912,
+                'max_pids': 64,
+                'max_tmpfs_bytes': 33554432,
+            })
+            plan = c.RunPlan.from_dict(value)
+            configured = n.configure_prepared_bundle(bundle, plan)
+            self.assertEqual(configured['status'], 'CONFIGURED_NOT_BOUND')
+            self.assertNotIn('host_policy_digest', configured)
+            promptfoo = json.loads(
+                (bundle / 'codex' / 'promptfooconfig.yaml').read_text(encoding='utf-8')
+            )
+            for provider in promptfoo['providers']:
+                self.assertEqual(
+                    provider['config']['provider_transport'], 'trusted-gateway'
+                )
+                self.assertFalse(provider['config']['inherit_process_env'])
+
 
     def test_rejects_unsafe_fixtures_without_creating_a_bundle(self):
         for fixture in ('../outside.txt', 'evals/../../outside.txt',

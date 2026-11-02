@@ -71,6 +71,7 @@ class TrustedHostCliTests(unittest.TestCase):
             inspect_environment=lambda: {},
             boundary_runner=lambda *_args: helper.boundary_result(request),
             trusted_process_runner=None,
+            allow_historical_native_tests=True,
         )
         return request, argv, dependencies
 

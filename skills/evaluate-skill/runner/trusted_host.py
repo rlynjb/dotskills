@@ -137,6 +137,7 @@ class HostDependencies:
     inspect_environment: Callable[[], Mapping[str, str]] = lambda: dict(os.environ)
     boundary_runner: Optional[Callable[..., NativeBoundaryResult]] = None
     trusted_process_runner: Optional[Callable[..., SupervisedProcessHandle]] = None
+    allow_historical_native_tests: bool = False
 
 
 def file_digest(path: Path, *, max_bytes: int = 64 * 1024 * 1024) -> str:
@@ -655,6 +656,16 @@ def _redacted_message(exc: BaseException, dependencies: HostDependencies) -> str
 
 
 def main(argv: Optional[Sequence[str]] = None, *, dependencies: HostDependencies = HostDependencies()) -> int:
+    if not dependencies.allow_historical_native_tests:
+        print(json.dumps({
+            "status": "BLOCKED_NOT_RUN",
+            "model_executed": False,
+            "reason": (
+                "provider-native trusted_host commands are retired; use "
+                "eval_runner.py with the Docker-only v0.4 boundary"
+            ),
+        }, sort_keys=True))
+        return 2
     try:
         args = _parser().parse_args(argv)
     except SystemExit:

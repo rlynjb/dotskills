@@ -5,8 +5,12 @@
 **Start here:** [Try it](#8-try-it) · [12-stage guide](#2-the-12-stages) · [Grading basics](#grading-and-scoring-beginner-reference)
 
 **Current limitation:** Docker-only v0.4 is now the approved live-execution
-architecture, but Docker is not installed or implemented in this repository
-yet and no live paired evaluation has been authorized or accepted. The
+architecture. Its contracts, hardened topology, shell-free workload, gateway,
+probes, observation/evidence, cleanup, and active
+[`eval_runner.py`](runner/eval_runner.py) facade are implemented and offline
+tested. Status remains `DOCKER_DESIGN_PENDING` because Docker provisioning,
+image resolution, and real no-model probes have not been approved or run; no
+live paired evaluation has been authorized or accepted. The
 historical native Codex profile passed five probes but failed the inert
 secondary-process canary; native execution is therefore retired rather than a
 fallback. A prepared case, native preflight, or design document is **not** a
@@ -52,7 +56,7 @@ The four phases below organize the same **Stages 0–11** in both Claude Code an
 | --- | --- | --- | --- |
 | **0 · Validate** | Check the target `SKILL.md` against the Agent Skills format; propose a minimal repair only if needed. | Guide the structure check; **no eval command**. | Same structure check; **no eval command**. |
 | **1 · Define success** | Agree on one observable behavior, success criteria, and permitted/prohibited effects with the human. | Guide the discussion; **no eval command**. | Guide the discussion; **no eval command**. |
-| **2 · Design cases** | Draft 2–3 cases, expectations, and assertions. **Human approval** is required before saving or preparing cases. | After approval, `native_eval.py prepare` writes Claude plugin-eval cases and `type: llm` grader files. **Not Run**. | After approval, `native_eval.py prepare` writes Promptfoo cases with `openai:codex-sdk` and `llm-rubric`. **Not Run**. |
+| **2 · Design cases** | Draft 2–3 cases, expectations, and assertions. **Human approval** is required before saving or preparing cases. | After approval, `eval_runner.py prepare --provider anthropic` writes Claude plugin-eval cases and `type: llm` grader files. **Not Run**. | After approval, `eval_runner.py prepare --provider openai` writes Promptfoo cases with `openai:codex-sdk` and `llm-rubric`. **Not Run**. |
 
 #### Phase 2 — Evaluation (Stages 3–4)
 
@@ -172,7 +176,8 @@ skills/
 ├── evaluate-skill/
 │   ├── SKILL.md                  # Runtime instructions
 │   ├── references/              # Detailed guides
-│   ├── runner/native_eval.py    # Provider-specific dispatcher
+│   ├── runner/eval_runner.py    # Active Docker-only workflow facade
+│   ├── runner/native_eval.py    # Historical/offline provider helpers
 │   └── evals/                   # Unexecuted Evaluate Skill starter cases
 └── <target-skill>/
     ├── SKILL.md
@@ -182,7 +187,7 @@ skills/
 ```
 
 - **Stage 2:** After your approval, cases are saved in the target's `evals/evals.json`. The dispatcher requires **nonempty, approved assertions**. Optional `files` paths are relative to the **target skill root**.
-- **Preparing is not running:** `native_eval.py prepare` creates a **new, provider-specific bundle** with status `PREPARED_NOT_RUN`. No model response, grade or benchmark is created by preparation.
+- **Preparing is not running:** `eval_runner.py prepare` creates a **new, provider-specific Docker bundle** with status `PREPARED_NOT_RUN`. No model response, grade or benchmark is created by preparation.
 - **Reuse instead of overwriting:** On later invocations, reuse existing approved cases and fixtures. Save new run results separately. Changing a case or rubric requires a **new approved version**, so comparisons remain fair.
 
 See the [evaluation design guide](references/eval-design-guide.md) for case examples and the [runner guide](runner/README.md) for exact Claude/Codex bundle layouts.
@@ -198,15 +203,20 @@ Evaluate Skill uses **only the provider of your active coding session**, never a
 
 [Promptfoo is now part of OpenAI](https://www.promptfoo.dev/about/) and remains open source and multi-provider. **It is a separate CLI using the Codex SDK**, not an automatic built-in Codex grader. Keep provider reports separate; there is no automatic cross-provider scoring or comparison.
 
-The dispatcher supports `inspect` (identify harness), `prepare` (write case files without running a model), `configure` (materialize the approved model snapshot, limits, and staged revisions without running a model), `assess` (validate current policy/version inputs), and `bind` (digest-bind that configured bundle to one approved plan). Its historical native `run` command is not an approved v0.4 live backend. A `--harness` override is for **offline preparation only**; environment markers by themselves do not prove execution identity.
+The active `eval_runner.py` facade supports `inspect`, provider-specific
+`prepare` and `configure`, plus trusted-host-only `docker-preflight` and
+`docker-run`. All security-relevant paths, keys, policies, and digests are
+explicit. It never installs, starts, pulls, builds, or selects a fallback.
+Historical `native_eval.py` and `trusted_host.py` live commands return
+`BLOCKED_NOT_RUN`.
 
 **v0.4 status:** Docker is the mandatory live boundary for both provider
 routes, with Codex read-only as the first implementation target. The design
 requires a shell-free minimal workload, separate provider credential gateway,
 internal-only workload network, independent observation, authenticated
-evidence, and complete cleanup. Docker is not installed or implemented yet;
-the capability inventory stays unverified and live results remain **Blocked —
-Not Run**. The native v0.3 host is retained only as historical evidence and
+evidence, and complete cleanup. The implementation exists, but real Docker
+provisioning and no-model probes remain `DOCKER_DESIGN_PENDING`; the capability
+inventory stays unverified and live results remain **Blocked — Not Run**. The native v0.3 host is retained only as historical evidence and
 offline regression coverage. Never infer a model run from preparation or
 preflight. [Setup, commands and limits →](runner/README.md)
 

@@ -3,14 +3,15 @@
 > **Active execution decision:** Provider-specific case and result formats are
 > retained, but the [Docker-only v0.4 architecture](../docs/evaluate_skill_execution_architecture_v0_4.md)
 > requires every live evaluated arm to run inside the verified Docker boundary.
-> Native provider sandboxes are not execution backends or fallbacks. Until the
-> Docker route is implemented and proven, live status is **Blocked — Not Run**.
+> Native provider sandboxes are not execution backends or fallbacks. The code
+> is implemented and offline tested; until real Docker provisioning and all
+> no-model probes are accepted, status is `DOCKER_DESIGN_PENDING` and live
+> execution is **Blocked — Not Run**.
 
 This guide explains how Stages 3–4 and 9–10 use the coding harness's **own
 evaluation workflow**, with no cross-provider substitution. See
 [the runner guide](../runner/README.md) and
-[`native_eval.py`](../runner/native_eval.py) for the available dispatcher
-and command interface.
+[`eval_runner.py`](../runner/eval_runner.py) for the active command interface.
 
 ## Select the provider before preparing or executing
 
@@ -55,9 +56,9 @@ Preserve the approved source case and fixture files unmodified.
    writes, no shell/API/network/child-agent bypasses, evaluator-only material
    isolated, and trusted attempted-action/state auditing. A manifest, an LLM
    prompt, or a built-in sandbox option is **not proof**.
-4. Prepare the correct native case using `native_eval.py prepare`; check the
+4. Prepare the correct provider case using `eval_runner.py prepare`; check the
    generated files and native tool flags against the **installed versions**.
-5. Construct and approve the versioned run plan. Run `native_eval.py configure`
+5. Construct and approve the versioned run plan. Run `eval_runner.py configure`
    to materialize its exact model snapshot, limits, and staged revision pins.
    The independent host then verifies those executable settings and issues an
    enforcement receipt binding both configuration and bundle digests.
@@ -68,12 +69,14 @@ Preserve the approved source case and fixture files unmodified.
 7. Inspect the generated artifacts, then run `native_eval.py bind` to bind the
    prepared bundle's artifact digest and resource limits to the exact approved
    plan. A changed or reused bundle is **Blocked — Not Run**.
-8. Require the Docker-only v0.4 preflight: exact runtime/image provenance,
+8. Require `eval_runner.py docker-preflight`: exact runtime/image provenance,
    shell-free tool surface, internal workload network, provider gateway,
-   negative probes, observer, state method, and cleanup policy. That preflight
-   is not implemented yet, so current execution stops as **Blocked — Not Run**.
+   negative probes, observer, state method, and cleanup policy. The command and
+   enforcement code exist, but real provisioning/probes are not yet accepted,
+   so current status is `DOCKER_DESIGN_PENDING` and execution stops as
+   **Blocked — Not Run**.
    Do not substitute the historical `trusted_host.py` native preflight.
-9. When implemented, live dispatch additionally requires a fresh
+9. After a real preflight is accepted, live dispatch additionally requires a fresh
    `APPROVED_LIVE_RUN` object bound to the complete Docker preflight, a protected
    consumed-nonce ledger, and the approved Docker supervisor/gateway/observer.
    Preserve provider-native output, normalized per-arm results, quality data,
@@ -116,10 +119,11 @@ execution or failed/unknown safety.
 
 ## What is implemented and what remains unverified
 
-Docker-only v0.4 is the approved live architecture but remains an implementation
-plan. Docker is not installed in the current environment, no image has been
-built or probed, and no provider route is verified. Live status is therefore
-**Blocked — Not Run** with no native fallback.
+Docker-only v0.4 is the approved live architecture and its offline
+implementation is present. Docker provisioning has not been approved through
+this workflow, no reviewed image has been resolved or probed, and no provider
+route is verified. Status is therefore `DOCKER_DESIGN_PENDING` / **Blocked —
+Not Run** with no native fallback.
 
 The v0.3 implementation adds the native Codex read-only trusted host: exact
 policy compilation; isolated file-login/API-key refusal; pinned Node, Codex,

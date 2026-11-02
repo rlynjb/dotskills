@@ -1,9 +1,29 @@
 {
-  "schema_version": "0.2",
+  "schema_version": "0.4",
+  "active_architecture": "docker-only-v0.4",
   "status": "BLOCKED_NOT_RUN",
+  "architecture_status": "DOCKER_DESIGN_PENDING",
   "model_executed": false,
+  "live_model_executed": false,
+  "real_docker_probes_passed": false,
   "provider_results": [],
   "capability_updates": [],
+  "implementation": {
+    "contracts": "implemented_offline_tested",
+    "runtime_and_image_provenance": "implemented_offline_tested",
+    "minimal_workload_contract": "implemented_offline_tested",
+    "provider_gateway": "implemented_offline_tested",
+    "hardened_topology": "implemented_offline_tested",
+    "no_model_probes": "implemented_offline_tested",
+    "supervisor_observer_and_evidence": "implemented_offline_tested",
+    "active_cli": "implemented_offline_tested"
+  },
+  "docker_provisioning": {
+    "approved": false,
+    "installed_or_started_by_evaluate_skill": false,
+    "image_built_or_pulled": false,
+    "real_probe_artifact": null
+  },
   "native_preflight": {
     "status": "FAIL",
     "model_executed": false,
@@ -11,13 +31,14 @@
     "probe_count": 6,
     "passed_probe_count": 5,
     "failed_probes": ["secondary-tool-route"],
-    "provider_dispatched": false
+    "provider_dispatched": false,
+    "active_fallback": false
   },
   "reasons": [
-    "the installed native boundary passed five local probes but allowed the host-owned inert secondary-process canary",
-    "native read-only execution is blocked; the conditional Docker fallback requires separate implementation and approval before execution",
+    "Docker-only v0.4 code and offline regression coverage are implemented",
+    "separate approval is still required before Docker provisioning, image build or pull, or real container probes",
+    "the committed production capability inventory and image lock remain unverified until accepted real no-model evidence exists",
     "no live paired provider run has been authorized or executed",
-    "no independently operated live process/session observer has supplied accepted provider identity evidence",
-    "Claude, writable, mock-external, connector, MCP, and Docker execution remain unsupported"
+    "provider-native execution is retired and is not a fallback"
   ]
 }
