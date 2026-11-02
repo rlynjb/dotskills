@@ -7,6 +7,7 @@ from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 import math
+import re
 from types import MappingProxyType
 from typing import Any, Mapping, Optional, Tuple
 
@@ -26,6 +27,7 @@ _REQUIRED_ARMS = ("with-skill", "without-skill")
 _REQUIRED_RESULT_EVIDENCE = ("provider-result", "host-audit")
 _REQUIRED_CLEANUP = ("workspace-removed", "state-verified")
 _MAX_RECEIPT_TTL = timedelta(hours=2)
+_SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 
 
 def _mapping(value: Any, name: str) -> Mapping[str, Any]:
@@ -99,6 +101,15 @@ def _canonical_digest(value: Mapping[str, Any]) -> str:
         ensure_ascii=False,
     ).encode("utf-8")
     return hashlib.sha256(payload).hexdigest()
+
+
+def require_sha256_digest(value: Any, name: str) -> str:
+    """Return one canonical lowercase SHA-256 digest or fail closed."""
+
+    text = _text(value, name)
+    if not _SHA256_PATTERN.fullmatch(text):
+        raise ContractError(f"{name} must be 64 lowercase hexadecimal characters")
+    return text
 
 
 @dataclass(frozen=True)
@@ -465,11 +476,12 @@ class EnforcementReceipt:
     disabled_tools: Tuple[str, ...]
     state_verification_method: str
     cleanup_method: str
+    execution_binding_digest: Optional[str] = None
 
     @classmethod
     def from_dict(cls, value: Mapping[str, Any]) -> "EnforcementReceipt":
         value = _mapping(value, "enforcement receipt")
-        expected = frozenset(
+        base_expected = frozenset(
             (
                 "schema_version",
                 "plan_digest",
@@ -498,6 +510,17 @@ class EnforcementReceipt:
                 "cleanup_method",
             )
         )
+        schema_version = _text(
+            value.get("schema_version"), "enforcement receipt.schema_version"
+        )
+        if schema_version == "0.4":
+            expected = base_expected | frozenset(("execution_binding_digest",))
+        elif schema_version == "0.2":
+            expected = base_expected
+        else:
+            raise ContractError(
+                f"unsupported enforcement receipt schema_version: {schema_version}"
+            )
         _exact_fields(value, expected, "enforcement receipt")
         text = {
             name: _text(value[name], f"enforcement receipt.{name}")
@@ -547,6 +570,12 @@ class EnforcementReceipt:
             if status not in _PROBE_STATUSES:
                 raise ContractError(f"unknown probe status for {probe_id}: {status}")
             normalized_probes[probe_id] = status
+        execution_binding_digest = None
+        if schema_version == "0.4":
+            execution_binding_digest = require_sha256_digest(
+                value["execution_binding_digest"],
+                "enforcement receipt.execution_binding_digest",
+            )
         return cls(
             **text,
             probe_results=MappingProxyType(dict(sorted(normalized_probes.items()))),
@@ -554,6 +583,7 @@ class EnforcementReceipt:
             disabled_tools=_strings(
                 value["disabled_tools"], "enforcement receipt.disabled_tools"
             ),
+            execution_binding_digest=execution_binding_digest,
         )
 
     def is_valid_at(self, at: Optional[datetime] = None) -> bool:

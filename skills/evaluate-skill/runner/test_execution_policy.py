@@ -8,6 +8,11 @@ import capability_inventory as ci
 import contracts as c
 import execution_policy as ep
 
+try:
+    import docker_contracts as dc
+except ModuleNotFoundError:
+    dc = None
+
 
 class ExecutionPolicyTests(unittest.TestCase):
     def plan_value(self, backend="native"):
@@ -128,6 +133,40 @@ class ExecutionPolicyTests(unittest.TestCase):
             any(field in reason for reason in decision.reasons),
             (field, decision.reasons),
         )
+
+    def docker_binding(self, plan, **changes):
+        self.assertIsNotNone(dc, "docker_contracts module must exist")
+        value = {
+            "schema_version": "0.4",
+            "plan_digest": plan.digest(),
+            "provider": plan.provider,
+            "profile": plan.capabilities.profile,
+            "workload_image": "registry.invalid/evaluate-codex@sha256:" + "1" * 64,
+            "workload_image_digest": "1" * 64,
+            "gateway_image": "registry.invalid/evaluate-gateway@sha256:" + "2" * 64,
+            "gateway_image_digest": "2" * 64,
+            "build_input_digest": "3" * 64,
+            "runtime_inventory_digest": "4" * 64,
+            "launch_policy_digest": "5" * 64,
+            "network_policy_digest": "6" * 64,
+            "seccomp_policy_digest": "7" * 64,
+            "gateway_policy_digest": "8" * 64,
+            "observer_policy_digest": "9" * 64,
+            "fixture_digest": "a" * 64,
+            "cleanup_policy_digest": "b" * 64,
+        }
+        value.update(changes)
+        return dc.DockerExecutionBinding.from_dict(value)
+
+    def docker_enforcement(self, plan, binding, **changes):
+        value = {
+            "schema_version": "0.4",
+            "execution_binding_digest": binding.digest(),
+            "effective_policy_digest": binding.digest(),
+            "backend_version": "docker-v0.4",
+        }
+        value.update(changes)
+        return self.enforcement(plan, **value)
 
     def test_verified_native_read_only_plan_is_approved(self):
         plan = c.RunPlan.from_dict(self.plan_value())
@@ -312,6 +351,81 @@ class ExecutionPolicyTests(unittest.TestCase):
         decision = ep.assess_run(plan, self.approval(plan), manifest, self.inventory())
 
         self.assert_blocked_for(decision, "enforcement_receipt")
+
+    def test_docker_policy_rejects_native_backend_without_fallback(self):
+        self.assertTrue(hasattr(ep, "assess_docker_run"))
+        plan = c.RunPlan.from_dict(self.plan_value("native"))
+
+        decision = ep.assess_docker_run(
+            plan,
+            self.approval(plan),
+            self.enforcement(plan),
+            object(),
+            self.inventory(),
+        )
+
+        self.assertEqual(decision.decision, "BLOCKED")
+        self.assertIsNone(decision.backend)
+        self.assertTrue(any("plan.backend" in reason for reason in decision.reasons))
+
+    def test_docker_policy_blocks_unverified_inventory_or_mismatched_binding(self):
+        self.assertTrue(hasattr(ep, "assess_docker_run"))
+        plan = c.RunPlan.from_dict(self.plan_value("docker"))
+        binding = self.docker_binding(plan)
+        enforcement = self.docker_enforcement(plan, binding)
+
+        blocked_inventory = ep.assess_docker_run(
+            plan,
+            self.approval(plan),
+            enforcement,
+            binding,
+            self.inventory(False),
+            observed_versions=self.inventory().required_versions,
+            observed_platform=self.inventory().platform,
+        )
+        self.assert_blocked_for(blocked_inventory, "capabilities.filesystem_read")
+
+        mismatched = self.docker_binding(plan, fixture_digest="c" * 64)
+        blocked_binding = ep.assess_docker_run(
+            plan,
+            self.approval(plan),
+            enforcement,
+            mismatched,
+            self.inventory(),
+            observed_versions=self.inventory().required_versions,
+            observed_platform=self.inventory().platform,
+        )
+        self.assert_blocked_for(
+            blocked_binding, "enforcement.execution_binding_digest"
+        )
+
+        approved = ep.assess_docker_run(
+            plan,
+            self.approval(plan),
+            enforcement,
+            binding,
+            self.inventory(),
+            observed_versions=self.inventory().required_versions,
+            observed_platform=self.inventory().platform,
+        )
+        self.assertEqual(approved, ep.PolicyDecision("APPROVED", "docker", ()))
+
+    def test_historical_native_receipts_remain_parseable_but_not_live_dispatchable(self):
+        self.assertTrue(hasattr(ep, "assess_docker_run"))
+        plan = c.RunPlan.from_dict(self.plan_value("native"))
+        historical = self.enforcement(plan)
+        self.assertEqual(historical.schema_version, "0.2")
+
+        decision = ep.assess_docker_run(
+            plan,
+            self.approval(plan),
+            historical,
+            object(),
+            self.inventory(),
+        )
+
+        self.assertEqual(decision.decision, "BLOCKED")
+        self.assertIsNone(decision.backend)
 
 
 if __name__ == "__main__":

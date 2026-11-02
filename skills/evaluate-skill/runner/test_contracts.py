@@ -357,6 +357,12 @@ class ContractTests(unittest.TestCase):
                 with self.assertRaises(c.ContractError):
                     loader(changed)
 
+    def test_historical_enforcement_receipt_has_no_docker_execution_binding(self):
+        plan = c.RunPlan.from_dict(self.run_plan_value())
+        receipt = c.EnforcementReceipt.from_dict(self.enforcement_value(plan))
+
+        self.assertIsNone(receipt.execution_binding_digest)
+
 
 if __name__ == "__main__":
     unittest.main()
