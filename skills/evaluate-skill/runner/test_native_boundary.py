@@ -246,6 +246,31 @@ class NativeBoundaryTests(unittest.TestCase):
                 with self.assertRaises(nb.BoundaryError):
                     self.receipt(result, workspace, config)
 
+    def test_boundary_launcher_allows_repeated_flags_but_rejects_unsafe_values(self):
+        with TemporaryDirectory() as temp:
+            workspace = Path(temp) / "workspace"
+            workspace.mkdir()
+            config = self.provider_config(workspace)
+            config["boundary_launcher"] = [
+                "/trusted/codex",
+                "sandbox",
+                "-c",
+                "features.apps=false",
+                "-c",
+                "features.multi_agent=false",
+                "--",
+            ]
+
+            digest = nb.provider_config_digest(config)
+            self.assertEqual(len(digest), 64)
+
+            for unsafe in ("", "contains\x00nul"):
+                with self.subTest(unsafe=unsafe):
+                    changed = dict(config)
+                    changed["boundary_launcher"] = ["/trusted/codex", unsafe]
+                    with self.assertRaises(nb.BoundaryError):
+                        nb.provider_config_digest(changed)
+
 
 if __name__ == "__main__":
     unittest.main()

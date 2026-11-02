@@ -72,16 +72,20 @@ def _mapping(value: Any, name: str) -> Mapping[str, Any]:
 def _text(value: Any, name: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise BoundaryError(f"{name} must be a non-empty string")
+    if "\x00" in value:
+        raise BoundaryError(f"{name} must not contain NUL bytes")
     return value
 
 
-def _strings(value: Any, name: str, *, nonempty: bool = False) -> Tuple[str, ...]:
+def _strings(
+    value: Any, name: str, *, nonempty: bool = False, unique: bool = True
+) -> Tuple[str, ...]:
     if not isinstance(value, (list, tuple)):
         raise BoundaryError(f"{name} must be an array")
     result = tuple(_text(item, f"{name} item") for item in value)
     if nonempty and not result:
         raise BoundaryError(f"{name} must not be empty")
-    if len(result) != len(set(result)):
+    if unique and len(result) != len(set(result)):
         raise BoundaryError(f"{name} must not contain duplicates")
     return result
 
@@ -111,7 +115,12 @@ def _normalized_config(value: Mapping[str, Any]) -> dict[str, Any]:
         "profile": _text(value["profile"], "profile"),
         "sandbox_mode": _text(value["sandbox_mode"], "sandbox_mode"),
         "boundary_launcher": list(
-            _strings(value["boundary_launcher"], "boundary_launcher", nonempty=True)
+            _strings(
+                value["boundary_launcher"],
+                "boundary_launcher",
+                nonempty=True,
+                unique=False,
+            )
         ),
         "outside_read_path": str(read_path),
         "outside_write_path": str(write_path),
