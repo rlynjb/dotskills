@@ -989,7 +989,12 @@ def _bundle_digest(bundle):
     bundle = Path(bundle)
     if not bundle.is_dir() or bundle.is_symlink():
         raise Blocked('Prepared bundle must be a real directory')
-    excluded = frozenset(('manifest.json', 'claude-results.json', 'codex-results.json'))
+    excluded = frozenset((
+        '.execution-claim',
+        'manifest.json',
+        'claude-results.json',
+        'codex-results.json',
+    ))
     artifacts = []
     for path in sorted(bundle.rglob('*'), key=lambda item: item.as_posix()):
         if path.is_symlink():

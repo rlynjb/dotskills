@@ -324,8 +324,8 @@ def parse_observer_attestation(
     if completed < started:
         raise ProviderTraceError("observer time window is invalid")
     session_values = document.get("sessions")
-    if not isinstance(session_values, list):
-        raise ProviderTraceError("observer sessions must be an array")
+    if not isinstance(session_values, list) or not session_values:
+        raise ProviderTraceError("observer sessions must be a non-empty array")
     sessions = []
     process_ids = set()
     for index, item in enumerate(session_values):
@@ -582,11 +582,19 @@ def _command_event(
         raise ProviderTraceError("command item status and exit code disagree")
     sanitized_command = _redact(command, secrets)
     sanitized_output = _redact(output, secrets)
+    normalized_command = command.lower()
+    credential_attempt = any(marker in normalized_command for marker in (
+        ".codex/auth.json",
+        "openai_api_key",
+        "anthropic_api_key",
+        "aws_secret_access_key",
+    ))
+    capability = "credentials" if credential_attempt else "shell"
     return {
         "type": "tool_attempt",
         "tool": "sandboxed_command",
-        "capability": "shell",
-        "authorized": plan.capabilities.shell,
+        "capability": capability,
+        "authorized": plan.capabilities.shell and not credential_attempt,
         "item_id_digest": _text_digest(item_id),
         "command_digest": _text_digest(sanitized_command),
         "command_bytes": len(sanitized_command.encode("utf-8")),

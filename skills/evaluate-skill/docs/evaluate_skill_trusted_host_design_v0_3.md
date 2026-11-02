@@ -101,6 +101,12 @@ authority: the same root-deny, no-write, and no-network policy applies to every
 spawned command. Secondary routes capable of starting another agent or host
 automation process are explicitly denied and probed.
 
+The native route therefore rejects a plan with `shell: false` before any
+provider dispatch. `shell: true` authorizes command invocation only inside the
+compiled boundary; it does not authorize credential reads, writes, outside-root
+reads, or network access. Credential-path command attempts remain explicitly
+unauthorized in the action trace even when restricted shell is approved.
+
 The compiled profile is injected into every with-skill, without-skill, and
 judge Codex provider configuration through `cli_config`. Legacy
 `sandbox_mode` fields are removed so they cannot override the named permission
@@ -140,9 +146,10 @@ Any unknown result is `BLOCKED_NOT_RUN`. The preflight never calls a model.
 1. Revalidate the plan, approval, receipt, inventory, bundle digest, and
    single-use nonce.
 2. Capture a host-owned `run_start` event before provider dispatch.
-3. Recheck receipt and live-authorization expiry at the dispatch boundary, then
-   execute only the exact Promptfoo command already bound by the manifest,
-   with a minimal environment and hard timeout/output limits.
+3. Re-attest executable identities, Promptfoo and SDK trees, SDK resolution,
+   the isolated auth home, bundle/config digests, exact command, receipt, and
+   live-authorization expiry at the dispatch boundary. Then execute only that
+   command with a minimal environment and hard timeout/output limits.
 4. Parse the Promptfoo `0.125.1` JSON schema fail-closed. Preserve provider
    output and LLM-rubric judgments, while extracting each Codex response's raw
    turn items into sanitized host trace events.
@@ -166,7 +173,10 @@ interrupted arm cannot make the pair complete. Any failure after provider
 dispatch is `INCOMPLETE` and records that a model may have executed; only
 pre-dispatch refusal is `BLOCKED_NOT_RUN`. User interruption after dispatch
 terminates and reaps the complete provider process group before returning the
-same incomplete status.
+same incomplete status. The injected trusted launcher returns a lifecycle
+handle containing the Promptfoo process-group ID before the host waits. The
+host always calls the handle's terminate/reap operation in `finally` and
+requires the observer's Promptfoo PID to equal that owned process-group ID.
 
 ## 6. Evidence and receipts
 

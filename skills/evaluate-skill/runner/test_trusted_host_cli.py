@@ -133,62 +133,77 @@ class TrustedHostCliTests(unittest.TestCase):
     def trusted_runner(self, request, calls):
         helper = self.helper()
 
-        def run(argv, **kwargs):
+        def launch(argv, **kwargs):
             calls.append((tuple(argv), kwargs))
-            document = helper.promptfoo_document(SimpleNamespace(bundle=request.bundle))
-            (request.bundle / "codex-results.json").write_text(
-                json.dumps(document), encoding="utf-8"
-            )
-            sessions = []
             promptfoo_process_id = 2900
-            for result_index, (arm, session) in enumerate((
-                ("with-skill", "session-with"),
-                ("without-skill", "session-without"),
-            )):
-                for role, assertion_index, session_id in (
-                    ("arm", -1, session),
-                    ("judge", 0, f"judge-{arm}"),
-                ):
-                    sessions.append(pt.ObservedSessionIdentity(
-                        role=role,
-                        arm_name=arm,
-                        result_index=result_index,
-                        assertion_index=assertion_index,
-                        session_id=session_id,
-                        execution_id=kwargs["execution_id"],
-                        process_id=3000 + len(sessions),
-                        parent_process_id=promptfoo_process_id,
-                        executable_digest=kwargs["expected_executable_digest"],
-                        observed_at=kwargs["observation_started_at"],
-                        provider=request.plan.provider,
-                        provider_version=request.plan.provider_version,
-                        model=request.plan.model,
-                        model_version=request.plan.model_version,
-                        adapter=request.plan.adapter,
-                        adapter_version=request.plan.adapter_version,
-                        provider_config_digest=json.loads(
-                            (request.artifact_directory / "enforcement-receipt.json").read_text()
-                        )["provider_config_digest"],
-                    ))
-            observer_trace = json.dumps({
-                "schema_version": pt.OBSERVER_SCHEMA_VERSION,
-                "observer_id": kwargs["expected_observer_id"],
-                "observer_version": kwargs["expected_observer_version"],
-                "execution_id": kwargs["execution_id"],
-                "promptfoo_process_id": promptfoo_process_id,
-                "executable_digest": kwargs["expected_executable_digest"],
-                "provider_config_digest": kwargs["expected_provider_config_digest"],
-                "sessions": [session.__dict__ for session in sessions],
-            }, sort_keys=True).encode("utf-8")
-            return ch.SupervisedProcessResult(
-                returncode=0,
-                stdout=b"stdout",
-                stderr=b"",
-                provider_process_id=promptfoo_process_id,
-                observer_trace=observer_trace,
+
+            def wait_for_result():
+                document = helper.promptfoo_document(
+                    SimpleNamespace(bundle=request.bundle)
+                )
+                (request.bundle / "codex-results.json").write_text(
+                    json.dumps(document), encoding="utf-8"
+                )
+                sessions = []
+                for result_index, (arm, session) in enumerate((
+                    ("with-skill", "session-with"),
+                    ("without-skill", "session-without"),
+                )):
+                    for role, assertion_index, session_id in (
+                        ("arm", -1, session),
+                        ("judge", 0, f"judge-{arm}"),
+                    ):
+                        sessions.append(pt.ObservedSessionIdentity(
+                            role=role,
+                            arm_name=arm,
+                            result_index=result_index,
+                            assertion_index=assertion_index,
+                            session_id=session_id,
+                            execution_id=kwargs["execution_id"],
+                            process_id=3000 + len(sessions),
+                            parent_process_id=promptfoo_process_id,
+                            executable_digest=kwargs["expected_executable_digest"],
+                            observed_at=kwargs["observation_started_at"],
+                            provider=request.plan.provider,
+                            provider_version=request.plan.provider_version,
+                            model=request.plan.model,
+                            model_version=request.plan.model_version,
+                            adapter=request.plan.adapter,
+                            adapter_version=request.plan.adapter_version,
+                            provider_config_digest=json.loads(
+                                (
+                                    request.artifact_directory
+                                    / "enforcement-receipt.json"
+                                ).read_text()
+                            )["provider_config_digest"],
+                        ))
+                observer_trace = json.dumps({
+                    "schema_version": pt.OBSERVER_SCHEMA_VERSION,
+                    "observer_id": kwargs["expected_observer_id"],
+                    "observer_version": kwargs["expected_observer_version"],
+                    "execution_id": kwargs["execution_id"],
+                    "promptfoo_process_id": promptfoo_process_id,
+                    "executable_digest": kwargs["expected_executable_digest"],
+                    "provider_config_digest": kwargs[
+                        "expected_provider_config_digest"
+                    ],
+                    "sessions": [session.__dict__ for session in sessions],
+                }, sort_keys=True).encode("utf-8")
+                return ch.SupervisedProcessResult(
+                    returncode=0,
+                    stdout=b"stdout",
+                    stderr=b"",
+                    provider_process_id=promptfoo_process_id,
+                    observer_trace=observer_trace,
+                )
+
+            return ch.SupervisedProcessHandle(
+                process_group_id=promptfoo_process_id,
+                wait_for_result=wait_for_result,
+                terminate_and_reap=lambda: None,
             )
 
-        return run
+        return launch
 
     def test_preflight_cli_never_dispatches_provider(self):
         with TemporaryDirectory() as temp:
@@ -312,12 +327,16 @@ class TrustedHostCliTests(unittest.TestCase):
 
             def failed_runner(*args, **kwargs):
                 calls.append((args, kwargs))
-                return ch.SupervisedProcessResult(
-                    returncode=7,
-                    stdout=b"",
-                    stderr=b"failed",
-                    provider_process_id=1,
-                    observer_trace=b"failed-observer-trace",
+                return ch.SupervisedProcessHandle(
+                    process_group_id=1,
+                    wait_for_result=lambda: ch.SupervisedProcessResult(
+                        returncode=7,
+                        stdout=b"",
+                        stderr=b"failed",
+                        provider_process_id=1,
+                        observer_trace=b"failed-observer-trace",
+                    ),
+                    terminate_and_reap=lambda: None,
                 )
 
             deps = replace(dependencies, trusted_process_runner=failed_runner)
@@ -344,7 +363,13 @@ class TrustedHostCliTests(unittest.TestCase):
             authorization = self.live_authorization(temp, request)
 
             def interrupted_runner(*_args, **_kwargs):
-                raise KeyboardInterrupt()
+                return ch.SupervisedProcessHandle(
+                    process_group_id=1,
+                    wait_for_result=lambda: (_ for _ in ()).throw(
+                        KeyboardInterrupt()
+                    ),
+                    terminate_and_reap=lambda: None,
+                )
 
             deps = replace(
                 dependencies, trusted_process_runner=interrupted_runner

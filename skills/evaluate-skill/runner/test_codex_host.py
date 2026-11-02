@@ -1,6 +1,8 @@
 import json
 import hashlib
 import os
+import signal
+import subprocess
 import sys
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
@@ -40,7 +42,7 @@ class CodexHostPolicyTests(unittest.TestCase):
         codex.write_text("binary placeholder\n", encoding="utf-8")
         codex.chmod(0o700)
         promptfoo_runtime = root / "promptfoo-runtime"
-        promptfoo_runtime.mkdir()
+        promptfoo_runtime.mkdir(exist_ok=True)
         promptfoo = promptfoo_runtime / "promptfoo"
         promptfoo.write_text("binary placeholder\n", encoding="utf-8")
         promptfoo.chmod(0o700)
@@ -160,6 +162,20 @@ class CodexHostPolicyTests(unittest.TestCase):
         with TemporaryDirectory() as temp:
             root = Path(temp)
             shadow = root / "node_modules" / "@openai" / "codex-sdk"
+            shadow.mkdir(parents=True)
+            (shadow / "package.json").write_text(
+                '{"name":"@openai/codex-sdk","version":"9.9.9"}\n',
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ch.CodexHostError, "shadow"):
+                self.policy(temp)
+
+    def test_compiled_policy_rejects_promptfoo_dist_sdk_shadow(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            runtime = root / "promptfoo-runtime"
+            shadow = runtime / "dist" / "node_modules" / "@openai" / "codex-sdk"
             shadow.mkdir(parents=True)
             (shadow / "package.json").write_text(
                 '{"name":"@openai/codex-sdk","version":"9.9.9"}\n',
@@ -294,7 +310,7 @@ class TrustedPreflightTests(unittest.TestCase):
                     "profile": "read-only",
                     "filesystem_read": ["fixture"],
                     "filesystem_write": [],
-                    "shell": False,
+                    "shell": True,
                     "network": [],
                     "mock_tools": [],
                     "credentials": [],
@@ -583,6 +599,16 @@ class TrustedPreflightTests(unittest.TestCase):
         self.assertTrue(all(any(str(item).endswith(".py") for item in command) for command in commands))
         self.assertFalse(any("promptfoo" in str(item) for command in commands for item in command))
 
+    def test_preflight_requires_explicit_restricted_shell_approval(self):
+        with TemporaryDirectory() as temp:
+            request = self.fixture(temp)
+            plan = replace(
+                request.plan,
+                capabilities=replace(request.plan.capabilities, shell=False),
+            )
+            with self.assertRaisesRegex(ch.CodexHostError, "restricted shell"):
+                ch.run_trusted_preflight(replace(request, plan=plan))
+
     def test_preflight_binds_plan_bundle_policy_workspace_nonce_and_tools(self):
         with TemporaryDirectory() as temp:
             request = self.fixture(temp)
@@ -600,8 +626,8 @@ class TrustedPreflightTests(unittest.TestCase):
             self.assertEqual(receipt.provider_config_digest, manifest["provider_config_digest"])
             self.assertEqual(receipt.workspace_id, request.policy.workspace_id)
             self.assertEqual(result.policy_digest, request.policy.digest())
-            self.assertEqual(receipt.enabled_tools, ("filesystem_read",))
-            self.assertIn("shell", receipt.disabled_tools)
+            self.assertEqual(receipt.enabled_tools, ("filesystem_read", "shell"))
+            self.assertNotIn("shell", receipt.disabled_tools)
             self.assertTrue(result.policy_artifact.is_file())
             self.assertTrue(result.snapshot_artifact.is_file())
             self.assertTrue(result.probe_artifact.is_file())
@@ -869,25 +895,32 @@ class TrustedSupervisorTests(unittest.TestCase):
     def runner(self, request, *, omit_arm=None, malformed_raw=False,
                quality_fail=False, returncode=0, stdout=b"provider stdout",
                stderr=b""):
-        def run(argv, **kwargs):
-            observer_trace = self.observer_trace(request, kwargs)
-            document = self.promptfoo_document(
-                request,
-                omit_arm=omit_arm,
-                malformed_raw=malformed_raw,
-                quality_fail=quality_fail,
+        def launch(argv, **kwargs):
+            def wait_for_result():
+                observer_trace = self.observer_trace(request, kwargs)
+                document = self.promptfoo_document(
+                    request,
+                    omit_arm=omit_arm,
+                    malformed_raw=malformed_raw,
+                    quality_fail=quality_fail,
+                )
+                (request.bundle / "codex-results.json").write_text(
+                    json.dumps(document), encoding="utf-8"
+                )
+                return ch.SupervisedProcessResult(
+                    returncode=returncode,
+                    stdout=stdout,
+                    stderr=stderr,
+                    provider_process_id=1900,
+                    observer_trace=observer_trace,
+                )
+
+            return ch.SupervisedProcessHandle(
+                process_group_id=1900,
+                wait_for_result=wait_for_result,
+                terminate_and_reap=lambda: None,
             )
-            (request.bundle / "codex-results.json").write_text(
-                json.dumps(document), encoding="utf-8"
-            )
-            return ch.SupervisedProcessResult(
-                returncode=returncode,
-                stdout=stdout,
-                stderr=stderr,
-                provider_process_id=1900,
-                observer_trace=observer_trace,
-            )
-        return run
+        return launch
 
     def test_supervisor_runs_only_exact_bound_command_with_minimal_environment(self):
         with TemporaryDirectory() as temp:
@@ -1005,10 +1038,53 @@ class TrustedSupervisorTests(unittest.TestCase):
                 )]
                 self.assertFalse(any(name.endswith("-complete.json") for name in states))
 
+    def test_supervisor_reattests_mutable_bindings_after_run_started_hook(self):
+        mutations = (
+            lambda request: (
+                request.policy.promptfoo_runtime_root / "dist" / "node_modules"
+                / "@openai" / "codex-sdk"
+            ).mkdir(parents=True),
+            lambda request: (
+                request.policy.promptfoo_runtime_root / "late-runtime.js"
+            ).write_text("changed\n", encoding="utf-8"),
+            lambda request: request.policy.node_path.write_text(
+                "changed node\n", encoding="utf-8"
+            ),
+            lambda request: (
+                request.policy.home / ".codex" / "config.toml"
+            ).write_text("[mcp_servers.evil]\n", encoding="utf-8"),
+            lambda request: (
+                request.bundle / "codex" / "promptfooconfig.yaml"
+            ).write_text("{}\n", encoding="utf-8"),
+        )
+        for mutate in mutations:
+            with self.subTest(mutate=mutate), TemporaryDirectory() as temp:
+                request = self.supervised_fixture(temp)
+                calls = []
+
+                def transition(stage):
+                    if stage == "run-started":
+                        mutate(request)
+
+                with self.assertRaises(ch.CodexHostError):
+                    ch.run_supervised_provider(
+                        request,
+                        process_runner=lambda *args, **kwargs: calls.append(
+                            (args, kwargs)
+                        ),
+                        transition_hook=transition,
+                    )
+
+                self.assertEqual(calls, [])
+
     def test_supervisor_enforces_timeout_output_limit_and_nonzero_exit_failure(self):
         cases = (
-            lambda request: (lambda *_args, **_kwargs: (_ for _ in ()).throw(
-                TimeoutError("synthetic timeout")
+            lambda request: (lambda *_args, **_kwargs: ch.SupervisedProcessHandle(
+                process_group_id=1900,
+                wait_for_result=lambda: (_ for _ in ()).throw(
+                    TimeoutError("synthetic timeout")
+                ),
+                terminate_and_reap=lambda: None,
             )),
             lambda request: self.runner(
                 request, stdout=b"x" * 200001
@@ -1033,8 +1109,12 @@ class TrustedSupervisorTests(unittest.TestCase):
         cases = (
             lambda request: self.runner(request, omit_arm="without_skill"),
             lambda request: self.runner(request, malformed_raw=True),
-            lambda request: (lambda *_args, **_kwargs: (_ for _ in ()).throw(
-                InterruptedError("synthetic interruption")
+            lambda request: (lambda *_args, **_kwargs: ch.SupervisedProcessHandle(
+                process_group_id=1900,
+                wait_for_result=lambda: (_ for _ in ()).throw(
+                    InterruptedError("synthetic interruption")
+                ),
+                terminate_and_reap=lambda: None,
             )),
         )
         for make_runner in cases:
@@ -1045,12 +1125,54 @@ class TrustedSupervisorTests(unittest.TestCase):
                         request, process_runner=make_runner(request)
                     )
 
+    def test_supervisor_preserves_attested_observer_on_malformed_provider_output(self):
+        with TemporaryDirectory() as temp:
+            request = self.supervised_fixture(temp)
+            launcher = self.runner(request, malformed_raw=True)
+            captured = {}
+
+            def capturing_launcher(*args, **kwargs):
+                handle = launcher(*args, **kwargs)
+
+                def wait_for_result():
+                    result = handle.wait_for_result()
+                    captured["observer"] = result.observer_trace
+                    return result
+
+                return replace(handle, wait_for_result=wait_for_result)
+
+            with self.assertRaises(ch.SupervisedRunIncomplete):
+                ch.run_supervised_provider(
+                    request, process_runner=capturing_launcher
+                )
+
+            observer_path = request.artifact_directory / "session-observations.json"
+            self.assertEqual(observer_path.read_bytes(), captured["observer"])
+            digest = hashlib.sha256(captured["observer"]).hexdigest()
+            incomplete = next(
+                request.artifact_directory.glob("run-state-*-incomplete.json")
+            )
+            self.assertEqual(
+                json.loads(incomplete.read_text(encoding="utf-8"))[
+                    "observer_artifact_digest"
+                ],
+                digest,
+            )
+
     def test_supervisor_keyboard_interrupt_is_incomplete_and_cleans_workspaces(self):
         with TemporaryDirectory() as temp:
             request = self.supervised_fixture(temp)
 
+            terminated = []
+
             def interrupted_runner(*_args, **_kwargs):
-                raise KeyboardInterrupt()
+                return ch.SupervisedProcessHandle(
+                    process_group_id=1900,
+                    wait_for_result=lambda: (_ for _ in ()).throw(
+                        KeyboardInterrupt()
+                    ),
+                    terminate_and_reap=lambda: terminated.append(True),
+                )
 
             with self.assertRaises(ch.SupervisedRunIncomplete):
                 ch.run_supervised_provider(
@@ -1063,6 +1185,7 @@ class TrustedSupervisorTests(unittest.TestCase):
                 path.name for path in request.artifact_directory.glob("run-state-*.json")
             ]
             self.assertTrue(any("incomplete" in name for name in states))
+            self.assertEqual(terminated, [True])
 
     def test_supervisor_rejects_observer_trace_without_attested_sessions(self):
         for mutation in ("empty-sessions", "wrong-process", "stale-timestamp"):
@@ -1071,21 +1194,29 @@ class TrustedSupervisorTests(unittest.TestCase):
                 valid_runner = self.runner(request)
 
                 def mismatched_observer(*args, **kwargs):
-                    result = valid_runner(*args, **kwargs)
-                    observer = json.loads(result.observer_trace)
-                    if mutation == "empty-sessions":
-                        observer["sessions"] = []
-                    elif mutation == "wrong-process":
-                        return replace(result, provider_process_id=9999)
-                    else:
-                        observer["sessions"][0]["observed_at"] = (
-                            datetime.now(timezone.utc) - timedelta(days=1)
-                        ).isoformat()
+                    handle = valid_runner(*args, **kwargs)
+
+                    def wait_for_result():
+                        result = handle.wait_for_result()
+                        observer = json.loads(result.observer_trace)
+                        if mutation == "empty-sessions":
+                            observer["sessions"] = []
+                        elif mutation == "wrong-process":
+                            return replace(result, provider_process_id=9999)
+                        else:
+                            observer["sessions"][0]["observed_at"] = (
+                                datetime.now(timezone.utc) - timedelta(days=1)
+                            ).isoformat()
+                        return replace(
+                            result,
+                            observer_trace=json.dumps(observer, sort_keys=True).encode(
+                                "utf-8"
+                            ),
+                        )
+
                     return replace(
-                        result,
-                        observer_trace=json.dumps(observer, sort_keys=True).encode(
-                            "utf-8"
-                        ),
+                        handle,
+                        wait_for_result=wait_for_result,
                     )
 
                 with self.assertRaises(ch.SupervisedRunIncomplete):
@@ -1252,6 +1383,51 @@ class TrustedSupervisorTests(unittest.TestCase):
                         expected_executable_digest="e" * 64,
                     )
             real_sleep(0.7)
+
+            self.assertFalse(marker.exists())
+
+    def test_supervisor_reaps_lifecycle_group_when_wait_is_interrupted(self):
+        with TemporaryDirectory() as temp:
+            request = self.supervised_fixture(temp)
+            marker = Path(temp) / "lifecycle-orphan-marker"
+            child = (
+                "import pathlib,time; time.sleep(0.4); "
+                f"pathlib.Path({str(marker)!r}).write_text('orphan')"
+            )
+            parent = (
+                "import subprocess,sys,time; "
+                f"subprocess.Popen([sys.executable, '-c', {child!r}]); "
+                "time.sleep(10)"
+            )
+
+            def launcher(*_args, **_kwargs):
+                process = subprocess.Popen(
+                    (sys.executable, "-c", parent),
+                    start_new_session=True,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+
+                def wait_for_result():
+                    time.sleep(0.15)
+                    raise KeyboardInterrupt()
+
+                def terminate_and_reap():
+                    try:
+                        os.killpg(process.pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+                    process.wait(timeout=2)
+
+                return ch.SupervisedProcessHandle(
+                    process_group_id=process.pid,
+                    wait_for_result=wait_for_result,
+                    terminate_and_reap=terminate_and_reap,
+                )
+
+            with self.assertRaises(ch.SupervisedRunIncomplete):
+                ch.run_supervised_provider(request, process_runner=launcher)
+            time.sleep(0.7)
 
             self.assertFalse(marker.exists())
 

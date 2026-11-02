@@ -185,13 +185,13 @@ class ProviderTraceTests(unittest.TestCase):
             observed_sessions=tuple(sessions),
         )
 
-    def parse(self, document, *, binding=None, secrets=()):
+    def parse(self, document, *, plan=None, binding=None, secrets=()):
         with TemporaryDirectory() as temp:
             path = Path(temp) / "results.json"
             path.write_text(json.dumps(document), encoding="utf-8")
             return p.parse_promptfoo_result(
                 path,
-                self.plan(),
+                plan or self.plan(),
                 binding or self.binding(),
                 known_secret_values=secrets,
             )
@@ -388,7 +388,7 @@ class ProviderTraceTests(unittest.TestCase):
             self.assertEqual(event["capability"], "shell")
             self.assertTrue(event["authorized"])
 
-    def test_failed_credential_read_command_is_an_unauthorized_shell_attempt(self):
+    def test_failed_credential_read_command_is_unauthorized_with_or_without_shell(self):
         command = {
             "id": "credential-read",
             "type": "command_execution",
@@ -403,13 +403,22 @@ class ProviderTraceTests(unittest.TestCase):
             raw["items"].insert(0, command)
             result["response"]["raw"] = json.dumps(raw)
 
-        parsed = self.parse(changed)
+        for shell in (False, True):
+            with self.subTest(shell=shell):
+                plan_value = self.plan().canonical_payload()
+                plan_value["capabilities"]["shell"] = shell
+                parsed = self.parse(
+                    changed, plan=c.RunPlan.from_dict(plan_value)
+                )
 
-        for arm in parsed.arms:
-            event = next(item for item in arm.events if item["type"] == "tool_attempt")
-            self.assertEqual(event["capability"], "shell")
-            self.assertFalse(event["authorized"])
-            self.assertEqual(event["outcome"], "failed")
+                for arm in parsed.arms:
+                    event = next(
+                        item for item in arm.events
+                        if item["type"] == "tool_attempt"
+                    )
+                    self.assertEqual(event["capability"], "credentials")
+                    self.assertFalse(event["authorized"])
+                    self.assertEqual(event["outcome"], "failed")
 
     def test_parser_rejects_malformed_incomplete_or_duplicate_command_items(self):
         base = {

@@ -248,7 +248,7 @@ def runtime_tree_digest(root: Path, label: str) -> str:
 def validate_codex_sdk_resolution(
     workspace: Path, promptfoo_runtime_root: Path, codex_sdk_root: Path
 ) -> None:
-    """Reject Node-resolution candidates that can shadow the attested SDK."""
+    """Require Promptfoo's exact resolver order to select the attested SDK."""
     workspace = _real_workspace(workspace)
     runtime_root = _real_path(
         promptfoo_runtime_root, "promptfoo_runtime_root", directory=True
@@ -263,15 +263,29 @@ def validate_codex_sdk_resolution(
         raise CodexHostError("trusted Promptfoo runtime must be outside the workspace")
 
     relative = Path("node_modules") / "@openai" / "codex-sdk"
-    # Promptfoo checks its config base path and process.cwd() before its own
-    # package root. Node walks every ancestor for each of those bases.
-    for base in (workspace / "codex", workspace):
+    # Promptfoo 0.125.1 checks these four bases in order. Node then walks each
+    # base and its ancestors. The first existing package is the imported SDK.
+    bases = (
+        workspace / "codex",
+        workspace,
+        runtime_root / "dist",
+        runtime_root,
+    )
+    selected = None
+    for base in bases:
         for ancestor in (base, *base.parents):
             candidate = ancestor / relative
             if os.path.lexists(candidate):
-                raise CodexHostError(
-                    "Codex SDK shadow candidate precedes the attested runtime"
-                )
+                selected = candidate
+                break
+        if selected is not None:
+            break
+    if selected is None:
+        raise CodexHostError("Promptfoo cannot resolve the attested Codex SDK")
+    if selected.is_symlink() or selected.resolve() != sdk_root:
+        raise CodexHostError(
+            "Codex SDK shadow candidate precedes the attested runtime"
+        )
 
     package = _read_json_object(sdk_root / "package.json", "Codex SDK package")
     if package.get("name") != "@openai/codex-sdk":
@@ -698,6 +712,20 @@ class SupervisedProcessResult:
 
 
 @dataclass(frozen=True)
+class SupervisedProcessHandle:
+    """Trusted child lifecycle returned before waiting on provider execution.
+
+    A launcher must not create a provider child unless it can return this handle.
+    The host always invokes ``terminate_and_reap`` after ``wait_for_result``,
+    including when waiting is interrupted or raises.
+    """
+
+    process_group_id: int
+    wait_for_result: Callable[[], SupervisedProcessResult]
+    terminate_and_reap: Callable[[], None]
+
+
+@dataclass(frozen=True)
 class SupervisedArmResult:
     arm_name: str
     provider_result_path: Path
@@ -867,6 +895,10 @@ def _validate_preflight_request(request: PreflightRequest) -> tuple[Path, Path, 
         or plan.capabilities.profile != "read-only"
     ):
         raise CodexHostError("preflight supports only the pinned native Codex read-only route")
+    if plan.capabilities.shell is not True:
+        raise CodexHostError(
+            "native Codex preflight requires explicitly approved restricted shell access"
+        )
     if not isinstance(request.approval, ApprovalReceipt):
         raise CodexHostError("preflight requires an ApprovalReceipt")
     issued = _timestamp(request.issued_at, "preflight issued_at")
@@ -1536,6 +1568,75 @@ def _validate_supervised_request(
     return bundle, ledger, manifest, promptfoo_config
 
 
+def _reattest_dispatch_boundary(
+    request: SupervisedRunRequest,
+    bundle: Path,
+    manifest: Mapping[str, Any],
+) -> Mapping[str, Any]:
+    """Recheck every mutable execution binding immediately before launch."""
+    validate_executable_identity(request.policy.codex_executable, "Codex")
+    validate_executable_identity(request.policy.promptfoo_executable, "Promptfoo")
+    validate_executable_identity(request.policy.node_executable, "Node")
+    if runtime_tree_digest(
+        request.policy.promptfoo_runtime_root, "Promptfoo runtime"
+    ) != request.policy.promptfoo_runtime_digest:
+        raise CodexHostError("Promptfoo runtime changed at dispatch")
+    if runtime_tree_digest(
+        request.policy.codex_sdk_root, "Codex SDK runtime"
+    ) != request.policy.codex_sdk_digest:
+        raise CodexHostError("Codex SDK runtime changed at dispatch")
+    validate_codex_sdk_resolution(
+        request.policy.workspace,
+        request.policy.promptfoo_runtime_root,
+        request.policy.codex_sdk_root,
+    )
+    if isolated_codex_home_digest(request.policy.home) != request.policy.home_shape_digest:
+        raise CodexHostError("isolated Codex home changed at dispatch")
+
+    import native_eval
+
+    current_manifest = _read_json_object(
+        bundle / "manifest.json", "running bundle manifest"
+    )
+    if (
+        current_manifest.get("status") != "RUNNING"
+        or current_manifest.get("execution_id") != manifest.get("execution_id")
+        or current_manifest.get("run_nonce") != request.preflight.receipt.run_nonce
+        or current_manifest.get("plan_digest") != request.plan.digest()
+        or current_manifest.get("host_policy_digest") != request.policy.digest()
+    ):
+        raise CodexHostError("running bundle identity changed at dispatch")
+    try:
+        bundle_digest = native_eval._bundle_digest(bundle)
+        provider_digest = native_eval._provider_config_digest(bundle, current_manifest)
+        native_eval.validate_configured_host_policy(bundle, request.policy)
+        expected_command = tuple(native_eval.native_command(bundle, current_manifest))
+    except native_eval.Blocked as exc:
+        raise CodexHostError(f"bound bundle changed at dispatch: {exc}") from None
+    if (
+        bundle_digest != current_manifest.get("bundle_digest")
+        or bundle_digest != request.preflight.bundle_digest
+        or provider_digest != current_manifest.get("provider_config_digest")
+        or provider_digest != request.preflight.provider_config_digest
+    ):
+        raise CodexHostError("bound bundle or provider config changed at dispatch")
+    exact_command = (
+        str(request.policy.node_path),
+        str(request.policy.promptfoo_path),
+        *expected_command[1:],
+    )
+    if request.command != exact_command:
+        raise CodexHostError("supervised command changed at dispatch")
+    if os.path.lexists(bundle / "codex-results.json"):
+        raise CodexHostError("provider output appeared before dispatch")
+    for path in _supervised_artifact_paths(request.artifact_directory):
+        if os.path.lexists(path):
+            raise CodexHostError(f"trusted host artifact appeared before dispatch: {path.name}")
+    return _read_json_object(
+        bundle / "codex" / "promptfooconfig.yaml", "bound Promptfoo config"
+    )
+
+
 def _quality_status(arm: ParsedArm) -> str:
     quality = arm.quality
     grading = quality.get("grading_result")
@@ -1551,7 +1652,7 @@ def _quality_status(arm: ParsedArm) -> str:
 def run_supervised_provider(
     request: SupervisedRunRequest,
     *,
-    process_runner: Optional[Callable[..., SupervisedProcessResult]] = None,
+    process_runner: Optional[Callable[..., SupervisedProcessHandle]] = None,
     transition_hook: Optional[Callable[[str], None]] = None,
     clock: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
 ) -> SupervisedRunResult:
@@ -1590,6 +1691,7 @@ def run_supervised_provider(
         "without-skill": bundle / "codex" / "without_skill",
     }
     dispatch_started = False
+    observer_trace_digest = None
     try:
         before_arms = {
             arm: snapshot_tree(path, ()) for arm, path in arm_paths.items()
@@ -1599,11 +1701,16 @@ def run_supervised_provider(
             "\0".join(request.command).encode("utf-8")
         ).hexdigest()})
 
-        runner = _bounded_process_runner if process_runner is None else process_runner
+        if process_runner is None:
+            raise CodexHostError(
+                "an observer-capable trusted process lifecycle launcher is required"
+            )
+        runner = process_runner
         environment = {
             **dict(request.policy.process_environment),
             **dict(native_eval._PROMPTFOO_SAFE_ENV),
         }
+        promptfoo_config = _reattest_dispatch_boundary(request, bundle, manifest)
         dispatch_started_at = clock()
         if dispatch_started_at.tzinfo is None or dispatch_started_at.utcoffset() is None:
             raise CodexHostError("trusted host clock must include a timezone")
@@ -1618,7 +1725,7 @@ def run_supervised_provider(
         ):
             raise CodexHostError("live authorization expired at dispatch")
         dispatch_started = True
-        process = runner(
+        handle = runner(
             request.command,
             cwd=bundle,
             environment=environment,
@@ -1631,6 +1738,21 @@ def run_supervised_provider(
             expected_observer_version=request.observer_version,
             observation_started_at=dispatch_started_at.isoformat(),
         )
+        if (
+            not isinstance(handle, SupervisedProcessHandle)
+            or isinstance(handle.process_group_id, bool)
+            or not isinstance(handle.process_group_id, int)
+            or handle.process_group_id <= 0
+            or not callable(handle.wait_for_result)
+            or not callable(handle.terminate_and_reap)
+        ):
+            raise CodexHostError(
+                "trusted process launcher returned an invalid lifecycle handle"
+            )
+        try:
+            process = handle.wait_for_result()
+        finally:
+            handle.terminate_and_reap()
         dispatch_completed_at = clock()
         if dispatch_completed_at.tzinfo is None or dispatch_completed_at.utcoffset() is None:
             raise CodexHostError("trusted host clock must include a timezone")
@@ -1655,12 +1777,20 @@ def run_supervised_provider(
             isinstance(process.provider_process_id, bool)
             or not isinstance(process.provider_process_id, int)
             or process.provider_process_id <= 0
+            or process.provider_process_id != handle.process_group_id
             or process.provider_process_id
             != observer_attestation.promptfoo_process_id
         ):
             raise CodexHostError(
-                "observer Promptfoo process identity differs from the supervised child"
+                "observer Promptfoo process identity differs from the supervised group"
             )
+        observer_trace_digest = hashlib.sha256(process.observer_trace).hexdigest()
+        observer_path = request.artifact_directory / "session-observations.json"
+        _write_bytes_exclusive(observer_path, process.observer_trace)
+        recorder.record("observer-attested", {
+            "observer_artifact_digest": observer_trace_digest,
+            "promptfoo_process_id": process.provider_process_id,
+        })
         if len(process.stdout) + len(process.stderr) > int(
             request.plan.resource_limits["max_output_bytes"]
         ):
@@ -1675,7 +1805,6 @@ def run_supervised_provider(
         if process.returncode != 0:
             raise CodexHostError(f"provider process exited nonzero: {process.returncode}")
 
-        observer_trace_digest = hashlib.sha256(process.observer_trace).hexdigest()
         binding = ProviderTraceBinding(
             provider_config_digest=request.preflight.provider_config_digest,
             promptfoo_config=promptfoo_config,
@@ -1696,9 +1825,6 @@ def run_supervised_provider(
                 arm.arm_name: arm.source_result_digest for arm in parsed.arms
             },
         })
-        observer_path = request.artifact_directory / "session-observations.json"
-        _write_bytes_exclusive(observer_path, process.observer_trace)
-
         after_arms = {
             arm: snapshot_tree(path, ()) for arm, path in arm_paths.items()
         }
@@ -1856,6 +1982,7 @@ def run_supervised_provider(
                 "failure_cleanup": (
                     "PASS" if cleanup_error is None else f"FAIL:{cleanup_error}"
                 ),
+                "observer_artifact_digest": observer_trace_digest,
             })
         except (CodexHostError, OSError, InterruptedError):
             pass

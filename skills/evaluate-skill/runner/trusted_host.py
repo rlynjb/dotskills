@@ -24,7 +24,7 @@ from codex_host import (
     HostAttestation,
     PreflightRequest,
     PreflightResult,
-    SupervisedProcessResult,
+    SupervisedProcessHandle,
     SupervisedRunIncomplete,
     SupervisedRunRequest,
     attest_host,
@@ -136,7 +136,7 @@ class HostDependencies:
     inspect_mcp_servers: Callable[[Path, Path], Sequence[str]] = _default_mcp_servers
     inspect_environment: Callable[[], Mapping[str, str]] = lambda: dict(os.environ)
     boundary_runner: Optional[Callable[..., NativeBoundaryResult]] = None
-    trusted_process_runner: Optional[Callable[..., SupervisedProcessResult]] = None
+    trusted_process_runner: Optional[Callable[..., SupervisedProcessHandle]] = None
 
 
 def file_digest(path: Path, *, max_bytes: int = 64 * 1024 * 1024) -> str:

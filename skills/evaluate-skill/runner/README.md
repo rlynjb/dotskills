@@ -203,6 +203,12 @@ standalone CLI deliberately returns `BLOCKED_NOT_RUN` unless an approved host
 embedding supplies the trusted process runner and independent Codex session
 observer. Promptfoo's own result cannot self-attest that identity.
 
+The trusted runner is a lifecycle launcher, not a one-shot callback. It must
+return the Promptfoo process-group ID plus wait and terminate/reap operations
+before the host waits for completion. The host invokes termination/reaping in
+a `finally` block, binds the reported Promptfoo PID to that process group, and
+rejects a runner that cannot provide this ownership contract.
+
 The host observer must cover both arm sessions and every LLM-rubric judge
 session. Each observation is bound to the current execution ID, process ID,
 supervised Promptfoo parent process, Codex executable digest, timestamp,
