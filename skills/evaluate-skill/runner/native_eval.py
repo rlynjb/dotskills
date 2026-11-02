@@ -13,6 +13,10 @@ import subprocess
 import sys
 import uuid
 
+from capability_inventory import load_inventory
+from contracts import ApprovalReceipt, EnforcementReceipt, RunPlan
+from execution_policy import assess_run
+
 class Blocked(Exception):
     pass
 
@@ -42,8 +46,8 @@ def choose_harness(explicit, env=None, *, for_execution=False):
 
 def safe_file(src, root):
     """Only accept regular files within root, with no symlinked path component."""
-    src = Path(src)
-    root = Path(root).resolve()
+    src = Path(src).absolute()
+    root = Path(root).absolute()
     try:
         relative = src.relative_to(root)
     except ValueError:
@@ -53,7 +57,7 @@ def safe_file(src, root):
         current = current / part
         if current.is_symlink():
             raise Blocked(f'Symlinked source path denied: {src}')
-    if not src.is_file() or not src.resolve().is_relative_to(root):
+    if not src.is_file() or not src.resolve().is_relative_to(root.resolve()):
         raise Blocked(f'Unsafe/missing source file: {src}')
     return src
 
@@ -129,8 +133,8 @@ def slug(value):
 
 def prepare(args, *, env=None):
     harness = choose_harness(args.harness, env)
-    source = args.target_skill.resolve()
-    if not source.is_dir():
+    source = args.target_skill.absolute()
+    if not source.is_dir() or source.is_symlink():
         raise Blocked('Target skill directory does not exist')
     suite = safe_file(args.suite.absolute(), source)  # Preserve symlinks for safe_file checks
     case, inputs = get_case(suite, args.case_id)
@@ -219,7 +223,43 @@ def native_command(bundle, manifest):
     raise Blocked('Manifest harness invalid')
 
 
+def _required_file(args, field):
+    path = getattr(args, field, None)
+    if not isinstance(path, Path) or not path.is_file():
+        raise Blocked(f'{field.replace("_", "-")} file is required')
+    return path
+
+
+def _json_file(path, label):
+    try:
+        value = json.loads(path.read_text(encoding='utf-8'))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise Blocked(f'Cannot load {label}: {exc}') from None
+    if not isinstance(value, dict):
+        raise Blocked(f'{label} must contain a JSON object')
+    return value
+
+
+def assess_inputs(args):
+    """Load trusted policy inputs and return their fail-closed decision."""
+    plan_path = _required_file(args, 'run_plan')
+    approval_path = _required_file(args, 'approval_receipt')
+    enforcement_path = _required_file(args, 'enforcement_receipt')
+    inventory_path = _required_file(args, 'capability_inventory')
+    plan = RunPlan.from_dict(_json_file(plan_path, 'run plan'))
+    approval = ApprovalReceipt.from_dict(_json_file(approval_path, 'approval receipt'))
+    enforcement = EnforcementReceipt.from_dict(
+        _json_file(enforcement_path, 'enforcement receipt')
+    )
+    inventory = load_inventory(inventory_path)
+    decision = assess_run(plan, approval, enforcement, inventory)
+    return decision, plan, inventory
+
+
 def execute(args, env=None):
+    decision, plan, inventory = assess_inputs(args)
+    if decision.decision != 'APPROVED':
+        raise Blocked('; '.join(decision.reasons))
     bundle = args.bundle.resolve()
     manifest = json.loads((bundle / 'manifest.json').read_text(encoding='utf-8'))
     harness = choose_harness(None, env, for_execution=True)
@@ -227,18 +267,9 @@ def execute(args, env=None):
         raise Blocked('Prepared bundle belongs to another provider; no cross-provider execution')
     if manifest.get('status') != 'PREPARED_NOT_RUN':
         raise Blocked('Bundle is not a fresh prepared case')
-    if not all([args.approved_case, args.approved_provider, args.host_enforced, args.synthetic_only]):
-        raise Blocked('Explicit scoped approvals, synthetic-only input and independent host enforcement required')
-    if not args.host_manifest or not args.host_manifest.is_file():
-        raise Blocked('Independent execution host contract is required')
-    host = json.loads(args.host_manifest.read_text(encoding='utf-8'))
-    checks = ('disposable_workspace', 'mock_only_tools', 'no_live_credentials',
-              'no_live_write_paths', 'no_unrestricted_shell', 'no_network_bypass',
-              'child_agent_restrictions', 'per_tool_authorization', 'trusted_attempt_trace',
-              'post_run_state_verification')
-    if host.get('mode') != 'mock' or not host.get('verified_by') or any(host.get('checks', {}).get(k) is not True for k in checks):
-        raise Blocked('Host manifest incomplete: host must independently enforce every check')
-    # A JSON declaration cannot enforce any of these boundaries. The host MUST do so.
+    provider_key = inventory.provider_for_plan(plan.provider, plan.adapter)
+    if provider_key != harness:
+        raise Blocked('Approved provider does not match prepared and active harness')
     cmd = native_command(bundle, manifest)
     binary = shutil.which(cmd[0])
     if not binary:
@@ -251,7 +282,8 @@ def execute(args, env=None):
                             PROMPTFOO_DISABLE_UPDATE='1', PROMPTFOO_DISABLE_SHARING='1',
                             PROMPTFOO_DISABLE_REMOTE_GENERATION='1')
     # The actual isolation policy is the responsibility of the independent host.
-    result = subprocess.run(cmd, cwd=bundle, env=env_override, check=False)
+    command = [binary, *cmd[1:]]
+    result = subprocess.run(command, cwd=bundle, env=env_override, check=False)
     if result.returncode:
         raise Blocked(f'Native {harness} eval exited {result.returncode}; inspect provider output')
     # Do not claim a safety pass: require host-trusted trace/state audit and human review.
@@ -270,19 +302,31 @@ def main(argv=None):
     prep.add_argument('--output', type=Path, default=Path('eval-workspaces'))
     prep.add_argument('--harness', choices=['claude', 'codex'],
                       help='offline preparation only when no active harness marker exists')
+    def add_policy_inputs(parser):
+        parser.add_argument('--run-plan', type=Path, required=True)
+        parser.add_argument('--approval-receipt', type=Path, required=True)
+        parser.add_argument('--enforcement-receipt', type=Path, required=True)
+        parser.add_argument('--capability-inventory', type=Path, required=True)
+    assess_parser = sub.add_parser('assess', help='assess pinned policy inputs; never runs model')
+    add_policy_inputs(assess_parser)
     run = sub.add_parser('run', help='run provider-native command inside verified isolated host ONLY')
     run.add_argument('--bundle', type=Path, required=True)
-    run.add_argument('--host-manifest', type=Path)
-    run.add_argument('--approved-case', action='store_true')
-    run.add_argument('--approved-provider', action='store_true')
-    run.add_argument('--host-enforced', action='store_true')
-    run.add_argument('--synthetic-only', action='store_true')
+    add_policy_inputs(run)
     opts = ap.parse_args(argv)
     try:
         if opts.action == 'inspect':
             print(json.dumps({'active_harness': active_harness(), 'model_executed': False}))
         elif opts.action == 'prepare':
             print('PREPARED_NOT_RUN:', prepare(opts))
+        elif opts.action == 'assess':
+            decision, _, _ = assess_inputs(opts)
+            if decision.decision != 'APPROVED':
+                raise Blocked('; '.join(decision.reasons))
+            print('APPROVED_NOT_RUN:', json.dumps({
+                'decision': decision.decision,
+                'backend': decision.backend,
+                'model_executed': False,
+            }, sort_keys=True))
         else:
             return execute(opts)
         return 0

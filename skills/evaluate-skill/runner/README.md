@@ -5,6 +5,12 @@ It **prepares provider-specific synthetic cases** and routes evaluation to the
 active coding harness. It does not implement a shared model runner, shared
 LLM grader, or cross-provider fallback.
 
+Before dispatch, the runner now loads a versioned run plan, scoped human
+approval receipt, independent enforcement receipt, and pinned capability
+inventory. `assess` validates those inputs without running a model. `run`
+uses the same fail-closed assessment before executable discovery or provider
+dispatch.
+
 | Active harness | Execution | Grading | Native result format |
 | --- | --- | --- | --- |
 | Claude Code | Claude's `claude plugin eval`, with-skill and without-skill via `--ablation with-without` | Claude plugin-eval `graders/*.md` using `type: llm` | Claude plugin-eval JSON / review artifacts |
@@ -70,6 +76,28 @@ The preparer writes a manifest with `PREPARED_NOT_RUN` status and one of:
 **Important:** Static fixture generation and model/tool instructions do not
 establish that the provider accepted the case or that isolation works.
 
+## Assess a pinned run — no model calls
+
+```bash
+python3 skills/evaluate-skill/runner/native_eval.py assess \
+  --run-plan /trusted/run-plan.json \
+  --approval-receipt /trusted/approval-receipt.json \
+  --enforcement-receipt /trusted/enforcement-receipt.json \
+  --capability-inventory skills/evaluate-skill/runner/provider_capabilities_v0_2.json
+```
+
+The plan digest binds case, revisions, provider/model/adapter versions,
+backend, capability surfaces, budgets, comparison arms, evidence, and cleanup.
+The approval must match that exact plan. The enforcement receipt must match
+the plan and independently identified runtime, tools, probes, state check, and
+cleanup method. Unknown fields, version drift, missing probes, unverified
+claims, and backend/provider substitution produce `BLOCKED_NOT_RUN`.
+
+This is contract and policy validation, not physical enforcement. A caller
+cannot make a run safe by authoring JSON that says its probes passed. Receipt
+provenance and the controls it describes must be established outside the
+evaluated workload.
+
 ## Live execution — approved host only
 
 The following is a command contract for a **separately provisioned, independently
@@ -79,8 +107,10 @@ ordinary shell:
 ```bash
 python3 skills/evaluate-skill/runner/native_eval.py run \
   --bundle /isolated/eval-workspaces/PREPARED-BUNDLE \
-  --host-manifest /verified/host-manifest.json \
-  --approved-case --approved-provider --host-enforced --synthetic-only
+  --run-plan /trusted/run-plan.json \
+  --approval-receipt /trusted/approval-receipt.json \
+  --enforcement-receipt /trusted/enforcement-receipt.json \
+  --capability-inventory /trusted/provider-capabilities.json
 ```
 
 This dispatcher invokes only the selected native command:
@@ -97,7 +127,7 @@ The safety requirement is **host-enforced**, not merely declared: disposable
 workspaces, mock-only tool authorization, no live credentials/writes,
 network and shell/API bypass prevention, child-agent restrictions, independent
 attempted-action traces and post-run state checks. The manifest and
-`--host-enforced` flag **cannot provide these controls themselves**.
+receipt files **cannot provide these controls themselves**.
 Follow [Execution Safety Gate](../references/execution-safety-gate.md).
 Work-related prompts, code and outputs may be sent to a provider **only**
 with the appropriate employer/provider approval.
@@ -113,8 +143,8 @@ comparison metrics.
 python3 -m unittest discover -s skills/evaluate-skill/runner -p 'test_*.py' -v
 ```
 
-- Offline tests exercise routing, case preparation, fixture security,
-  and refusal paths only (seven tests passed locally).
+- Offline tests exercise contracts, inventory loading, fail-closed policy,
+  routing, case preparation, fixture security, and refusal paths only.
 - No real Claude or Codex evaluation has been verified end to end in this
   environment, and no independently verified isolated host is configured.
 - Native tool compatibility, ablation behavior, evaluator-only rubric
@@ -129,11 +159,15 @@ python3 -m unittest discover -s skills/evaluate-skill/runner -p 'test_*.py' -v
   absolute paths, parent traversal, symlinked files/directories, and
   suites outside the selected target skill **before** creating a bundle.
   It does not copy `evals.json` into either evaluated-agent workspace.
-- **Offline fixture regression tests:** Seven tests passed locally against
-  the same committed `native_eval.py` and `test_native_eval.py` files,
-  covering Claude, Codex, fixture-path isolation and blocked execution.
-  These tests do **not** verify live models, provider-native format
-  compatibility, or actual host isolation.
+- **Offline fixture regression tests:** the dispatcher suite covers Claude,
+  Codex, fixture-path isolation, policy assessment, legacy-flag rejection,
+  and blocked execution. These tests do **not** verify live models,
+  provider-native format compatibility, or actual host isolation.
 - The prototype does not aggregate native results across providers into a
   single score. Keep provider output schemas separate. Compare revisions
   within each provider using actual supported reports and human review.
+- This control-plane slice does not provision a native sandbox, Docker
+  backend, independent verifier, model credentials, or action-trace collector.
+  The committed v0.2 inventory intentionally leaves runtime confinement
+  unverified, so it cannot authorize a live run until later proof work produces
+  independently supported claims.

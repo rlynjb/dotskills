@@ -18,6 +18,24 @@ but do not advance into grading or report the evaluation cycle complete.
 Do not use production tokens, connected write tools, ordinary shells or
 network access to "try" an eval.
 
+## Control-plane contracts
+
+The v0.2 dispatcher requires four trusted inputs before provider executable
+discovery: a versioned run plan, an exact-scope approval receipt, an
+enforcement receipt, and a pinned capability inventory. Use
+`native_eval.py assess` to validate them without running a model. The receipt
+must bind the plan digest, provider/model/adapter versions, selected backend,
+capability profile, effective policy, negative probes, enabled and disabled
+tool routes, state verification, and cleanup.
+
+Contract validation is not a sandbox and a JSON receipt is not self-proving.
+The current control-plane slice does not create the native boundary, Docker
+fallback, independent verifier, provider authentication boundary, or trusted
+action trace. The committed inventory therefore leaves runtime confinement
+claims unverified. Until later proof work supplies independent evidence for
+the exact version/platform/profile, assessment must remain
+**Blocked — Not Run**.
+
 ## Host/harness contract (must be enforced outside the skill)
 
 1. Start a fresh, disposable task workspace. Supply only the runtime skill
@@ -66,8 +84,10 @@ network access to "try" an eval.
 }
 ```
 
-The host must establish those booleans in its own security configuration. **A
-self-declared manifest or a successful JSON preflight does not verify physical
+The host must establish those booleans in its own security configuration. This
+legacy manifest remains input to `refine_eval_safety.py`; it is not a substitute
+for the dispatcher's plan-bound enforcement receipt. **A self-declared
+manifest, receipt, or successful JSON preflight does not verify physical
 isolation or permission enforcement.** No runnable live model harness ships
 with DotSkills, and this helper does not grant one.
 

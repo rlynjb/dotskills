@@ -51,10 +51,14 @@ Preserve the approved source case and fixture files unmodified.
    prompt, or a built-in sandbox option is **not proof**.
 4. Prepare the correct native case using `native_eval.py prepare`; check the
    generated files and native tool flags against the **installed versions**.
-5. When all gates are independently verified, invoke `native_eval.py run`
+5. Construct the versioned run plan and require a matching approval receipt,
+   enforcement receipt, and pinned capability inventory. Run
+   `native_eval.py assess` first. A plan, receipt, version, capability, probe,
+   tool-route, state-check, or cleanup mismatch is **Blocked — Not Run**.
+6. When all gates are independently verified, invoke `native_eval.py run`
    **inside the approved host**. Preserve the provider's raw results and the
    host's audit traces. Do not infer results from a prepared config file.
-6. If a requirement fails, stop **Stage 3 — Blocked / Not Run** and preserve
+7. If a requirement fails, stop **Stage 3 — Blocked / Not Run** and preserve
    the case, approvals, and any observed errors. Never use a different provider
    as a fallback.
 
@@ -84,11 +88,15 @@ Final skill changes remain subject to the existing human approval gates.
 ## What is implemented and what remains unverified
 
 `native_eval.py` prepares provider-specific case definitions, selects a
-harness without runtime fallback, checks declared run prerequisites, and
-dispatches the corresponding CLI command. It does not bundle or install
-Claude, Promptfoo, or the Codex SDK, and it does not provide an independently
-isolated execution host. The CLI flags, provider case formats and real grader
-behavior must be tested against reviewed, pinned installations.
+harness without runtime fallback, validates strict run/approval/enforcement
+contracts against the pinned inventory, and refuses dispatch unless policy
+returns `APPROVED`. Legacy boolean authorization and self-declared host
+manifests are not sufficient. It does not bundle or install Claude, Promptfoo,
+or the Codex SDK, and it does not provide an independently isolated execution
+host. This slice also does not provision a native sandbox, Docker backend,
+independent verifier, model credentials, or action-trace collector. The CLI
+flags, provider case formats and real grader behavior must be tested against
+reviewed, pinned installations.
 
 Offline tests exist in [`test_native_eval.py`](../runner/test_native_eval.py).
 No end-to-end live model evaluation has been demonstrated here. Until a
