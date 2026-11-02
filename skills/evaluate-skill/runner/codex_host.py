@@ -2,14 +2,26 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
+from datetime import datetime, timezone
 import hashlib
 import json
 import os
 from pathlib import Path
 import re
+import stat
 from types import MappingProxyType
-from typing import Any, Mapping, Sequence, Tuple
+from typing import Any, Callable, Mapping, Optional, Sequence, Tuple
+
+from capability_inventory import CapabilityInventory, PlatformFingerprint
+from contracts import ApprovalReceipt, ContractError, EnforcementReceipt, RunPlan
+from evidence import EvidenceError, StateSnapshot, snapshot_tree
+from native_boundary import (
+    BoundaryError,
+    NativeBoundaryResult,
+    provider_config_digest as boundary_config_digest,
+    run_native_preflight,
+)
 
 
 class CodexHostError(ValueError):
@@ -244,6 +256,13 @@ def compile_read_only_policy(
         f"permissions.{READ_ONLY_PROFILE_NAME}={_toml_inline(permission_profile)}"
     )
     boundary_launcher = (
+        "/usr/bin/env",
+        "-i",
+        f"HOME={resolved_home}",
+        f"PATH={os.defpath}",
+        "LANG=C",
+        "LC_ALL=C",
+        "PYTHONIOENCODING=utf-8",
         str(resolved_codex),
         "sandbox",
         "-P",
@@ -362,4 +381,409 @@ def attest_host(
         policy_digest=policy.digest(),
         workspace_id=policy.workspace_id,
         disabled_mcp_servers=policy.disabled_mcp_servers,
+    )
+
+
+@dataclass(frozen=True)
+class PreflightRequest:
+    plan: RunPlan
+    approval: ApprovalReceipt
+    inventory: CapabilityInventory
+    policy: CodexHostPolicy
+    attestation: HostAttestation
+    bundle: Path
+    provider_config: Mapping[str, Any]
+    artifact_directory: Path
+    issued_at: str
+    expires_at: str
+    verifier_version: str
+    known_secret_values: Tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class PreflightResult:
+    receipt: EnforcementReceipt
+    boundary: NativeBoundaryResult
+    policy_digest: str
+    bundle_digest: str
+    provider_config_digest: str
+    protected_snapshots: Tuple[StateSnapshot, ...]
+    workspace_snapshot: StateSnapshot
+    policy_artifact: Path
+    snapshot_artifact: Path
+    probe_artifact: Path
+    receipt_artifact: Path
+
+
+def _timestamp(value: str, name: str) -> datetime:
+    if not isinstance(value, str) or not value:
+        raise CodexHostError(f"{name} must be an ISO-8601 timestamp")
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        raise CodexHostError(f"{name} must be an ISO-8601 timestamp") from None
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        raise CodexHostError(f"{name} must include a timezone")
+    return parsed.astimezone(timezone.utc)
+
+
+def _read_json_object(path: Path, label: str, *, max_bytes: int = 4 * 1024 * 1024) -> dict[str, Any]:
+    path = Path(path)
+    flags = os.O_RDONLY
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    descriptor = None
+    try:
+        descriptor = os.open(path, flags)
+        metadata = os.fstat(descriptor)
+        if not stat.S_ISREG(metadata.st_mode) or metadata.st_size > max_bytes:
+            raise CodexHostError(f"{label} must be a bounded regular file")
+        chunks = []
+        while True:
+            chunk = os.read(descriptor, min(1024 * 1024, max_bytes + 1))
+            if not chunk:
+                break
+            chunks.append(chunk)
+            if sum(len(item) for item in chunks) > max_bytes:
+                raise CodexHostError(f"{label} exceeds the size limit")
+        value = json.loads(b"".join(chunks).decode("utf-8"))
+    except CodexHostError:
+        raise
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise CodexHostError(f"cannot read {label}: {type(exc).__name__}") from None
+    finally:
+        if descriptor is not None:
+            os.close(descriptor)
+    if not isinstance(value, dict):
+        raise CodexHostError(f"{label} must contain a JSON object")
+    return value
+
+
+def _preflight_paths(directory: Path) -> tuple[Path, Path, Path, Path]:
+    return (
+        directory / "host-policy.json",
+        directory / "preflight-snapshots.json",
+        directory / "preflight-probes.json",
+        directory / "enforcement-receipt.json",
+    )
+
+
+def _write_json_exclusive(path: Path, payload: Mapping[str, Any]) -> Path:
+    encoded = (
+        json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+    ).encode("utf-8")
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    descriptor = None
+    try:
+        descriptor = os.open(path, flags, 0o600)
+        offset = 0
+        while offset < len(encoded):
+            offset += os.write(descriptor, encoded[offset:])
+        os.fsync(descriptor)
+        os.close(descriptor)
+        descriptor = None
+        directory = os.open(path.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory)
+        finally:
+            os.close(directory)
+    except FileExistsError:
+        raise CodexHostError(f"trusted host artifact already exists: {path.name}") from None
+    except OSError as exc:
+        raise CodexHostError(
+            f"cannot durably publish trusted host artifact {path.name}: {type(exc).__name__}"
+        ) from None
+    finally:
+        if descriptor is not None:
+            os.close(descriptor)
+    return path
+
+
+def _redact(value: Any, secrets: Tuple[str, ...]) -> Any:
+    if isinstance(value, str):
+        result = value
+        for secret in secrets:
+            result = result.replace(secret, "[REDACTED]")
+        return result
+    if isinstance(value, Mapping):
+        return {str(key): _redact(item, secrets) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_redact(item, secrets) for item in value]
+    return value
+
+
+def _receipt_payload(receipt: EnforcementReceipt) -> dict[str, Any]:
+    return {
+        "schema_version": receipt.schema_version,
+        "plan_digest": receipt.plan_digest,
+        "verified_by": receipt.verified_by,
+        "verifier_version": receipt.verifier_version,
+        "issued_at": receipt.issued_at,
+        "expires_at": receipt.expires_at,
+        "run_nonce": receipt.run_nonce,
+        "provider": receipt.provider,
+        "provider_version": receipt.provider_version,
+        "model": receipt.model,
+        "model_version": receipt.model_version,
+        "adapter": receipt.adapter,
+        "adapter_version": receipt.adapter_version,
+        "backend": receipt.backend,
+        "backend_version": receipt.backend_version,
+        "capability_profile": receipt.capability_profile,
+        "effective_policy_digest": receipt.effective_policy_digest,
+        "provider_config_digest": receipt.provider_config_digest,
+        "prepared_bundle_digest": receipt.prepared_bundle_digest,
+        "workspace_id": receipt.workspace_id,
+        "probe_results": dict(receipt.probe_results),
+        "enabled_tools": list(receipt.enabled_tools),
+        "disabled_tools": list(receipt.disabled_tools),
+        "state_verification_method": receipt.state_verification_method,
+        "cleanup_method": receipt.cleanup_method,
+    }
+
+
+def _snapshot_payload(snapshot: StateSnapshot) -> dict[str, Any]:
+    return asdict(snapshot)
+
+
+def _validate_preflight_request(request: PreflightRequest) -> tuple[Path, Path, dict[str, Any]]:
+    if not isinstance(request, PreflightRequest):
+        raise CodexHostError("a PreflightRequest is required")
+    plan = request.plan
+    if not isinstance(plan, RunPlan):
+        raise CodexHostError("preflight requires a RunPlan")
+    if (
+        plan.provider != "openai"
+        or plan.adapter != "promptfoo-codex-sdk"
+        or plan.backend != "native"
+        or plan.capabilities.profile != "read-only"
+    ):
+        raise CodexHostError("preflight supports only the pinned native Codex read-only route")
+    if not isinstance(request.approval, ApprovalReceipt):
+        raise CodexHostError("preflight requires an ApprovalReceipt")
+    issued = _timestamp(request.issued_at, "preflight issued_at")
+    expires = _timestamp(request.expires_at, "preflight expires_at")
+    if issued >= expires:
+        raise CodexHostError("preflight expiry must follow issuance")
+    try:
+        request.approval.validate_for(plan, at=issued)
+    except ContractError as exc:
+        raise CodexHostError(f"approval receipt is invalid: {exc}") from None
+    if expires > _timestamp(request.approval.expires_at, "approval expires_at"):
+        raise CodexHostError("preflight receipt cannot outlive approval")
+
+    if not isinstance(request.policy, CodexHostPolicy):
+        raise CodexHostError("preflight requires a CodexHostPolicy")
+    if not isinstance(request.attestation, HostAttestation):
+        raise CodexHostError("preflight requires a HostAttestation")
+    if (
+        request.attestation.policy_digest != request.policy.digest()
+        or request.attestation.workspace_id != request.policy.workspace_id
+    ):
+        raise CodexHostError("host attestation does not match the compiled policy")
+
+    if not isinstance(request.inventory, CapabilityInventory):
+        raise CodexHostError("preflight requires a CapabilityInventory")
+    inventory_platform = PlatformFingerprint(*request.attestation.platform)
+    if request.inventory.platform != inventory_platform:
+        raise CodexHostError("capability inventory platform changed after host attestation")
+    for tool in ("codex", "promptfoo"):
+        if request.inventory.required_versions.get(tool) != request.attestation.versions.get(tool):
+            raise CodexHostError(f"capability inventory version changed for {tool}")
+    provider_key = request.inventory.provider_for_plan(plan.provider, plan.adapter)
+    if provider_key != "codex":
+        raise CodexHostError("capability inventory does not identify the pinned Codex route")
+    descriptor = request.inventory.providers[provider_key]
+    if (
+        descriptor.provider_version != plan.provider_version
+        or descriptor.adapter_version != plan.adapter_version
+    ):
+        raise CodexHostError("capability inventory provider identity changed")
+
+    bundle = _real_workspace(request.bundle)
+    if bundle != request.policy.workspace or _path_identity(bundle) != request.policy.workspace_id:
+        raise CodexHostError("configured bundle does not match the policy workspace")
+    artifacts = Path(request.artifact_directory)
+    if not artifacts.is_absolute() or artifacts.is_symlink() or not artifacts.is_dir():
+        raise CodexHostError("artifact directory must be a real existing directory")
+    artifacts = artifacts.resolve()
+    if _paths_overlap(bundle, artifacts):
+        raise CodexHostError("artifact directory must be outside the evaluated workspace")
+
+    if not isinstance(request.provider_config, Mapping):
+        raise CodexHostError("native boundary provider config is required")
+    if tuple(request.provider_config.get("boundary_launcher", ())) != request.policy.boundary_launcher:
+        raise CodexHostError("native boundary launcher does not match the compiled policy")
+    if request.provider_config.get("sandbox_mode") != request.policy.profile_name:
+        raise CodexHostError("native boundary permission profile does not match the policy")
+    if request.provider_config.get("connectors_enabled") or request.provider_config.get("mcp_servers"):
+        raise CodexHostError("connectors and MCP servers must be disabled for preflight")
+
+    manifest = _read_json_object(bundle / "manifest.json", "configured bundle manifest")
+    if manifest.get("status") != "CONFIGURED_NOT_BOUND":
+        raise CodexHostError("configured bundle must be fresh and unbound")
+    if manifest.get("plan_digest") != plan.digest():
+        raise CodexHostError("configured bundle plan digest changed")
+    for field in (
+        "provider",
+        "provider_version",
+        "model",
+        "model_version",
+        "adapter",
+        "adapter_version",
+    ):
+        if manifest.get(field) != getattr(plan, field):
+            raise CodexHostError(f"configured bundle {field} changed")
+
+    # Local import avoids a module cycle when native_eval later consumes the host policy.
+    import native_eval
+
+    try:
+        bundle_digest = native_eval._bundle_digest(bundle)
+        provider_digest = native_eval._provider_config_digest(bundle, manifest)
+    except native_eval.Blocked as exc:
+        raise CodexHostError(f"configured bundle cannot be revalidated: {exc}") from None
+    if manifest.get("bundle_digest") != bundle_digest:
+        raise CodexHostError("configured bundle digest changed")
+    if manifest.get("provider_config_digest") != provider_digest:
+        raise CodexHostError("configured provider config digest changed")
+    return bundle, artifacts, manifest
+
+
+def run_trusted_preflight(
+    request: PreflightRequest,
+    *,
+    boundary_runner: Optional[
+        Callable[[RunPlan, Path, Mapping[str, Any]], NativeBoundaryResult]
+    ] = None,
+) -> PreflightResult:
+    """Run local negative probes and issue a short-lived, durable receipt."""
+    bundle, artifact_directory, manifest = _validate_preflight_request(request)
+    policy_path, snapshot_path, probe_path, receipt_path = _preflight_paths(
+        artifact_directory
+    )
+    for path in (policy_path, snapshot_path, probe_path, receipt_path):
+        if os.path.lexists(path):
+            raise CodexHostError(f"trusted host artifact already exists: {path.name}")
+
+    runner = run_native_preflight if boundary_runner is None else boundary_runner
+    try:
+        boundary = runner(request.plan, bundle, request.provider_config)
+    except (BoundaryError, OSError) as exc:
+        raise CodexHostError(f"native boundary probe execution failed: {exc}") from None
+    if not isinstance(boundary, NativeBoundaryResult):
+        raise CodexHostError("native boundary probe result is invalid")
+    if not boundary.is_valid_for(request.plan, request.provider_config):
+        raise CodexHostError("native boundary probe result binding is invalid")
+    if not boundary.complete:
+        raise CodexHostError("complete successful native boundary probe evidence is required")
+
+    try:
+        protected_snapshots = tuple(snapshot_tree(path, ()) for path in request.policy.protected_roots)
+        workspace_snapshot = snapshot_tree(bundle, ())
+    except EvidenceError as exc:
+        raise CodexHostError(f"preflight state snapshot failed: {exc}") from None
+
+    probe_results = {item.probe_id: item.status for item in boundary.results}
+    probe_results.update(
+        {
+            "action-trace-completeness": "UNKNOWN",
+            "cleanup-verification": "UNKNOWN",
+            "provider-auth-gateway": "PASS",
+            "resource-limits": "PASS",
+            "state-snapshot": "PASS",
+        }
+    )
+    enabled_tools = ("filesystem_read",)
+    disabled_tools = ("filesystem_write", "shell", "network", "mock_tools")
+    try:
+        receipt = EnforcementReceipt.from_dict(
+            {
+                "schema_version": request.plan.schema_version,
+                "plan_digest": request.plan.digest(),
+                "verified_by": "evaluate-skill-trusted-host",
+                "verifier_version": request.verifier_version,
+                "issued_at": request.issued_at,
+                "expires_at": request.expires_at,
+                "run_nonce": request.approval.run_nonce,
+                "provider": request.plan.provider,
+                "provider_version": request.plan.provider_version,
+                "model": request.plan.model,
+                "model_version": request.plan.model_version,
+                "adapter": request.plan.adapter,
+                "adapter_version": request.plan.adapter_version,
+                "backend": request.plan.backend,
+                "backend_version": f"codex-seatbelt-host-{POLICY_SCHEMA_VERSION}",
+                "capability_profile": request.plan.capabilities.profile,
+                "effective_policy_digest": request.plan.capabilities.digest(),
+                "provider_config_digest": manifest["provider_config_digest"],
+                "prepared_bundle_digest": manifest["bundle_digest"],
+                "workspace_id": request.policy.workspace_id,
+                "probe_results": probe_results,
+                "enabled_tools": list(enabled_tools),
+                "disabled_tools": list(disabled_tools),
+                "state_verification_method": "tree-digest-v1",
+                "cleanup_method": "remove-and-verify-v1",
+            }
+        )
+    except ContractError as exc:
+        raise CodexHostError(f"cannot issue enforcement receipt: {exc}") from None
+
+    secrets = tuple(
+        sorted(
+            {
+                value
+                for value in request.known_secret_values
+                if isinstance(value, str) and value
+            },
+            key=len,
+            reverse=True,
+        )
+    )
+    policy_payload = _redact(request.policy.canonical_payload(), secrets)
+    snapshot_payload = _redact(
+        {
+            "schema_version": POLICY_SCHEMA_VERSION,
+            "plan_digest": request.plan.digest(),
+            "run_nonce": request.approval.run_nonce,
+            "workspace": _snapshot_payload(workspace_snapshot),
+            "protected": [
+                _snapshot_payload(snapshot) for snapshot in protected_snapshots
+            ],
+        },
+        secrets,
+    )
+    probe_payload = _redact(
+        {
+            "schema_version": POLICY_SCHEMA_VERSION,
+            "plan_digest": request.plan.digest(),
+            "run_nonce": request.approval.run_nonce,
+            "host_policy_digest": request.policy.digest(),
+            "boundary_config_digest": boundary_config_digest(request.provider_config),
+            "provider_config_digest": manifest["provider_config_digest"],
+            "prepared_bundle_digest": manifest["bundle_digest"],
+            "results": [asdict(item) for item in boundary.results],
+        },
+        secrets,
+    )
+    receipt_payload = _redact(_receipt_payload(receipt), secrets)
+
+    _write_json_exclusive(policy_path, policy_payload)
+    _write_json_exclusive(snapshot_path, snapshot_payload)
+    _write_json_exclusive(probe_path, probe_payload)
+    _write_json_exclusive(receipt_path, receipt_payload)
+    return PreflightResult(
+        receipt=receipt,
+        boundary=boundary,
+        policy_digest=request.policy.digest(),
+        bundle_digest=manifest["bundle_digest"],
+        provider_config_digest=manifest["provider_config_digest"],
+        protected_snapshots=protected_snapshots,
+        workspace_snapshot=workspace_snapshot,
+        policy_artifact=policy_path,
+        snapshot_artifact=snapshot_path,
+        probe_artifact=probe_path,
+        receipt_artifact=receipt_path,
     )

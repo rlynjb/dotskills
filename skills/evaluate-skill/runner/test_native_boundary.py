@@ -106,6 +106,9 @@ class NativeBoundaryTests(unittest.TestCase):
             config = self.provider_config(workspace)
             with patch("native_boundary.subprocess.run", return_value=self.completed()) as run:
                 result = nb.run_native_preflight(self.plan(), workspace, config)
+            self.assertFalse(
+                (workspace / ".evaluate-skill-write-denial-canary").exists()
+            )
 
         self.assertEqual(
             result.required_probe_ids,
@@ -121,6 +124,18 @@ class NativeBoundaryTests(unittest.TestCase):
         self.assertEqual(run.call_count, 6)
         self.assertTrue(result.complete)
         self.assertTrue(all(item.status == "PASS" for item in result.results))
+
+    def test_preexisting_write_denial_canary_is_preserved(self):
+        with TemporaryDirectory() as temp:
+            workspace = Path(temp) / "workspace"
+            workspace.mkdir()
+            canary = workspace / ".evaluate-skill-write-denial-canary"
+            canary.write_text("preexisting\n", encoding="utf-8")
+            config = self.provider_config(workspace)
+            with patch("native_boundary.subprocess.run", return_value=self.completed()):
+                nb.run_native_preflight(self.plan(), workspace, config)
+
+            self.assertEqual(canary.read_text(encoding="utf-8"), "preexisting\n")
 
     def test_environment_probe_receives_host_canary_for_launcher_to_strip(self):
         with TemporaryDirectory() as temp:

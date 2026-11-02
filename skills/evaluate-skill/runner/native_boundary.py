@@ -423,6 +423,7 @@ def run_native_preflight(
             raise BoundaryError(f"{field} must be outside the disposable workspace")
     config_digest = provider_config_digest(config)
     required = _PROFILE_PROBES[plan.capabilities.profile]
+    created_canary = False
     if "write-inside-workspace" in required:
         canary = workspace / ".evaluate-skill-write-denial-canary"
         if canary.is_symlink() or (canary.exists() and not canary.is_file()):
@@ -431,6 +432,7 @@ def run_native_preflight(
             try:
                 with canary.open("x", encoding="utf-8") as handle:
                     handle.write("host-owned write denial canary\n")
+                created_canary = True
             except OSError as exc:
                 raise BoundaryError(f"cannot create inside-workspace write canary: {exc}") from None
     gaps = []
@@ -438,10 +440,19 @@ def run_native_preflight(
         gaps.append("connector-isolation-unprobed")
     if config["mcp_servers"]:
         gaps.append("mcp-isolation-unprobed")
-    results = tuple(
-        _run_probe(probe_id, workspace, config, config_digest)
-        for probe_id in required
-    )
+    try:
+        results = tuple(
+            _run_probe(probe_id, workspace, config, config_digest)
+            for probe_id in required
+        )
+    finally:
+        if created_canary:
+            try:
+                canary.unlink()
+            except OSError as exc:
+                raise BoundaryError(
+                    f"cannot remove inside-workspace write canary: {exc}"
+                ) from None
     return NativeBoundaryResult(
         plan_digest=plan.digest(),
         provider_config_digest=config_digest,
