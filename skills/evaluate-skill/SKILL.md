@@ -329,6 +329,11 @@ a host manifest, check tool requests, and audit traces; it does not
 itself enforce sandboxing or provide a model runner. The separate
 `runner/trusted_host.py` enforcement path still requires no-model preflight,
 explicit live authorization, and independent session observation.
+For its native Codex route, require the approved exact Node, Codex, and
+Promptfoo executable identities, the sealed Promptfoo runtime tree, the Codex
+SDK at Promptfoo's bound Node resolution path, and the isolated Codex auth home.
+Runtime or observer drift blocks execution; any failure after dispatch is
+`INCOMPLETE`, never `BLOCKED_NOT_RUN`.
 Any live effect needs **separate explicit bounded authorization**.
 
 Keep evaluator-only expected outputs, assertions, earlier runs and

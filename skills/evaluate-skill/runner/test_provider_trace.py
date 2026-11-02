@@ -1,4 +1,5 @@
 from copy import deepcopy
+from dataclasses import replace
 import hashlib
 import json
 from pathlib import Path
@@ -148,14 +149,25 @@ class ProviderTraceTests(unittest.TestCase):
 
     def binding(self):
         plan = self.plan()
+        execution_id = "a" * 32
+        executable_digest = "b" * 64
+        observer_digest = "c" * 64
         sessions = []
-        for arm, session_id in (
+        for result_index, (arm, session_id) in enumerate((
             ("with-skill", "session-with"),
             ("without-skill", "session-without"),
-        ):
+        )):
             sessions.append(p.ObservedSessionIdentity(
+                role="arm",
                 arm_name=arm,
+                result_index=result_index,
+                assertion_index=-1,
                 session_id=session_id,
+                execution_id=execution_id,
+                process_id=1000 + result_index,
+                executable_digest=executable_digest,
+                observed_at="2026-11-02T12:00:30Z",
+                source_attestation_digest=observer_digest,
                 provider=plan.provider,
                 provider_version=plan.provider_version,
                 model=plan.model,
@@ -167,6 +179,9 @@ class ProviderTraceTests(unittest.TestCase):
         return p.ProviderTraceBinding(
             provider_config_digest="provider-config-sha256",
             promptfoo_config=self.promptfoo_config(),
+            execution_id=execution_id,
+            executable_digest=executable_digest,
+            observer_attestation_digest=observer_digest,
             observed_sessions=tuple(sessions),
         )
 
@@ -215,10 +230,8 @@ class ProviderTraceTests(unittest.TestCase):
         binding = self.binding()
         wrong = deepcopy(binding.observed_sessions[0])
         object.__setattr__(wrong, "model_version", "drifted-snapshot")
-        bad_binding = p.ProviderTraceBinding(
-            binding.provider_config_digest,
-            binding.promptfoo_config,
-            (wrong, binding.observed_sessions[1]),
+        bad_binding = replace(
+            binding, observed_sessions=(wrong, binding.observed_sessions[1])
         )
         self.assert_rejected(valid, "model_version", binding=bad_binding)
 
@@ -226,12 +239,41 @@ class ProviderTraceTests(unittest.TestCase):
         changed["results"]["results"][0]["response"]["sessionId"] = "claimed-only"
         self.assert_rejected(changed, "session")
 
-        bad_binding = p.ProviderTraceBinding(
-            "different-config-digest",
-            binding.promptfoo_config,
-            binding.observed_sessions,
+        bad_binding = replace(
+            binding, provider_config_digest="different-config-digest"
         )
         self.assert_rejected(valid, "config digest", binding=bad_binding)
+
+    def test_parser_rejects_replayed_or_unexpected_observer_sessions(self):
+        valid = self.document()
+        binding = self.binding()
+        replayed = replace(
+            binding.observed_sessions[0], execution_id="d" * 32
+        )
+        self.assert_rejected(
+            valid,
+            "another execution",
+            binding=replace(
+                binding,
+                observed_sessions=(replayed, *binding.observed_sessions[1:]),
+            ),
+        )
+
+        extra_judge = replace(
+            binding.observed_sessions[0],
+            role="judge",
+            assertion_index=0,
+            session_id="unexpected-judge",
+            process_id=9000,
+        )
+        self.assert_rejected(
+            valid,
+            "incomplete",
+            binding=replace(
+                binding,
+                observed_sessions=(*binding.observed_sessions, extra_judge),
+            ),
+        )
 
     def test_parser_rejects_cache_hits_missing_raw_turns_or_unknown_schema(self):
         valid = self.document()
@@ -303,6 +345,8 @@ class ProviderTraceTests(unittest.TestCase):
         serialized = json.dumps(parsed.to_payload(), sort_keys=True)
 
         self.assertEqual(event["tool"], "sandboxed_command")
+        self.assertEqual(event["capability"], "shell")
+        self.assertFalse(event["authorized"])
         self.assertEqual(event["outcome"], "completed")
         self.assertNotIn("command", event)
         self.assertNotIn("aggregated_output", event)
@@ -313,6 +357,29 @@ class ProviderTraceTests(unittest.TestCase):
             hashlib.sha256(b"rg [REDACTED] inputs").hexdigest(),
         )
         self.assertEqual(event["output_bytes"], len("match: [REDACTED]\n".encode()))
+
+    def test_failed_credential_read_command_is_an_unauthorized_shell_attempt(self):
+        command = {
+            "id": "credential-read",
+            "type": "command_execution",
+            "command": "cat $HOME/.codex/auth.json",
+            "aggregated_output": "permission denied\n",
+            "exit_code": 1,
+            "status": "failed",
+        }
+        changed = self.document()
+        for result in changed["results"]["results"]:
+            raw = json.loads(result["response"]["raw"])
+            raw["items"].insert(0, command)
+            result["response"]["raw"] = json.dumps(raw)
+
+        parsed = self.parse(changed)
+
+        for arm in parsed.arms:
+            event = next(item for item in arm.events if item["type"] == "tool_attempt")
+            self.assertEqual(event["capability"], "shell")
+            self.assertFalse(event["authorized"])
+            self.assertEqual(event["outcome"], "failed")
 
     def test_parser_rejects_malformed_incomplete_or_duplicate_command_items(self):
         base = {

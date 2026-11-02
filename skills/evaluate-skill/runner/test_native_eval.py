@@ -21,6 +21,7 @@ class NativeRouteTests(unittest.TestCase):
                 'promptfoo': '0.125.1',
                 'codex': '0.163.0',
                 'claude': '2.1.302',
+                'node': '22.23.1',
             },
         )
         self.version_patch.start()
@@ -94,15 +95,44 @@ class NativeRouteTests(unittest.TestCase):
         command_line_tools.mkdir(exist_ok=True)
         home = host_root / "home"
         home.mkdir(exist_ok=True)
+        home.chmod(0o700)
+        codex_home = home / ".codex"
+        codex_home.mkdir(mode=0o700, exist_ok=True)
+        auth = codex_home / "auth.json"
+        if not auth.exists():
+            auth.write_text("{}\n", encoding="utf-8")
+        auth.chmod(0o600)
         protected = host_root / "protected"
         protected.mkdir(exist_ok=True)
         codex = host_root / "codex"
         if not codex.exists():
             codex.write_text("binary placeholder\n", encoding="utf-8")
             codex.chmod(0o700)
+        promptfoo_runtime = host_root / "promptfoo-runtime"
+        promptfoo_runtime.mkdir(exist_ok=True)
+        promptfoo = promptfoo_runtime / "promptfoo"
+        if not promptfoo.exists():
+            promptfoo.write_text("binary placeholder\n", encoding="utf-8")
+            promptfoo.chmod(0o700)
+        node = host_root / "node"
+        if not node.exists():
+            node.write_text("binary placeholder\n", encoding="utf-8")
+            node.chmod(0o700)
+        codex_sdk = promptfoo_runtime / "node_modules" / "@openai" / "codex-sdk"
+        codex_sdk.mkdir(parents=True, exist_ok=True)
+        package = codex_sdk / "package.json"
+        if not package.exists():
+            package.write_text(
+                '{"name":"@openai/codex-sdk","version":"0.163.0"}\n',
+                encoding="utf-8",
+            )
         return ch.compile_read_only_policy(
             workspace=bundle.resolve(),
             codex_path=codex,
+            promptfoo_path=promptfoo,
+            node_path=node,
+            promptfoo_runtime_root=promptfoo_runtime,
+            codex_sdk_root=codex_sdk,
             command_line_tools_root=command_line_tools,
             home=home,
             mcp_servers=mcp_servers,
@@ -369,6 +399,7 @@ class NativeRouteTests(unittest.TestCase):
                     'promptfoo': '0.125.1',
                     'codex': '9.9.9',
                     'claude': '2.1.302',
+                    'node': '22.23.1',
                 },
             ):
                 decision, _, _, _ = n.assess_inputs(policy)
@@ -516,6 +547,9 @@ class NativeRouteTests(unittest.TestCase):
             expected_cli_config = policy.canonical_payload()['cli_config']
             expected_cli_env = dict(policy.process_environment)
             for provider_config in provider_configs:
+                self.assertEqual(
+                    provider_config['codex_path_override'], str(policy.codex_path)
+                )
                 self.assertEqual(provider_config['cli_config'], expected_cli_config)
                 self.assertEqual(provider_config['cli_env'], expected_cli_env)
                 self.assertEqual(provider_config['approval_policy'], 'never')

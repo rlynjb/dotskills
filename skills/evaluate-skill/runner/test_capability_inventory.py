@@ -22,6 +22,7 @@ class CapabilityInventoryTests(unittest.TestCase):
                 "promptfoo": "0.125.1",
                 "codex": "0.163.0",
                 "claude": "2.1.302",
+                "node": "22.23.1",
             },
         )
         self.assertEqual(set(inventory.providers), {"codex", "claude"})
@@ -65,7 +66,12 @@ class CapabilityInventoryTests(unittest.TestCase):
 
     def test_missing_cli_is_reported_as_version_mismatch(self):
         inventory = ci.load_inventory(self.inventory_path())
-        observed = {"promptfoo": "0.125.1", "codex": None, "claude": "2.1.302"}
+        observed = {
+            "promptfoo": "0.125.1",
+            "codex": None,
+            "claude": "2.1.302",
+            "node": "22.23.1",
+        }
 
         mismatches = ci.validate_installed_versions(inventory, observed)
 
@@ -77,6 +83,7 @@ class CapabilityInventoryTests(unittest.TestCase):
             "promptfoo": SimpleNamespace(returncode=0, stdout="promptfoo 0.125.2\n", stderr=""),
             "codex": SimpleNamespace(returncode=0, stdout="codex-cli 0.164.0\n", stderr=""),
             "claude": SimpleNamespace(returncode=0, stdout="2.1.302 (Claude Code)\n", stderr=""),
+            "node": SimpleNamespace(returncode=0, stdout="v22.23.1\n", stderr=""),
         }
 
         def fake_which(name):

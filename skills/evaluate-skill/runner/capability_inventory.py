@@ -20,7 +20,7 @@ class InventoryError(ValueError):
 _STATUSES = frozenset(("verified", "unverified", "unsupported"))
 _BACKENDS = frozenset(("native", "docker"))
 _PROFILES = frozenset(("no-tool", "read-only", "disposable-write", "mock-external"))
-_TOOLS = ("promptfoo", "codex", "claude")
+_TOOLS = ("promptfoo", "codex", "claude", "node")
 _VERSION_PATTERN = re.compile(r"(?<![0-9])([0-9]+\.[0-9]+\.[0-9]+)(?![0-9])")
 
 

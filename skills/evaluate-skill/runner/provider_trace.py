@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import stat
 from typing import Any, Mapping, Sequence, Tuple
 
@@ -21,8 +23,16 @@ class ProviderTraceError(ValueError):
 class ObservedSessionIdentity:
     """Provider identity observed independently by the supervising host."""
 
+    role: str
     arm_name: str
+    result_index: int
+    assertion_index: int
     session_id: str
+    execution_id: str
+    process_id: int
+    executable_digest: str
+    observed_at: str
+    source_attestation_digest: str
     provider: str
     provider_version: str
     model: str
@@ -38,6 +48,9 @@ class ProviderTraceBinding:
 
     provider_config_digest: str
     promptfoo_config: Mapping[str, Any]
+    execution_id: str
+    executable_digest: str
+    observer_attestation_digest: str
     observed_sessions: Tuple[ObservedSessionIdentity, ...]
 
 
@@ -223,7 +236,7 @@ def _read_document(path: Path, max_bytes: int) -> tuple[bytes, Mapping[str, Any]
 
 def _validate_binding(
     plan: RunPlan, binding: ProviderTraceBinding
-) -> dict[str, ObservedSessionIdentity]:
+) -> tuple[dict[str, ObservedSessionIdentity], Tuple[ObservedSessionIdentity, ...]]:
     if not isinstance(binding, ProviderTraceBinding):
         raise ProviderTraceError("trusted provider trace binding is required")
     digest = _nonempty_text(binding.provider_config_digest, "provider config digest")
@@ -233,8 +246,28 @@ def _validate_binding(
     expected_arms = tuple(plan.comparison_arms)
     if expected_arms != ("with-skill", "without-skill"):
         raise ProviderTraceError("run plan comparison arms are not the approved pair")
-    if len(binding.observed_sessions) != 2:
-        raise ProviderTraceError("exactly two independently observed sessions are required")
+    execution_id = _nonempty_text(binding.execution_id, "observer execution id")
+    if not re.fullmatch(r"[0-9a-f]{32,64}", execution_id):
+        raise ProviderTraceError("observer execution id is invalid")
+    for value, label in (
+        (binding.executable_digest, "observer executable digest"),
+        (binding.observer_attestation_digest, "observer attestation digest"),
+    ):
+        if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value):
+            raise ProviderTraceError(f"{label} is invalid")
+    tests = binding.promptfoo_config.get("tests")
+    if not isinstance(tests, list) or len(tests) != 1:
+        raise ProviderTraceError("bound Promptfoo config must contain exactly one test")
+    assertions = tests[0].get("assert") if isinstance(tests[0], dict) else None
+    if not isinstance(assertions, list):
+        raise ProviderTraceError("bound Promptfoo judge assertions are invalid")
+    judge_count = len(assertions)
+    expected_keys = {
+        *(("arm", arm, -1) for arm in expected_arms),
+        *(("judge", arm, assertion) for arm in expected_arms for assertion in range(judge_count)),
+    }
+    if len(binding.observed_sessions) != len(expected_keys):
+        raise ProviderTraceError("independent arm and judge session observations are incomplete")
     expected_identity = {
         "provider": plan.provider,
         "provider_version": plan.provider_version,
@@ -244,13 +277,44 @@ def _validate_binding(
         "adapter_version": plan.adapter_version,
     }
     sessions = {}
+    observed_keys = set()
+    session_ids = set()
     for observed in binding.observed_sessions:
         if not isinstance(observed, ObservedSessionIdentity):
             raise ProviderTraceError("observed session identity has an invalid type")
         arm = observed.arm_name
-        if arm not in expected_arms or arm in sessions:
-            raise ProviderTraceError("observed session arms are missing or duplicate")
+        key = (observed.role, arm, observed.assertion_index)
+        if key not in expected_keys or key in observed_keys:
+            raise ProviderTraceError("observed arm/judge sessions are missing, extra, or duplicate")
+        observed_keys.add(key)
+        if (
+            isinstance(observed.result_index, bool)
+            or not isinstance(observed.result_index, int)
+            or observed.result_index not in (0, 1)
+        ):
+            raise ProviderTraceError("observed session result index is invalid")
         _nonempty_text(observed.session_id, f"{arm} observed session id")
+        if observed.session_id in session_ids:
+            raise ProviderTraceError("observed provider session ids must be unique")
+        session_ids.add(observed.session_id)
+        if observed.execution_id != execution_id:
+            raise ProviderTraceError("observed session belongs to another execution")
+        if (
+            isinstance(observed.process_id, bool)
+            or not isinstance(observed.process_id, int)
+            or observed.process_id <= 0
+        ):
+            raise ProviderTraceError("observed session process identity is invalid")
+        if observed.executable_digest != binding.executable_digest:
+            raise ProviderTraceError("observed session executable identity changed")
+        try:
+            timestamp = datetime.fromisoformat(observed.observed_at.replace("Z", "+00:00"))
+        except (AttributeError, ValueError):
+            raise ProviderTraceError("observed session timestamp is invalid") from None
+        if timestamp.tzinfo is None or timestamp.utcoffset() is None:
+            raise ProviderTraceError("observed session timestamp lacks a timezone")
+        if observed.source_attestation_digest != binding.observer_attestation_digest:
+            raise ProviderTraceError("observed session source attestation changed")
         for field, expected in expected_identity.items():
             actual = getattr(observed, field)
             if actual != expected:
@@ -259,10 +323,11 @@ def _validate_binding(
             raise ProviderTraceError(
                 f"observed {arm} provider config digest does not match the binding"
             )
-        sessions[arm] = observed
-    if set(sessions) != set(expected_arms):
+        if observed.role == "arm":
+            sessions[arm] = observed
+    if set(sessions) != set(expected_arms) or observed_keys != expected_keys:
         raise ProviderTraceError("observed session arms are incomplete")
-    return sessions
+    return sessions, binding.observed_sessions
 
 
 def _validate_metadata(metadata_value: Any, adapter_version: str) -> None:
@@ -380,16 +445,13 @@ def _command_event(
         raise ProviderTraceError("command item status is incomplete")
     if (status_value == "completed") != (exit_code == 0):
         raise ProviderTraceError("command item status and exit code disagree")
-    if not plan.capabilities.filesystem_read:
-        raise ProviderTraceError("command execution is not approved without a read root")
     sanitized_command = _redact(command, secrets)
     sanitized_output = _redact(output, secrets)
     return {
         "type": "tool_attempt",
         "tool": "sandboxed_command",
-        "capability": "filesystem_read",
-        "authorized": True,
-        "root": plan.capabilities.filesystem_read[0],
+        "capability": "shell",
+        "authorized": False,
         "item_id_digest": _text_digest(item_id),
         "command_digest": _text_digest(sanitized_command),
         "command_bytes": len(sanitized_command.encode("utf-8")),
@@ -544,7 +606,7 @@ def parse_promptfoo_result(
         raise ProviderTraceError("approved run plan is required")
     if plan.provider != "openai" or plan.adapter != "promptfoo-codex-sdk":
         raise ProviderTraceError("only the pinned Codex provider route is supported")
-    sessions = _validate_binding(plan, binding)
+    sessions, observed_sessions = _validate_binding(plan, binding)
     secrets = tuple(sorted(
         {value for value in known_secret_values if isinstance(value, str) and value},
         key=len,
@@ -587,7 +649,7 @@ def parse_promptfoo_result(
     if not isinstance(results, list) or len(results) != 2:
         raise ProviderTraceError("Promptfoo result must contain exactly two comparison results")
     by_label = {}
-    for result_value in results:
+    for result_index, result_value in enumerate(results):
         result = _object(result_value, "Promptfoo comparison result")
         provider = _object(result.get("provider"), "Promptfoo comparison provider")
         label = provider.get("label")
@@ -595,12 +657,18 @@ def parse_promptfoo_result(
             raise ProviderTraceError("Promptfoo result contains an unexpected arm label")
         if label in by_label:
             raise ProviderTraceError("Promptfoo result contains a duplicate comparison arm")
-        by_label[label] = result
+        by_label[label] = (result, result_index)
     if set(by_label) != set(_ARM_LABELS.values()):
         raise ProviderTraceError("Promptfoo comparison arms are incomplete")
+    result_indexes = {
+        arm: by_label[label][1] for arm, label in _ARM_LABELS.items()
+    }
+    for observed in observed_sessions:
+        if observed.result_index != result_indexes[observed.arm_name]:
+            raise ProviderTraceError("observed session result index does not match output")
 
     arms = tuple(
-        _parse_arm(by_label[_ARM_LABELS[arm]], plan, sessions[arm], arm, secrets)
+        _parse_arm(by_label[_ARM_LABELS[arm]][0], plan, sessions[arm], arm, secrets)
         for arm in plan.comparison_arms
     )
     return ParsedProviderRun(

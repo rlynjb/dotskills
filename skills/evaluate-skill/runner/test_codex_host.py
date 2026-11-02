@@ -1,9 +1,12 @@
 import json
+import hashlib
 import os
+import sys
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from tempfile import TemporaryDirectory
+import time
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
@@ -25,18 +28,48 @@ class CodexHostPolicyTests(unittest.TestCase):
         command_line_tools.mkdir()
         home = root / "home"
         home.mkdir()
+        home.chmod(0o700)
+        codex_home = home / ".codex"
+        codex_home.mkdir(mode=0o700)
+        auth = codex_home / "auth.json"
+        auth.write_text("{}\n", encoding="utf-8")
+        auth.chmod(0o600)
         protected = root / "protected"
         protected.mkdir()
         codex = root / "codex"
         codex.write_text("binary placeholder\n", encoding="utf-8")
         codex.chmod(0o700)
-        return workspace, command_line_tools, home, protected, codex
+        promptfoo_runtime = root / "promptfoo-runtime"
+        promptfoo_runtime.mkdir()
+        promptfoo = promptfoo_runtime / "promptfoo"
+        promptfoo.write_text("binary placeholder\n", encoding="utf-8")
+        promptfoo.chmod(0o700)
+        node = root / "node"
+        node.write_text("binary placeholder\n", encoding="utf-8")
+        node.chmod(0o700)
+        codex_sdk = promptfoo_runtime / "node_modules" / "@openai" / "codex-sdk"
+        codex_sdk.mkdir(parents=True)
+        (codex_sdk / "package.json").write_text(
+            '{"name":"@openai/codex-sdk","version":"0.163.0"}\n',
+            encoding="utf-8",
+        )
+        return (
+            workspace, command_line_tools, home, protected, codex, promptfoo,
+            promptfoo_runtime, codex_sdk, node,
+        )
 
     def policy(self, root, **overrides):
-        workspace, command_line_tools, home, protected, codex = self.paths(root)
+        (
+            workspace, command_line_tools, home, protected, codex, promptfoo,
+            promptfoo_runtime, codex_sdk, node,
+        ) = self.paths(root)
         arguments = {
             "workspace": workspace,
             "codex_path": codex,
+            "promptfoo_path": promptfoo,
+            "node_path": node,
+            "promptfoo_runtime_root": promptfoo_runtime,
+            "codex_sdk_root": codex_sdk,
             "command_line_tools_root": command_line_tools,
             "home": home,
             "mcp_servers": ("cua_repl", "node_repl"),
@@ -97,13 +130,31 @@ class CodexHostPolicyTests(unittest.TestCase):
             self.assertEqual(policy.boundary_launcher.count("-c"), 1)
             self.assertEqual(policy.boundary_launcher[:2], ("/usr/bin/env", "-i"))
             self.assertIn(f"HOME={policy.home}", policy.boundary_launcher)
+            self.assertIn(
+                f"CODEX_HOME={policy.home / '.codex'}", policy.boundary_launcher
+            )
             self.assertIn("-P", policy.boundary_launcher)
             self.assertIn(policy.profile_name, policy.boundary_launcher)
             self.assertEqual(policy.boundary_launcher[-1], "--")
             self.assertEqual(
                 set(policy.process_environment),
-                {"HOME", "PATH", "LANG", "LC_ALL", "PYTHONIOENCODING"},
+                {
+                    "HOME", "CODEX_HOME", "PATH", "LANG", "LC_ALL",
+                    "PYTHONIOENCODING",
+                },
             )
+
+    def test_compiled_policy_requires_sdk_at_promptfoo_resolution_path(self):
+        with TemporaryDirectory() as temp:
+            unrelated = Path(temp) / "unrelated-sdk"
+            unrelated.mkdir()
+            (unrelated / "package.json").write_text(
+                '{"name":"@openai/codex-sdk","version":"0.163.0"}\n',
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ch.CodexHostError, "resolution path"):
+                self.policy(temp, codex_sdk_root=unrelated)
 
     def test_attestation_refuses_api_key_environment_authentication(self):
         with TemporaryDirectory() as temp:
@@ -125,7 +176,11 @@ class CodexHostPolicyTests(unittest.TestCase):
                 ("observed_platform", ("linux", "25.4.0", "arm64"), "platform"),
                 (
                     "observed_versions",
-                    {"codex": "0.162.0", "promptfoo": "0.125.1"},
+                    {
+                        "codex": "0.162.0",
+                        "promptfoo": "0.125.1",
+                        "node": "22.23.1",
+                    },
                     "version",
                 ),
             ):
@@ -138,13 +193,20 @@ class CodexHostPolicyTests(unittest.TestCase):
     def test_attestation_rejects_symlink_or_overlapping_workspace(self):
         with TemporaryDirectory() as temp:
             root = Path(temp)
-            workspace, command_line_tools, home, protected, codex = self.paths(root)
+            (
+                workspace, command_line_tools, home, protected, codex, promptfoo,
+                promptfoo_runtime, codex_sdk, node,
+            ) = self.paths(root)
             symlink = root / "workspace-link"
             symlink.symlink_to(workspace, target_is_directory=True)
             with self.assertRaisesRegex(ch.CodexHostError, "real workspace"):
                 ch.compile_read_only_policy(
                     workspace=symlink,
                     codex_path=codex,
+                    promptfoo_path=promptfoo,
+                    node_path=node,
+                    promptfoo_runtime_root=promptfoo_runtime,
+                    codex_sdk_root=codex_sdk,
                     command_line_tools_root=command_line_tools,
                     home=home,
                     mcp_servers=(),
@@ -157,6 +219,10 @@ class CodexHostPolicyTests(unittest.TestCase):
                 ch.compile_read_only_policy(
                     workspace=workspace,
                     codex_path=codex,
+                    promptfoo_path=promptfoo,
+                    node_path=node,
+                    promptfoo_runtime_root=promptfoo_runtime,
+                    codex_sdk_root=codex_sdk,
                     command_line_tools_root=command_line_tools,
                     home=home,
                     mcp_servers=(),
@@ -167,8 +233,16 @@ class CodexHostPolicyTests(unittest.TestCase):
         return {
             "expected_platform": ("darwin", "25.4.0", "arm64"),
             "observed_platform": ("darwin", "25.4.0", "arm64"),
-            "expected_versions": {"codex": "0.163.0", "promptfoo": "0.125.1"},
-            "observed_versions": {"codex": "0.163.0", "promptfoo": "0.125.1"},
+            "expected_versions": {
+                "codex": "0.163.0",
+                "promptfoo": "0.125.1",
+                "node": "22.23.1",
+            },
+            "observed_versions": {
+                "codex": "0.163.0",
+                "promptfoo": "0.125.1",
+                "node": "22.23.1",
+            },
             "login_status": "Logged in using ChatGPT",
             "observed_mcp_servers": ("node_repl", "cua_repl"),
             "environment": {},
@@ -324,6 +398,12 @@ class TrustedPreflightTests(unittest.TestCase):
         command_line_tools.mkdir()
         home = root / "home"
         home.mkdir()
+        home.chmod(0o700)
+        codex_home = home / ".codex"
+        codex_home.mkdir(mode=0o700)
+        auth = codex_home / "auth.json"
+        auth.write_text("{}\n", encoding="utf-8")
+        auth.chmod(0o600)
         protected = root / "protected"
         protected.mkdir()
         (protected / "read-canary").write_text("host-owned\n", encoding="utf-8")
@@ -334,9 +414,27 @@ class TrustedPreflightTests(unittest.TestCase):
         codex = root / "codex"
         codex.write_text("binary placeholder\n", encoding="utf-8")
         codex.chmod(0o700)
+        promptfoo_runtime = root / "promptfoo-runtime"
+        promptfoo_runtime.mkdir()
+        promptfoo_binary = promptfoo_runtime / "promptfoo"
+        promptfoo_binary.write_text("binary placeholder\n", encoding="utf-8")
+        promptfoo_binary.chmod(0o700)
+        node = root / "node"
+        node.write_text("binary placeholder\n", encoding="utf-8")
+        node.chmod(0o700)
+        codex_sdk = promptfoo_runtime / "node_modules" / "@openai" / "codex-sdk"
+        codex_sdk.mkdir(parents=True)
+        (codex_sdk / "package.json").write_text(
+            '{"name":"@openai/codex-sdk","version":"0.163.0"}\n',
+            encoding="utf-8",
+        )
         policy = ch.compile_read_only_policy(
             workspace=bundle,
             codex_path=codex,
+            promptfoo_path=promptfoo_binary,
+            node_path=node,
+            promptfoo_runtime_root=promptfoo_runtime,
+            codex_sdk_root=codex_sdk,
             command_line_tools_root=command_line_tools,
             home=home,
             mcp_servers=("cua_repl", "node_repl"),
@@ -386,10 +484,12 @@ class TrustedPreflightTests(unittest.TestCase):
             expected_versions={
                 "codex": inventory.required_versions["codex"],
                 "promptfoo": inventory.required_versions["promptfoo"],
+                "node": inventory.required_versions["node"],
             },
             observed_versions={
                 "codex": inventory.required_versions["codex"],
                 "promptfoo": inventory.required_versions["promptfoo"],
+                "node": inventory.required_versions["node"],
             },
             login_status="Logged in using ChatGPT",
             observed_mcp_servers=("cua_repl", "node_repl"),
@@ -663,25 +763,39 @@ class TrustedSupervisorTests(unittest.TestCase):
             "runtimeOptions": {"cache": False},
         }
 
-    def observed_sessions(self, request):
+    def observed_sessions(
+        self, request, *, execution_id, executable_digest, observer_digest
+    ):
         plan = request.plan
-        return tuple(
-            pt.ObservedSessionIdentity(
-                arm_name=arm,
-                session_id=session,
-                provider=plan.provider,
-                provider_version=plan.provider_version,
-                model=plan.model,
-                model_version=plan.model_version,
-                adapter=plan.adapter,
-                adapter_version=plan.adapter_version,
-                provider_config_digest=request.preflight.provider_config_digest,
-            )
-            for arm, session in (
-                ("with-skill", "session-with"),
-                ("without-skill", "session-without"),
-            )
-        )
+        sessions = []
+        for result_index, (arm, session) in enumerate((
+            ("with-skill", "session-with"),
+            ("without-skill", "session-without"),
+        )):
+            for role, assertion_index, session_id in (
+                ("arm", -1, session),
+                ("judge", 0, f"judge-{arm}"),
+            ):
+                sessions.append(pt.ObservedSessionIdentity(
+                    role=role,
+                    arm_name=arm,
+                    result_index=result_index,
+                    assertion_index=assertion_index,
+                    session_id=session_id,
+                    execution_id=execution_id,
+                    process_id=2000 + len(sessions),
+                    executable_digest=executable_digest,
+                    observed_at="2026-11-02T12:00:30Z",
+                    source_attestation_digest=observer_digest,
+                    provider=plan.provider,
+                    provider_version=plan.provider_version,
+                    model=plan.model,
+                    model_version=plan.model_version,
+                    adapter=plan.adapter,
+                    adapter_version=plan.adapter_version,
+                    provider_config_digest=request.preflight.provider_config_digest,
+                ))
+        return tuple(sessions)
 
     def supervised_fixture(self, root):
         root = Path(root)
@@ -693,14 +807,12 @@ class TrustedSupervisorTests(unittest.TestCase):
         ne.bind_prepared_bundle(
             preflight_request.bundle, preflight_request.plan, preflight.receipt
         )
-        binary = root / "promptfoo"
-        binary.write_text("synthetic binary\n", encoding="utf-8")
-        binary.chmod(0o700)
         manifest = json.loads(
             (preflight_request.bundle / "manifest.json").read_text(encoding="utf-8")
         )
         command = (
-            str(binary.resolve()),
+            str(preflight_request.policy.node_path),
+            str(preflight_request.policy.promptfoo_path),
             *ne.native_command(preflight_request.bundle, manifest)[1:],
         )
         ledger = root / "nonce-ledger"
@@ -721,6 +833,8 @@ class TrustedSupervisorTests(unittest.TestCase):
                quality_fail=False, returncode=0, stdout=b"provider stdout",
                stderr=b""):
         def run(argv, **kwargs):
+            observer_trace = b"synthetic-independent-session-attestation"
+            observer_digest = hashlib.sha256(observer_trace).hexdigest()
             document = self.promptfoo_document(
                 request,
                 omit_arm=omit_arm,
@@ -734,7 +848,13 @@ class TrustedSupervisorTests(unittest.TestCase):
                 returncode=returncode,
                 stdout=stdout,
                 stderr=stderr,
-                observed_sessions=self.observed_sessions(request),
+                observed_sessions=self.observed_sessions(
+                    request,
+                    execution_id=kwargs["execution_id"],
+                    executable_digest=kwargs["expected_executable_digest"],
+                    observer_digest=observer_digest,
+                ),
+                observer_trace=observer_trace,
             )
         return run
 
@@ -896,6 +1016,16 @@ class TrustedSupervisorTests(unittest.TestCase):
             result = ch.run_supervised_provider(
                 request, process_runner=self.runner(request)
             )
+            observer = json.loads(
+                (request.artifact_directory / "session-observations.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(observer["execution_id"], result.execution_id)
+            self.assertEqual(len(observer["sessions"]), 4)
+            self.assertEqual(
+                {item["role"] for item in observer["sessions"]}, {"arm", "judge"}
+            )
             self.assertEqual(len(result.arms), 2)
             for arm in result.arms:
                 self.assertTrue(arm.provider_result_path.is_file())
@@ -942,6 +1072,34 @@ class TrustedSupervisorTests(unittest.TestCase):
         self.assertEqual(
             {arm.quality_status for arm in result.arms}, {"PASS", "FAIL"}
         )
+
+    def test_bounded_runner_kills_descendants_on_output_limit(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            marker = root / "orphan-marker"
+            child = (
+                "import pathlib,time; time.sleep(0.4); "
+                f"pathlib.Path({str(marker)!r}).write_text('orphan')"
+            )
+            parent = (
+                "import subprocess,sys,time; "
+                f"subprocess.Popen([sys.executable, '-c', {child!r}]); "
+                "sys.stdout.write('x' * 100000); sys.stdout.flush(); time.sleep(10)"
+            )
+
+            with self.assertRaises(ch.CodexHostError):
+                ch._bounded_process_runner(
+                    (sys.executable, "-c", parent),
+                    cwd=root,
+                    environment=dict(os.environ),
+                    timeout=5,
+                    max_output_bytes=64,
+                    execution_id="d" * 32,
+                    expected_executable_digest="e" * 64,
+                )
+            time.sleep(0.7)
+
+            self.assertFalse(marker.exists())
 
 
 if __name__ == "__main__":

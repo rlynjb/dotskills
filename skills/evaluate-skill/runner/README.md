@@ -151,7 +151,8 @@ single-use; interrupted and completed attempts cannot be silently replayed.
 After `configure`, run the native boundary preflight with explicit absolute
 paths. The full command requires `--run-plan`, `--approval-receipt`,
 `--capability-inventory`, `--bundle`, `--artifact-directory`, `--codex-path`,
-`--promptfoo-path`, `--command-line-tools-root`, `--home`, at least one
+`--promptfoo-path`, `--node-path`, `--promptfoo-runtime-root`,
+`--codex-sdk-root`, `--command-line-tools-root`, `--home`, at least one
 `--protected-root`, `--provider-config`, `--issued-at`, `--expires-at`, and
 `--verifier-version`:
 
@@ -163,7 +164,10 @@ python3 skills/evaluate-skill/runner/trusted_host.py preflight \
   --bundle /isolated/PREPARED-BUNDLE \
   --artifact-directory /trusted/RUN-ARTIFACTS \
   --codex-path /absolute/bin/codex \
-  --promptfoo-path /absolute/bin/promptfoo \
+  --promptfoo-path /sealed/promptfoo-runtime/dist/src/entrypoint.js \
+  --node-path /absolute/bin/node \
+  --promptfoo-runtime-root /sealed/promptfoo-runtime \
+  --codex-sdk-root /sealed/promptfoo-runtime/node_modules/@openai/codex-sdk \
   --command-line-tools-root /Library/Developer/CommandLineTools \
   --home /trusted/codex-home \
   --protected-root /protected/source \
@@ -179,12 +183,28 @@ published. It does not authorize or start Promptfoo. The artifacts are
 `host-policy.json`, `preflight-snapshots.json`, `preflight-probes.json`, and
 `enforcement-receipt.json`, plus a digest printed for the complete set.
 
+The Promptfoo runtime must be a nonempty, symlink-free sealed tree. The
+Promptfoo entry point must be inside it, and the Codex SDK must be at the exact
+Node resolution path shown above. Preflight binds and rechecks the Node, Codex,
+and Promptfoo executable identities plus the complete Promptfoo and SDK tree
+digests immediately before dispatch. The isolated home may contain only
+`.codex/auth.json`, with directory mode `0700` and file mode `0600`; ambient
+Codex config, plugins, skills, or other files block the run.
+
 After review, bind that receipt with `native_eval.py bind`. A live `run`
 additionally requires a short-lived `APPROVED_LIVE_RUN` authorization bound to
 the plan, nonce, receipt digest, and complete preflight-artifact digest. The
 standalone CLI deliberately returns `BLOCKED_NOT_RUN` unless an approved host
 embedding supplies the trusted process runner and independent Codex session
 observer. Promptfoo's own result cannot self-attest that identity.
+
+The host observer must cover both arm sessions and every LLM-rubric judge
+session. Each observation is bound to the current execution ID, process ID,
+Codex executable digest, timestamp, source-attestation digest, result index,
+provider/model/adapter identity, and provider-config digest. Missing, replayed,
+duplicate, or extra sessions block completion. Post-dispatch failures report
+`INCOMPLETE` with `model_executed: true`; they are never rewritten as a
+pre-dispatch `BLOCKED_NOT_RUN` result.
 
 On 2026-11-02 the installed profile passed five of six probes. The inert
 secondary-process canary was executable, so preflight correctly remained

@@ -20,10 +20,12 @@ from capability_inventory import load_inventory
 from codex_host import (
     CodexHostError,
     CodexHostPolicy,
+    ExecutableIdentity,
     HostAttestation,
     PreflightRequest,
     PreflightResult,
     SupervisedProcessResult,
+    SupervisedRunIncomplete,
     SupervisedRunRequest,
     attest_host,
     compile_read_only_policy,
@@ -41,7 +43,10 @@ _LIVE_AUTH_FIELDS = frozenset((
     "schema_version", "decision", "authorized_by", "issued_at", "expires_at",
     "plan_digest", "run_nonce", "provider", "model_version", "backend",
     "capability_profile", "preflight_receipt_digest",
-    "preflight_artifact_digest",
+    "preflight_artifact_digest", "codex_executable_digest",
+    "promptfoo_executable_digest", "node_executable_digest",
+    "promptfoo_runtime_digest",
+    "codex_sdk_digest",
 ))
 _READ_ONLY_PROBE_IDS = tuple(sorted((
     "environment-secret", "network-egress", "read-outside-workspace",
@@ -73,10 +78,17 @@ def _run_observation(command: Sequence[str], *, home: Optional[Path] = None) -> 
     return completed.stdout.strip()
 
 
-def _default_versions(codex_path: Path, promptfoo_path: Path) -> Mapping[str, str]:
+def _default_versions(
+    codex_path: Path, promptfoo_path: Path, node_path: Path
+) -> Mapping[str, str]:
     result = {}
-    for name, path in (("codex", codex_path), ("promptfoo", promptfoo_path)):
-        observed = _run_observation((str(path), "--version"))
+    commands = (
+        ("codex", (str(codex_path), "--version")),
+        ("promptfoo", (str(node_path), str(promptfoo_path), "--version")),
+        ("node", (str(node_path), "--version")),
+    )
+    for name, command in commands:
+        observed = _run_observation(command)
         match = _VERSION.search(observed)
         if match is None:
             raise CodexHostError(f"cannot parse installed {name} version")
@@ -117,7 +129,7 @@ def _default_mcp_servers(codex_path: Path, home: Path) -> Sequence[str]:
 
 @dataclass(frozen=True)
 class HostDependencies:
-    inspect_versions: Callable[[Path, Path], Mapping[str, str]] = _default_versions
+    inspect_versions: Callable[[Path, Path, Path], Mapping[str, str]] = _default_versions
     inspect_platform: Callable[[], Sequence[str]] = _default_platform
     inspect_login: Callable[[Path, Path], str] = _default_login
     inspect_mcp_servers: Callable[[Path, Path], Sequence[str]] = _default_mcp_servers
@@ -223,20 +235,48 @@ def _load_policy(path: Path) -> CodexHostPolicy:
     value = _json_object(path, "host policy")
     expected = {
         "schema_version", "profile_name", "workspace", "workspace_id",
-        "codex_path", "command_line_tools_root", "home", "protected_roots",
+        "codex_path", "codex_executable", "promptfoo_path",
+        "promptfoo_executable", "node_path", "node_executable",
+        "promptfoo_runtime_root",
+        "promptfoo_runtime_digest", "codex_sdk_root", "codex_sdk_digest",
+        "command_line_tools_root", "home",
+        "home_shape_digest", "protected_roots",
         "disabled_mcp_servers", "cli_config", "boundary_launcher",
         "process_environment",
     }
     if set(value) != expected:
         raise CodexHostError("host policy artifact shape is invalid")
+    def executable(field: str) -> ExecutableIdentity:
+        item = value[field]
+        expected_identity = {"path", "device", "inode", "size", "digest"}
+        if not isinstance(item, dict) or set(item) != expected_identity:
+            raise CodexHostError(f"host policy {field} shape is invalid")
+        return ExecutableIdentity(
+            path=Path(item["path"]),
+            device=item["device"],
+            inode=item["inode"],
+            size=item["size"],
+            digest=item["digest"],
+        )
+
     return CodexHostPolicy(
         schema_version=value["schema_version"],
         profile_name=value["profile_name"],
         workspace=Path(value["workspace"]),
         workspace_id=value["workspace_id"],
         codex_path=Path(value["codex_path"]),
+        codex_executable=executable("codex_executable"),
+        promptfoo_path=Path(value["promptfoo_path"]),
+        promptfoo_executable=executable("promptfoo_executable"),
+        node_path=Path(value["node_path"]),
+        node_executable=executable("node_executable"),
+        promptfoo_runtime_root=Path(value["promptfoo_runtime_root"]),
+        promptfoo_runtime_digest=value["promptfoo_runtime_digest"],
+        codex_sdk_root=Path(value["codex_sdk_root"]),
+        codex_sdk_digest=value["codex_sdk_digest"],
         command_line_tools_root=Path(value["command_line_tools_root"]),
         home=Path(value["home"]),
+        home_shape_digest=value["home_shape_digest"],
         protected_roots=tuple(Path(item) for item in value["protected_roots"]),
         disabled_mcp_servers=tuple(value["disabled_mcp_servers"]),
         cli_config=value["cli_config"],
@@ -277,6 +317,36 @@ def _load_preflight(directory: Path, plan: RunPlan) -> PreflightResult:
         for index, value in enumerate(protected_values)
     )
     workspace = _snapshot(snapshots.get("workspace"), "workspace")
+    attestation_value = snapshots.get("attestation")
+    expected_attestation = {
+        "schema_version", "platform", "versions", "auth_method",
+        "policy_digest", "workspace_id", "disabled_mcp_servers",
+        "codex_executable_digest", "promptfoo_executable_digest",
+        "node_executable_digest", "promptfoo_runtime_digest",
+        "codex_sdk_digest", "home_shape_digest",
+    }
+    if not isinstance(attestation_value, dict) or set(attestation_value) != expected_attestation:
+        raise CodexHostError("stored host attestation shape is invalid")
+    try:
+        attestation = HostAttestation(
+            schema_version=attestation_value["schema_version"],
+            platform=tuple(attestation_value["platform"]),
+            versions=attestation_value["versions"],
+            auth_method=attestation_value["auth_method"],
+            policy_digest=attestation_value["policy_digest"],
+            workspace_id=attestation_value["workspace_id"],
+            disabled_mcp_servers=tuple(attestation_value["disabled_mcp_servers"]),
+            codex_executable_digest=attestation_value["codex_executable_digest"],
+            promptfoo_executable_digest=attestation_value["promptfoo_executable_digest"],
+            node_executable_digest=attestation_value["node_executable_digest"],
+            promptfoo_runtime_digest=attestation_value["promptfoo_runtime_digest"],
+            codex_sdk_digest=attestation_value["codex_sdk_digest"],
+            home_shape_digest=attestation_value["home_shape_digest"],
+        )
+    except (TypeError, ValueError):
+        raise CodexHostError("stored host attestation is invalid") from None
+    if attestation.policy_digest != policy.digest():
+        raise CodexHostError("stored host attestation policy binding changed")
     result_values = probes.get("results")
     if not isinstance(result_values, list):
         raise CodexHostError("preflight probe results are missing")
@@ -298,6 +368,7 @@ def _load_preflight(directory: Path, plan: RunPlan) -> PreflightResult:
     return PreflightResult(
         receipt=receipt,
         boundary=boundary,
+        attestation=attestation,
         policy_digest=policy.digest(),
         bundle_digest=receipt.prepared_bundle_digest,
         provider_config_digest=receipt.provider_config_digest,
@@ -346,6 +417,13 @@ def _validate_live_authorization(
         "preflight_artifact_digest": preflight_artifact_digest(
             preflight.receipt_artifact.parent
         ),
+        "codex_executable_digest": preflight.attestation.codex_executable_digest,
+        "promptfoo_executable_digest": (
+            preflight.attestation.promptfoo_executable_digest
+        ),
+        "node_executable_digest": preflight.attestation.node_executable_digest,
+        "promptfoo_runtime_digest": preflight.attestation.promptfoo_runtime_digest,
+        "codex_sdk_digest": preflight.attestation.codex_sdk_digest,
     }
     for field, expected_value in expected.items():
         if value.get(field) != expected_value:
@@ -375,6 +453,13 @@ def _preflight(args: argparse.Namespace, dependencies: HostDependencies) -> dict
     promptfoo_path = _real_explicit_path(
         args.promptfoo_path, "Promptfoo path", directory=False
     )
+    node_path = _real_explicit_path(args.node_path, "Node path", directory=False)
+    promptfoo_runtime_root = _real_explicit_path(
+        args.promptfoo_runtime_root, "Promptfoo runtime root", directory=True
+    )
+    codex_sdk_root = _real_explicit_path(
+        args.codex_sdk_root, "Codex SDK root", directory=True
+    )
     protected = tuple(
         _real_explicit_path(path, "protected root", directory=True)
         for path in args.protected_root
@@ -384,12 +469,18 @@ def _preflight(args: argparse.Namespace, dependencies: HostDependencies) -> dict
     policy = compile_read_only_policy(
         workspace=args.bundle,
         codex_path=codex_path,
+        promptfoo_path=promptfoo_path,
+        node_path=node_path,
+        promptfoo_runtime_root=promptfoo_runtime_root,
+        codex_sdk_root=codex_sdk_root,
         command_line_tools_root=args.command_line_tools_root,
         home=home,
         mcp_servers=observed_mcp,
         protected_roots=protected,
     )
-    observed_versions = dependencies.inspect_versions(codex_path, promptfoo_path)
+    observed_versions = dependencies.inspect_versions(
+        codex_path, promptfoo_path, node_path
+    )
     attestation = attest_host(
         policy,
         expected_platform=(
@@ -401,6 +492,7 @@ def _preflight(args: argparse.Namespace, dependencies: HostDependencies) -> dict
         expected_versions={
             "codex": inventory.required_versions["codex"],
             "promptfoo": inventory.required_versions["promptfoo"],
+            "node": inventory.required_versions["node"],
         },
         observed_versions=observed_versions,
         login_status=dependencies.inspect_login(codex_path, home),
@@ -463,7 +555,30 @@ def _run(args: argparse.Namespace, dependencies: HostDependencies) -> dict[str, 
     promptfoo_path = _real_explicit_path(
         args.promptfoo_path, "Promptfoo path", directory=False
     )
-    command = (str(promptfoo_path), *command[1:])
+    if promptfoo_path != policy.promptfoo_path:
+        raise CodexHostError("run Promptfoo path differs from the preflight policy")
+    node_path = _real_explicit_path(args.node_path, "Node path", directory=False)
+    if node_path != policy.node_path:
+        raise CodexHostError("run Node path differs from the preflight policy")
+    command = (
+        str(policy.node_path), str(policy.promptfoo_path), *command[1:]
+    )
+    current_attestation = attest_host(
+        policy,
+        expected_platform=preflight.attestation.platform,
+        observed_platform=dependencies.inspect_platform(),
+        expected_versions=preflight.attestation.versions,
+        observed_versions=dependencies.inspect_versions(
+            policy.codex_path, policy.promptfoo_path, policy.node_path
+        ),
+        login_status=dependencies.inspect_login(policy.codex_path, policy.home),
+        observed_mcp_servers=dependencies.inspect_mcp_servers(
+            policy.codex_path, policy.home
+        ),
+        environment=dependencies.inspect_environment(),
+    )
+    if current_attestation.canonical_payload() != preflight.attestation.canonical_payload():
+        raise CodexHostError("host attestation changed after preflight")
     request = SupervisedRunRequest(
         plan=plan,
         policy=policy,
@@ -494,6 +609,7 @@ def _parser() -> argparse.ArgumentParser:
     preflight = subparsers.add_parser("preflight")
     for name in ("run_plan", "approval_receipt", "capability_inventory", "bundle",
                  "artifact_directory", "codex_path", "promptfoo_path",
+                 "node_path", "promptfoo_runtime_root", "codex_sdk_root",
                  "command_line_tools_root", "home", "provider_config"):
         preflight.add_argument(f"--{name.replace('_', '-')}", type=Path, required=True)
     preflight.add_argument("--protected-root", type=Path, action="append", required=True)
@@ -503,7 +619,8 @@ def _parser() -> argparse.ArgumentParser:
 
     run = subparsers.add_parser("run")
     for name in ("run_plan", "bundle", "preflight_directory", "artifact_directory",
-                 "promptfoo_path", "nonce_ledger", "live_authorization"):
+                 "promptfoo_path", "node_path", "nonce_ledger",
+                 "live_authorization"):
         run.add_argument(f"--{name.replace('_', '-')}", type=Path, required=True)
     run.add_argument("--protected-root", type=Path, action="append", required=True)
     return parser
@@ -544,6 +661,15 @@ def main(argv: Optional[Sequence[str]] = None, *, dependencies: HostDependencies
         )
         print(json.dumps(payload, sort_keys=True))
         return 0
+    except SupervisedRunIncomplete as exc:
+        print(json.dumps({
+            "status": "INCOMPLETE",
+            "execution_status": exc.execution_status,
+            "safety_status": exc.safety_status,
+            "model_executed": exc.model_executed,
+            "reason": _redacted_message(exc, dependencies),
+        }, sort_keys=True))
+        return 2
     except Exception as exc:
         print(json.dumps({
             "status": "BLOCKED_NOT_RUN",

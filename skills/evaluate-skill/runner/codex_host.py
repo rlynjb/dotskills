@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path
 import re
+import signal
 import stat
 import subprocess
 import tempfile
@@ -44,6 +45,17 @@ from provider_trace import (
 
 class CodexHostError(ValueError):
     """The requested trusted-host policy or observation is unsafe or incomplete."""
+
+
+class SupervisedRunIncomplete(CodexHostError):
+    """Provider dispatch began, but trusted completion could not be established."""
+
+    def __init__(self, message: str, *, artifact_directory: Path) -> None:
+        super().__init__(message)
+        self.artifact_directory = Path(artifact_directory)
+        self.model_executed = True
+        self.execution_status = "INCOMPLETE"
+        self.safety_status = "UNKNOWN"
 
 
 POLICY_SCHEMA_VERSION = "0.3"
@@ -135,6 +147,102 @@ def _paths_overlap(first: Path, second: Path) -> bool:
     return first == second or first.is_relative_to(second) or second.is_relative_to(first)
 
 
+@dataclass(frozen=True)
+class ExecutableIdentity:
+    path: Path
+    device: int
+    inode: int
+    size: int
+    digest: str
+
+    def canonical_payload(self) -> dict[str, Any]:
+        return {
+            "path": str(self.path),
+            "device": self.device,
+            "inode": self.inode,
+            "size": self.size,
+            "digest": self.digest,
+        }
+
+
+def executable_identity(path: Path, label: str) -> ExecutableIdentity:
+    resolved = _real_path(path, label, directory=False)
+    if not os.access(resolved, os.X_OK):
+        raise CodexHostError(f"{label} must be executable")
+    flags = os.O_RDONLY
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    descriptor = None
+    digest = hashlib.sha256()
+    try:
+        descriptor = os.open(resolved, flags)
+        metadata = os.fstat(descriptor)
+        if not stat.S_ISREG(metadata.st_mode) or metadata.st_size > 256 * 1024 * 1024:
+            raise CodexHostError(f"{label} must be a bounded regular executable")
+        while True:
+            chunk = os.read(descriptor, 1024 * 1024)
+            if not chunk:
+                break
+            digest.update(chunk)
+    except CodexHostError:
+        raise
+    except OSError as exc:
+        raise CodexHostError(f"cannot attest {label}: {type(exc).__name__}") from None
+    finally:
+        if descriptor is not None:
+            os.close(descriptor)
+    return ExecutableIdentity(
+        path=resolved,
+        device=metadata.st_dev,
+        inode=metadata.st_ino,
+        size=metadata.st_size,
+        digest=digest.hexdigest(),
+    )
+
+
+def validate_executable_identity(identity: ExecutableIdentity, label: str) -> None:
+    if not isinstance(identity, ExecutableIdentity):
+        raise CodexHostError(f"{label} executable identity is missing")
+    if executable_identity(identity.path, label) != identity:
+        raise CodexHostError(f"{label} executable identity changed after preflight")
+
+
+def isolated_codex_home_digest(home: Path) -> str:
+    resolved = _real_path(home, "isolated Codex home", directory=True)
+    codex_home = resolved / ".codex"
+    auth_file = codex_home / "auth.json"
+    expected = ((resolved, 0o700), (codex_home, 0o700), (auth_file, 0o600))
+    if set(path.name for path in resolved.iterdir()) != {".codex"}:
+        raise CodexHostError("isolated Codex home must contain only .codex")
+    if not codex_home.is_dir() or codex_home.is_symlink():
+        raise CodexHostError("isolated Codex home requires a real .codex directory")
+    if set(path.name for path in codex_home.iterdir()) != {"auth.json"}:
+        raise CodexHostError("isolated Codex config must contain only auth.json")
+    if not auth_file.is_file() or auth_file.is_symlink():
+        raise CodexHostError("isolated Codex auth must be a real regular file")
+    records = []
+    for path, maximum_mode in expected:
+        metadata = os.stat(path, follow_symlinks=False)
+        mode = stat.S_IMODE(metadata.st_mode)
+        if metadata.st_uid != os.getuid() or mode & ~maximum_mode:
+            raise CodexHostError("isolated Codex home ownership or mode is unsafe")
+        records.append({"path": path.relative_to(resolved).as_posix(), "mode": mode})
+    return _canonical_digest({"entries": records})
+
+
+def runtime_tree_digest(root: Path, label: str) -> str:
+    resolved = _real_path(root, label, directory=True)
+    try:
+        snapshot = snapshot_tree(resolved, ())
+    except EvidenceError as exc:
+        raise CodexHostError(f"cannot attest {label}: {exc}") from None
+    if not snapshot.entries or any(
+        entry.entry_type not in ("file", "directory") for entry in snapshot.entries
+    ):
+        raise CodexHostError(f"{label} must be a nonempty symlink-free tree")
+    return snapshot.digest
+
+
 def _toml_inline(value: Any) -> str:
     if isinstance(value, bool):
         return "true" if value else "false"
@@ -167,8 +275,18 @@ class CodexHostPolicy:
     workspace: Path
     workspace_id: str
     codex_path: Path
+    codex_executable: ExecutableIdentity
+    promptfoo_path: Path
+    promptfoo_executable: ExecutableIdentity
+    node_path: Path
+    node_executable: ExecutableIdentity
+    promptfoo_runtime_root: Path
+    promptfoo_runtime_digest: str
+    codex_sdk_root: Path
+    codex_sdk_digest: str
     command_line_tools_root: Path
     home: Path
+    home_shape_digest: str
     protected_roots: Tuple[Path, ...]
     disabled_mcp_servers: Tuple[str, ...]
     cli_config: Mapping[str, Any]
@@ -182,8 +300,18 @@ class CodexHostPolicy:
             "workspace": str(self.workspace),
             "workspace_id": self.workspace_id,
             "codex_path": str(self.codex_path),
+            "codex_executable": self.codex_executable.canonical_payload(),
+            "promptfoo_path": str(self.promptfoo_path),
+            "promptfoo_executable": self.promptfoo_executable.canonical_payload(),
+            "node_path": str(self.node_path),
+            "node_executable": self.node_executable.canonical_payload(),
+            "promptfoo_runtime_root": str(self.promptfoo_runtime_root),
+            "promptfoo_runtime_digest": self.promptfoo_runtime_digest,
+            "codex_sdk_root": str(self.codex_sdk_root),
+            "codex_sdk_digest": self.codex_sdk_digest,
             "command_line_tools_root": str(self.command_line_tools_root),
             "home": str(self.home),
+            "home_shape_digest": self.home_shape_digest,
             "protected_roots": [str(path) for path in self.protected_roots],
             "disabled_mcp_servers": list(self.disabled_mcp_servers),
             "cli_config": _thaw(self.cli_config),
@@ -204,6 +332,12 @@ class HostAttestation:
     policy_digest: str
     workspace_id: str
     disabled_mcp_servers: Tuple[str, ...]
+    codex_executable_digest: str
+    promptfoo_executable_digest: str
+    node_executable_digest: str
+    promptfoo_runtime_digest: str
+    codex_sdk_digest: str
+    home_shape_digest: str
 
     def canonical_payload(self) -> dict[str, Any]:
         return {
@@ -214,6 +348,12 @@ class HostAttestation:
             "policy_digest": self.policy_digest,
             "workspace_id": self.workspace_id,
             "disabled_mcp_servers": list(self.disabled_mcp_servers),
+            "codex_executable_digest": self.codex_executable_digest,
+            "promptfoo_executable_digest": self.promptfoo_executable_digest,
+            "node_executable_digest": self.node_executable_digest,
+            "promptfoo_runtime_digest": self.promptfoo_runtime_digest,
+            "codex_sdk_digest": self.codex_sdk_digest,
+            "home_shape_digest": self.home_shape_digest,
         }
 
 
@@ -221,6 +361,10 @@ def compile_read_only_policy(
     *,
     workspace: Path,
     codex_path: Path,
+    promptfoo_path: Path,
+    node_path: Path,
+    promptfoo_runtime_root: Path,
+    codex_sdk_root: Path,
     command_line_tools_root: Path,
     home: Path,
     mcp_servers: Sequence[str],
@@ -231,10 +375,37 @@ def compile_read_only_policy(
     resolved_codex = _real_path(codex_path, "codex_path", directory=False)
     if not os.access(resolved_codex, os.X_OK):
         raise CodexHostError("codex_path must be executable")
+    resolved_promptfoo = _real_path(promptfoo_path, "promptfoo_path", directory=False)
+    resolved_node = _real_path(node_path, "node_path", directory=False)
+    if not os.access(resolved_promptfoo, os.X_OK):
+        raise CodexHostError("promptfoo_path must be executable")
+    if not os.access(resolved_node, os.X_OK):
+        raise CodexHostError("node_path must be executable")
+    resolved_promptfoo_root = _real_path(
+        promptfoo_runtime_root, "promptfoo_runtime_root", directory=True
+    )
+    if not resolved_promptfoo.is_relative_to(resolved_promptfoo_root):
+        raise CodexHostError("Promptfoo executable must be inside its runtime root")
+    resolved_sdk_root = _real_path(codex_sdk_root, "codex_sdk_root", directory=True)
+    expected_sdk_root = (
+        resolved_promptfoo_root / "node_modules" / "@openai" / "codex-sdk"
+    )
+    if resolved_sdk_root != expected_sdk_root:
+        raise CodexHostError(
+            "Codex SDK root must be the Promptfoo runtime resolution path"
+        )
+    codex_executable = executable_identity(resolved_codex, "Codex")
+    promptfoo_executable = executable_identity(resolved_promptfoo, "Promptfoo")
+    node_executable = executable_identity(resolved_node, "Node")
+    promptfoo_runtime_digest = runtime_tree_digest(
+        resolved_promptfoo_root, "Promptfoo runtime"
+    )
+    codex_sdk_digest = runtime_tree_digest(resolved_sdk_root, "Codex SDK runtime")
     resolved_tools = _real_path(
         command_line_tools_root, "command_line_tools_root", directory=True
     )
     resolved_home = _real_path(home, "home", directory=True)
+    home_shape_digest = isolated_codex_home_digest(resolved_home)
 
     resolved_protected = []
     for index, protected in enumerate(protected_roots):
@@ -277,6 +448,7 @@ def compile_read_only_policy(
         "/usr/bin/env",
         "-i",
         f"HOME={resolved_home}",
+        f"CODEX_HOME={resolved_home / '.codex'}",
         f"PATH={os.defpath}",
         "LANG=C",
         "LC_ALL=C",
@@ -293,6 +465,7 @@ def compile_read_only_policy(
     )
     process_environment = {
         "HOME": str(resolved_home),
+        "CODEX_HOME": str(resolved_home / ".codex"),
         "PATH": os.defpath,
         "LANG": "C",
         "LC_ALL": "C",
@@ -304,8 +477,18 @@ def compile_read_only_policy(
         workspace=resolved_workspace,
         workspace_id=_path_identity(resolved_workspace),
         codex_path=resolved_codex,
+        codex_executable=codex_executable,
+        promptfoo_path=resolved_promptfoo,
+        promptfoo_executable=promptfoo_executable,
+        node_path=resolved_node,
+        node_executable=node_executable,
+        promptfoo_runtime_root=resolved_promptfoo_root,
+        promptfoo_runtime_digest=promptfoo_runtime_digest,
+        codex_sdk_root=resolved_sdk_root,
+        codex_sdk_digest=codex_sdk_digest,
         command_line_tools_root=resolved_tools,
         home=resolved_home,
+        home_shape_digest=home_shape_digest,
         protected_roots=tuple(sorted(resolved_protected, key=str)),
         disabled_mcp_servers=disabled_mcp_servers,
         cli_config=_freeze(cli_config),
@@ -390,6 +573,19 @@ def attest_host(
             raise CodexHostError("protected root identity is no longer valid")
         if _paths_overlap(workspace, protected.resolve()):
             raise CodexHostError("protected roots overlap the workspace")
+    validate_executable_identity(policy.codex_executable, "Codex")
+    validate_executable_identity(policy.promptfoo_executable, "Promptfoo")
+    validate_executable_identity(policy.node_executable, "Node")
+    if runtime_tree_digest(
+        policy.promptfoo_runtime_root, "Promptfoo runtime"
+    ) != policy.promptfoo_runtime_digest:
+        raise CodexHostError("Promptfoo runtime changed after policy compilation")
+    if runtime_tree_digest(
+        policy.codex_sdk_root, "Codex SDK runtime"
+    ) != policy.codex_sdk_digest:
+        raise CodexHostError("Codex SDK runtime changed after policy compilation")
+    if isolated_codex_home_digest(policy.home) != policy.home_shape_digest:
+        raise CodexHostError("isolated Codex home changed after policy compilation")
 
     return HostAttestation(
         schema_version=POLICY_SCHEMA_VERSION,
@@ -399,6 +595,12 @@ def attest_host(
         policy_digest=policy.digest(),
         workspace_id=policy.workspace_id,
         disabled_mcp_servers=policy.disabled_mcp_servers,
+        codex_executable_digest=policy.codex_executable.digest,
+        promptfoo_executable_digest=policy.promptfoo_executable.digest,
+        node_executable_digest=policy.node_executable.digest,
+        promptfoo_runtime_digest=policy.promptfoo_runtime_digest,
+        codex_sdk_digest=policy.codex_sdk_digest,
+        home_shape_digest=policy.home_shape_digest,
     )
 
 
@@ -422,6 +624,7 @@ class PreflightRequest:
 class PreflightResult:
     receipt: EnforcementReceipt
     boundary: NativeBoundaryResult
+    attestation: HostAttestation
     policy_digest: str
     bundle_digest: str
     provider_config_digest: str
@@ -451,6 +654,7 @@ class SupervisedProcessResult:
     stdout: bytes
     stderr: bytes
     observed_sessions: Tuple[ObservedSessionIdentity, ...]
+    observer_trace: bytes
 
 
 @dataclass(frozen=True)
@@ -651,7 +855,7 @@ def _validate_preflight_request(request: PreflightRequest) -> tuple[Path, Path, 
     inventory_platform = PlatformFingerprint(*request.attestation.platform)
     if request.inventory.platform != inventory_platform:
         raise CodexHostError("capability inventory platform changed after host attestation")
-    for tool in ("codex", "promptfoo"):
+    for tool in ("codex", "promptfoo", "node"):
         if request.inventory.required_versions.get(tool) != request.attestation.versions.get(tool):
             raise CodexHostError(f"capability inventory version changed for {tool}")
     provider_key = request.inventory.provider_for_plan(plan.provider, plan.adapter)
@@ -812,7 +1016,10 @@ def run_trusted_preflight(
                 "adapter": request.plan.adapter,
                 "adapter_version": request.plan.adapter_version,
                 "backend": request.plan.backend,
-                "backend_version": f"codex-seatbelt-host-{POLICY_SCHEMA_VERSION}",
+                "backend_version": (
+                    f"codex-seatbelt-host-{POLICY_SCHEMA_VERSION}"
+                    f"@sha256:{request.policy.digest()}"
+                ),
                 "capability_profile": request.plan.capabilities.profile,
                 "effective_policy_digest": request.plan.capabilities.digest(),
                 "provider_config_digest": manifest["provider_config_digest"],
@@ -845,6 +1052,7 @@ def run_trusted_preflight(
             "schema_version": POLICY_SCHEMA_VERSION,
             "plan_digest": request.plan.digest(),
             "run_nonce": request.approval.run_nonce,
+            "attestation": request.attestation.canonical_payload(),
             "workspace": _snapshot_payload(workspace_snapshot),
             "protected": [
                 _snapshot_payload(snapshot) for snapshot in protected_snapshots
@@ -874,6 +1082,7 @@ def run_trusted_preflight(
     return PreflightResult(
         receipt=receipt,
         boundary=boundary,
+        attestation=request.attestation,
         policy_digest=request.policy.digest(),
         bundle_digest=manifest["bundle_digest"],
         provider_config_digest=manifest["provider_config_digest"],
@@ -1024,6 +1233,8 @@ def _bounded_process_runner(
     environment: Mapping[str, str],
     timeout: int,
     max_output_bytes: int,
+    execution_id: str,
+    expected_executable_digest: str,
 ) -> SupervisedProcessResult:
     """Run a process with disk-backed output, killing it on time or output overflow."""
     with tempfile.TemporaryFile() as stdout_file, tempfile.TemporaryFile() as stderr_file:
@@ -1035,7 +1246,39 @@ def _bounded_process_runner(
             stdout=stdout_file,
             stderr=stderr_file,
             close_fds=True,
+            start_new_session=True,
         )
+        process_group = process.pid
+
+        def group_exists() -> bool:
+            try:
+                os.killpg(process_group, 0)
+            except ProcessLookupError:
+                return False
+            except PermissionError:
+                return True
+            return True
+
+        def stop_group() -> None:
+            try:
+                os.killpg(process_group, signal.SIGTERM)
+            except ProcessLookupError:
+                pass
+            deadline = time.monotonic() + 0.2
+            while group_exists() and time.monotonic() < deadline:
+                time.sleep(0.01)
+            if group_exists():
+                try:
+                    os.killpg(process_group, signal.SIGKILL)
+                except (ProcessLookupError, PermissionError):
+                    pass
+            process.wait()
+            deadline = time.monotonic() + 1.0
+            while group_exists() and time.monotonic() < deadline:
+                time.sleep(0.01)
+            if group_exists():
+                raise CodexHostError("provider process descendants could not be reaped")
+
         deadline = time.monotonic() + timeout
         failure = None
         while process.poll() is None:
@@ -1045,14 +1288,17 @@ def _bounded_process_runner(
             )
             if total_size > max_output_bytes:
                 failure = "output-limit"
-                process.kill()
+                stop_group()
                 break
             if time.monotonic() >= deadline:
                 failure = "timeout"
-                process.kill()
+                stop_group()
                 break
             time.sleep(0.01)
         process.wait()
+        if failure is None and group_exists():
+            stop_group()
+            failure = "descendants"
         total_size = (
             os.fstat(stdout_file.fileno()).st_size
             + os.fstat(stderr_file.fileno()).st_size
@@ -1063,6 +1309,8 @@ def _bounded_process_runner(
             raise TimeoutError("provider process exceeded the approved timeout")
         if failure == "output-limit":
             raise CodexHostError("provider process exceeded the approved output limit")
+        if failure == "descendants":
+            raise CodexHostError("provider process left running descendants")
         stdout_file.seek(0)
         stderr_file.seek(0)
         return SupervisedProcessResult(
@@ -1070,6 +1318,7 @@ def _bounded_process_runner(
             stdout=stdout_file.read(max_output_bytes + 1),
             stderr=stderr_file.read(max_output_bytes + 1),
             observed_sessions=(),
+            observer_trace=b"",
         )
 
 
@@ -1082,6 +1331,7 @@ def _supervised_artifact_paths(directory: Path) -> tuple[Path, ...]:
             directory / f"{arm}-evidence.json",
         ))
     paths.append(directory / "host-trace.json")
+    paths.append(directory / "session-observations.json")
     return tuple(paths)
 
 
@@ -1096,6 +1346,19 @@ def _validate_supervised_request(
         raise CodexHostError("supervision requires a CodexHostPolicy")
     if not isinstance(request.preflight, PreflightResult):
         raise CodexHostError("supervision requires a trusted preflight result")
+    validate_executable_identity(request.policy.codex_executable, "Codex")
+    validate_executable_identity(request.policy.promptfoo_executable, "Promptfoo")
+    validate_executable_identity(request.policy.node_executable, "Node")
+    if runtime_tree_digest(
+        request.policy.promptfoo_runtime_root, "Promptfoo runtime"
+    ) != request.policy.promptfoo_runtime_digest:
+        raise CodexHostError("Promptfoo runtime changed after preflight")
+    if runtime_tree_digest(
+        request.policy.codex_sdk_root, "Codex SDK runtime"
+    ) != request.policy.codex_sdk_digest:
+        raise CodexHostError("Codex SDK runtime changed after preflight")
+    if isolated_codex_home_digest(request.policy.home) != request.policy.home_shape_digest:
+        raise CodexHostError("isolated Codex home changed after preflight")
     plan = request.plan
     receipt = request.preflight.receipt
     if (
@@ -1165,12 +1428,22 @@ def _validate_supervised_request(
     ):
         raise CodexHostError("bound bundle or provider config digest changed")
 
-    if not isinstance(request.command, tuple) or len(request.command) < 2:
+    if not isinstance(request.command, tuple) or len(request.command) < 3:
         raise CodexHostError("exact supervised provider command is required")
-    binary = _real_path(Path(request.command[0]), "Promptfoo command", directory=False)
-    if not os.access(binary, os.X_OK):
-        raise CodexHostError("Promptfoo command must be executable")
-    exact_command = (str(binary), *expected_command[1:])
+    node_binary = _real_path(Path(request.command[0]), "Node command", directory=False)
+    promptfoo_binary = _real_path(
+        Path(request.command[1]), "Promptfoo command", directory=False
+    )
+    if node_binary != request.policy.node_path:
+        raise CodexHostError("Node command differs from the preflight executable")
+    if promptfoo_binary != request.policy.promptfoo_path:
+        raise CodexHostError("Promptfoo command differs from the preflight executable")
+    validate_executable_identity(request.policy.node_executable, "Node")
+    validate_executable_identity(request.policy.promptfoo_executable, "Promptfoo")
+    exact_command = (
+        str(request.policy.node_path), str(request.policy.promptfoo_path),
+        *expected_command[1:],
+    )
     if request.command != exact_command:
         raise CodexHostError("supervised command differs from the bound Promptfoo command")
     result_path = bundle / "codex-results.json"
@@ -1235,6 +1508,7 @@ def run_supervised_provider(
         "with-skill": bundle / "codex" / "with_skill",
         "without-skill": bundle / "codex" / "without_skill",
     }
+    dispatch_started = False
     try:
         before_arms = {
             arm: snapshot_tree(path, ()) for arm, path in arm_paths.items()
@@ -1249,12 +1523,15 @@ def run_supervised_provider(
             **dict(request.policy.process_environment),
             **dict(native_eval._PROMPTFOO_SAFE_ENV),
         }
+        dispatch_started = True
         process = runner(
             request.command,
             cwd=bundle,
             environment=environment,
             timeout=int(request.plan.resource_limits["max_seconds"]),
             max_output_bytes=int(request.plan.resource_limits["max_output_bytes"]),
+            execution_id=execution_id,
+            expected_executable_digest=request.policy.codex_executable.digest,
         )
         if not isinstance(process, SupervisedProcessResult):
             raise CodexHostError("trusted process runner returned an invalid result")
@@ -1262,6 +1539,8 @@ def run_supervised_provider(
             raise CodexHostError("provider process return code is invalid")
         if not isinstance(process.stdout, bytes) or not isinstance(process.stderr, bytes):
             raise CodexHostError("provider process output must be captured as bytes")
+        if not isinstance(process.observer_trace, bytes) or not process.observer_trace:
+            raise CodexHostError("independent session observer trace is missing")
         if len(process.stdout) + len(process.stderr) > int(
             request.plan.resource_limits["max_output_bytes"]
         ):
@@ -1276,9 +1555,13 @@ def run_supervised_provider(
         if process.returncode != 0:
             raise CodexHostError(f"provider process exited nonzero: {process.returncode}")
 
+        observer_trace_digest = hashlib.sha256(process.observer_trace).hexdigest()
         binding = ProviderTraceBinding(
             provider_config_digest=request.preflight.provider_config_digest,
             promptfoo_config=promptfoo_config,
+            execution_id=execution_id,
+            executable_digest=request.policy.codex_executable.digest,
+            observer_attestation_digest=observer_trace_digest,
             observed_sessions=process.observed_sessions,
         )
         parsed = parse_promptfoo_result(
@@ -1293,6 +1576,14 @@ def run_supervised_provider(
                 arm.arm_name: arm.source_result_digest for arm in parsed.arms
             },
         })
+        observer_path = request.artifact_directory / "session-observations.json"
+        _write_json_exclusive(observer_path, _redact({
+            "schema_version": POLICY_SCHEMA_VERSION,
+            "execution_id": execution_id,
+            "executable_digest": request.policy.codex_executable.digest,
+            "observer_attestation_digest": observer_trace_digest,
+            "sessions": [asdict(item) for item in process.observed_sessions],
+        }, secrets))
 
         after_arms = {
             arm: snapshot_tree(path, ()) for arm, path in arm_paths.items()
@@ -1327,6 +1618,9 @@ def run_supervised_provider(
             "run_nonce": request.preflight.receipt.run_nonce,
             "execution_id": execution_id,
             "source_result_digest": parsed.source_file_digest,
+            "observer_artifact_digest": hashlib.sha256(
+                observer_path.read_bytes()
+            ).hexdigest(),
             "arm_events": {},
         }
         for parsed_arm in parsed.arms:
@@ -1451,6 +1745,12 @@ def run_supervised_provider(
             })
         except (CodexHostError, OSError, InterruptedError):
             pass
+        if dispatch_started:
+            raise SupervisedRunIncomplete(
+                "provider dispatch started but trusted completion failed: "
+                + (str(exc) or type(exc).__name__),
+                artifact_directory=request.artifact_directory,
+            ) from None
         if isinstance(exc, CodexHostError):
             raise
         raise CodexHostError(

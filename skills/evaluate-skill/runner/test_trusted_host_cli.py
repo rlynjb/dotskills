@@ -2,6 +2,7 @@ from contextlib import redirect_stdout
 from dataclasses import asdict, replace
 from datetime import datetime, timedelta, timezone
 from io import StringIO
+import hashlib
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -37,9 +38,7 @@ class TrustedHostCliTests(unittest.TestCase):
         provider_config_path.write_text(
             json.dumps(request.provider_config), encoding="utf-8"
         )
-        promptfoo_path = root / "promptfoo-preflight"
-        promptfoo_path.write_text("synthetic promptfoo\n", encoding="utf-8")
-        promptfoo_path.chmod(0o700)
+        promptfoo_path = request.policy.promptfoo_path
         inventory_path = Path(__file__).with_name("provider_capabilities_v0_2.json")
         argv = [
             "preflight",
@@ -50,6 +49,9 @@ class TrustedHostCliTests(unittest.TestCase):
             "--artifact-directory", str(request.artifact_directory),
             "--codex-path", str(request.policy.codex_path),
             "--promptfoo-path", str(promptfoo_path.resolve()),
+            "--node-path", str(request.policy.node_path),
+            "--promptfoo-runtime-root", str(request.policy.promptfoo_runtime_root),
+            "--codex-sdk-root", str(request.policy.codex_sdk_root),
             "--command-line-tools-root", str(request.policy.command_line_tools_root),
             "--home", str(request.policy.home),
             "--protected-root", str(request.policy.protected_roots[0]),
@@ -60,7 +62,9 @@ class TrustedHostCliTests(unittest.TestCase):
         ]
         dependencies = th.HostDependencies(
             inspect_versions=lambda *_args: {
-                "codex": "0.163.0", "promptfoo": "0.125.1"
+                "codex": "0.163.0",
+                "promptfoo": "0.125.1",
+                "node": "22.23.1",
             },
             inspect_platform=lambda: request.attestation.platform,
             inspect_login=lambda *_args: "Logged in using ChatGPT",
@@ -91,15 +95,25 @@ class TrustedHostCliTests(unittest.TestCase):
             "preflight_artifact_digest": th.preflight_artifact_digest(
                 request.artifact_directory
             ),
+            "codex_executable_digest": request.policy.codex_executable.digest,
+            "promptfoo_executable_digest": (
+                request.policy.promptfoo_executable.digest
+            ),
+            "node_executable_digest": request.policy.node_executable.digest,
+            "promptfoo_runtime_digest": request.policy.promptfoo_runtime_digest,
+            "codex_sdk_digest": request.policy.codex_sdk_digest,
         }
         path = Path(root) / "live-authorization.json"
         path.write_text(json.dumps(value), encoding="utf-8")
         return path
 
-    def run_argv(self, root, request, authorization):
-        binary = Path(root) / "promptfoo"
-        binary.write_text("synthetic promptfoo\n", encoding="utf-8")
-        binary.chmod(0o700)
+    def run_argv(
+        self, root, request, authorization, *, promptfoo_path=None, node_path=None
+    ):
+        binary = request.policy.promptfoo_path if promptfoo_path is None else Path(
+            promptfoo_path
+        )
+        node = request.policy.node_path if node_path is None else Path(node_path)
         ledger = Path(root) / "nonce-ledger"
         ledger.mkdir()
         return [
@@ -109,6 +123,7 @@ class TrustedHostCliTests(unittest.TestCase):
             "--preflight-directory", str(request.artifact_directory),
             "--artifact-directory", str(request.artifact_directory),
             "--promptfoo-path", str(binary.resolve()),
+            "--node-path", str(node.resolve()),
             "--nonce-ledger", str(ledger),
             "--live-authorization", str(authorization),
             "--protected-root", str(request.policy.protected_roots[0]),
@@ -119,30 +134,45 @@ class TrustedHostCliTests(unittest.TestCase):
 
         def run(argv, **kwargs):
             calls.append((tuple(argv), kwargs))
+            observer_trace = b"synthetic-independent-session-attestation"
+            observer_digest = hashlib.sha256(observer_trace).hexdigest()
             document = helper.promptfoo_document(SimpleNamespace(bundle=request.bundle))
             (request.bundle / "codex-results.json").write_text(
                 json.dumps(document), encoding="utf-8"
             )
-            sessions = tuple(
-                pt.ObservedSessionIdentity(
-                    arm_name=arm,
-                    session_id=session,
-                    provider=request.plan.provider,
-                    provider_version=request.plan.provider_version,
-                    model=request.plan.model,
-                    model_version=request.plan.model_version,
-                    adapter=request.plan.adapter,
-                    adapter_version=request.plan.adapter_version,
-                    provider_config_digest=json.loads(
-                        (request.artifact_directory / "enforcement-receipt.json").read_text()
-                    )["provider_config_digest"],
-                )
-                for arm, session in (
-                    ("with-skill", "session-with"),
-                    ("without-skill", "session-without"),
-                )
+            sessions = []
+            for result_index, (arm, session) in enumerate((
+                ("with-skill", "session-with"),
+                ("without-skill", "session-without"),
+            )):
+                for role, assertion_index, session_id in (
+                    ("arm", -1, session),
+                    ("judge", 0, f"judge-{arm}"),
+                ):
+                    sessions.append(pt.ObservedSessionIdentity(
+                        role=role,
+                        arm_name=arm,
+                        result_index=result_index,
+                        assertion_index=assertion_index,
+                        session_id=session_id,
+                        execution_id=kwargs["execution_id"],
+                        process_id=3000 + len(sessions),
+                        executable_digest=kwargs["expected_executable_digest"],
+                        observed_at="2026-11-02T12:00:30Z",
+                        source_attestation_digest=observer_digest,
+                        provider=request.plan.provider,
+                        provider_version=request.plan.provider_version,
+                        model=request.plan.model,
+                        model_version=request.plan.model_version,
+                        adapter=request.plan.adapter,
+                        adapter_version=request.plan.adapter_version,
+                        provider_config_digest=json.loads(
+                            (request.artifact_directory / "enforcement-receipt.json").read_text()
+                        )["provider_config_digest"],
+                    ))
+            return ch.SupervisedProcessResult(
+                0, b"stdout", b"", tuple(sessions), observer_trace
             )
-            return ch.SupervisedProcessResult(0, b"stdout", b"", sessions)
 
         return run
 
@@ -202,6 +232,140 @@ class TrustedHostCliTests(unittest.TestCase):
             deps = replace(dependencies, trusted_process_runner=self.trusted_runner(request, calls))
             self.assertEqual(th.main(self.run_argv(temp, request, authorization), dependencies=deps), 2)
             self.assertEqual(calls, [])
+
+    def test_run_rejects_executable_or_mcp_drift_before_dispatch(self):
+        with TemporaryDirectory() as temp:
+            request, preflight_argv, dependencies = self.setup_preflight(temp)
+            self.assertEqual(th.main(preflight_argv, dependencies=dependencies), 0)
+            receipt = c.EnforcementReceipt.from_dict(json.loads(
+                (request.artifact_directory / "enforcement-receipt.json").read_text()
+            ))
+            ne.bind_prepared_bundle(request.bundle, request.plan, receipt)
+            authorization = self.live_authorization(temp, request)
+            calls = []
+            deps = replace(
+                dependencies, trusted_process_runner=self.trusted_runner(request, calls)
+            )
+
+            drifted = Path(temp) / "different-promptfoo"
+            drifted.write_text("synthetic replacement\n", encoding="utf-8")
+            drifted.chmod(0o700)
+
+            self.assertEqual(
+                th.main(
+                    self.run_argv(
+                        temp, request, authorization, promptfoo_path=drifted
+                    ),
+                    dependencies=deps,
+                ),
+                2,
+            )
+            self.assertEqual(calls, [])
+
+        with TemporaryDirectory() as temp:
+            request, preflight_argv, dependencies = self.setup_preflight(temp)
+            self.assertEqual(th.main(preflight_argv, dependencies=dependencies), 0)
+            receipt = c.EnforcementReceipt.from_dict(json.loads(
+                (request.artifact_directory / "enforcement-receipt.json").read_text()
+            ))
+            ne.bind_prepared_bundle(request.bundle, request.plan, receipt)
+            authorization = self.live_authorization(temp, request)
+            calls = []
+            deps = replace(
+                dependencies,
+                inspect_mcp_servers=lambda *_args: (
+                    *request.policy.disabled_mcp_servers, "evil"
+                ),
+                trusted_process_runner=self.trusted_runner(request, calls),
+            )
+
+            self.assertEqual(
+                th.main(self.run_argv(temp, request, authorization), dependencies=deps),
+                2,
+            )
+            self.assertEqual(calls, [])
+
+    def test_post_dispatch_failure_reports_incomplete_and_model_may_have_executed(self):
+        with TemporaryDirectory() as temp:
+            request, preflight_argv, dependencies = self.setup_preflight(temp)
+            self.assertEqual(th.main(preflight_argv, dependencies=dependencies), 0)
+            receipt = c.EnforcementReceipt.from_dict(json.loads(
+                (request.artifact_directory / "enforcement-receipt.json").read_text()
+            ))
+            ne.bind_prepared_bundle(request.bundle, request.plan, receipt)
+            authorization = self.live_authorization(temp, request)
+            calls = []
+
+            def failed_runner(*args, **kwargs):
+                calls.append((args, kwargs))
+                return ch.SupervisedProcessResult(
+                    7, b"", b"failed", (), b"failed-observer-trace"
+                )
+
+            deps = replace(dependencies, trusted_process_runner=failed_runner)
+            output = StringIO()
+            with redirect_stdout(output):
+                status = th.main(
+                    self.run_argv(temp, request, authorization), dependencies=deps
+                )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(status, 2)
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(payload["status"], "INCOMPLETE")
+        self.assertTrue(payload["model_executed"])
+
+    def test_run_rejects_runtime_executable_or_ambient_config_mutation(self):
+        for mutation in (
+            "replace-promptfoo",
+            "replace-node",
+            "add-runtime-chunk",
+            "edit-sdk-package",
+            "add-config",
+        ):
+            with self.subTest(mutation=mutation), TemporaryDirectory() as temp:
+                request, preflight_argv, dependencies = self.setup_preflight(temp)
+                self.assertEqual(th.main(preflight_argv, dependencies=dependencies), 0)
+                receipt = c.EnforcementReceipt.from_dict(json.loads(
+                    (request.artifact_directory / "enforcement-receipt.json").read_text()
+                ))
+                ne.bind_prepared_bundle(request.bundle, request.plan, receipt)
+                authorization = self.live_authorization(temp, request)
+                if mutation == "replace-promptfoo":
+                    request.policy.promptfoo_path.write_text(
+                        "same path, changed executable\n", encoding="utf-8"
+                    )
+                    request.policy.promptfoo_path.chmod(0o700)
+                elif mutation == "replace-node":
+                    request.policy.node_path.write_text(
+                        "same path, changed node\n", encoding="utf-8"
+                    )
+                    request.policy.node_path.chmod(0o700)
+                elif mutation == "add-runtime-chunk":
+                    (request.policy.promptfoo_runtime_root / "late-chunk.js").write_text(
+                        "mutated runtime\n", encoding="utf-8"
+                    )
+                elif mutation == "edit-sdk-package":
+                    (request.policy.codex_sdk_root / "package.json").write_text(
+                        '{"name":"@openai/codex-sdk","version":"9.9.9"}\n',
+                        encoding="utf-8",
+                    )
+                else:
+                    (request.policy.home / ".codex" / "config.toml").write_text(
+                        "[mcp_servers.evil]\ncommand='evil'\n", encoding="utf-8"
+                    )
+                calls = []
+                deps = replace(
+                    dependencies,
+                    trusted_process_runner=self.trusted_runner(request, calls),
+                )
+
+                status = th.main(
+                    self.run_argv(temp, request, authorization), dependencies=deps
+                )
+
+                self.assertEqual(status, 2)
+                self.assertEqual(calls, [])
 
     def test_cli_reports_blocked_not_run_without_secret_values(self):
         secret = "synthetic-cli-secret"

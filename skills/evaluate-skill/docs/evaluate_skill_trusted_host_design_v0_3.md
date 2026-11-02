@@ -1,6 +1,6 @@
 # Evaluate Skill Trusted Host Design v0.3
 
-**Status:** Approved direction, implementation pending.
+**Status:** Implemented and offline-tested; live native acceptance blocked.
 
 **Scope:** A fail-closed, Codex-first trusted host for the native `read-only`
 evaluation profile on the pinned macOS platform. It is the prerequisite for a
@@ -18,7 +18,7 @@ the enforcement receipt true.
 The v0.3 trusted host fills that gap for one narrow route:
 
 - provider: OpenAI through `openai:codex-sdk`;
-- adapter: Promptfoo `0.125.1` with Codex CLI `0.163.0`;
+- adapter: Promptfoo `0.125.1` with Codex CLI `0.163.0` and Node `22.23.1`;
 - platform: Darwin `25.4.0`, arm64;
 - backend/profile: native macOS, read-only;
 - fixtures: synthetic, disposable, and already approved;
@@ -57,14 +57,15 @@ probes through the installed `codex sandbox` binary.
 | Evaluated agent and skill | Producing an answer inside the approved workspace | Any enforcement or evidence claim |
 | Evaluate Skill evidence audit | Binding identities and deciding execution/safety completeness | Inferring missing evidence |
 
-The pinned Codex CLI, SDK, and Promptfoo adapter are part of the native route's
+The pinned Node executable, Codex CLI, sealed Codex SDK tree, and sealed
+Promptfoo runtime tree are part of the native route's
 trusted computing base for one narrow fact: every agent-controlled command and
 tool operation they expose must be routed through Codex's command sandbox. The
 host does not trust them to *report* that this happened; it pins their exact
 versions, injects and re-reads the effective policy, runs OS-enforced negative
 probes, rejects unapproved tool-item types, and verifies post-run state. A
-harness that can bypass Seatbelt is therefore version drift or a failed native
-capability, not something this layer tries to contain. Removing that routing
+harness that can bypass Seatbelt is therefore identity/runtime drift or a
+failed native capability, not something this layer tries to contain. Removing that routing
 trust would require putting the complete harness and its auth boundary inside
 a separately isolated VM/container and belongs to the conditional fallback,
 not this native-first implementation.
@@ -113,16 +114,20 @@ digest already bound by `native_eval.py`.
 1. Load the configured bundle, run plan, approval receipt, and pinned
    capability inventory.
 2. Confirm exact platform and installed versions.
-3. Require file-based ChatGPT login, unset API-key variables, disabled
+3. Bind the exact Node, Promptfoo, and Codex executable identities and hash the
+   sealed Promptfoo and Codex SDK trees. Require the SDK at Promptfoo's actual
+   Node resolution path and re-attest all identities immediately before dispatch.
+4. Require file-based ChatGPT login in an isolated home containing only
+   `.codex/auth.json`, unset API-key variables, disabled
    connectors/MCP, a real non-symlink workspace, and protected roots outside
    that workspace.
-4. Compile the canonical Codex permission profile and confirm it exactly
+5. Compile the canonical Codex permission profile and confirm it exactly
    matches the configured provider file.
-5. Run all immutable negative probes through `codex sandbox` with a scrubbed
+6. Run all immutable negative probes through `codex sandbox` with a scrubbed
    environment: secret absence, network denial, outside read denial, inside
    and outside write denial, and secondary-route denial.
-6. Snapshot protected and disposable roots without following symlinks.
-7. Issue a short-lived `EnforcementReceipt` only when every probe passes and
+7. Snapshot protected and disposable roots without following symlinks.
+8. Issue a short-lived `EnforcementReceipt` only when every probe passes and
    bind it to the plan, provider config, prepared bundle, workspace, run nonce,
    tools, state method, and cleanup method.
 
@@ -138,18 +143,23 @@ Any unknown result is `BLOCKED_NOT_RUN`. The preflight never calls a model.
 4. Parse the Promptfoo `0.125.1` JSON schema fail-closed. Preserve provider
    output and LLM-rubric judgments, while extracting each Codex response's raw
    turn items into sanitized host trace events.
-5. Reject missing arms, unexpected providers, MCP/web/collaboration items,
+5. Require independently observed identities for both evaluated arms and all
+   judge sessions, bound to the current execution, process, executable,
+   timestamp, source attestation, result index, and provider configuration.
+6. Reject missing arms, unexpected providers, MCP/web/collaboration items,
    malformed command items, absent session identity, cache hits, or model and
    adapter drift. Add provider identity only after the trusted parser verifies
    the pinned configuration and observed Codex session metadata.
-6. Snapshot state again, compare protected/disposable roots, and record the
+7. Snapshot state again, compare protected/disposable roots, and record the
    provider-result digest.
-7. Remove the disposable agent workspaces, verify cleanup, close the trace,
+8. Remove the disposable agent workspaces, verify cleanup, close the trace,
    and publish evidence with no-replace durable writes.
-8. Leave execution, quality, and safety as separate statuses for human review.
+9. Leave execution, quality, and safety as separate statuses for human review.
 
 Provider output without a complete host audit remains incomplete. A failed or
-interrupted arm cannot make the pair complete.
+interrupted arm cannot make the pair complete. Any failure after provider
+dispatch is `INCOMPLETE` and records that a model may have executed; only
+pre-dispatch refusal is `BLOCKED_NOT_RUN`.
 
 ## 6. Evidence and receipts
 
@@ -157,10 +167,13 @@ Host artifacts live outside the evaluated workspaces and contain no auth
 material. They include:
 
 - canonical host-policy JSON and digest;
+- Node, Codex, and Promptfoo executable digests plus sealed Promptfoo/SDK tree
+  digests;
 - preflight probe results;
 - before/after state snapshots and diffs;
 - sanitized trace events derived from supervised process and provider turn
   items;
+- durable, independently sourced arm and judge session observations;
 - stdout/stderr digests rather than unrestricted raw logs;
 - per-arm provider result and source-result digests;
 - cleanup result;

@@ -1063,6 +1063,7 @@ def _expected_codex_provider_config(host_policy, execution_config, working_dir):
     limits = execution_config['resource_limits']
     return {
         'working_dir': working_dir,
+        'codex_path_override': str(host_policy.codex_path),
         'approval_policy': 'never',
         'web_search_mode': 'disabled',
         'persist_threads': False,
