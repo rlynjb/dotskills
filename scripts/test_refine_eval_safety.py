@@ -83,6 +83,16 @@ class EvalSafetyTests(unittest.TestCase):
         ]
         self.assertEqual(module.audit(cfg, events), {"status": "PASS", "issues": []})
 
+    def test_unknown_trace_event_fails_shared_audit(self):
+        cfg = manifest()
+        events = [
+            {"type": "unrecognized_host_event"},
+            {"type": "run_end", "trace_complete": True, "state_verified_unchanged": True},
+        ]
+        result = module.audit(cfg, events)
+        self.assertEqual(result["status"], "FAIL")
+        self.assertTrue(any("unknown event" in issue for issue in result["issues"]))
+
 
 if __name__ == "__main__":
     unittest.main()

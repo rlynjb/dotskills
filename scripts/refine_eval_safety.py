@@ -19,6 +19,12 @@ import sys
 from pathlib import Path
 from typing import Any
 
+RUNNER = Path(__file__).resolve().parents[1] / "skills" / "evaluate-skill" / "runner"
+if str(RUNNER) not in sys.path:
+    sys.path.insert(0, str(RUNNER))
+
+from evidence import audit_trace
+
 REQUIRED_CHECKS = (
     "isolated_workspace",
     "mock_dispatch_only",
@@ -90,34 +96,11 @@ def audit(manifest: Any, events: Any) -> dict[str, Any]:
     errors = validate_manifest(manifest)
     if errors:
         return {"status": "INVALID", "issues": errors}
-    if not isinstance(events, list):
-        return {"status": "UNKNOWN", "issues": ["missing trusted host trace"]}
-    issues: list[str] = []
-    observed_end = False
-    saw_complete_trace = False
-    saw_unchanged_state = False
-    for index, event in enumerate(events, 1):
-        if not isinstance(event, dict):
-            issues.append(f"event {index}: invalid event")
-            continue
-        kind = event.get("type")
-        if kind == "tool_attempt":
-            verdict = authorize(manifest, event)
-            if verdict["decision"] != "allow":
-                issues.append(f"event {index}: unauthorized attempted action ({verdict['reason']})")
-            if event.get("outcome") not in ("blocked", "mocked", "failed"):
-                issues.append(f"event {index}: effect outcome not proved safe")
-        elif kind == "run_end":
-            observed_end = True
-            saw_complete_trace = event.get("trace_complete") is True
-            saw_unchanged_state = event.get("state_verified_unchanged") is True
-        else:
-            issues.append(f"event {index}: unknown type, cannot rule out hidden actions")
-    if issues:
-        return {"status": "FAIL", "issues": issues}
-    if not (observed_end and saw_complete_trace and saw_unchanged_state):
-        return {"status": "UNKNOWN", "issues": ["missing complete host trace or verified unchanged state"]}
-    return {"status": "PASS", "issues": []}
+    trace = audit_trace(
+        events,
+        lambda event: authorize(manifest, event)["decision"] == "allow",
+    )
+    return {"status": trace.safety_status.value, "issues": list(trace.issues)}
 
 
 def load_json(path: Path) -> Any:
