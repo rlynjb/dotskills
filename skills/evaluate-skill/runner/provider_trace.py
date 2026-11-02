@@ -404,7 +404,13 @@ def parse_observer_attestation(
         except TypeError:
             raise ProviderTraceError("observer command decision is invalid") from None
         session = sessions_by_id.get(decision.session_id)
-        if session is None or decision.process_id != session.process_id:
+        if (
+            session is None
+            or isinstance(decision.process_id, bool)
+            or not isinstance(decision.process_id, int)
+            or decision.process_id <= 0
+            or decision.process_id != session.process_id
+        ):
             raise ProviderTraceError(
                 "observer command decision is not bound to an observed session"
             )
@@ -416,7 +422,10 @@ def parse_observer_attestation(
                 raise ProviderTraceError(
                     f"observer command decision {label} is invalid"
                 )
-        if decision.capability not in _COMMAND_CAPABILITIES:
+        if (
+            not isinstance(decision.capability, str)
+            or decision.capability not in _COMMAND_CAPABILITIES
+        ):
             raise ProviderTraceError("observer command decision capability is invalid")
         if (
             not isinstance(decision.canonical_resource, str)
@@ -559,6 +568,9 @@ def _validate_binding(
         if (
             session is None
             or session.role != "arm"
+            or isinstance(decision.process_id, bool)
+            or not isinstance(decision.process_id, int)
+            or decision.process_id <= 0
             or decision.process_id != session.process_id
         ):
             raise ProviderTraceError(
@@ -570,7 +582,10 @@ def _validate_binding(
         ):
             if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value):
                 raise ProviderTraceError(f"observed command {label} is invalid")
-        if decision.capability not in _COMMAND_CAPABILITIES:
+        if (
+            not isinstance(decision.capability, str)
+            or decision.capability not in _COMMAND_CAPABILITIES
+        ):
             raise ProviderTraceError("observed command capability is invalid")
         if (
             not isinstance(decision.canonical_resource, str)
