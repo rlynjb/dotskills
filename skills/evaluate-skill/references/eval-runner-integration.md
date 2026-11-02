@@ -115,7 +115,8 @@ The v0.3 implementation adds the native Codex read-only trusted host: exact
 policy compilation; isolated file-login/API-key refusal; pinned Node, Codex,
 and Promptfoo executables; sealed Promptfoo and Codex SDK runtime trees; six
 immutable local probes; single-use supervision; strict Promptfoo/Codex parsing;
-independent arm and judge session observations; bounded process output,
+one versioned, fresh, process-bound observer attestation covering arm and judge
+sessions; dispatch-time authorization checks; bounded process output,
 protected/disposable snapshots, no-follow cleanup, append-only recovery states,
 and durable paired evidence. Legacy boolean authorization and self-declared
 host manifests remain insufficient. It does not bundle or install provider

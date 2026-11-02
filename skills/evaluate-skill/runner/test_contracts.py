@@ -218,9 +218,13 @@ class ContractTests(unittest.TestCase):
                 data["capabilities"].update(fields, profile=profile)
                 c.RunPlan.from_dict(data)
 
+        restricted_shell = self.run_plan_value()
+        restricted_shell["capabilities"]["shell"] = True
+        c.RunPlan.from_dict(restricted_shell)
+
         invalid_mutations = (
             ("read-only", "network", ["https://live.example.invalid"]),
-            ("read-only", "shell", True),
+            ("no-tool", "shell", True),
             ("read-only", "credentials", ["OPENAI_API_KEY"]),
             ("disposable-write", "filesystem_write", []),
             ("disposable-write", "filesystem_write", ["one", "two"]),

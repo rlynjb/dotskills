@@ -187,24 +187,39 @@ The Promptfoo runtime must be a nonempty, symlink-free sealed tree. The
 Promptfoo entry point must be inside it, and the Codex SDK must be at the exact
 Node resolution path shown above. Preflight binds and rechecks the Node, Codex,
 and Promptfoo executable identities plus the complete Promptfoo and SDK tree
-digests immediately before dispatch. The isolated home may contain only
+digests immediately before dispatch. It also rejects any competing
+`node_modules/@openai/codex-sdk` found through Promptfoo's config-directory or
+working-directory ancestor search, so an unbound package cannot shadow the
+attested SDK. The isolated home may contain only
 `.codex/auth.json`, with directory mode `0700` and file mode `0600`; ambient
 Codex config, plugins, skills, or other files block the run.
 
 After review, bind that receipt with `native_eval.py bind`. A live `run`
 additionally requires a short-lived `APPROVED_LIVE_RUN` authorization bound to
-the plan, nonce, receipt digest, and complete preflight-artifact digest. The
+the plan, nonce, receipt digest, complete preflight-artifact digest, and exact
+trusted observer ID/version. Receipt and authorization expiry are rechecked at
+the dispatch boundary. The
 standalone CLI deliberately returns `BLOCKED_NOT_RUN` unless an approved host
 embedding supplies the trusted process runner and independent Codex session
 observer. Promptfoo's own result cannot self-attest that identity.
 
 The host observer must cover both arm sessions and every LLM-rubric judge
 session. Each observation is bound to the current execution ID, process ID,
-Codex executable digest, timestamp, source-attestation digest, result index,
+supervised Promptfoo parent process, Codex executable digest, timestamp,
+raw observer-attestation digest, result index,
 provider/model/adapter identity, and provider-config digest. Missing, replayed,
 duplicate, or extra sessions block completion. Post-dispatch failures report
 `INCOMPLETE` with `model_executed: true`; they are never rewritten as a
-pre-dispatch `BLOCKED_NOT_RUN` result.
+pre-dispatch `BLOCKED_NOT_RUN` result. The exact versioned observer JSON is
+durably preserved rather than reconstructed from parallel caller claims.
+Ctrl-C after dispatch terminates the supervised process group, cleans the
+disposable workspaces, and follows the same incomplete path.
+
+The injected observer is a trusted host authority, not evidence supplied by
+Promptfoo or the evaluated model. This repository validates its approved
+identity, schema, freshness, parent/child process binding, and complete arm and
+judge set, but does not ship the production host integration that collects
+those observations. Therefore the standalone live route remains blocked.
 
 On 2026-11-02 the installed profile passed five of six probes. The inert
 secondary-process canary was executable, so preflight correctly remained

@@ -36,9 +36,11 @@ from native_boundary import (
     run_native_preflight,
 )
 from provider_trace import (
-    ObservedSessionIdentity,
+    OBSERVER_ID,
+    OBSERVER_VERSION,
     ParsedArm,
     ProviderTraceBinding,
+    parse_observer_attestation,
     parse_promptfoo_result,
 )
 
@@ -243,6 +245,42 @@ def runtime_tree_digest(root: Path, label: str) -> str:
     return snapshot.digest
 
 
+def validate_codex_sdk_resolution(
+    workspace: Path, promptfoo_runtime_root: Path, codex_sdk_root: Path
+) -> None:
+    """Reject Node-resolution candidates that can shadow the attested SDK."""
+    workspace = _real_workspace(workspace)
+    runtime_root = _real_path(
+        promptfoo_runtime_root, "promptfoo_runtime_root", directory=True
+    )
+    sdk_root = _real_path(codex_sdk_root, "codex_sdk_root", directory=True)
+    expected = runtime_root / "node_modules" / "@openai" / "codex-sdk"
+    if sdk_root != expected:
+        raise CodexHostError(
+            "Codex SDK root must be the Promptfoo runtime resolution path"
+        )
+    if _paths_overlap(workspace, runtime_root):
+        raise CodexHostError("trusted Promptfoo runtime must be outside the workspace")
+
+    relative = Path("node_modules") / "@openai" / "codex-sdk"
+    # Promptfoo checks its config base path and process.cwd() before its own
+    # package root. Node walks every ancestor for each of those bases.
+    for base in (workspace / "codex", workspace):
+        for ancestor in (base, *base.parents):
+            candidate = ancestor / relative
+            if os.path.lexists(candidate):
+                raise CodexHostError(
+                    "Codex SDK shadow candidate precedes the attested runtime"
+                )
+
+    package = _read_json_object(sdk_root / "package.json", "Codex SDK package")
+    if package.get("name") != "@openai/codex-sdk":
+        raise CodexHostError("attested Codex SDK package identity is invalid")
+    version = package.get("version")
+    if not isinstance(version, str) or not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", version):
+        raise CodexHostError("attested Codex SDK package version is invalid")
+
+
 def _toml_inline(value: Any) -> str:
     if isinstance(value, bool):
         return "true" if value else "false"
@@ -387,13 +425,9 @@ def compile_read_only_policy(
     if not resolved_promptfoo.is_relative_to(resolved_promptfoo_root):
         raise CodexHostError("Promptfoo executable must be inside its runtime root")
     resolved_sdk_root = _real_path(codex_sdk_root, "codex_sdk_root", directory=True)
-    expected_sdk_root = (
-        resolved_promptfoo_root / "node_modules" / "@openai" / "codex-sdk"
+    validate_codex_sdk_resolution(
+        resolved_workspace, resolved_promptfoo_root, resolved_sdk_root
     )
-    if resolved_sdk_root != expected_sdk_root:
-        raise CodexHostError(
-            "Codex SDK root must be the Promptfoo runtime resolution path"
-        )
     codex_executable = executable_identity(resolved_codex, "Codex")
     promptfoo_executable = executable_identity(resolved_promptfoo, "Promptfoo")
     node_executable = executable_identity(resolved_node, "Node")
@@ -584,6 +618,9 @@ def attest_host(
         policy.codex_sdk_root, "Codex SDK runtime"
     ) != policy.codex_sdk_digest:
         raise CodexHostError("Codex SDK runtime changed after policy compilation")
+    validate_codex_sdk_resolution(
+        policy.workspace, policy.promptfoo_runtime_root, policy.codex_sdk_root
+    )
     if isolated_codex_home_digest(policy.home) != policy.home_shape_digest:
         raise CodexHostError("isolated Codex home changed after policy compilation")
 
@@ -645,6 +682,9 @@ class SupervisedRunRequest:
     command: Tuple[str, ...]
     nonce_ledger: Path
     artifact_directory: Path
+    live_authorization_expires_at: str
+    observer_id: str
+    observer_version: str
     known_secret_values: Tuple[str, ...] = ()
 
 
@@ -653,7 +693,7 @@ class SupervisedProcessResult:
     returncode: int
     stdout: bytes
     stderr: bytes
-    observed_sessions: Tuple[ObservedSessionIdentity, ...]
+    provider_process_id: int
     observer_trace: bytes
 
 
@@ -997,8 +1037,15 @@ def run_trusted_preflight(
             "state-snapshot": "PASS",
         }
     )
-    enabled_tools = ("filesystem_read",)
-    disabled_tools = ("filesystem_write", "shell", "network", "mock_tools")
+    enabled_tools = (
+        ("filesystem_read", "shell")
+        if request.plan.capabilities.shell
+        else ("filesystem_read",)
+    )
+    disabled_tools = tuple(
+        tool for tool in ("filesystem_write", "shell", "network", "mock_tools")
+        if tool not in enabled_tools
+    )
     try:
         receipt = EnforcementReceipt.from_dict(
             {
@@ -1235,6 +1282,10 @@ def _bounded_process_runner(
     max_output_bytes: int,
     execution_id: str,
     expected_executable_digest: str,
+    expected_provider_config_digest: str = "",
+    expected_observer_id: str = "",
+    expected_observer_version: str = "",
+    observation_started_at: str = "",
 ) -> SupervisedProcessResult:
     """Run a process with disk-backed output, killing it on time or output overflow."""
     with tempfile.TemporaryFile() as stdout_file, tempfile.TemporaryFile() as stderr_file:
@@ -1281,24 +1332,35 @@ def _bounded_process_runner(
 
         deadline = time.monotonic() + timeout
         failure = None
-        while process.poll() is None:
-            total_size = (
-                os.fstat(stdout_file.fileno()).st_size
-                + os.fstat(stderr_file.fileno()).st_size
-            )
-            if total_size > max_output_bytes:
-                failure = "output-limit"
+        try:
+            while process.poll() is None:
+                total_size = (
+                    os.fstat(stdout_file.fileno()).st_size
+                    + os.fstat(stderr_file.fileno()).st_size
+                )
+                if total_size > max_output_bytes:
+                    failure = "output-limit"
+                    stop_group()
+                    break
+                if time.monotonic() >= deadline:
+                    failure = "timeout"
+                    stop_group()
+                    break
+                time.sleep(0.01)
+            process.wait()
+            if failure is None and group_exists():
                 stop_group()
-                break
-            if time.monotonic() >= deadline:
-                failure = "timeout"
-                stop_group()
-                break
-            time.sleep(0.01)
-        process.wait()
-        if failure is None and group_exists():
-            stop_group()
-            failure = "descendants"
+                failure = "descendants"
+        except BaseException:
+            try:
+                if group_exists():
+                    stop_group()
+                elif process.poll() is None:
+                    process.kill()
+                    process.wait()
+            except (OSError, CodexHostError):
+                pass
+            raise
         total_size = (
             os.fstat(stdout_file.fileno()).st_size
             + os.fstat(stderr_file.fileno()).st_size
@@ -1317,7 +1379,7 @@ def _bounded_process_runner(
             returncode=process.returncode,
             stdout=stdout_file.read(max_output_bytes + 1),
             stderr=stderr_file.read(max_output_bytes + 1),
-            observed_sessions=(),
+            provider_process_id=process.pid,
             observer_trace=b"",
         )
 
@@ -1336,7 +1398,7 @@ def _supervised_artifact_paths(directory: Path) -> tuple[Path, ...]:
 
 
 def _validate_supervised_request(
-    request: SupervisedRunRequest,
+    request: SupervisedRunRequest, *, at: Optional[datetime] = None,
 ) -> tuple[Path, Path, dict[str, Any], Mapping[str, Any]]:
     if not isinstance(request, SupervisedRunRequest):
         raise CodexHostError("a SupervisedRunRequest is required")
@@ -1357,6 +1419,11 @@ def _validate_supervised_request(
         request.policy.codex_sdk_root, "Codex SDK runtime"
     ) != request.policy.codex_sdk_digest:
         raise CodexHostError("Codex SDK runtime changed after preflight")
+    validate_codex_sdk_resolution(
+        request.policy.workspace,
+        request.policy.promptfoo_runtime_root,
+        request.policy.codex_sdk_root,
+    )
     if isolated_codex_home_digest(request.policy.home) != request.policy.home_shape_digest:
         raise CodexHostError("isolated Codex home changed after preflight")
     plan = request.plan
@@ -1372,11 +1439,22 @@ def _validate_supervised_request(
         or receipt.backend != plan.backend
     ):
         raise CodexHostError("preflight receipt identity does not match the run plan")
-    now = datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc) if at is None else at
+    if now.tzinfo is None or now.utcoffset() is None:
+        raise CodexHostError("trusted host clock must include a timezone")
+    now = now.astimezone(timezone.utc)
     if now < _timestamp(receipt.issued_at, "receipt issued_at"):
         raise CodexHostError("preflight receipt is not yet valid")
     if now >= _timestamp(receipt.expires_at, "receipt expires_at"):
         raise CodexHostError("preflight receipt expired before dispatch")
+    live_expires = _timestamp(
+        request.live_authorization_expires_at,
+        "live authorization expires_at",
+    )
+    if now >= live_expires:
+        raise CodexHostError("live authorization expired before dispatch")
+    if request.observer_id != OBSERVER_ID or request.observer_version != OBSERVER_VERSION:
+        raise CodexHostError("approved session observer identity is unsupported")
     if (
         request.preflight.policy_digest != request.policy.digest()
         or request.preflight.bundle_digest != receipt.prepared_bundle_digest
@@ -1475,9 +1553,12 @@ def run_supervised_provider(
     *,
     process_runner: Optional[Callable[..., SupervisedProcessResult]] = None,
     transition_hook: Optional[Callable[[str], None]] = None,
+    clock: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
 ) -> SupervisedRunResult:
     """Consume one receipt and supervise exactly one paired Promptfoo execution."""
-    bundle, ledger, manifest, promptfoo_config = _validate_supervised_request(request)
+    bundle, ledger, manifest, promptfoo_config = _validate_supervised_request(
+        request, at=clock()
+    )
     import native_eval
 
     try:
@@ -1523,6 +1604,19 @@ def run_supervised_provider(
             **dict(request.policy.process_environment),
             **dict(native_eval._PROMPTFOO_SAFE_ENV),
         }
+        dispatch_started_at = clock()
+        if dispatch_started_at.tzinfo is None or dispatch_started_at.utcoffset() is None:
+            raise CodexHostError("trusted host clock must include a timezone")
+        dispatch_started_at = dispatch_started_at.astimezone(timezone.utc)
+        if dispatch_started_at >= _timestamp(
+            request.preflight.receipt.expires_at, "receipt expires_at"
+        ):
+            raise CodexHostError("preflight receipt expired at dispatch")
+        if dispatch_started_at >= _timestamp(
+            request.live_authorization_expires_at,
+            "live authorization expires_at",
+        ):
+            raise CodexHostError("live authorization expired at dispatch")
         dispatch_started = True
         process = runner(
             request.command,
@@ -1532,15 +1626,41 @@ def run_supervised_provider(
             max_output_bytes=int(request.plan.resource_limits["max_output_bytes"]),
             execution_id=execution_id,
             expected_executable_digest=request.policy.codex_executable.digest,
+            expected_provider_config_digest=request.preflight.provider_config_digest,
+            expected_observer_id=request.observer_id,
+            expected_observer_version=request.observer_version,
+            observation_started_at=dispatch_started_at.isoformat(),
         )
+        dispatch_completed_at = clock()
+        if dispatch_completed_at.tzinfo is None or dispatch_completed_at.utcoffset() is None:
+            raise CodexHostError("trusted host clock must include a timezone")
+        dispatch_completed_at = dispatch_completed_at.astimezone(timezone.utc)
         if not isinstance(process, SupervisedProcessResult):
             raise CodexHostError("trusted process runner returned an invalid result")
         if isinstance(process.returncode, bool) or not isinstance(process.returncode, int):
             raise CodexHostError("provider process return code is invalid")
         if not isinstance(process.stdout, bytes) or not isinstance(process.stderr, bytes):
             raise CodexHostError("provider process output must be captured as bytes")
-        if not isinstance(process.observer_trace, bytes) or not process.observer_trace:
-            raise CodexHostError("independent session observer trace is missing")
+        observer_attestation = parse_observer_attestation(
+            process.observer_trace,
+            expected_execution_id=execution_id,
+            expected_executable_digest=request.policy.codex_executable.digest,
+            expected_provider_config_digest=request.preflight.provider_config_digest,
+            expected_observer_id=request.observer_id,
+            expected_observer_version=request.observer_version,
+            observation_started_at=dispatch_started_at,
+            observation_completed_at=dispatch_completed_at,
+        )
+        if (
+            isinstance(process.provider_process_id, bool)
+            or not isinstance(process.provider_process_id, int)
+            or process.provider_process_id <= 0
+            or process.provider_process_id
+            != observer_attestation.promptfoo_process_id
+        ):
+            raise CodexHostError(
+                "observer Promptfoo process identity differs from the supervised child"
+            )
         if len(process.stdout) + len(process.stderr) > int(
             request.plan.resource_limits["max_output_bytes"]
         ):
@@ -1562,7 +1682,7 @@ def run_supervised_provider(
             execution_id=execution_id,
             executable_digest=request.policy.codex_executable.digest,
             observer_attestation_digest=observer_trace_digest,
-            observed_sessions=process.observed_sessions,
+            observed_sessions=observer_attestation.sessions,
         )
         parsed = parse_promptfoo_result(
             bundle / "codex-results.json",
@@ -1577,13 +1697,7 @@ def run_supervised_provider(
             },
         })
         observer_path = request.artifact_directory / "session-observations.json"
-        _write_json_exclusive(observer_path, _redact({
-            "schema_version": POLICY_SCHEMA_VERSION,
-            "execution_id": execution_id,
-            "executable_digest": request.policy.codex_executable.digest,
-            "observer_attestation_digest": observer_trace_digest,
-            "sessions": [asdict(item) for item in process.observed_sessions],
-        }, secrets))
+        _write_bytes_exclusive(observer_path, process.observer_trace)
 
         after_arms = {
             arm: snapshot_tree(path, ()) for arm, path in arm_paths.items()
@@ -1728,7 +1842,7 @@ def run_supervised_provider(
         })
         native_eval._write_manifest_atomic(bundle / "manifest.json", manifest)
         recorder.record("complete")
-    except Exception as exc:
+    except (Exception, KeyboardInterrupt) as exc:
         cleanup_error = None
         try:
             found_link = _cleanup_disposable_workspaces(bundle, arm_paths)

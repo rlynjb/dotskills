@@ -116,7 +116,9 @@ digest already bound by `native_eval.py`.
 2. Confirm exact platform and installed versions.
 3. Bind the exact Node, Promptfoo, and Codex executable identities and hash the
    sealed Promptfoo and Codex SDK trees. Require the SDK at Promptfoo's actual
-   Node resolution path and re-attest all identities immediately before dispatch.
+   Node resolution path, reject packages that would shadow it through config or
+   working-directory ancestor resolution, and re-attest all identities
+   immediately before dispatch.
 4. Require file-based ChatGPT login in an isolated home containing only
    `.codex/auth.json`, unset API-key variables, disabled
    connectors/MCP, a real non-symlink workspace, and protected roots outside
@@ -138,14 +140,17 @@ Any unknown result is `BLOCKED_NOT_RUN`. The preflight never calls a model.
 1. Revalidate the plan, approval, receipt, inventory, bundle digest, and
    single-use nonce.
 2. Capture a host-owned `run_start` event before provider dispatch.
-3. Execute only the exact Promptfoo command already bound by the manifest,
+3. Recheck receipt and live-authorization expiry at the dispatch boundary, then
+   execute only the exact Promptfoo command already bound by the manifest,
    with a minimal environment and hard timeout/output limits.
 4. Parse the Promptfoo `0.125.1` JSON schema fail-closed. Preserve provider
    output and LLM-rubric judgments, while extracting each Codex response's raw
    turn items into sanitized host trace events.
-5. Require independently observed identities for both evaluated arms and all
-   judge sessions, bound to the current execution, process, executable,
-   timestamp, source attestation, result index, and provider configuration.
+5. Parse one versioned observer attestation as the sole source of independently
+   observed identities for both evaluated arms and all judge sessions. Bind it
+   to the approved observer ID/version, current execution, supervised Promptfoo
+   parent process, child processes, executable, in-run timestamps, result index,
+   and provider configuration, then preserve the exact attestation bytes.
 6. Reject missing arms, unexpected providers, MCP/web/collaboration items,
    malformed command items, absent session identity, cache hits, or model and
    adapter drift. Add provider identity only after the trusted parser verifies
@@ -159,7 +164,9 @@ Any unknown result is `BLOCKED_NOT_RUN`. The preflight never calls a model.
 Provider output without a complete host audit remains incomplete. A failed or
 interrupted arm cannot make the pair complete. Any failure after provider
 dispatch is `INCOMPLETE` and records that a model may have executed; only
-pre-dispatch refusal is `BLOCKED_NOT_RUN`.
+pre-dispatch refusal is `BLOCKED_NOT_RUN`. User interruption after dispatch
+terminates and reaps the complete provider process group before returning the
+same incomplete status.
 
 ## 6. Evidence and receipts
 
@@ -182,6 +189,11 @@ material. They include:
 Receipt issuance and evidence publication use exclusive creation, file sync,
 and directory sync. Existing artifacts are never overwritten. Secret-like
 values are redacted before persistence.
+
+The observer is part of the trusted host, not the evaluated workload. The
+repository validates and durably binds its output, but the production observer
+implementation remains an external host responsibility; without that injected
+approved authority, the CLI refuses live dispatch.
 
 ## 7. Failure behavior
 

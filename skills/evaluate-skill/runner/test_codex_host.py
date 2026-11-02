@@ -156,6 +156,19 @@ class CodexHostPolicyTests(unittest.TestCase):
             with self.assertRaisesRegex(ch.CodexHostError, "resolution path"):
                 self.policy(temp, codex_sdk_root=unrelated)
 
+    def test_compiled_policy_rejects_sdk_shadowing_from_bundle_ancestors(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            shadow = root / "node_modules" / "@openai" / "codex-sdk"
+            shadow.mkdir(parents=True)
+            (shadow / "package.json").write_text(
+                '{"name":"@openai/codex-sdk","version":"9.9.9"}\n',
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ch.CodexHostError, "shadow"):
+                self.policy(temp)
+
     def test_attestation_refuses_api_key_environment_authentication(self):
         with TemporaryDirectory() as temp:
             policy = self.policy(temp)
@@ -764,7 +777,8 @@ class TrustedSupervisorTests(unittest.TestCase):
         }
 
     def observed_sessions(
-        self, request, *, execution_id, executable_digest, observer_digest
+        self, request, *, execution_id, executable_digest, promptfoo_process_id,
+        observed_at,
     ):
         plan = request.plan
         sessions = []
@@ -784,9 +798,9 @@ class TrustedSupervisorTests(unittest.TestCase):
                     session_id=session_id,
                     execution_id=execution_id,
                     process_id=2000 + len(sessions),
+                    parent_process_id=promptfoo_process_id,
                     executable_digest=executable_digest,
-                    observed_at="2026-11-02T12:00:30Z",
-                    source_attestation_digest=observer_digest,
+                    observed_at=observed_at,
                     provider=plan.provider,
                     provider_version=plan.provider_version,
                     model=plan.model,
@@ -796,6 +810,26 @@ class TrustedSupervisorTests(unittest.TestCase):
                     provider_config_digest=request.preflight.provider_config_digest,
                 ))
         return tuple(sessions)
+
+    def observer_trace(self, request, kwargs):
+        promptfoo_process_id = 1900
+        sessions = self.observed_sessions(
+            request,
+            execution_id=kwargs["execution_id"],
+            executable_digest=kwargs["expected_executable_digest"],
+            promptfoo_process_id=promptfoo_process_id,
+            observed_at=kwargs["observation_started_at"],
+        )
+        return json.dumps({
+            "schema_version": pt.OBSERVER_SCHEMA_VERSION,
+            "observer_id": kwargs["expected_observer_id"],
+            "observer_version": kwargs["expected_observer_version"],
+            "execution_id": kwargs["execution_id"],
+            "promptfoo_process_id": promptfoo_process_id,
+            "executable_digest": kwargs["expected_executable_digest"],
+            "provider_config_digest": kwargs["expected_provider_config_digest"],
+            "sessions": [session.__dict__ for session in sessions],
+        }, sort_keys=True).encode("utf-8")
 
     def supervised_fixture(self, root):
         root = Path(root)
@@ -825,6 +859,9 @@ class TrustedSupervisorTests(unittest.TestCase):
             command=command,
             nonce_ledger=ledger,
             artifact_directory=preflight_request.artifact_directory,
+            live_authorization_expires_at=preflight.receipt.expires_at,
+            observer_id=pt.OBSERVER_ID,
+            observer_version=pt.OBSERVER_VERSION,
             known_secret_values=(),
         )
         return request
@@ -833,8 +870,7 @@ class TrustedSupervisorTests(unittest.TestCase):
                quality_fail=False, returncode=0, stdout=b"provider stdout",
                stderr=b""):
         def run(argv, **kwargs):
-            observer_trace = b"synthetic-independent-session-attestation"
-            observer_digest = hashlib.sha256(observer_trace).hexdigest()
+            observer_trace = self.observer_trace(request, kwargs)
             document = self.promptfoo_document(
                 request,
                 omit_arm=omit_arm,
@@ -848,12 +884,7 @@ class TrustedSupervisorTests(unittest.TestCase):
                 returncode=returncode,
                 stdout=stdout,
                 stderr=stderr,
-                observed_sessions=self.observed_sessions(
-                    request,
-                    execution_id=kwargs["execution_id"],
-                    executable_digest=kwargs["expected_executable_digest"],
-                    observer_digest=observer_digest,
-                ),
+                provider_process_id=1900,
                 observer_trace=observer_trace,
             )
         return run
@@ -905,6 +936,31 @@ class TrustedSupervisorTests(unittest.TestCase):
             ch.run_supervised_provider(request, process_runner=self.runner(request))
             with self.assertRaisesRegex(ch.CodexHostError, "nonce|fresh|already"):
                 ch.run_supervised_provider(request, process_runner=self.runner(request))
+
+    def test_supervisor_rechecks_receipt_and_live_authorization_at_dispatch(self):
+        with TemporaryDirectory() as temp:
+            request = self.supervised_fixture(temp)
+            now = datetime.now(timezone.utc)
+            expires_at = (now + timedelta(seconds=1)).isoformat()
+            request = replace(
+                request,
+                preflight=replace(
+                    request.preflight,
+                    receipt=replace(request.preflight.receipt, expires_at=expires_at),
+                ),
+                live_authorization_expires_at=expires_at,
+            )
+            moments = iter((now, now + timedelta(seconds=2)))
+            calls = []
+
+            with self.assertRaisesRegex(ch.CodexHostError, "expired at dispatch"):
+                ch.run_supervised_provider(
+                    request,
+                    process_runner=lambda *args, **kwargs: calls.append((args, kwargs)),
+                    clock=lambda: next(moments),
+                )
+
+            self.assertEqual(calls, [])
 
     def test_supervisor_records_start_before_dispatch_and_end_after_cleanup(self):
         with TemporaryDirectory() as temp:
@@ -989,6 +1045,58 @@ class TrustedSupervisorTests(unittest.TestCase):
                         request, process_runner=make_runner(request)
                     )
 
+    def test_supervisor_keyboard_interrupt_is_incomplete_and_cleans_workspaces(self):
+        with TemporaryDirectory() as temp:
+            request = self.supervised_fixture(temp)
+
+            def interrupted_runner(*_args, **_kwargs):
+                raise KeyboardInterrupt()
+
+            with self.assertRaises(ch.SupervisedRunIncomplete):
+                ch.run_supervised_provider(
+                    request, process_runner=interrupted_runner
+                )
+
+            for name in ("with_skill", "without_skill", "judge"):
+                self.assertFalse((request.bundle / "codex" / name).exists())
+            states = [
+                path.name for path in request.artifact_directory.glob("run-state-*.json")
+            ]
+            self.assertTrue(any("incomplete" in name for name in states))
+
+    def test_supervisor_rejects_observer_trace_without_attested_sessions(self):
+        for mutation in ("empty-sessions", "wrong-process", "stale-timestamp"):
+            with self.subTest(mutation=mutation), TemporaryDirectory() as temp:
+                request = self.supervised_fixture(temp)
+                valid_runner = self.runner(request)
+
+                def mismatched_observer(*args, **kwargs):
+                    result = valid_runner(*args, **kwargs)
+                    observer = json.loads(result.observer_trace)
+                    if mutation == "empty-sessions":
+                        observer["sessions"] = []
+                    elif mutation == "wrong-process":
+                        return replace(result, provider_process_id=9999)
+                    else:
+                        observer["sessions"][0]["observed_at"] = (
+                            datetime.now(timezone.utc) - timedelta(days=1)
+                        ).isoformat()
+                    return replace(
+                        result,
+                        observer_trace=json.dumps(observer, sort_keys=True).encode(
+                            "utf-8"
+                        ),
+                    )
+
+                with self.assertRaises(ch.SupervisedRunIncomplete):
+                    ch.run_supervised_provider(
+                        request, process_runner=mismatched_observer
+                    )
+
+                self.assertFalse(
+                    (request.artifact_directory / "session-observations.json").exists()
+                )
+
     def test_supervisor_blocks_protected_state_change_or_cleanup_failure(self):
         with TemporaryDirectory() as temp:
             request = self.supervised_fixture(temp)
@@ -1025,6 +1133,14 @@ class TrustedSupervisorTests(unittest.TestCase):
             self.assertEqual(len(observer["sessions"]), 4)
             self.assertEqual(
                 {item["role"] for item in observer["sessions"]}, {"arm", "judge"}
+            )
+            observer_bytes = (
+                request.artifact_directory / "session-observations.json"
+            ).read_bytes()
+            trace = json.loads(result.trace_artifact.read_text(encoding="utf-8"))
+            self.assertEqual(
+                trace["observer_artifact_digest"],
+                hashlib.sha256(observer_bytes).hexdigest(),
             )
             self.assertEqual(len(result.arms), 2)
             for arm in result.arms:
@@ -1098,6 +1214,44 @@ class TrustedSupervisorTests(unittest.TestCase):
                     expected_executable_digest="e" * 64,
                 )
             time.sleep(0.7)
+
+            self.assertFalse(marker.exists())
+
+    def test_bounded_runner_kills_descendants_on_keyboard_interrupt(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            marker = root / "interrupt-orphan-marker"
+            child = (
+                "import pathlib,time; time.sleep(0.4); "
+                f"pathlib.Path({str(marker)!r}).write_text('orphan')"
+            )
+            parent = (
+                "import subprocess,sys,time; "
+                f"subprocess.Popen([sys.executable, '-c', {child!r}]); "
+                "time.sleep(10)"
+            )
+            real_sleep = time.sleep
+            calls = 0
+
+            def interrupt_once(seconds):
+                nonlocal calls
+                calls += 1
+                if calls == 1:
+                    raise KeyboardInterrupt()
+                real_sleep(seconds)
+
+            with patch("codex_host.time.sleep", side_effect=interrupt_once):
+                with self.assertRaises(KeyboardInterrupt):
+                    ch._bounded_process_runner(
+                        (sys.executable, "-c", parent),
+                        cwd=root,
+                        environment=dict(os.environ),
+                        timeout=5,
+                        max_output_bytes=1024,
+                        execution_id="d" * 32,
+                        expected_executable_digest="e" * 64,
+                    )
+            real_sleep(0.7)
 
             self.assertFalse(marker.exists())
 

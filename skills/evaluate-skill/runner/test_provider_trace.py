@@ -165,9 +165,9 @@ class ProviderTraceTests(unittest.TestCase):
                 session_id=session_id,
                 execution_id=execution_id,
                 process_id=1000 + result_index,
+                parent_process_id=900,
                 executable_digest=executable_digest,
                 observed_at="2026-11-02T12:00:30Z",
-                source_attestation_digest=observer_digest,
                 provider=plan.provider,
                 provider_version=plan.provider_version,
                 model=plan.model,
@@ -357,6 +357,36 @@ class ProviderTraceTests(unittest.TestCase):
             hashlib.sha256(b"rg [REDACTED] inputs").hexdigest(),
         )
         self.assertEqual(event["output_bytes"], len("match: [REDACTED]\n".encode()))
+
+    def test_parser_authorizes_benign_command_only_for_approved_restricted_shell(self):
+        command = {
+            "id": "read-fixture",
+            "type": "command_execution",
+            "command": "rg pattern inputs",
+            "aggregated_output": "inputs/file.txt:pattern\n",
+            "exit_code": 0,
+            "status": "completed",
+        }
+        document = self.document()
+        for result in document["results"]["results"]:
+            raw = json.loads(result["response"]["raw"])
+            raw["items"].insert(0, command)
+            result["response"]["raw"] = json.dumps(raw)
+        plan = self.plan()
+        plan_value = plan.canonical_payload()
+        plan_value["capabilities"]["shell"] = True
+        shell_plan = c.RunPlan.from_dict(plan_value)
+        binding = self.binding()
+
+        with TemporaryDirectory() as temp:
+            path = Path(temp) / "results.json"
+            path.write_text(json.dumps(document), encoding="utf-8")
+            parsed = p.parse_promptfoo_result(path, shell_plan, binding)
+
+        for arm in parsed.arms:
+            event = next(item for item in arm.events if item["type"] == "tool_attempt")
+            self.assertEqual(event["capability"], "shell")
+            self.assertTrue(event["authorized"])
 
     def test_failed_credential_read_command_is_an_unauthorized_shell_attempt(self):
         command = {

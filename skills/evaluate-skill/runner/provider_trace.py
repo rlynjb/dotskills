@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 import hashlib
 import json
 import os
@@ -30,9 +30,9 @@ class ObservedSessionIdentity:
     session_id: str
     execution_id: str
     process_id: int
+    parent_process_id: int
     executable_digest: str
     observed_at: str
-    source_attestation_digest: str
     provider: str
     provider_version: str
     model: str
@@ -40,6 +40,32 @@ class ObservedSessionIdentity:
     adapter: str
     adapter_version: str
     provider_config_digest: str
+
+
+@dataclass(frozen=True)
+class ObserverAttestation:
+    """One host-observer document from which every session identity is derived."""
+
+    schema_version: str
+    observer_id: str
+    observer_version: str
+    execution_id: str
+    promptfoo_process_id: int
+    executable_digest: str
+    provider_config_digest: str
+    sessions: Tuple[ObservedSessionIdentity, ...]
+
+    def canonical_payload(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "observer_id": self.observer_id,
+            "observer_version": self.observer_version,
+            "execution_id": self.execution_id,
+            "promptfoo_process_id": self.promptfoo_process_id,
+            "executable_digest": self.executable_digest,
+            "provider_config_digest": self.provider_config_digest,
+            "sessions": [session.__dict__ for session in self.sessions],
+        }
 
 
 @dataclass(frozen=True)
@@ -142,6 +168,20 @@ _PROHIBITED_ITEMS = frozenset((
     "dynamic_tool_call", "spawn_agent", "send_input", "agent_wait", "todo_list",
     "error", "user_message",
 ))
+OBSERVER_SCHEMA_VERSION = "0.3"
+OBSERVER_ID = "evaluate-skill-session-observer"
+OBSERVER_VERSION = "0.3.0"
+_OBSERVER_FIELDS = frozenset((
+    "schema_version", "observer_id", "observer_version", "execution_id",
+    "promptfoo_process_id", "executable_digest", "provider_config_digest",
+    "sessions",
+))
+_SESSION_FIELDS = frozenset((
+    "role", "arm_name", "result_index", "assertion_index", "session_id",
+    "execution_id", "process_id", "parent_process_id", "executable_digest",
+    "observed_at", "provider", "provider_version", "model", "model_version",
+    "adapter", "adapter_version", "provider_config_digest",
+))
 
 
 def _canonical_bytes(value: Any) -> bytes:
@@ -234,6 +274,103 @@ def _read_document(path: Path, max_bytes: int) -> tuple[bytes, Mapping[str, Any]
     return payload, _object(value, "Promptfoo result")
 
 
+def _observer_timestamp(value: Any, label: str) -> datetime:
+    try:
+        result = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except (AttributeError, ValueError):
+        raise ProviderTraceError(f"{label} is invalid") from None
+    if result.tzinfo is None or result.utcoffset() is None:
+        raise ProviderTraceError(f"{label} lacks a timezone")
+    return result.astimezone(timezone.utc)
+
+
+def parse_observer_attestation(
+    payload: bytes,
+    *,
+    expected_execution_id: str,
+    expected_executable_digest: str,
+    expected_provider_config_digest: str,
+    expected_observer_id: str,
+    expected_observer_version: str,
+    observation_started_at: datetime,
+    observation_completed_at: datetime,
+) -> ObserverAttestation:
+    """Parse the single durable source of independently observed sessions."""
+    if not isinstance(payload, bytes) or not payload or len(payload) > 1024 * 1024:
+        raise ProviderTraceError("observer attestation bytes are missing or oversized")
+    try:
+        value = json.loads(payload.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        raise ProviderTraceError("observer attestation is not valid UTF-8 JSON") from None
+    document = _object(value, "observer attestation")
+    if set(document) != _OBSERVER_FIELDS:
+        raise ProviderTraceError("observer attestation shape is not exact")
+    expected_top = {
+        "schema_version": OBSERVER_SCHEMA_VERSION,
+        "observer_id": expected_observer_id,
+        "observer_version": expected_observer_version,
+        "execution_id": expected_execution_id,
+        "executable_digest": expected_executable_digest,
+        "provider_config_digest": expected_provider_config_digest,
+    }
+    for field, expected in expected_top.items():
+        if document.get(field) != expected:
+            raise ProviderTraceError(f"observer attestation {field} changed")
+    promptfoo_pid = document.get("promptfoo_process_id")
+    if isinstance(promptfoo_pid, bool) or not isinstance(promptfoo_pid, int) or promptfoo_pid <= 0:
+        raise ProviderTraceError("observer Promptfoo process identity is invalid")
+    started = observation_started_at.astimezone(timezone.utc)
+    completed = observation_completed_at.astimezone(timezone.utc)
+    if completed < started:
+        raise ProviderTraceError("observer time window is invalid")
+    session_values = document.get("sessions")
+    if not isinstance(session_values, list):
+        raise ProviderTraceError("observer sessions must be an array")
+    sessions = []
+    process_ids = set()
+    for index, item in enumerate(session_values):
+        session = _object(item, f"observer session {index}")
+        if set(session) != _SESSION_FIELDS:
+            raise ProviderTraceError("observer session shape is not exact")
+        try:
+            observed = ObservedSessionIdentity(**session)
+        except TypeError:
+            raise ProviderTraceError("observer session is invalid") from None
+        if observed.execution_id != expected_execution_id:
+            raise ProviderTraceError("observer session belongs to another execution")
+        if observed.executable_digest != expected_executable_digest:
+            raise ProviderTraceError("observer session executable identity changed")
+        if observed.provider_config_digest != expected_provider_config_digest:
+            raise ProviderTraceError("observer session provider config changed")
+        if observed.parent_process_id != promptfoo_pid:
+            raise ProviderTraceError("observer session is not bound to the Promptfoo process")
+        if (
+            isinstance(observed.process_id, bool)
+            or not isinstance(observed.process_id, int)
+            or observed.process_id <= 0
+            or observed.process_id == promptfoo_pid
+            or observed.process_id in process_ids
+        ):
+            raise ProviderTraceError("observer child process identity is invalid")
+        process_ids.add(observed.process_id)
+        observed_at = _observer_timestamp(
+            observed.observed_at, "observer session timestamp"
+        )
+        if observed_at < started or observed_at > completed:
+            raise ProviderTraceError("observer session timestamp is outside this run")
+        sessions.append(observed)
+    return ObserverAttestation(
+        schema_version=document["schema_version"],
+        observer_id=document["observer_id"],
+        observer_version=document["observer_version"],
+        execution_id=document["execution_id"],
+        promptfoo_process_id=promptfoo_pid,
+        executable_digest=document["executable_digest"],
+        provider_config_digest=document["provider_config_digest"],
+        sessions=tuple(sessions),
+    )
+
+
 def _validate_binding(
     plan: RunPlan, binding: ProviderTraceBinding
 ) -> tuple[dict[str, ObservedSessionIdentity], Tuple[ObservedSessionIdentity, ...]]:
@@ -313,8 +450,6 @@ def _validate_binding(
             raise ProviderTraceError("observed session timestamp is invalid") from None
         if timestamp.tzinfo is None or timestamp.utcoffset() is None:
             raise ProviderTraceError("observed session timestamp lacks a timezone")
-        if observed.source_attestation_digest != binding.observer_attestation_digest:
-            raise ProviderTraceError("observed session source attestation changed")
         for field, expected in expected_identity.items():
             actual = getattr(observed, field)
             if actual != expected:
@@ -451,7 +586,7 @@ def _command_event(
         "type": "tool_attempt",
         "tool": "sandboxed_command",
         "capability": "shell",
-        "authorized": False,
+        "authorized": plan.capabilities.shell,
         "item_id_digest": _text_digest(item_id),
         "command_digest": _text_digest(sanitized_command),
         "command_bytes": len(sanitized_command.encode("utf-8")),

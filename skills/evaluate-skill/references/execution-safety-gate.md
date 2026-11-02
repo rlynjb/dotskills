@@ -47,8 +47,11 @@ negative probes, supervises the exact Promptfoo command, normalizes Codex turn
 items, verifies state and cleanup, and publishes append-only evidence. Run
 `trusted_host.py preflight` before binding. Its `READY_NOT_RUN` result does not
 authorize a model call. `trusted_host.py run` additionally requires an exact
-live authorization and an approved host-supplied process/session observer; the
-standalone command blocks without it. Claude, writable, mock-external,
+live authorization, sealed Node/Promptfoo/Codex SDK identities without a
+shadowing SDK package, and one approved host-supplied process/session observer
+attestation covering both arms and every judge; the standalone command blocks
+without them. Preserve the exact observer attestation and report any
+post-dispatch failure or interruption as `INCOMPLETE`. Claude, writable, mock-external,
 connector, MCP and Docker execution are unsupported. Capability claims remain
 unverified until a genuine paired proof is separately approved and accepted.
 

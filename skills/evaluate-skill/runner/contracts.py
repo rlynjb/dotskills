@@ -157,8 +157,10 @@ class CapabilityRequirements:
             "credentials": result.credentials,
             "side_effects": result.side_effects,
         }
-        if result.shell:
-            raise ContractError(f"capability profile {profile} forbids shell access")
+        if result.shell and profile != "read-only":
+            raise ContractError(
+                f"capability profile {profile} forbids restricted shell access"
+            )
         if profile == "no-tool":
             always_empty["filesystem_read"] = result.filesystem_read
         elif not result.filesystem_read:

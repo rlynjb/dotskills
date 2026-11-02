@@ -2,7 +2,6 @@ from contextlib import redirect_stdout
 from dataclasses import asdict, replace
 from datetime import datetime, timedelta, timezone
 from io import StringIO
-import hashlib
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -102,6 +101,8 @@ class TrustedHostCliTests(unittest.TestCase):
             "node_executable_digest": request.policy.node_executable.digest,
             "promptfoo_runtime_digest": request.policy.promptfoo_runtime_digest,
             "codex_sdk_digest": request.policy.codex_sdk_digest,
+            "observer_id": pt.OBSERVER_ID,
+            "observer_version": pt.OBSERVER_VERSION,
         }
         path = Path(root) / "live-authorization.json"
         path.write_text(json.dumps(value), encoding="utf-8")
@@ -134,13 +135,12 @@ class TrustedHostCliTests(unittest.TestCase):
 
         def run(argv, **kwargs):
             calls.append((tuple(argv), kwargs))
-            observer_trace = b"synthetic-independent-session-attestation"
-            observer_digest = hashlib.sha256(observer_trace).hexdigest()
             document = helper.promptfoo_document(SimpleNamespace(bundle=request.bundle))
             (request.bundle / "codex-results.json").write_text(
                 json.dumps(document), encoding="utf-8"
             )
             sessions = []
+            promptfoo_process_id = 2900
             for result_index, (arm, session) in enumerate((
                 ("with-skill", "session-with"),
                 ("without-skill", "session-without"),
@@ -157,9 +157,9 @@ class TrustedHostCliTests(unittest.TestCase):
                         session_id=session_id,
                         execution_id=kwargs["execution_id"],
                         process_id=3000 + len(sessions),
+                        parent_process_id=promptfoo_process_id,
                         executable_digest=kwargs["expected_executable_digest"],
-                        observed_at="2026-11-02T12:00:30Z",
-                        source_attestation_digest=observer_digest,
+                        observed_at=kwargs["observation_started_at"],
                         provider=request.plan.provider,
                         provider_version=request.plan.provider_version,
                         model=request.plan.model,
@@ -170,8 +170,22 @@ class TrustedHostCliTests(unittest.TestCase):
                             (request.artifact_directory / "enforcement-receipt.json").read_text()
                         )["provider_config_digest"],
                     ))
+            observer_trace = json.dumps({
+                "schema_version": pt.OBSERVER_SCHEMA_VERSION,
+                "observer_id": kwargs["expected_observer_id"],
+                "observer_version": kwargs["expected_observer_version"],
+                "execution_id": kwargs["execution_id"],
+                "promptfoo_process_id": promptfoo_process_id,
+                "executable_digest": kwargs["expected_executable_digest"],
+                "provider_config_digest": kwargs["expected_provider_config_digest"],
+                "sessions": [session.__dict__ for session in sessions],
+            }, sort_keys=True).encode("utf-8")
             return ch.SupervisedProcessResult(
-                0, b"stdout", b"", tuple(sessions), observer_trace
+                returncode=0,
+                stdout=b"stdout",
+                stderr=b"",
+                provider_process_id=promptfoo_process_id,
+                observer_trace=observer_trace,
             )
 
         return run
@@ -299,7 +313,11 @@ class TrustedHostCliTests(unittest.TestCase):
             def failed_runner(*args, **kwargs):
                 calls.append((args, kwargs))
                 return ch.SupervisedProcessResult(
-                    7, b"", b"failed", (), b"failed-observer-trace"
+                    returncode=7,
+                    stdout=b"",
+                    stderr=b"failed",
+                    provider_process_id=1,
+                    observer_trace=b"failed-observer-trace",
                 )
 
             deps = replace(dependencies, trusted_process_runner=failed_runner)
@@ -312,6 +330,33 @@ class TrustedHostCliTests(unittest.TestCase):
         payload = json.loads(output.getvalue())
         self.assertEqual(status, 2)
         self.assertEqual(len(calls), 1)
+        self.assertEqual(payload["status"], "INCOMPLETE")
+        self.assertTrue(payload["model_executed"])
+
+    def test_keyboard_interrupt_after_dispatch_reports_incomplete(self):
+        with TemporaryDirectory() as temp:
+            request, preflight_argv, dependencies = self.setup_preflight(temp)
+            self.assertEqual(th.main(preflight_argv, dependencies=dependencies), 0)
+            receipt = c.EnforcementReceipt.from_dict(json.loads(
+                (request.artifact_directory / "enforcement-receipt.json").read_text()
+            ))
+            ne.bind_prepared_bundle(request.bundle, request.plan, receipt)
+            authorization = self.live_authorization(temp, request)
+
+            def interrupted_runner(*_args, **_kwargs):
+                raise KeyboardInterrupt()
+
+            deps = replace(
+                dependencies, trusted_process_runner=interrupted_runner
+            )
+            output = StringIO()
+            with redirect_stdout(output):
+                status = th.main(
+                    self.run_argv(temp, request, authorization), dependencies=deps
+                )
+
+        payload = json.loads(output.getvalue())
+        self.assertEqual(status, 2)
         self.assertEqual(payload["status"], "INCOMPLETE")
         self.assertTrue(payload["model_executed"])
 

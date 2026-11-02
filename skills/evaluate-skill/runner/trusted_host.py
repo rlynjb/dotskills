@@ -36,6 +36,7 @@ from contracts import ApprovalReceipt, EnforcementReceipt, RunPlan
 from evidence import StateEntry, StateSnapshot
 from native_boundary import NativeBoundaryResult, ProbeResult
 import native_eval
+from provider_trace import OBSERVER_ID, OBSERVER_VERSION
 
 
 _VERSION = re.compile(r"(?<!\d)(\d+\.\d+\.\d+)(?!\d)")
@@ -46,7 +47,7 @@ _LIVE_AUTH_FIELDS = frozenset((
     "preflight_artifact_digest", "codex_executable_digest",
     "promptfoo_executable_digest", "node_executable_digest",
     "promptfoo_runtime_digest",
-    "codex_sdk_digest",
+    "codex_sdk_digest", "observer_id", "observer_version",
 ))
 _READ_ONLY_PROBE_IDS = tuple(sorted((
     "environment-secret", "network-egress", "read-outside-workspace",
@@ -395,7 +396,7 @@ def _timestamp(value: Any, label: str) -> datetime:
 
 def _validate_live_authorization(
     path: Path, plan: RunPlan, preflight: PreflightResult
-) -> None:
+) -> Mapping[str, Any]:
     value = _json_object(path, "live authorization")
     if set(value) != _LIVE_AUTH_FIELDS:
         raise CodexHostError("live authorization shape is not exact")
@@ -424,12 +425,15 @@ def _validate_live_authorization(
         "node_executable_digest": preflight.attestation.node_executable_digest,
         "promptfoo_runtime_digest": preflight.attestation.promptfoo_runtime_digest,
         "codex_sdk_digest": preflight.attestation.codex_sdk_digest,
+        "observer_id": OBSERVER_ID,
+        "observer_version": OBSERVER_VERSION,
     }
     for field, expected_value in expected.items():
         if value.get(field) != expected_value:
             raise CodexHostError(f"live authorization {field} does not match")
     if not isinstance(value.get("authorized_by"), str) or not value["authorized_by"].strip():
         raise CodexHostError("live authorization signer is missing")
+    return value
 
 
 def _real_explicit_path(path: Path, label: str, *, directory: bool) -> Path:
@@ -548,7 +552,9 @@ def _run(args: argparse.Namespace, dependencies: HostDependencies) -> dict[str, 
     )
     if protected != policy.protected_roots:
         raise CodexHostError("explicit protected roots differ from the preflight policy")
-    _validate_live_authorization(args.live_authorization, plan, preflight)
+    live_authorization = _validate_live_authorization(
+        args.live_authorization, plan, preflight
+    )
     bundle = _real_explicit_path(args.bundle, "bound bundle", directory=True)
     manifest = _json_object(bundle / "manifest.json", "bound bundle manifest")
     command = tuple(native_eval.native_command(bundle, manifest))
@@ -587,6 +593,9 @@ def _run(args: argparse.Namespace, dependencies: HostDependencies) -> dict[str, 
         command=command,
         nonce_ledger=args.nonce_ledger,
         artifact_directory=artifacts,
+        live_authorization_expires_at=live_authorization["expires_at"],
+        observer_id=live_authorization["observer_id"],
+        observer_version=live_authorization["observer_version"],
     )
     result = run_supervised_provider(
         request, process_runner=dependencies.trusted_process_runner
