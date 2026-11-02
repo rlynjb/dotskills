@@ -4,6 +4,8 @@
 No cross-provider fallback. Preparing a case never starts a model.
 """
 import argparse
+from dataclasses import dataclass
+from enum import Enum
 import json
 import os
 from pathlib import Path
@@ -12,13 +14,72 @@ import shutil
 import subprocess
 import sys
 import uuid
+from typing import Any, Mapping, Optional, Sequence, Tuple
 
 from capability_inventory import load_inventory
 from contracts import ApprovalReceipt, EnforcementReceipt, RunPlan
+from evidence import EvidenceBundle, ExecutionStatus, SafetyStatus, sanitize_events, snapshot_tree
 from execution_policy import assess_run
+from native_boundary import NativeBoundaryResult
 
 class Blocked(Exception):
     pass
+
+
+class QualityStatus(str, Enum):
+    PASS = 'PASS'
+    FAIL = 'FAIL'
+    UNKNOWN = 'UNKNOWN'
+    NOT_GRADED = 'NOT_GRADED'
+
+
+@dataclass(frozen=True)
+class ProofArmWorkspace:
+    name: str
+    workspace: Path
+    fixture_digest: str
+
+
+@dataclass(frozen=True)
+class PreparedProofRun:
+    run_id: str
+    root: Path
+    plan_digest: str
+    arms: Tuple[ProofArmWorkspace, ...]
+
+
+@dataclass(frozen=True)
+class ProofArmResult:
+    name: str
+    provider_result: Optional[Path]
+    execution_status: ExecutionStatus
+    quality_status: QualityStatus
+    safety_status: SafetyStatus
+    evidence_bundle: Optional[EvidenceBundle]
+
+
+@dataclass(frozen=True)
+class ProofPairResult:
+    run_id: str
+    arms: Tuple[ProofArmResult, ...]
+
+    @property
+    def completed(self):
+        return (
+            {arm.name for arm in self.arms} == {'with-skill', 'without-skill'}
+            and all(arm.execution_status == ExecutionStatus.COMPLETED for arm in self.arms)
+        )
+
+    @property
+    def execution_status(self):
+        statuses = {arm.execution_status for arm in self.arms}
+        if ExecutionStatus.INFRA_ERROR in statuses:
+            return ExecutionStatus.INFRA_ERROR
+        if ExecutionStatus.BLOCKED in statuses:
+            return ExecutionStatus.BLOCKED
+        if self.completed:
+            return ExecutionStatus.COMPLETED
+        return ExecutionStatus.INCOMPLETE
 
 
 def active_harness(env=None):
@@ -122,6 +183,150 @@ def copy_inputs(skill_root, inputs, dst):
         out = dst / relpath
         out.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(src, out)
+
+
+def _validate_fixture_tree(root):
+    root = Path(root)
+    if not root.is_dir() or root.is_symlink():
+        raise Blocked('Approved fixture must be a real directory')
+    forbidden = {
+        'answer-key.json',
+        'prior-results.json',
+        'evals.json',
+        'results.json',
+        'graders',
+    }
+    for path in root.rglob('*'):
+        if path.is_symlink():
+            raise Blocked('Symlink in approved fixture tree')
+        if path.name.lower() in forbidden:
+            raise Blocked(f'Evaluator-only material denied in fixture: {path.name}')
+
+
+def _stage_proof_arms(plan, fixture_root, skill_root, output_root):
+    _validate_fixture_tree(fixture_root)
+    skill_root = Path(skill_root)
+    if not skill_root.is_dir() or skill_root.is_symlink():
+        raise Blocked('Target skill must be a real directory')
+    output_root = Path(output_root)
+    output_root.mkdir(parents=True, exist_ok=True)
+    run_id = uuid.uuid4().hex
+    run_root = output_root / f'provider-proof-{run_id}'
+    run_root.mkdir(exist_ok=False)
+    arms = []
+    for arm_name in plan.comparison_arms:
+        workspace = run_root / arm_name
+        workspace.mkdir()
+        fixture_destination = workspace / 'fixture'
+        shutil.copytree(fixture_root, fixture_destination)
+        if arm_name == 'with-skill':
+            copy_skill(
+                skill_root,
+                workspace / '.agents' / 'skills' / slug(skill_root.name),
+            )
+        fixture_digest = snapshot_tree(fixture_destination, ()).digest
+        arms.append(ProofArmWorkspace(arm_name, workspace, fixture_digest))
+    if len({arm.fixture_digest for arm in arms}) != 1:
+        raise Blocked('Comparison-arm fixtures are not equivalent')
+    manifest = {
+        'schema_version': plan.schema_version,
+        'status': 'PREPARED_NOT_RUN',
+        'run_id': run_id,
+        'plan_digest': plan.digest(),
+        'comparison_arms': [
+            {'name': arm.name, 'fixture_digest': arm.fixture_digest}
+            for arm in arms
+        ],
+        'provider_auth_boundary': 'UNVERIFIED_REQUIRES_HOST_PROOF',
+    }
+    (run_root / 'proof-manifest.json').write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + '\n',
+        encoding='utf-8',
+    )
+    return PreparedProofRun(run_id, run_root, plan.digest(), tuple(arms))
+
+
+def prepare_provider_proof(
+    plan,
+    approval,
+    enforcement,
+    inventory,
+    boundary_result,
+    provider_config,
+    fixture_root,
+    skill_root,
+    output_root,
+):
+    """Prepare paired proof arms only after policy and boundary verification."""
+    decision = assess_run(plan, approval, enforcement, inventory)
+    if decision.decision != 'APPROVED':
+        raise Blocked('; '.join(decision.reasons))
+    if not isinstance(boundary_result, NativeBoundaryResult):
+        raise Blocked('Verified native boundary result is required')
+    if not boundary_result.complete or not boundary_result.is_valid_for(plan, provider_config):
+        raise Blocked('Native boundary result is incomplete or does not match the plan')
+    for probe in boundary_result.results:
+        if enforcement.probe_results.get(probe.probe_id) != probe.status:
+            raise Blocked(f'Enforcement receipt does not match probe {probe.probe_id}')
+    if tuple(plan.comparison_arms) != ('with-skill', 'without-skill'):
+        raise Blocked('Provider proof requires exact with-skill and without-skill arms')
+    return _stage_proof_arms(plan, fixture_root, skill_root, output_root)
+
+
+def agent_environment(
+    driver_environment: Mapping[str, str], *, provider_auth_keys: Sequence[str]
+) -> dict[str, str]:
+    """Return the small non-secret environment allowed inside an evaluated arm."""
+    allowed = frozenset(('PATH', 'LANG', 'LC_ALL', 'TZ', 'PYTHONIOENCODING'))
+    denied = frozenset(provider_auth_keys)
+    return {
+        key: value
+        for key, value in driver_environment.items()
+        if key in allowed and key not in denied and isinstance(value, str)
+    }
+
+
+def sanitize_provider_trace(
+    events: Sequence[Mapping[str, Any]], provider_auth: Mapping[str, str]
+) -> Tuple[dict[str, Any], ...]:
+    return sanitize_events(events, tuple(provider_auth.values()))
+
+
+def finalize_proof_arm(
+    name: str,
+    provider_result: Optional[Path],
+    quality_status: QualityStatus,
+    evidence_bundle: Optional[EvidenceBundle],
+) -> ProofArmResult:
+    result_path = Path(provider_result) if provider_result is not None else None
+    if result_path is None or not result_path.is_file():
+        if quality_status not in (QualityStatus.NOT_GRADED, QualityStatus.UNKNOWN):
+            quality_status = QualityStatus.UNKNOWN
+        return ProofArmResult(
+            name,
+            result_path,
+            ExecutionStatus.INCOMPLETE,
+            quality_status,
+            SafetyStatus.UNKNOWN,
+            evidence_bundle,
+        )
+    if evidence_bundle is None:
+        return ProofArmResult(
+            name,
+            result_path,
+            ExecutionStatus.INCOMPLETE,
+            quality_status,
+            SafetyStatus.UNKNOWN,
+            None,
+        )
+    return ProofArmResult(
+        name,
+        result_path,
+        evidence_bundle.audit.execution_status,
+        quality_status,
+        evidence_bundle.audit.safety_status,
+        evidence_bundle,
+    )
 
 
 def slug(value):
