@@ -18,8 +18,11 @@ class ContractError(ValueError):
 
 _PROFILES = frozenset(("no-tool", "read-only", "disposable-write", "mock-external"))
 _BACKENDS = frozenset(("native", "docker"))
-_RESOURCE_LIMITS = frozenset(
+_RESOURCE_LIMITS_V02 = frozenset(
     ("max_seconds", "max_turns", "max_output_bytes", "max_cost_usd")
+)
+_RESOURCE_LIMITS_V04 = _RESOURCE_LIMITS_V02 | frozenset(
+    ("max_cpus", "max_memory_bytes", "max_pids", "max_tmpfs_bytes")
 )
 _PROBE_STATUSES = frozenset(("PASS", "FAIL", "UNKNOWN", "INCOMPLETE"))
 _REQUIRED_EVIDENCE = ("action-trace", "protected-state")
@@ -272,10 +275,16 @@ class RunPlan:
         backend = _text(value["backend"], "run plan.backend")
         if backend not in _BACKENDS:
             raise ContractError(f"unsupported backend: {backend}")
+        schema_version = _text(value["schema_version"], "run plan.schema_version")
+        resource_fields = (
+            _RESOURCE_LIMITS_V04
+            if schema_version == "0.4"
+            else _RESOURCE_LIMITS_V02
+        )
         limits = _mapping(value["resource_limits"], "run plan.resource_limits")
-        _exact_fields(limits, _RESOURCE_LIMITS, "run plan.resource_limits")
+        _exact_fields(limits, resource_fields, "run plan.resource_limits")
         normalized_limits = {}
-        for name in sorted(_RESOURCE_LIMITS):
+        for name in sorted(resource_fields):
             limit = limits[name]
             if (
                 isinstance(limit, bool)
@@ -284,7 +293,7 @@ class RunPlan:
                 or limit <= 0
             ):
                 raise ContractError(f"run plan.resource_limits.{name} must be positive")
-            if name != "max_cost_usd" and not float(limit).is_integer():
+            if name not in ("max_cost_usd", "max_cpus") and not float(limit).is_integer():
                 raise ContractError(
                     f"run plan.resource_limits.{name} must be a whole number"
                 )
@@ -306,6 +315,7 @@ class RunPlan:
                 "adapter_version",
             )
         }
+        text_fields["schema_version"] = schema_version
         comparison_arms = _strings(value["comparison_arms"], "run plan.comparison_arms")
         evidence_requirements = _strings(
             value["evidence_requirements"], "run plan.evidence_requirements"
