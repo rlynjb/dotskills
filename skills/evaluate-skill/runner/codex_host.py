@@ -1710,7 +1710,6 @@ def run_supervised_provider(
             **dict(request.policy.process_environment),
             **dict(native_eval._PROMPTFOO_SAFE_ENV),
         }
-        promptfoo_config = _reattest_dispatch_boundary(request, bundle, manifest)
         dispatch_started_at = clock()
         if dispatch_started_at.tzinfo is None or dispatch_started_at.utcoffset() is None:
             raise CodexHostError("trusted host clock must include a timezone")
@@ -1724,6 +1723,7 @@ def run_supervised_provider(
             "live authorization expires_at",
         ):
             raise CodexHostError("live authorization expired at dispatch")
+        promptfoo_config = _reattest_dispatch_boundary(request, bundle, manifest)
         dispatch_started = True
         handle = runner(
             request.command,

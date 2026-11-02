@@ -1077,6 +1077,33 @@ class TrustedSupervisorTests(unittest.TestCase):
 
                 self.assertEqual(calls, [])
 
+    def test_supervisor_reattests_after_dispatch_clock_observation(self):
+        with TemporaryDirectory() as temp:
+            request = self.supervised_fixture(temp)
+            now = datetime.now(timezone.utc)
+            calls = 0
+            launches = []
+
+            def clock():
+                nonlocal calls
+                calls += 1
+                if calls == 2:
+                    (
+                        request.policy.promptfoo_runtime_root / "clock-race.js"
+                    ).write_text("changed\n", encoding="utf-8")
+                return now
+
+            with self.assertRaises(ch.CodexHostError):
+                ch.run_supervised_provider(
+                    request,
+                    process_runner=lambda *args, **kwargs: launches.append(
+                        (args, kwargs)
+                    ),
+                    clock=clock,
+                )
+
+            self.assertEqual(launches, [])
+
     def test_supervisor_enforces_timeout_output_limit_and_nonzero_exit_failure(self):
         cases = (
             lambda request: (lambda *_args, **_kwargs: ch.SupervisedProcessHandle(
