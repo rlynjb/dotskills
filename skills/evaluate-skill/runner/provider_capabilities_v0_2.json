@@ -1,6 +1,10 @@
 {
   "schema_version": "0.2",
-  "platform": "darwin-local-baseline",
+  "platform": {
+    "system": "darwin",
+    "release": "25.4.0",
+    "machine": "arm64"
+  },
   "required_versions": {
     "promptfoo": "0.125.1",
     "codex": "0.163.0",

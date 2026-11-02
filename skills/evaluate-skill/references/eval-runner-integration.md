@@ -51,14 +51,28 @@ Preserve the approved source case and fixture files unmodified.
    prompt, or a built-in sandbox option is **not proof**.
 4. Prepare the correct native case using `native_eval.py prepare`; check the
    generated files and native tool flags against the **installed versions**.
-5. Construct the versioned run plan and require a matching approval receipt,
-   enforcement receipt, and pinned capability inventory. Run
+5. Construct and approve the versioned run plan. Run `native_eval.py configure`
+   to materialize its exact model snapshot, limits, and staged revision pins.
+   The independent host then verifies those executable settings and issues an
+   enforcement receipt binding both configuration and bundle digests.
+6. Require the matching approval receipt, enforcement receipt, and pinned
+   capability inventory. Run
    `native_eval.py assess` first. A plan, receipt, version, capability, probe,
    tool-route, state-check, or cleanup mismatch is **Blocked — Not Run**.
-6. When all gates are independently verified, invoke `native_eval.py run`
-   **inside the approved host**. Preserve the provider's raw results and the
-   host's audit traces. Do not infer results from a prepared config file.
-7. If a requirement fails, stop **Stage 3 — Blocked / Not Run** and preserve
+7. Inspect the generated artifacts, then run `native_eval.py bind` to bind the
+   prepared bundle's artifact digest and resource limits to the exact approved
+   plan. A changed or reused bundle is **Blocked — Not Run**.
+8. When all gates are independently verified, invoke `native_eval.py run`
+   **inside the approved host** with a protected consumed-nonce ledger outside
+   the bundle. Preserve the provider's raw results and the host's audit traces.
+   Require the actual result's observed provider/model/adapter identity to
+   match the plan. Do not infer results from a prepared config file.
+9. Finalize both arms against the manifest execution ID, receipt nonce, and raw
+   source-result digest with separate provider and host-evidence outcomes. Apply
+   `next_stage_decision` and persist an append-only `write_stage_checkpoint`
+   record bound to the plan digest. Stage 4 is available only when both arms
+   completed and aggregate safety is `PASS`.
+10. If a requirement fails, stop **Stage 3 — Blocked / Not Run** and preserve
    the case, approvals, and any observed errors. Never use a different provider
    as a fallback.
 
@@ -84,24 +98,29 @@ compare revisions, plus human review of regressions and attempted actions.
 Do not claim provider-native blind comparison or cross-platform metric
 normalization unless the selected tool has actually produced that evidence.
 Final skill changes remain subject to the existing human approval gates.
+Stage 9 uses a new scoped approval, enforcement receipt and checkpoint; it
+cannot advance to Stage 10 after blocked/incomplete/infrastructure-error
+execution or failed/unknown safety.
 
 ## What is implemented and what remains unverified
 
-`native_eval.py` prepares provider-specific case definitions, selects a
-harness without runtime fallback, validates strict run/approval/enforcement
-contracts against the pinned inventory, and refuses dispatch unless policy
-returns `APPROVED`. Legacy boolean authorization and self-declared host
-manifests are not sufficient. It does not bundle or install Claude, Promptfoo,
-or the Codex SDK, and it does not provide an independently isolated execution
-host. This slice also does not provision a native sandbox, Docker backend,
-independent verifier, model credentials, or action-trace collector. The CLI
-flags, provider case formats and real grader behavior must be tested against
-reviewed, pinned installations.
+The v0.2 offline implementation prepares provider-specific case definitions,
+selects a harness without runtime fallback, validates strict contracts against
+the pinned inventory, runs immutable native-boundary probes, audits host traces
+and protected/disposable/mock state, evaluates bounded-write and mock
+authorization decisions, preserves paired status dimensions, and writes atomic append-only Stage
+3/9 checkpoints. Legacy boolean authorization and self-declared host manifests
+are insufficient. It does not bundle or install provider tools, provision an
+independently isolated host or Docker backend, supply model credentials, or
+operate a trusted action-trace collector. The authorization helpers are not
+tool interposition; the independently restricted host must call them.
 
-Offline tests exist in [`test_native_eval.py`](../runner/test_native_eval.py).
-No end-to-end live model evaluation has been demonstrated here. Until a
-separate host and run evidence are verified, the correct status is
-**experimental integration — model evaluation Not Run**.
+The acceptance suite is
+[`test_acceptance_v0_2.py`](../runner/test_acceptance_v0_2.py). No end-to-end
+live model evaluation has been demonstrated. The committed native claims are
+unverified and Docker claims unsupported, so the release decision for live
+execution is **Blocked — Not Run** until a separate host, authentication
+boundary and genuine run evidence are verified.
 
 The Evaluate Skill's twelve stages, guided teaching, methodology lenses,
 fixture preservation and human approval gates remain unchanged.

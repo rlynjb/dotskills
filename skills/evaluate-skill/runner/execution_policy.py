@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional, Tuple
+from datetime import datetime
+from typing import Mapping, Optional, Tuple
 
-from capability_inventory import CapabilityInventory, InventoryError
+from capability_inventory import CapabilityInventory, InventoryError, PlatformFingerprint
 from contracts import ApprovalReceipt, EnforcementReceipt, RunPlan
 
 
@@ -59,6 +60,10 @@ def assess_run(
     approval: Optional[ApprovalReceipt],
     enforcement: object,
     inventory: CapabilityInventory,
+    *,
+    at: Optional[datetime] = None,
+    observed_versions: Optional[Mapping[str, Optional[str]]] = None,
+    observed_platform: Optional[PlatformFingerprint] = None,
 ) -> PolicyDecision:
     """Assess exact approved inputs without changing provider or backend."""
 
@@ -109,6 +114,12 @@ def assess_run(
     }
     for field, expected in enforcement_scope.items():
         _compare(reasons, f"enforcement.{field}", getattr(enforcement, field), expected)
+    if approval.run_nonce != enforcement.run_nonce:
+        _reason(reasons, "receipt.run_nonce", "approval and enforcement nonce mismatch")
+    if not approval.is_valid_at(at):
+        _reason(reasons, "approval.validity", "receipt is not current")
+    if not enforcement.is_valid_at(at):
+        _reason(reasons, "enforcement.validity", "receipt is not current")
 
     provider_key = inventory.provider_for_plan(plan.provider, plan.adapter)
     if provider_key is None:
@@ -139,6 +150,21 @@ def assess_run(
             descriptor.adapter_version,
             inventory.required_versions.get("promptfoo"),
         )
+        if observed_versions is None:
+            _reason(reasons, "installed_versions", "required observations missing")
+        else:
+            for tool in (provider_key, "promptfoo"):
+                _compare(
+                    reasons,
+                    f"installed_versions.{tool}",
+                    observed_versions.get(tool),
+                    inventory.required_versions.get(tool),
+                )
+
+    if observed_platform is None:
+        _reason(reasons, "installed_platform", "required observation missing")
+    elif observed_platform != inventory.platform:
+        _reason(reasons, "installed_platform", "exact fingerprint mismatch")
 
     for item in plan.capabilities.evidence:
         if item not in _CAPABILITY_EVIDENCE:
@@ -175,6 +201,14 @@ def assess_run(
                         f"enforcement.probe_results.{probe_id}",
                         "missing or not PASS",
                     )
+
+    if plan.capabilities.profile in ("no-tool", "read-only", "mock-external"):
+        if enforcement.probe_results.get("write-inside-workspace") != "PASS":
+            _reason(
+                reasons,
+                "enforcement.probe_results.write-inside-workspace",
+                "missing or not PASS",
+            )
 
     expected_enabled, expected_disabled = _required_tool_routes(plan)
     if frozenset(enforcement.enabled_tools) != expected_enabled:

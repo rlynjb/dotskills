@@ -8,6 +8,7 @@
     "native runtime confinement remains unverified",
     "no independently operated native boundary launcher is configured",
     "no provider-auth gateway has proved credentials absent from the tested workload",
+    "no trusted provider-result identity parser is configured",
     "no trusted action-trace collector is configured"
   ]
 }

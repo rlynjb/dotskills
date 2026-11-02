@@ -109,6 +109,19 @@ class MockDispatchTests(unittest.TestCase):
         self.assertNotIn(secret, json.dumps(decision.event))
         self.assertNotIn("arguments", decision.event)
 
+    def test_unknown_mock_registry_schema_version_is_rejected(self):
+        with self.assertRaises(md.MockDispatchError):
+            md.MockRegistry.from_dict({
+                "schema_version": "9.9",
+                "tools": [{
+                    "id": "mock.gitlab.create_note",
+                    "effect": "write",
+                    "destination": "mock://gitlab/project",
+                    "implementation": "record-note-v1",
+                }],
+                "write_allowlist": ["mock.gitlab.create_note"],
+            })
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,4 +1,5 @@
 from dataclasses import replace
+from datetime import datetime, timedelta, timezone
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -51,10 +52,14 @@ class ProviderProofTests(unittest.TestCase):
         })
 
     def approval(self, plan):
+        now = datetime.now(timezone.utc)
         return c.ApprovalReceipt.from_dict({
             "schema_version": plan.schema_version,
             "plan_digest": plan.digest(),
             "approved_by": "human-reviewer",
+            "issued_at": (now - timedelta(minutes=5)).isoformat(),
+            "expires_at": (now + timedelta(minutes=55)).isoformat(),
+            "run_nonce": "synthetic-run-nonce",
             "provider": plan.provider,
             "model": plan.model,
             "adapter": plan.adapter,
@@ -64,12 +69,22 @@ class ProviderProofTests(unittest.TestCase):
             "side_effects": list(plan.capabilities.side_effects),
         })
 
-    def enforcement(self, plan):
+    def enforcement(
+        self,
+        plan,
+        workspace_id="disposable-workspace-id",
+        provider_config_digest="provider-config-sha256",
+        run_nonce="synthetic-run-nonce",
+    ):
+        now = datetime.now(timezone.utc)
         return c.EnforcementReceipt.from_dict({
             "schema_version": plan.schema_version,
             "plan_digest": plan.digest(),
             "verified_by": "trusted-host-verifier",
             "verifier_version": "1.0",
+            "issued_at": (now - timedelta(minutes=5)).isoformat(),
+            "expires_at": (now + timedelta(minutes=55)).isoformat(),
+            "run_nonce": run_nonce,
             "provider": plan.provider,
             "provider_version": plan.provider_version,
             "model": plan.model,
@@ -80,7 +95,9 @@ class ProviderProofTests(unittest.TestCase):
             "backend_version": "native-boundary-v1",
             "capability_profile": plan.capabilities.profile,
             "effective_policy_digest": plan.capabilities.digest(),
-            "workspace_id": "disposable-workspace-id",
+            "provider_config_digest": provider_config_digest,
+            "prepared_bundle_digest": "prepared-bundle-sha256",
+            "workspace_id": workspace_id,
             "probe_results": {
                 "read-outside-workspace": "PASS",
                 "write-outside-workspace": "PASS",
@@ -90,6 +107,7 @@ class ProviderProofTests(unittest.TestCase):
                 "action-trace-completeness": "PASS",
                 "state-snapshot": "PASS",
                 "cleanup-verification": "PASS",
+                "write-inside-workspace": "PASS",
             },
             "enabled_tools": ["filesystem_read"],
             "disabled_tools": ["filesystem_write", "shell", "network", "mock_tools"],
@@ -134,6 +152,7 @@ class ProviderProofTests(unittest.TestCase):
             "network-egress",
             "read-outside-workspace",
             "secondary-tool-route",
+            "write-inside-workspace",
             "write-outside-workspace",
         )
         results = tuple(
@@ -158,35 +177,101 @@ class ProviderProofTests(unittest.TestCase):
         plan = self.plan()
         fixture, skill = self.source_tree(root)
         provider_config = self.provider_config(root)
+        config_digest = nb.provider_config_digest(provider_config)
         result = n.prepare_provider_proof(
             plan,
             self.approval(plan),
-            self.enforcement(plan),
+            self.enforcement(plan, provider_config_digest=config_digest),
             self.inventory(),
             self.boundary_result(plan, provider_config),
             provider_config,
             fixture,
             skill,
             root / "proof-runs",
+            observed_versions=self.inventory().required_versions,
+            observed_platform=self.inventory().platform,
         )
         return result, fixture, skill
 
-    def state_bundle(self, root, plan):
-        protected = root / "protected"
-        disposable = root / "disposable"
+    def test_provider_config_digest_must_match_enforcement_receipt(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            plan = self.plan()
+            fixture, skill = self.source_tree(root)
+            config = self.provider_config(root)
+            with self.assertRaisesRegex(n.Blocked, "provider config digest"):
+                n.prepare_provider_proof(
+                    plan,
+                    self.approval(plan),
+                    self.enforcement(plan, provider_config_digest="wrong-digest"),
+                    self.inventory(),
+                    self.boundary_result(plan, config),
+                    config,
+                    fixture,
+                    skill,
+                    root / "proof-runs",
+                    observed_versions=self.inventory().required_versions,
+                    observed_platform=self.inventory().platform,
+                )
+
+    def state_bundle(
+        self,
+        root,
+        plan,
+        provider_result,
+        *,
+        run_id="run-id",
+        arm_name="with-skill",
+        workspace_id=None,
+        include_model_result=True,
+    ):
+        workspace_id = workspace_id or f"workspace-{arm_name}"
+        execution_id = f"execution-{run_id}"
+        protected = root / f"{arm_name}-protected"
+        disposable = root / f"{arm_name}-disposable"
         protected.mkdir()
         disposable.mkdir()
         (protected / "source.txt").write_text("unchanged", encoding="utf-8")
         state = e.StateSnapshots(
             e.snapshot_tree(protected, ()),
             e.snapshot_tree(disposable, ()),
+            workspace_id=workspace_id,
         )
         events = [
-            {"type": "run_start", "plan_digest": plan.digest()},
-            {"type": "run_end", "trace_complete": True, "cleanup_complete": True},
+            {
+                "type": "run_start",
+                "plan_digest": plan.digest(),
+                "run_id": run_id,
+                "receipt_nonce": run_id,
+                "execution_id": execution_id,
+                "arm_name": arm_name,
+                "workspace_id": workspace_id,
+            },
         ]
+        if include_model_result:
+            events.append({
+                "type": "model_result",
+                "run_id": run_id,
+                "receipt_nonce": run_id,
+                "execution_id": execution_id,
+                "arm_name": arm_name,
+                "workspace_id": workspace_id,
+                "provider_result_digest": e.provider_result_digest(provider_result),
+            })
+        events.append(
+            {"type": "run_end", "trace_complete": True, "cleanup_complete": True},
+        )
         return e.EvidenceBundle.from_run(
-            plan, self.enforcement(plan), events, state, state
+            plan,
+            self.enforcement(plan, workspace_id, run_nonce=run_id),
+            events,
+            state,
+            state,
+            run_id=run_id,
+            execution_id=execution_id,
+            source_result_digest="aggregate-source-result-digest",
+            arm_name=arm_name,
+            provider_result=provider_result,
         )
 
     def test_each_arm_gets_independent_equivalent_fixture(self):
@@ -234,7 +319,7 @@ class ProviderProofTests(unittest.TestCase):
     def test_native_result_without_host_audit_is_incomplete(self):
         with TemporaryDirectory() as temp:
             result = Path(temp) / "provider-result.json"
-            result.write_text("{}", encoding="utf-8")
+            result.write_text('{"response":"synthetic"}', encoding="utf-8")
             arm = n.finalize_proof_arm(
                 "with-skill", result, n.QualityStatus.PASS, None
             )
@@ -247,9 +332,9 @@ class ProviderProofTests(unittest.TestCase):
         with TemporaryDirectory() as temp:
             root = Path(temp)
             result = root / "provider-result.json"
-            result.write_text("{}", encoding="utf-8")
+            result.write_text('{"response":"synthetic"}', encoding="utf-8")
             plan = self.plan()
-            bundle = self.state_bundle(root, plan)
+            bundle = self.state_bundle(root, plan, result)
             arm = n.finalize_proof_arm(
                 "with-skill", result, n.QualityStatus.PASS, bundle
             )
@@ -262,10 +347,13 @@ class ProviderProofTests(unittest.TestCase):
         with TemporaryDirectory() as temp:
             root = Path(temp)
             result = root / "provider-result.json"
-            result.write_text("{}", encoding="utf-8")
+            result.write_text('{"response":"synthetic"}', encoding="utf-8")
             plan = self.plan()
             completed = n.finalize_proof_arm(
-                "with-skill", result, n.QualityStatus.PASS, self.state_bundle(root, plan)
+                "with-skill",
+                result,
+                n.QualityStatus.PASS,
+                self.state_bundle(root, plan, result),
             )
             interrupted = n.finalize_proof_arm(
                 "without-skill", None, n.QualityStatus.NOT_GRADED, None
@@ -275,6 +363,98 @@ class ProviderProofTests(unittest.TestCase):
         self.assertEqual(pair.execution_status, e.ExecutionStatus.INCOMPLETE)
         self.assertFalse(pair.completed)
         self.assertEqual(interrupted.quality_status, n.QualityStatus.NOT_GRADED)
+
+    def test_empty_provider_result_cannot_complete(self):
+        with TemporaryDirectory() as temp:
+            result = Path(temp) / "provider-result.json"
+            result.write_text("{}", encoding="utf-8")
+            arm = n.finalize_proof_arm(
+                "with-skill", result, n.QualityStatus.PASS, None
+            )
+
+        self.assertEqual(arm.execution_status, e.ExecutionStatus.INCOMPLETE)
+        self.assertEqual(arm.safety_status, e.SafetyStatus.UNKNOWN)
+
+    def test_symlinked_provider_result_cannot_complete(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            real_result = root / "real-result.json"
+            real_result.write_text('{"response":"synthetic"}', encoding="utf-8")
+            linked_result = root / "linked-result.json"
+            linked_result.symlink_to(real_result)
+            arm = n.finalize_proof_arm(
+                "with-skill", linked_result, n.QualityStatus.PASS, None
+            )
+
+        self.assertEqual(arm.execution_status, e.ExecutionStatus.INCOMPLETE)
+        self.assertEqual(arm.safety_status, e.SafetyStatus.UNKNOWN)
+
+    def test_missing_model_result_trace_cannot_complete(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            result = root / "provider-result.json"
+            result.write_text('{"response":"synthetic"}', encoding="utf-8")
+            plan = self.plan()
+            bundle = self.state_bundle(
+                root, plan, result, include_model_result=False
+            )
+            arm = n.finalize_proof_arm(
+                "with-skill", result, n.QualityStatus.PASS, bundle
+            )
+
+        self.assertEqual(arm.execution_status, e.ExecutionStatus.INCOMPLETE)
+        self.assertEqual(arm.safety_status, e.SafetyStatus.UNKNOWN)
+
+    def test_pair_requires_distinct_arm_bound_evidence_and_durable_results(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            plan = self.plan()
+            results = {}
+            arms = []
+            for arm_name in ("with-skill", "without-skill"):
+                result = root / f"{arm_name}.json"
+                result.write_text(
+                    json.dumps({"response": arm_name}), encoding="utf-8"
+                )
+                results[arm_name] = result
+                bundle = self.state_bundle(
+                    root,
+                    plan,
+                    result,
+                    run_id="paired-run",
+                    arm_name=arm_name,
+                )
+                arms.append(n.finalize_proof_arm(
+                    arm_name, result, n.QualityStatus.PASS, bundle
+                ))
+            pair = n.ProofPairResult("paired-run", tuple(arms))
+            self.assertTrue(pair.completed)
+
+            results["without-skill"].unlink()
+            decision = n.next_stage_decision(pair, current_stage=3)
+
+        self.assertFalse(decision.advance)
+        self.assertEqual(decision.execution_status, e.ExecutionStatus.INCOMPLETE)
+
+    def test_one_evidence_bundle_cannot_be_reused_for_both_arms(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            plan = self.plan()
+            result = root / "provider-result.json"
+            result.write_text('{"response":"synthetic"}', encoding="utf-8")
+            bundle = self.state_bundle(root, plan, result)
+            arms = (
+                n.finalize_proof_arm(
+                    "with-skill", result, n.QualityStatus.PASS, bundle
+                ),
+                n.finalize_proof_arm(
+                    "without-skill", result, n.QualityStatus.PASS, bundle
+                ),
+            )
+            pair = n.ProofPairResult("run-id", arms)
+
+        self.assertFalse(pair.completed)
+        self.assertFalse(n.next_stage_decision(pair, current_stage=3).advance)
 
 
 if __name__ == "__main__":

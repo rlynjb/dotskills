@@ -114,6 +114,15 @@ class CapabilityInventoryTests(unittest.TestCase):
             with self.assertRaises(ci.InventoryError):
                 ci.load_inventory(path)
 
+    def test_unknown_inventory_schema_version_is_rejected(self):
+        source = json.loads(self.inventory_path().read_text(encoding="utf-8"))
+        source["schema_version"] = "9.9"
+        with TemporaryDirectory() as temp:
+            path = Path(temp) / "inventory.json"
+            path.write_text(json.dumps(source), encoding="utf-8")
+            with self.assertRaises(ci.InventoryError):
+                ci.load_inventory(path)
+
 
 if __name__ == "__main__":
     unittest.main()

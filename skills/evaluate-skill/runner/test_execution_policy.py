@@ -1,4 +1,5 @@
 from dataclasses import replace
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import MappingProxyType
 import unittest
@@ -47,10 +48,14 @@ class ExecutionPolicyTests(unittest.TestCase):
         }
 
     def approval(self, plan, **changes):
+        now = datetime.now(timezone.utc)
         value = {
             "schema_version": plan.schema_version,
             "plan_digest": plan.digest(),
             "approved_by": "human-reviewer",
+            "issued_at": (now - timedelta(minutes=5)).isoformat(),
+            "expires_at": (now + timedelta(minutes=55)).isoformat(),
+            "run_nonce": "synthetic-run-nonce",
             "provider": plan.provider,
             "model": plan.model,
             "adapter": plan.adapter,
@@ -63,6 +68,7 @@ class ExecutionPolicyTests(unittest.TestCase):
         return c.ApprovalReceipt.from_dict(value)
 
     def enforcement(self, plan, **changes):
+        now = datetime.now(timezone.utc)
         probe_results = {
             "read-outside-workspace": "PASS",
             "write-outside-workspace": "PASS",
@@ -72,12 +78,16 @@ class ExecutionPolicyTests(unittest.TestCase):
             "action-trace-completeness": "PASS",
             "state-snapshot": "PASS",
             "cleanup-verification": "PASS",
+            "write-inside-workspace": "PASS",
         }
         value = {
             "schema_version": plan.schema_version,
             "plan_digest": plan.digest(),
             "verified_by": "trusted-host-verifier",
             "verifier_version": "1.0",
+            "issued_at": (now - timedelta(minutes=5)).isoformat(),
+            "expires_at": (now + timedelta(minutes=55)).isoformat(),
+            "run_nonce": "synthetic-run-nonce",
             "provider": plan.provider,
             "provider_version": plan.provider_version,
             "model": plan.model,
@@ -88,6 +98,8 @@ class ExecutionPolicyTests(unittest.TestCase):
             "backend_version": "verified-boundary-v1",
             "capability_profile": plan.capabilities.profile,
             "effective_policy_digest": plan.capabilities.digest(),
+            "provider_config_digest": "provider-config-sha256",
+            "prepared_bundle_digest": "prepared-bundle-sha256",
             "workspace_id": "disposable-workspace-id",
             "probe_results": probe_results,
             "enabled_tools": ["filesystem_read"],
@@ -119,12 +131,57 @@ class ExecutionPolicyTests(unittest.TestCase):
 
     def test_verified_native_read_only_plan_is_approved(self):
         plan = c.RunPlan.from_dict(self.plan_value())
+        inventory = self.inventory()
 
         decision = ep.assess_run(
-            plan, self.approval(plan), self.enforcement(plan), self.inventory()
+            plan,
+            self.approval(plan),
+            self.enforcement(plan),
+            inventory,
+            observed_versions=inventory.required_versions,
+            observed_platform=inventory.platform,
         )
 
         self.assertEqual(decision, ep.PolicyDecision("APPROVED", "native", ()))
+
+    def test_missing_runtime_observations_block(self):
+        plan = c.RunPlan.from_dict(self.plan_value())
+        decision = ep.assess_run(
+            plan, self.approval(plan), self.enforcement(plan), self.inventory()
+        )
+        self.assert_blocked_for(decision, "installed_versions")
+        self.assert_blocked_for(decision, "installed_platform")
+
+    def test_platform_fingerprint_must_match_exactly(self):
+        plan = c.RunPlan.from_dict(self.plan_value())
+        inventory = self.inventory()
+        changed = replace(inventory.platform, release="different-release")
+        decision = ep.assess_run(
+            plan,
+            self.approval(plan),
+            self.enforcement(plan),
+            inventory,
+            observed_versions=inventory.required_versions,
+            observed_platform=changed,
+        )
+        self.assert_blocked_for(decision, "installed_platform")
+
+    def test_read_only_requires_inside_workspace_write_denial_probe(self):
+        plan = c.RunPlan.from_dict(self.plan_value())
+        inventory = self.inventory()
+        probes = dict(self.enforcement(plan).probe_results)
+        probes.pop("write-inside-workspace", None)
+        decision = ep.assess_run(
+            plan,
+            self.approval(plan),
+            self.enforcement(plan, probe_results=probes),
+            inventory,
+            observed_versions=inventory.required_versions,
+            observed_platform=inventory.platform,
+        )
+        self.assert_blocked_for(
+            decision, "enforcement.probe_results.write-inside-workspace"
+        )
 
     def test_missing_or_mismatched_approval_blocks(self):
         plan = c.RunPlan.from_dict(self.plan_value())
@@ -140,6 +197,34 @@ class ExecutionPolicyTests(unittest.TestCase):
             self.inventory(),
         )
         self.assert_blocked_for(mismatched, "approval.plan_digest")
+
+    def test_stale_or_cross_run_receipts_block(self):
+        plan = c.RunPlan.from_dict(self.plan_value())
+        mismatched_nonce = ep.assess_run(
+            plan,
+            self.approval(plan),
+            self.enforcement(plan, run_nonce="different-run"),
+            self.inventory(),
+        )
+        self.assert_blocked_for(mismatched_nonce, "receipt.run_nonce")
+
+        expired = ep.assess_run(
+            plan,
+            self.approval(
+                plan,
+                issued_at="2026-05-31T23:00:00Z",
+                expires_at="2026-06-01T00:00:00Z",
+            ),
+            self.enforcement(
+                plan,
+                issued_at="2026-05-31T23:00:00Z",
+                expires_at="2026-06-01T00:00:00Z",
+            ),
+            self.inventory(),
+            at=datetime(2026, 7, 1, tzinfo=timezone.utc),
+        )
+        self.assert_blocked_for(expired, "approval.validity")
+        self.assert_blocked_for(expired, "enforcement.validity")
 
     def test_unverified_required_native_capability_blocks(self):
         plan = c.RunPlan.from_dict(self.plan_value())
@@ -217,13 +302,8 @@ class ExecutionPolicyTests(unittest.TestCase):
     def test_unknown_required_evidence_blocks(self):
         value = self.plan_value()
         value["evidence_requirements"] = ["provider-result", "magic-proof"]
-        plan = c.RunPlan.from_dict(value)
-
-        decision = ep.assess_run(
-            plan, self.approval(plan), self.enforcement(plan), self.inventory()
-        )
-
-        self.assert_blocked_for(decision, "evidence_requirements.magic-proof")
+        with self.assertRaises(c.ContractError):
+            c.RunPlan.from_dict(value)
 
     def test_self_declared_manifest_without_receipt_blocks(self):
         plan = c.RunPlan.from_dict(self.plan_value())

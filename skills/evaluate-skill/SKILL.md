@@ -13,13 +13,15 @@ format; it is **not** a substitute for Claude/Codex Skill Creator.
 A valid package goes straight to evaluation. A raw/invalid package gets
 only an explicitly approved, minimal structural proposal.
 
-An experimental skill-local [native evaluation dispatcher](runner/README.md)
-prepares separate provider-specific cases: **Claude Code uses Claude plugin
-eval**, and **Codex uses Promptfoo with the OpenAI Codex SDK** for execution
-and LLM grading. Never mix their graders or output formats. This dispatcher
-is not an isolated execution host; provider tools and approvals must be
-separately configured. No live end-to-end model evaluation has been verified.
-Never claim a model run from preparation, JSON validation or offline tests.
+The skill-local [v0.2 evaluation dispatcher](runner/README.md) prepares
+separate provider-specific cases: **Claude Code uses Claude plugin eval**, and
+**Codex uses Promptfoo with the OpenAI Codex SDK** for execution and LLM
+grading. Its offline control and evidence planes validate immutable plans,
+approvals, enforcement receipts, exact capability claims, bounded-write and
+mock authorization/audit decisions, paired outcomes, and Stage 3/9 transitions. Never mix provider
+graders or output formats. This dispatcher is not an isolated execution host;
+no live end-to-end model evaluation has been verified. Never claim a model run
+from preparation, policy approval, a receipt, or passing offline tests.
 
 ## Load references progressively
 
@@ -171,19 +173,36 @@ learning request justifies a deep dive and the human approves it.
    selects or runs all three types; its native artifacts use LLM rubrics.
 3. **Run paired baselines.** Detect and independently verify the active
    harness. Prepare native evaluation cases with `native_eval.py prepare`.
-   Require the corresponding tool (Claude plugin eval or Promptfoo with
-   Codex SDK), independent host isolation, scoped case/provider approval,
-   and synthetic fixtures. If any check fails, **STOP at Stage 3**:
+   Build and approve the exact versioned `RunPlan`, then use
+   `native_eval.py configure` to materialize the approved model snapshot,
+   budgets, and staged revision pins. Have the independent host verify that
+   exact configuration and issue a fresh `EnforcementReceipt` binding its
+   provider-config and bundle digests. Before executable discovery, require the
+   plan, matching `ApprovalReceipt`, receipt, and pinned capability inventory
+   to pass `native_eval.py assess`, then bind the configured bundle to that
+   exact plan with `native_eval.py bind`.
+   Any later staged-artifact change invalidates the binding. Require the
+   corresponding tool (Claude plugin eval or Promptfoo with Codex SDK),
+   independent host isolation, scoped case/provider approval, and synthetic
+   fixtures. Require an external protected consumed-nonce ledger so bundle
+   rollback cannot replay an approved run, and require the actual provider
+   result to attest the observed provider/model/adapter identity. If any check
+   fails, **STOP at Stage 3**:
    record **Blocked — Not Run** and preserve approved work. Never switch
    providers, proceed into Stages 4–11, or invent outputs. When approved,
    use the selected provider's paired execution workflow and preserve its
-   real results alongside trusted host action traces.
+   real results alongside trusted host action traces. Finalize both arms against
+   the manifest execution ID, receipt nonce, and aggregate source-result digest,
+   then persist a new plan-bound stage checkpoint containing immutable evidence
+   identities and payloads; do not overwrite prior evidence.
 4. **Grade actual outputs.** Require observed, trusted Stage 3 outputs.
    Use the selected provider's own LLM grader: Claude plugin-eval
    `type: llm` grader files or Codex-backed Promptfoo `llm-rubric`.
    Keep provider-native result schemas separate. Grade output evidence,
    attempted tool actions and resulting state with deterministic checks
-   and human review. Missing trusted traces remain Unknown; never
+   and human review. Enter Stage 4 only when the Stage 3 transition records
+   both arms `COMPLETED` and safety `PASS`; quality `FAIL` remains a valid
+   result to diagnose. Missing trusted traces remain Unknown; never
    average away a failed required or safety criterion or invent a cutoff.
 5. **Diagnose before editing.** Distinguish test/rubric, context,
    harness, permission, model and real guidance failures.
@@ -200,7 +219,9 @@ learning request justifies a deep dive and the human approves it.
    Repeat the **same active provider's** evaluated workflow: Claude plugin
    eval in Claude Code, or Promptfoo with the Codex SDK in Codex. Preserve
    separate native results; require fresh scoped execution approval and
-   independently verified isolation for the complete rerun scope.
+   independently verified isolation for the complete rerun scope. Apply the
+   same plan/receipt assessment, paired-result gate, and append-only checkpoint
+   used at Stage 3; only a complete safety-`PASS` pair can enter Stage 10.
 10. **Check regression and independence.** Explain that a *regression* is a
     previously passing behavior that fails after a change. Review Claude-native
     results when in Claude, or Promptfoo-native results when in Codex;
@@ -308,6 +329,10 @@ Keep evaluator-only expected outputs, assertions, earlier runs and
 grading outside the evaluated agent's readable workspace. A folder
 named "evals" is not access control. Inspect attempted tool calls
 as well as completed results; missing evidence is Unknown.
+
+Keep execution, quality, and safety independent. `BLOCKED`, `INCOMPLETE`, or
+`INFRA_ERROR` execution and `FAIL` or `UNKNOWN` safety stop Stage 3/9. Do not
+auto-advance, even when provider output or a quality grade exists.
 
 ## Outputs
 

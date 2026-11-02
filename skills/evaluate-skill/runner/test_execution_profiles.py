@@ -61,6 +61,9 @@ class ExecutionProfileTests(unittest.TestCase):
             "plan_digest": plan.digest(),
             "verified_by": "trusted-host-verifier",
             "verifier_version": "1.0",
+            "issued_at": "2026-01-01T00:00:00Z",
+            "expires_at": "2026-01-01T01:00:00Z",
+            "run_nonce": "synthetic-run-nonce",
             "provider": plan.provider,
             "provider_version": plan.provider_version,
             "model": plan.model,
@@ -71,6 +74,8 @@ class ExecutionProfileTests(unittest.TestCase):
             "backend_version": "native-boundary-v1",
             "capability_profile": plan.capabilities.profile,
             "effective_policy_digest": plan.capabilities.digest(),
+            "provider_config_digest": "provider-config-sha256",
+            "prepared_bundle_digest": "prepared-bundle-sha256",
             "workspace_id": "disposable-workspace-id",
             "probe_results": {"write-outside-workspace": "PASS"},
             "enabled_tools": enabled,
@@ -84,6 +89,7 @@ class ExecutionProfileTests(unittest.TestCase):
             e.snapshot_tree(protected, ()),
             e.snapshot_tree(disposable, ()),
             e.snapshot_tree(mock, ()) if mock is not None else None,
+            workspace_id="disposable-workspace-id",
         )
 
     def events(self, plan, action):

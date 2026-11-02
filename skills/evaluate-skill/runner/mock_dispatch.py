@@ -49,6 +49,11 @@ class MockRegistry:
             raise MockDispatchError(
                 f"mock registry fields invalid; missing={missing}, unknown={unknown}"
             )
+        schema_version = _text(value["schema_version"], "mock registry schema_version")
+        if schema_version != "0.2":
+            raise MockDispatchError(
+                f"unsupported mock registry schema_version: {schema_version}"
+            )
         raw_tools = value["tools"]
         if not isinstance(raw_tools, list) or not raw_tools:
             raise MockDispatchError("mock registry tools must be a non-empty array")
@@ -82,7 +87,7 @@ class MockRegistry:
         if any(item not in tools or tools[item].effect != "write" for item in write_allowlist):
             raise MockDispatchError("write_allowlist must name registered write tools")
         return cls(
-            _text(value["schema_version"], "mock registry schema_version"),
+            schema_version,
             MappingProxyType(tools),
             write_allowlist,
         )

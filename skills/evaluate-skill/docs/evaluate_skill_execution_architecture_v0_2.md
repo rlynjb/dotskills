@@ -1,6 +1,6 @@
 # Evaluate Skill — Execution Architecture v0.2
 
-**Status:** Proposed for review · **Scope:** Core reusable execution · **Implementation:** Not started  
+**Status:** Offline foundation implemented · **Scope:** Core reusable execution · **Live release:** Blocked — Not Run
 **Decision:** Provider-native evaluation first; independently verified Docker only when required by the test's capabilities and risk.
 
 ## 1. What changed from v0.1
@@ -123,16 +123,16 @@ Numeric latency/cost targets will be set after measured baseline runs. Security 
 Required: stable case ID, target skill, prompt, sanitized fixtures, rubric/assertions, revision pins, comparison strategy, and **requested** capabilities. Requested capabilities are untrusted input, not authorization. Existing `evals.json` stays the authoring source; use companion metadata rather than a breaking migration.
 
 ### Contract B — Approved Run Plan (trusted coordinator / policy / human)
-Required: immutable digest; case and rubric versions; model/provider and adapter versions; selected isolation **backend** (`native` or `docker`); profile; exact allowed files/tools/network/credential surfaces; budgets; comparison arms; evidence/cleanup requirements; approval receipt. A change to any material property requires reapproval.
+Required: immutable digest; case and rubric versions; model/provider and adapter versions; selected isolation **backend** (`native` or `docker`); profile; exact allowed files/tools/network/credential surfaces; budgets; comparison arms; evidence/cleanup requirements; approval receipt with a scoped run nonce and a validity window of at most two hours. A change to any material property requires reapproval. After review, the runner materializes the exact model snapshot and limits into the executable provider configuration, recomputes staged case/rubric/skill/fixture revisions, and records provider-config and bundle digests. The independent host receipt and binding must match those exact digests; any later mutation blocks execution.
 
 ### Contract C — Enforcement Receipt (selected sandbox backend)
-Required: backend identifier and version; effective policy and trusted provenance; isolation preflight results; negative-probe results for every relevant capability; sandbox/workspace IDs; enabled/disabled tool routes; process/network/mount/secret controls; cleanup and state-verification method. Provider-reported `sandbox: true` or a custom `host_enforced: true` flag alone is **not** a receipt.
+Required: matching run nonce and current validity window; backend identifier and version; effective policy and trusted provenance; the exact provider-configuration and prepared-bundle digests; an exact OS release/architecture fingerprint; isolation preflight results; negative-probe results for every relevant capability, including inside-workspace write denial for non-write profiles; sandbox/workspace IDs; enabled/disabled tool routes; process/network/mount/secret controls; provider-auth gateway and resource-limit evidence; cleanup and state-verification method. Provider-reported `sandbox: true` or a custom `host_enforced: true` flag alone is **not** a receipt.
 
 ### Contract D — Evaluation Adapter (Promptfoo + provider SDK/native integration)
 Input: approved plan and verified environment. Output: provider-native response, tool/tracing data available from the supported runtime, model errors and usage metadata. The adapter must honor the chosen provider and backend; it cannot silently switch models/providers, grant tools, install dependencies or certify host safety. Model auth must not expose usable user/production credentials inside the tested workload.
 
 ### Contract E — Run Evidence (provider + trusted host observer)
-Required: identity/digest chain; raw outputs; native traces and grading reports; host-side enforcement checks and observed state changes; mock call records; errors, resource use and cleanup result; known visibility gaps. If a required action surface cannot be observed or mediated, safety cannot pass.
+Required: identity/digest chain; raw outputs; an observed provider/model/adapter identity derived from the actual response; native traces and grading reports; host-side enforcement checks and observed state changes; mock call records; errors, resource use and cleanup result; known visibility gaps. The host must also retain a protected consumed-nonce record outside the rollbackable bundle. If a required action surface or runtime identity cannot be observed or mediated, safety cannot pass.
 
 ### Contract F — Evaluation Result (trusted grading + review)
 Three independent dimensions:
@@ -144,6 +144,11 @@ Three independent dimensions:
 | Safety | `PASS`, `FAIL`, `UNKNOWN` |
 
 A completed run is not necessarily safe. A high LLM grade cannot override a critical safety violation. Provider-native grading details remain available without forcing every harness into one synthetic score.
+
+The implemented Stage 3/9 transition gate advances only an exact two-arm run
+with execution `COMPLETED` and safety `PASS`. It preserves quality separately
+and writes a schema-versioned, plan-bound checkpoint without overwriting prior
+evidence. Every other execution or safety outcome remains at the current stage.
 
 ## 9. Execution lifecycle (Stages 3 and 9)
 
@@ -174,15 +179,15 @@ A completed run is not necessarily safe. A high LLM grade cannot override a crit
 | Paired baseline and regression | Each arm starts clean, preserves comparable versions and has independent outcomes |
 | Independent Evaluate Skill self-test | Stage gates, blocked states, resumability and approval binding behave correctly |
 
-## 11. Implementation sequence (not authorized yet)
+## 11. Implementation record and live-release decision
 
 | Milestone | Deliverable | Exit criterion |
 |---|---|---|
-| M1 — Capability inventory | Pin installed Promptfoo, Claude and Codex interfaces; map which tools/sandbox controls actually apply | Provider-specific capability matrix, threat model and known gaps reviewed |
-| M2 — Contracts and policy | Case/run/evidence schemas and backend selection gate | Validation and fail-closed unit tests pass |
-| M3 — Native proof | One real read-only test in each supported provider with independent negative probes | Genuine model result, host enforcement evidence and grading captured |
-| M4 — Expanded profiles | Disposable-write and mock-external scenarios using native where proven; Docker only for unmet constraints | Each profile passes required authorized and forbidden-action tests |
-| M5 — Workflow integration | Hook into existing Stages 3 and 9 with resumability, paired baselines and review | No skipped human gate and no unexplained Pass on failures |
+| M1 — Capability inventory | Pinned Promptfoo, Claude and Codex interfaces; exact claims and probes | Implemented offline; runtime claims remain unverified/unsupported |
+| M2 — Contracts and policy | Case/run/evidence schemas and backend selection gate | Implemented; fail-closed tests pass |
+| M3 — Native proof | Paired preparation, immutable probes and evidence interfaces | Offline orchestration implemented; real provider proof blocked and not run |
+| M4 — Expanded profiles | Bounded-write and mock authorization/audit interfaces | Implemented and acceptance-tested offline; host interposition remains required and no live effects ran |
+| M5 — Workflow integration | Stage 3/9 transition gates and append-only checkpoints | Implemented and acceptance-tested offline |
 
 Do **not** implement a general Docker-based runner as a prerequisite. A small policy/evidence bridge or isolated execution launcher may still be needed where existing provider tools cannot expose necessary controls or evidence.
 
@@ -194,7 +199,13 @@ Do **not** implement a general Docker-based runner as a prerequisite. A small po
 - **Docker feasibility:** If required, verify the same provider integration and auth strategy work inside the hardened container, with mocks and graders still isolated.
 - **Fixture sensitivity:** Only synthetic/approved non-sensitive cases in v1; no assumptions that a read-only provider cannot exfiltrate accessible secrets.
 
-**Architecture status:** Revised proposal for discussion. The 12-stage workflow and existing test cases are unchanged. No repository files or evaluation runtime have been modified.
+**Release status:** The offline v0.2 foundation is implemented. No live model
+or Docker execution was performed. Native confinement remains unverified,
+Docker remains unsupported, and no provider-auth gateway or trusted trace
+collector is configured; live execution therefore remains **Blocked — Not
+Run**. Future runs require a fresh approved plan, current capability evidence,
+an independently produced enforcement receipt, scoped authorization and a
+new isolated evidence record.
 
 ## References used to inform the design
 

@@ -87,6 +87,10 @@ class NativeBoundaryTests(unittest.TestCase):
             config,
             verified_by="trusted-host-verifier",
             verifier_version="1.0",
+            issued_at="2026-01-01T00:00:00Z",
+            expires_at="2026-01-01T01:00:00Z",
+            run_nonce="synthetic-run-nonce",
+            prepared_bundle_digest="prepared-bundle-sha256",
             backend_version="native-boundary-v1",
             workspace_id="disposable-workspace-id",
             enabled_tools=("filesystem_read",),
@@ -110,19 +114,41 @@ class NativeBoundaryTests(unittest.TestCase):
                 "network-egress",
                 "read-outside-workspace",
                 "secondary-tool-route",
+                "write-inside-workspace",
                 "write-outside-workspace",
             ),
         )
-        self.assertEqual(run.call_count, 5)
+        self.assertEqual(run.call_count, 6)
         self.assertTrue(result.complete)
         self.assertTrue(all(item.status == "PASS" for item in result.results))
+
+    def test_environment_probe_receives_host_canary_for_launcher_to_strip(self):
+        with TemporaryDirectory() as temp:
+            workspace = Path(temp) / "workspace"
+            workspace.mkdir()
+            config = self.provider_config(workspace)
+            with patch("native_boundary.subprocess.run", return_value=self.completed()) as run:
+                nb.run_native_preflight(self.plan(), workspace, config)
+
+        environment_call = next(
+            call
+            for call in run.call_args_list
+            if any(str(item).endswith("environment_secret.py") for item in call.args[0])
+        )
+        probe_environment = environment_call.kwargs["env"]
+        self.assertIn("SYNTHETIC_PROBE_SECRET", probe_environment)
+        self.assertTrue(
+            probe_environment["SYNTHETIC_PROBE_SECRET"].startswith(
+                "evaluate-skill-host-canary-"
+            )
+        )
 
     def test_probe_failure_or_missing_result_blocks_receipt(self):
         with TemporaryDirectory() as temp:
             workspace = Path(temp) / "workspace"
             workspace.mkdir()
             config = self.provider_config(workspace)
-            responses = [self.completed()] * 4 + [self.completed("FAIL", "allowed")]
+            responses = [self.completed()] * 5 + [self.completed("FAIL", "allowed")]
             with patch("native_boundary.subprocess.run", side_effect=responses):
                 failed = nb.run_native_preflight(self.plan(), workspace, config)
             with self.assertRaises(nb.BoundaryError):
@@ -163,6 +189,7 @@ class NativeBoundaryTests(unittest.TestCase):
                 "network_egress.py",
                 "read_outside_workspace.py",
                 "secondary_tool_route.py",
+                "write_inside_workspace.py",
                 "write_outside_workspace.py",
             ):
                 (spoof_root / filename).symlink_to(alternate)

@@ -414,6 +414,10 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    coverage for unauthorized actions, injected authority, indirect CLI/API bypass,
    and missing trace evidence as appropriate; require no real service writes.
    Validate the JSON structure, paths and evaluator isolation before execution.
+   Before any Stage 3 execution, build and approve the exact run plan, use
+   `native_eval.py configure` to materialize its model snapshot, limits, and
+   staged revision pins, and have the independent host issue its enforcement
+   receipt for those exact provider-config and bundle digests.
    See [eval design](eval-design-guide.md). Do not encode the answer into the
    evaluated agent's task input.
 
@@ -486,6 +490,16 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    advance the numbered evaluation stages. If the host later becomes ready,
    require a fresh scoped run approval and execution safety check.
 
+   Before executable discovery or dispatch, assess the immutable run plan,
+   matching approval, fresh enforcement receipt and pinned inventory. Inspect
+   and bind the prepared artifact digest to that plan before dispatch. After
+   execution, finalize both independent arms with provider results and trusted
+   host evidence, apply `next_stage_decision`, and write a new plan-bound
+   checkpoint. `BLOCKED`, `INCOMPLETE`, or `INFRA_ERROR` execution and `FAIL`
+   or `UNKNOWN` safety hold Stage 3. Preserve quality separately: a quality
+   `FAIL` is evidence for diagnosis, not a reason to erase the safety result.
+   Never replace a prior checkpoint when resuming.
+
    Execution review checklist:
    - Are live write paths disabled and the mock/disposable environment verified?
    - Are allowed effects and any separately approved live exception recorded?
@@ -513,6 +527,8 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    no unauthorized tool attempt occurred. Keep the provider's native
    results alongside independent host-action/state traces. Do not
    promise a generic `grading.json` or invent a missing score.
+   Stage 4 begins only when the Stage 3 checkpoint authorizes the transition;
+   otherwise remain at Stage 3 with the recorded statuses and reasons.
    Record Unknown/Invalid/Error/Incomplete/Not Run and the limitation
    explicitly, without fabricating PASS. A local teaching pass rate
    (`passed / (passed + failed)`, where the denominator is nonzero)
@@ -641,8 +657,14 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
 
    **Human gate before execution:** confirm the exact case set and
    comparison being run, and independently verify isolation for every run.
+   Repeat the v0.2 plan/receipt assessment and write a fresh Stage 9
+   checkpoint. Only two complete, independently evidenced arms with safety
+   PASS advance.
 
 10. **Check regressions and independence.**
+    Enter this stage only from an advancing Stage 9 checkpoint. A blocked,
+    incomplete, infrastructure-error, safety-failed, or safety-unknown rerun
+    remains at Stage 9 even if a provider report exists.
     Review previously passing cases rerun under the Stage 9 execution gate,
     plus an approved independent case when practical; do not launch model
     evaluations in this review stage without the Stage 9 approval and safety

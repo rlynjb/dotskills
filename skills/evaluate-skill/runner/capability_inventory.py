@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import json
+import platform as host_platform
 from pathlib import Path
 import re
 import shutil
@@ -71,9 +72,16 @@ class ProviderDescriptor:
 
 
 @dataclass(frozen=True)
+class PlatformFingerprint:
+    system: str
+    release: str
+    machine: str
+
+
+@dataclass(frozen=True)
 class CapabilityInventory:
     schema_version: str
-    platform: str
+    platform: PlatformFingerprint
     required_versions: Mapping[str, str]
     providers: Mapping[str, ProviderDescriptor]
     capabilities: Tuple[str, ...]
@@ -134,6 +142,16 @@ def _load_claim(value: Mapping[str, Any], name: str) -> CapabilityClaim:
     if status == "unverified" and not probes:
         raise InventoryError(f"{name} is unverified but has no required probes")
     return CapabilityClaim(status=status, required_probes=probes)
+
+
+def _load_platform(value: Mapping[str, Any]) -> PlatformFingerprint:
+    value = _mapping(value, "inventory.platform")
+    _exact_fields(value, frozenset(("system", "release", "machine")), "inventory.platform")
+    return PlatformFingerprint(
+        system=_text(value["system"], "inventory.platform.system"),
+        release=_text(value["release"], "inventory.platform.release"),
+        machine=_text(value["machine"], "inventory.platform.machine"),
+    )
 
 
 def load_inventory(path: Path) -> CapabilityInventory:
@@ -265,13 +283,24 @@ def load_inventory(path: Path) -> CapabilityInventory:
                 for capability, claim in claim_sets[set_name].items():
                     claims[(provider_name, backend, profile, capability)] = claim
 
+    schema_version = _text(document["schema_version"], "inventory.schema_version")
+    if schema_version != "0.2":
+        raise InventoryError(f"unsupported inventory schema_version: {schema_version}")
     return CapabilityInventory(
-        schema_version=_text(document["schema_version"], "inventory.schema_version"),
-        platform=_text(document["platform"], "inventory.platform"),
+        schema_version=schema_version,
+        platform=_load_platform(document["platform"]),
         required_versions=MappingProxyType(required_versions),
         providers=MappingProxyType(providers),
         capabilities=capabilities,
         claims=MappingProxyType(claims),
+    )
+
+
+def inspect_platform_fingerprint() -> PlatformFingerprint:
+    return PlatformFingerprint(
+        system=host_platform.system().lower(),
+        release=host_platform.release(),
+        machine=host_platform.machine(),
     )
 
 

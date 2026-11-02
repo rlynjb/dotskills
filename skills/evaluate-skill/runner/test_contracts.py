@@ -1,4 +1,5 @@
 import copy
+from datetime import datetime, timezone
 import unittest
 
 import contracts as c
@@ -47,6 +48,9 @@ class ContractTests(unittest.TestCase):
             "schema_version": "0.2",
             "plan_digest": plan.digest(),
             "approved_by": "human-reviewer",
+            "issued_at": "2026-01-01T00:00:00Z",
+            "expires_at": "2026-01-01T01:00:00Z",
+            "run_nonce": "synthetic-run-nonce",
             "provider": plan.provider,
             "model": plan.model,
             "adapter": plan.adapter,
@@ -62,6 +66,9 @@ class ContractTests(unittest.TestCase):
             "plan_digest": plan.digest(),
             "verified_by": "trusted-host-verifier",
             "verifier_version": "1.0",
+            "issued_at": "2026-01-01T00:00:00Z",
+            "expires_at": "2026-01-01T01:00:00Z",
+            "run_nonce": "synthetic-run-nonce",
             "provider": plan.provider,
             "provider_version": plan.provider_version,
             "model": plan.model,
@@ -72,6 +79,8 @@ class ContractTests(unittest.TestCase):
             "backend_version": "macos-seatbelt-verified",
             "capability_profile": plan.capabilities.profile,
             "effective_policy_digest": "policy-sha256",
+            "provider_config_digest": "provider-config-sha256",
+            "prepared_bundle_digest": "prepared-bundle-sha256",
             "workspace_id": "disposable-workspace-id",
             "probe_results": {
                 "read-outside-workspace": "PASS",
@@ -114,9 +123,6 @@ class ContractTests(unittest.TestCase):
             "adapter": ("adapter", "changed"),
             "adapter version": ("adapter_version", "changed"),
             "backend": ("backend", "docker"),
-            "comparison arms": ("comparison_arms", ["with-skill"]),
-            "evidence requirements": ("evidence_requirements", ["host-audit"]),
-            "cleanup requirements": ("cleanup_requirements", ["state-verified"]),
         }
         for name, (field, value) in mutations.items():
             with self.subTest(field=name):
@@ -166,6 +172,97 @@ class ContractTests(unittest.TestCase):
                 del data[field]
                 with self.assertRaises(c.ContractError):
                     c.RunPlan.from_dict(data)
+
+    def test_capability_profiles_enforce_exact_semantics(self):
+        valid = {
+            "no-tool": {
+                "filesystem_read": [],
+                "filesystem_write": [],
+                "shell": False,
+                "network": [],
+                "mock_tools": [],
+                "credentials": [],
+                "side_effects": [],
+            },
+            "read-only": {
+                "filesystem_read": ["fixture"],
+                "filesystem_write": [],
+                "shell": False,
+                "network": [],
+                "mock_tools": [],
+                "credentials": [],
+                "side_effects": [],
+            },
+            "disposable-write": {
+                "filesystem_read": ["fixture"],
+                "filesystem_write": ["disposable"],
+                "shell": False,
+                "network": [],
+                "mock_tools": [],
+                "credentials": [],
+                "side_effects": ["disposable-write"],
+            },
+            "mock-external": {
+                "filesystem_read": ["fixture"],
+                "filesystem_write": [],
+                "shell": False,
+                "network": [],
+                "mock_tools": ["mock.gitlab.create_note"],
+                "credentials": [],
+                "side_effects": ["mock-write"],
+            },
+        }
+        for profile, fields in valid.items():
+            with self.subTest(profile=profile):
+                data = self.run_plan_value()
+                data["capabilities"].update(fields, profile=profile)
+                c.RunPlan.from_dict(data)
+
+        invalid_mutations = (
+            ("read-only", "network", ["https://live.example.invalid"]),
+            ("read-only", "shell", True),
+            ("read-only", "credentials", ["OPENAI_API_KEY"]),
+            ("disposable-write", "filesystem_write", []),
+            ("disposable-write", "filesystem_write", ["one", "two"]),
+            ("mock-external", "mock_tools", []),
+            ("mock-external", "mock_tools", ["live.gitlab.create_note"]),
+            ("no-tool", "filesystem_read", ["fixture"]),
+        )
+        for profile, field, value in invalid_mutations:
+            with self.subTest(profile=profile, field=field):
+                data = self.run_plan_value()
+                data["capabilities"].update(valid[profile], profile=profile)
+                data["capabilities"][field] = value
+                with self.assertRaises(c.ContractError):
+                    c.RunPlan.from_dict(data)
+
+    def test_run_plan_requires_exact_workflow_contracts(self):
+        mutations = (
+            ("comparison_arms", ["with-skill"]),
+            ("comparison_arms", ["without-skill", "with-skill"]),
+            ("evidence_requirements", ["provider-result"]),
+            ("cleanup_requirements", ["workspace-removed"]),
+        )
+        for field, value in mutations:
+            with self.subTest(field=field, value=value):
+                data = self.run_plan_value()
+                data[field] = value
+                with self.assertRaises(c.ContractError):
+                    c.RunPlan.from_dict(data)
+
+    def test_resource_limits_reject_non_finite_or_fractional_counts(self):
+        invalid = (
+            ("max_seconds", float("nan")),
+            ("max_cost_usd", float("inf")),
+            ("max_turns", 2.5),
+            ("max_output_bytes", 3.5),
+        )
+        for field, value in invalid:
+            with self.subTest(field=field, value=value):
+                data = self.run_plan_value()
+                data["resource_limits"][field] = value
+                with self.assertRaises(c.ContractError):
+                    c.RunPlan.from_dict(data)
         for field in ("max_seconds", "max_turns", "max_output_bytes", "max_cost_usd"):
             with self.subTest(resource=field):
                 data = self.run_plan_value()
@@ -176,7 +273,9 @@ class ContractTests(unittest.TestCase):
     def test_approval_receipt_must_match_plan_digest_and_scope(self):
         plan = c.RunPlan.from_dict(self.run_plan_value())
         receipt = c.ApprovalReceipt.from_dict(self.approval_value(plan))
-        receipt.validate_for(plan)
+        receipt.validate_for(
+            plan, at=datetime(2026, 1, 1, 0, 30, tzinfo=timezone.utc)
+        )
 
         for field, value in (
             ("plan_digest", "wrong-digest"),
@@ -210,6 +309,33 @@ class ContractTests(unittest.TestCase):
                 data[field] = value
                 with self.assertRaises(c.ContractError):
                     c.EnforcementReceipt.from_dict(data)
+
+    def test_receipts_require_valid_time_windows_and_nonce(self):
+        plan = c.RunPlan.from_dict(self.run_plan_value())
+        for loader, value in (
+            (c.ApprovalReceipt.from_dict, self.approval_value(plan)),
+            (c.EnforcementReceipt.from_dict, self.enforcement_value(plan)),
+        ):
+            for field, invalid in (
+                ("run_nonce", ""),
+                ("expires_at", "2025-01-01T00:00:00Z"),
+                ("issued_at", "not-a-timestamp"),
+            ):
+                with self.subTest(loader=loader.__qualname__, field=field):
+                    data = copy.deepcopy(value)
+                    data[field] = invalid
+                    with self.assertRaises(c.ContractError):
+                        loader(data)
+
+    def test_receipts_reject_excessive_validity_windows(self):
+        plan = c.RunPlan.from_dict(self.run_plan_value())
+        value = self.approval_value(plan)
+        value.update(
+            issued_at="2026-11-01T12:00:00Z",
+            expires_at="2026-11-01T14:00:01Z",
+        )
+        with self.assertRaisesRegex(c.ContractError, "validity window"):
+            c.ApprovalReceipt.from_dict(value)
 
     def test_contract_rejects_unknown_fields(self):
         plan_data = self.run_plan_value()

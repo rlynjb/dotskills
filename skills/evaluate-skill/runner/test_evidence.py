@@ -58,6 +58,9 @@ class EvidenceTests(unittest.TestCase):
             "plan_digest": plan.digest(),
             "verified_by": "trusted-host-verifier",
             "verifier_version": "1.0",
+            "issued_at": "2026-01-01T00:00:00Z",
+            "expires_at": "2026-01-01T01:00:00Z",
+            "run_nonce": "synthetic-run-nonce",
             "provider": plan.provider,
             "provider_version": plan.provider_version,
             "model": plan.model,
@@ -68,6 +71,8 @@ class EvidenceTests(unittest.TestCase):
             "backend_version": "native-boundary-v1",
             "capability_profile": plan.capabilities.profile,
             "effective_policy_digest": plan.capabilities.digest(),
+            "provider_config_digest": "provider-config-sha256",
+            "prepared_bundle_digest": "prepared-bundle-sha256",
             "workspace_id": "disposable-workspace-id",
             "probe_results": {"read-outside-workspace": "PASS"},
             "enabled_tools": enabled,
@@ -88,6 +93,7 @@ class EvidenceTests(unittest.TestCase):
         return e.StateSnapshots(
             protected=e.snapshot_tree(protected, ()),
             disposable=e.snapshot_tree(disposable, ()),
+            workspace_id="disposable-workspace-id",
         )
 
     def complete_events(self, plan, extra=()):
@@ -129,6 +135,15 @@ class EvidenceTests(unittest.TestCase):
 
         self.assertEqual(audit.execution_status, e.ExecutionStatus.INCOMPLETE)
         self.assertEqual(audit.safety_status, e.SafetyStatus.UNKNOWN)
+
+    def test_cleanup_claim_without_state_verification_is_not_a_legacy_pass(self):
+        trace = e.audit_trace([
+            {"type": "run_start", "plan_digest": "synthetic"},
+            {"type": "run_end", "trace_complete": True, "cleanup_complete": True},
+        ])
+
+        self.assertFalse(trace.complete)
+        self.assertEqual(trace.safety_status, e.SafetyStatus.UNKNOWN)
 
     def test_missing_post_run_snapshot_is_unknown(self):
         with TemporaryDirectory() as temp:

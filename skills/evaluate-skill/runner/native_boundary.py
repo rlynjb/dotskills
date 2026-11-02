@@ -48,12 +48,15 @@ _PROBES = {
     "network-egress": ("network", "network_egress.py"),
     "read-outside-workspace": ("filesystem_read", "read_outside_workspace.py"),
     "secondary-tool-route": ("shell", "secondary_tool_route.py"),
+    "write-inside-workspace": ("filesystem_write", "write_inside_workspace.py"),
     "write-outside-workspace": ("filesystem_write", "write_outside_workspace.py"),
 }
 _PROFILE_PROBES = {
     "no-tool": tuple(sorted(_PROBES)),
     "read-only": tuple(sorted(_PROBES)),
-    "disposable-write": tuple(sorted(_PROBES)),
+    "disposable-write": tuple(
+        sorted(probe_id for probe_id in _PROBES if probe_id != "write-inside-workspace")
+    ),
     "mock-external": tuple(sorted(_PROBES)),
 }
 
@@ -255,6 +258,10 @@ class NativeBoundaryResult:
         *,
         verified_by: str,
         verifier_version: str,
+        issued_at: str,
+        expires_at: str,
+        run_nonce: str,
+        prepared_bundle_digest: str,
         backend_version: str,
         workspace_id: str,
         enabled_tools: Tuple[str, ...],
@@ -272,6 +279,9 @@ class NativeBoundaryResult:
                 "plan_digest": plan.digest(),
                 "verified_by": verified_by,
                 "verifier_version": verifier_version,
+                "issued_at": issued_at,
+                "expires_at": expires_at,
+                "run_nonce": run_nonce,
                 "provider": plan.provider,
                 "provider_version": plan.provider_version,
                 "model": plan.model,
@@ -282,6 +292,8 @@ class NativeBoundaryResult:
                 "backend_version": backend_version,
                 "capability_profile": plan.capabilities.profile,
                 "effective_policy_digest": plan.capabilities.digest(),
+                "provider_config_digest": self.provider_config_digest,
+                "prepared_bundle_digest": prepared_bundle_digest,
                 "workspace_id": workspace_id,
                 "probe_results": {item.probe_id: item.status for item in self.results},
                 "enabled_tools": list(enabled_tools),
@@ -292,11 +304,15 @@ class NativeBoundaryResult:
         )
 
 
-def _probe_args(probe_id: str, config: Mapping[str, Any]) -> list[str]:
+def _probe_args(
+    probe_id: str, workspace: Path, config: Mapping[str, Any]
+) -> list[str]:
     if probe_id == "read-outside-workspace":
         return ["--path", config["outside_read_path"]]
     if probe_id == "write-outside-workspace":
         return ["--path", config["outside_write_path"]]
+    if probe_id == "write-inside-workspace":
+        return ["--path", str(workspace / ".evaluate-skill-write-denial-canary")]
     if probe_id == "network-egress":
         return ["--host", config["network_host"], "--port", str(config["network_port"])]
     if probe_id == "environment-secret":
@@ -335,13 +351,17 @@ def _run_probe(
         *config["boundary_launcher"],
         sys.executable,
         str(script),
-        *_probe_args(probe_id, config),
+        *_probe_args(probe_id, workspace, config),
     ]
+    probe_environment = {"PATH": os.defpath, "PYTHONIOENCODING": "utf-8"}
+    if probe_id == "environment-secret":
+        for name in config["secret_names"]:
+            probe_environment[name] = f"evaluate-skill-host-canary-{config_digest[:16]}"
     try:
         completed = subprocess.run(
             command,
             cwd=workspace,
-            env={"PATH": os.defpath, "PYTHONIOENCODING": "utf-8"},
+            env=probe_environment,
             capture_output=True,
             text=True,
             timeout=15,
@@ -394,6 +414,16 @@ def run_native_preflight(
             raise BoundaryError(f"{field} must be outside the disposable workspace")
     config_digest = provider_config_digest(config)
     required = _PROFILE_PROBES[plan.capabilities.profile]
+    if "write-inside-workspace" in required:
+        canary = workspace / ".evaluate-skill-write-denial-canary"
+        if canary.is_symlink() or (canary.exists() and not canary.is_file()):
+            raise BoundaryError("inside-workspace write canary path is unsafe")
+        if not canary.exists():
+            try:
+                with canary.open("x", encoding="utf-8") as handle:
+                    handle.write("host-owned write denial canary\n")
+            except OSError as exc:
+                raise BoundaryError(f"cannot create inside-workspace write canary: {exc}") from None
     gaps = []
     if config["connectors_enabled"]:
         gaps.append("connector-isolation-unprobed")

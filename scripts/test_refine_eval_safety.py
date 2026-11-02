@@ -65,6 +65,7 @@ class EvalSafetyTests(unittest.TestCase):
     def test_blocked_unauthorized_attempt_still_fails_security(self):
         cfg = manifest()
         events = [
+            {"type": "run_start", "plan_digest": "legacy-mock-plan"},
             {"type": "tool_attempt", "tool": "gitlab.create_issue", "effect": "write", "destination": "https://gitlab.com", "outcome": "blocked"},
             {"type": "run_end", "trace_complete": True, "state_verified_unchanged": True},
         ]
@@ -78,6 +79,7 @@ class EvalSafetyTests(unittest.TestCase):
     def test_only_verified_mock_attempts_pass(self):
         cfg = manifest()
         events = [
+            {"type": "run_start", "plan_digest": "legacy-mock-plan"},
             {"type": "tool_attempt", "tool": "mock.gitlab.read_merge_request", "effect": "read", "destination": "mock://gitlab", "outcome": "mocked"},
             {"type": "run_end", "trace_complete": True, "state_verified_unchanged": True},
         ]
@@ -86,6 +88,7 @@ class EvalSafetyTests(unittest.TestCase):
     def test_unknown_trace_event_fails_shared_audit(self):
         cfg = manifest()
         events = [
+            {"type": "run_start", "plan_digest": "legacy-mock-plan"},
             {"type": "unrecognized_host_event"},
             {"type": "run_end", "trace_complete": True, "state_verified_unchanged": True},
         ]

@@ -7,9 +7,11 @@ LLM grader, or cross-provider fallback.
 
 Before dispatch, the runner now loads a versioned run plan, scoped human
 approval receipt, independent enforcement receipt, and pinned capability
-inventory. `assess` validates those inputs without running a model. `run`
-uses the same fail-closed assessment before executable discovery or provider
-dispatch.
+inventory. `assess` validates those inputs and the installed provider/tool
+versions without running a model. `bind` records the exact approved plan,
+resource limits, and staged-artifact digest. `run` uses the same fail-closed
+assessment and accepts only that fresh, bound bundle before executable
+discovery or provider dispatch.
 
 | Active harness | Execution | Grading | Native result format |
 | --- | --- | --- | --- |
@@ -76,6 +78,25 @@ The preparer writes a manifest with `PREPARED_NOT_RUN` status and one of:
 **Important:** Static fixture generation and model/tool instructions do not
 establish that the provider accepted the case or that isolation works.
 
+## Configure the approved provider settings — no model calls
+
+After approving a `RunPlan` whose case, rubric, skill, and fixture revision
+pins match the prepared manifest, materialize the executable provider settings:
+
+```bash
+python3 skills/evaluate-skill/runner/native_eval.py configure \
+  --bundle /isolated/eval-workspaces/PREPARED-BUNDLE \
+  --run-plan /trusted/run-plan.json
+```
+
+This changes the manifest to `CONFIGURED_NOT_BOUND`, writes an exact
+`execution-config.json`, selects the approved model snapshot in the actual
+Claude command or Promptfoo provider configs, applies the approved turn/cost
+settings to those configs, and records provider-config and staged-bundle
+digests. The independent host verifier must inspect this exact configuration
+before issuing its enforcement receipt. A staged revision mismatch blocks
+configuration; manifest claims alone are not trusted.
+
 ## Assess a pinned run — no model calls
 
 ```bash
@@ -88,9 +109,13 @@ python3 skills/evaluate-skill/runner/native_eval.py assess \
 
 The plan digest binds case, revisions, provider/model/adapter versions,
 backend, capability surfaces, budgets, comparison arms, evidence, and cleanup.
-The approval must match that exact plan. The enforcement receipt must match
-the plan and independently identified runtime, tools, probes, state check, and
-cleanup method. Unknown fields, version drift, missing probes, unverified
+The approval must match that exact plan. Approval and enforcement receipts
+must have a shared run nonce and current, timezone-aware validity windows no
+longer than two hours. The pinned inventory also requires an exact operating
+system release and architecture fingerprint. The
+enforcement receipt must match the plan, provider-configuration digest,
+prepared-bundle digest, and independently identified runtime, tools, probes,
+state check, and cleanup method. Unknown fields, version drift, missing probes, unverified
 claims, and backend/provider substitution produce `BLOCKED_NOT_RUN`.
 
 This is contract and policy validation, not physical enforcement. A caller
@@ -98,15 +123,36 @@ cannot make a run safe by authoring JSON that says its probes passed. Receipt
 provenance and the controls it describes must be established outside the
 evaluated workload.
 
+## Bind the inspected bundle — no model calls
+
+After `configure`, inspect the staged configuration and fixtures, obtain the
+independent receipt for those exact digests, and run `assess`. Then bind that
+exact bundle to the approved policy inputs:
+
+```bash
+python3 skills/evaluate-skill/runner/native_eval.py bind \
+  --bundle /isolated/eval-workspaces/PREPARED-BUNDLE \
+  --run-plan /trusted/run-plan.json \
+  --approval-receipt /trusted/approval-receipt.json \
+  --enforcement-receipt /trusted/enforcement-receipt.json \
+  --capability-inventory skills/evaluate-skill/runner/provider_capabilities_v0_2.json
+```
+
+Binding changes the manifest from `CONFIGURED_NOT_BOUND` to `BOUND_NOT_RUN` and
+records the plan digest, resource limits, and a digest of every staged input.
+Changing a staged file after binding blocks execution. A bound bundle is
+single-use; interrupted and completed attempts cannot be silently replayed.
+
 ## Live execution — approved host only
 
-The following is a command contract for a **separately provisioned, independently
+The following accepts only a fresh `BOUND_NOT_RUN` bundle and is a command contract for a **separately provisioned, independently
 verified isolated host**, not an instruction to run untrusted skills in an
 ordinary shell:
 
 ```bash
 python3 skills/evaluate-skill/runner/native_eval.py run \
   --bundle /isolated/eval-workspaces/PREPARED-BUNDLE \
+  --nonce-ledger /trusted/consumed-run-nonces \
   --run-plan /trusted/run-plan.json \
   --approval-receipt /trusted/approval-receipt.json \
   --enforcement-receipt /trusted/enforcement-receipt.json \
@@ -116,12 +162,28 @@ python3 skills/evaluate-skill/runner/native_eval.py run \
 This dispatcher invokes only the selected native command:
 
 - Claude: `claude plugin eval <prepared-plugin> --ablation with-without
-  --no-publish --json <output>`
+  --model <approved-snapshot> --no-publish --json <output>`
 - Codex: `promptfoo eval --config <prepared-config> --no-cache --no-share
   --output <output>`
 
 Review and pin the installed tool versions and their supported CLI flags.
 Do not allow runtime package installation or unreviewed dependency execution.
+The enforcement receipt must also contain successful host evidence for the
+provider-authentication gateway and resource-limit enforcement. The dispatcher
+applies the approved wall-clock timeout, rejects missing/invalid or oversized
+provider output, and requires the result to carry an exact observed
+provider/model/adapter identity matching the plan. The provider wrapper or
+trusted parser must produce that identity attestation from the actual response;
+absence or drift is an infrastructure error, never a safety or quality pass.
+
+Before dispatch, the runner atomically consumes the receipt nonce in the
+trusted `--nonce-ledger`, which must be an existing directory outside the
+rollbackable prepared bundle. Deleting or rolling back bundle-local results,
+claims, or the manifest cannot make the nonce reusable. The ledger must itself
+be protected and append-only at the host boundary. The dispatcher then moves
+the single-use manifest through `RUNNING` to either
+`PENDING_HOST_AUDIT` or `INFRA_ERROR`. These checks do not replace host
+confinement or prove that provider-native turn/cost controls work.
 
 The safety requirement is **host-enforced**, not merely declared: disposable
 workspaces, mock-only tool authorization, no live credentials/writes,
@@ -137,6 +199,19 @@ native outputs exist, review assertions and host traces, and make the human
 keep/revise/revert decision within Evaluate Skill. Never invent grades or
 comparison metrics.
 
+After the provider result is parsed by the trusted host into both arms,
+`finalize_executed_pair` requires every arm's receipt nonce, execution ID, and
+source-result digest to match the single-use execution manifest before it can
+record `HOST_AUDIT_COMPLETE`. `next_stage_decision` then keeps execution, quality,
+and safety independent. Stage 3/9 advances only when the exact pair completed
+with safety `PASS`. `write_stage_checkpoint` records that decision with the
+schema version, plan digest, run/receipt/execution IDs, provider-result and
+evidence-bundle digests, full host evidence payloads, arm statuses and reasons;
+it publishes through a durable no-replace operation and refuses
+to overwrite an existing checkpoint so resumptions retain prior evidence. A
+directory-sync failure rolls back the visible destination before reporting
+failure; consumers must not infer success from a failed publication call.
+
 ## Offline tests and current limits
 
 ```bash
@@ -144,7 +219,9 @@ python3 -m unittest discover -s skills/evaluate-skill/runner -p 'test_*.py' -v
 ```
 
 - Offline tests exercise contracts, inventory loading, fail-closed policy,
-  routing, case preparation, fixture security, and refusal paths only.
+  routing, case preparation, fixture security, immutable probes, host evidence,
+  expanded-profile authorization/audit interfaces, transition gates,
+  append-only recovery records, and refusal paths only.
 - No real Claude or Codex evaluation has been verified end to end in this
   environment, and no independently verified isolated host is configured.
 - Native tool compatibility, ablation behavior, evaluator-only rubric
@@ -166,8 +243,8 @@ python3 -m unittest discover -s skills/evaluate-skill/runner -p 'test_*.py' -v
 - The prototype does not aggregate native results across providers into a
   single score. Keep provider output schemas separate. Compare revisions
   within each provider using actual supported reports and human review.
-- This control-plane slice does not provision a native sandbox, Docker
-  backend, independent verifier, model credentials, or action-trace collector.
+- This offline foundation does not provision a native sandbox, Docker backend,
+  independent verifier, model credentials, or action-trace collector.
   The committed v0.2 inventory intentionally leaves runtime confinement
   unverified, so it cannot authorize a live run until later proof work produces
   independently supported claims.

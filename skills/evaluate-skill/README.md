@@ -189,9 +189,17 @@ Evaluate Skill uses **only the provider of your active coding session**, never a
 
 [Promptfoo is now part of OpenAI](https://www.promptfoo.dev/about/) and remains open source and multi-provider. **It is a separate CLI using the Codex SDK**, not an automatic built-in Codex grader. Keep provider reports separate; there is no automatic cross-provider scoring or comparison.
 
-The dispatcher supports `inspect` (identify harness), `prepare` (write case files without running a model), and `run` (invoke the approved native tool **only in a separately verified isolated host**). A `--harness` override is for **offline preparation only**; environment markers by themselves do not prove execution identity.
+The dispatcher supports `inspect` (identify harness), `prepare` (write case files without running a model), `configure` (materialize the approved model snapshot, limits, and staged revisions without running a model), `assess` (validate current policy/version inputs), `bind` (digest-bind that configured bundle to one approved plan), and `run` (single-use invocation of the approved native tool **only in a separately verified isolated host**). A `--harness` override is for **offline preparation only**; environment markers by themselves do not prove execution identity.
 
-**Status:** The fixture-path fix and **seven offline runner tests passed**. Live Claude/Codex execution, actual LLM grader output, provider compatibility and independently enforced isolation remain **unverified**. Never infer a successful model run from a prepared bundle or passing offline tests. [Setup, commands and known limits →](runner/README.md)
+**v0.2 status:** The offline implementation now covers strict plan/approval/
+enforcement contracts, pinned capabilities, fail-closed routing, immutable
+negative probes, independent trace/state auditing, paired proof preparation,
+bounded-write and mock authorization/audit interfaces, conditional-Docker refusal, and
+Stage 3/9 checkpoints. The committed inventory still marks native confinement
+unverified and Docker unsupported, so live Claude/Codex execution, real grader
+output, provider compatibility, and host isolation remain **Blocked — Not
+Run**. Never infer a model run from preparation or offline tests. [Setup,
+commands and limits →](runner/README.md)
 
 ## 6. Approval, execution, and safety
 
@@ -200,6 +208,7 @@ The **Execution Safety Gate** applies before **Stages 3 and 9** or **any earlier
 - **Your approval:** Required before minimal structural edits, saving new cases and assertions, running evaluations, making skill changes, justified specialist handoffs, and accepting/releasing changes.
 - **Host isolation:** Actual execution requires a **separately verified, host-enforced mock-only environment**: fresh workspaces, no live credentials or external writes, restricted network/shell/API/child-agent routes, hidden answer keys, and independent tool-attempt and state traces.
 - **Fail closed:** Without scoped approval and independently verified isolation, report **Blocked — Not Run**. An unauthorized attempted action **fails** its safety criterion even if blocked. Missing traces or state checks are **Unknown**, never Pass.
+- **Three statuses:** Preserve execution, quality, and safety independently. Stages 3 and 9 may advance only for a complete paired run with safety **Pass**; append a plan-bound checkpoint and never overwrite earlier evidence.
 - **Safety helper limitation:** `scripts/refine_eval_safety.py` can check a manifest, authorization request and trace, but **cannot enforce a sandbox**. `native_eval.py` does **not** automatically interpose the helper; the host must enforce these controls. No live execution should be inferred from offline checks.
 
 Approval for an eval is **not** permission to publish to GitHub/GitLab, send messages or deploy. Work data must not be sent to an unapproved provider. See the [Execution Safety Gate](references/execution-safety-gate.md), [approval rules](references/approval-gates.md), and [security starter cases](evals/README.md).
