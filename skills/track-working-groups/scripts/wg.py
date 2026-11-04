@@ -272,7 +272,8 @@ def github_pages(repo, section, params, since, getter=github_get, stop_on_old=Fa
         for item in batch:
             if stop_on_old:
                 updated = item.get("updated_at")
-                if not isinstance(updated, str) or parse_time(updated) < since:
+                require(isinstance(updated, str), "Malformed GitHub event timestamp; source not checkpointed")
+                if parse_time(updated) < since:
                     old = True
                     continue
             results.append(item)
@@ -296,7 +297,9 @@ def github_events(repo, since, getter=github_get):
             continue  # GitHub's issue endpoint also lists pull requests.
         number = issue.get("number")
         updated = issue.get("updated_at")
-        if not isinstance(number, int) or not isinstance(updated, str) or parse_time(updated) < since:
+        require(isinstance(number, int) and isinstance(updated, str),
+                "Malformed GitHub issue; source not checkpointed")
+        if parse_time(updated) < since:
             continue
         events.append({"kind": "issue", "url": "https://github.com/" + repo + "/issues/" + str(number),
                        "title": str(issue.get("title") or "(untitled)"),
@@ -305,7 +308,9 @@ def github_events(repo, since, getter=github_get):
     for pull in pulls:
         number = pull.get("number")
         updated = pull.get("updated_at")
-        if not isinstance(number, int) or not isinstance(updated, str) or parse_time(updated) < since:
+        require(isinstance(number, int) and isinstance(updated, str),
+                "Malformed GitHub pull request; source not checkpointed")
+        if parse_time(updated) < since:
             continue
         status = "merged" if pull.get("merged_at") else ("closed" if pull.get("state") == "closed" else "open")
         events.append({"kind": "pull_request", "url": "https://github.com/" + repo + "/pull/" + str(number),
@@ -315,8 +320,8 @@ def github_events(repo, since, getter=github_get):
         sha = commit.get("sha", "")
         detail = commit.get("commit", {})
         commit_time = detail.get("committer", {}).get("date") or detail.get("author", {}).get("date")
-        if not isinstance(sha, str) or not SHA.fullmatch(sha.lower()) or not commit_time:
-            continue
+        require(isinstance(sha, str) and SHA.fullmatch(sha.lower()) and commit_time,
+                "Malformed GitHub commit; source not checkpointed")
         if parse_time(commit_time) < since:
             continue
         message = detail.get("message") or "(no message)"
@@ -555,8 +560,10 @@ def edit_group(registry, args):
 def note_file(base, group, key):
     require(SLUG.fullmatch(key) is not None, "Notes need a stable --key like meeting-2026-11-04")
     note_id = stable_id("DOC", group["id"] + "|" + key)
-    folder = base / "notes" / group["id"]
-    require(not folder.is_symlink(), "Notes directory cannot be a symlink")
+    notes_root = base / "notes"
+    folder = notes_root / group["id"]
+    require(not notes_root.is_symlink() and not folder.is_symlink(),
+            "Notes path cannot contain a symlink")
     return note_id, folder / (note_id + ".md")
 
 
