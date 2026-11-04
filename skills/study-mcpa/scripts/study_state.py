@@ -413,3 +413,118 @@ def execute(args: argparse.Namespace) -> tuple[dict[str, Any], bool, dict[str, A
                 if not valid_step(item_id, cursor["mode"], next_step, labs):
                     raise StateError("Next checkpoint must be a defined step")
                 if item_id in topics and step not in entry["completed_checkpoints"]:
+                    entry["completed_checkpoints"].append(step)
+                cursor["checkpoint_id"] = next_step
+            elif args.next_step:
+                raise StateError("--next-step is only for completed checkpoints")
+            else:
+                cursor["checkpoint_id"] = step
+            if args.note is not None:
+                cursor["resume_note"] = short(args.note, "resume note")
+            cursor["next_action"] = short(args.next_action, "next action") or (f"Continue {item_id} at {cursor['checkpoint_id']}" if args.step else cursor["next_action"])
+            entry["cursor"] = {k: cursor[k] for k in ("mode", "checkpoint_id", "next_action", "resume_note")}
+        elif args.command == "record":
+            if args.attempted <= 0 or args.attempted > 40 or args.correct < 0 or args.correct > args.attempted:
+                raise StateError("Invalid assessment counts")
+            if not (args.evidence or "").strip():
+                raise StateError("Assessment requires observed evidence")
+            item_id = args.id.upper() if args.id else None
+            if args.kind == "Mock":
+                mock = state["mock"]
+                if not mock or mock["status"] != "in_progress" or args.attempted > mock["length"]:
+                    raise StateError("Start the mock first; attempted cannot exceed declared length")
+                mock["status"] = "submitted"
+                state["active"] = {"item_id": None, "mode": "Mock", "checkpoint_id": "ready", "next_action": "Review domain weaknesses or select a topic", "resume_note": None}
+            else:
+                if item_id not in topics or state["active"]["item_id"] != item_id or state["active"]["mode"] != args.kind:
+                    raise StateError("Select the exact study topic and assessment mode before recording its result")
+                entry = state["topics"][item_id]
+                entry["last_practiced_at"] = (args.on_date or today()).isoformat()
+                if args.correct < args.attempted or args.confidence == "low":
+                    entry["status"] = "needs review"
+                    if args.misconception and args.misconception not in entry["misconceptions"]:
+                        entry["misconceptions"].append(short(args.misconception, "misconception"))
+                elif entry["status"] in {"not started", "needs review"} and args.kind == "Review":
+                    entry["status"] = "learning"
+                schedule_review(state, item_id, args.correct == args.attempted and args.confidence != "low", args.kind, args.on_date or today())
+                entry["next_review_at"] = next((item["due_date"] for item in state["review_queue"] if item["item_id"] == item_id), None)
+                cursor = state["active"]
+                cursor["checkpoint_id"] = "feedback"
+                cursor["next_action"] = "Review feedback, then choose the next question or topic"
+                entry["cursor"] = {k: cursor[k] for k in ("mode", "checkpoint_id", "next_action", "resume_note")}
+            state["assessments"].append({
+                "event_id": args.event_id, "kind": args.kind, "item_id": item_id,
+                "date": (args.on_date or today()).isoformat(), "attempted": args.attempted,
+                "correct": args.correct, "confidence": args.confidence,
+                "misconception": short(args.misconception, "misconception"),
+                "evidence": short(args.evidence, "assessment evidence", 500),
+                "self_timed": args.self_timed,
+            })
+        elif args.command == "lab":
+            item_id, entry = need_active(state, topics, labs)
+            if item_id not in labs or not valid_step(item_id, "Lab", args.step, labs) or args.step == "ready":
+                raise StateError("Select a lab and a defined numbered step")
+            if not (args.evidence or "").strip():
+                raise StateError("Lab evidence cannot be blank")
+            if args.kind == "actually_run" and not args.approved:
+                raise StateError("Claiming an executed lab requires explicit approval")
+            if args.verified and args.kind == "proposed":
+                raise StateError("A proposal is not verified completion")
+            entry["steps"][args.step] = {"kind": args.kind, "evidence": short(args.evidence, "lab evidence", 500), "verified": args.verified}
+            entry["cursor"]["checkpoint_id"] = args.step if not args.verified else (f"step-{int(args.step.split('-')[1]) + 1}" if int(args.step.split('-')[1]) < labs[item_id] else "ready")
+            entry["cursor"]["next_action"] = "Verify the lab step" if not args.verified else "Continue with the next permitted lab step"
+            entry["status"] = "completed" if all(entry["steps"].get(f"step-{i}", {}).get("verified") for i in range(1, labs[item_id] + 1)) else "learning"
+            state["active"] = {"item_id": item_id, **copy.deepcopy(entry["cursor"])}
+        elif args.command == "mock-start":
+            if state["mock"] and state["mock"]["status"] == "in_progress":
+                raise StateError("A mock is already in progress; submit or reset it before starting another")
+            state["mock"] = {"length": args.length, "status": "in_progress", "started_at": utc_now()}
+            state["active"] = {"item_id": None, "mode": "Mock", "checkpoint_id": "mock-in-progress", "next_action": "Complete or stop the self-managed mock; exact questions are not saved", "resume_note": None}
+        elif args.command == "mock-stop":
+            if not args.confirm_stop or not state["mock"] or state["mock"]["status"] != "in_progress":
+                raise StateError("Stopping a mock requires an unfinished mock and --confirm-stop")
+            state["mock"]["status"] = "interrupted"
+            state["active"] = {"item_id": None, "mode": "Mock", "checkpoint_id": "ready", "next_action": "Restart mock or select a study topic", "resume_note": None}
+        elif args.command == "reset":
+            if not args.confirm_reset:
+                raise StateError("Reset requires explicit confirmation (--confirm-reset)")
+            state.clear()
+            state.update(initial(version))
+            state["revision"] = args.expected_revision  # transact increments; retain monotonic revision
+        elif args.command == "correct":
+            if not args.confirm_correction or not args.reason.strip():
+                raise StateError("Correction requires confirmation and reason")
+            item_id = args.id.upper()
+            if item_id not in topics:
+                raise StateError("Correction requires an existing curriculum topic ID")
+            entry = get_entry(state, item_id, labs, "Guided")
+            entry["status"] = args.status
+            if args.status == "needs review":
+                schedule_review(state, item_id, False, "Review", today())
+                entry["next_review_at"] = today().isoformat()
+            entry["misconceptions"].append(f"Manual correction: {short(args.reason, 'reason')}")
+        else:
+            raise StateError("Unknown command")
+
+    if args.command in {"record", "lab"} and not args.event_id:
+        raise StateError("Use a stable --event-id for assessment/lab completion, to prevent duplicates on retries")
+    return (*transact(path, version, topics, labs, args, mutate), {})
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = make_parser()
+    args = parser.parse_args(argv)
+    try:
+        state, saved, extras = execute(args)
+        result = {"ok": True, "saved": saved, "revision": state["revision"], "active": state["active"], **extras}
+        if args.command in {"status", "resume", "review"}:
+            result["progress"] = {"topics": state["topics"], "labs": state["labs"], "assessments": state["assessments"], "review_queue": state["review_queue"], "mock": state["mock"]}
+        print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+        return 0
+    except (StateError, OSError, ValueError) as exc:
+        print(json.dumps({"ok": False, "saved": False, "error": str(exc)}, ensure_ascii=False))
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
