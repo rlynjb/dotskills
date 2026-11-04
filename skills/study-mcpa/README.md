@@ -123,7 +123,9 @@ See [persistent progress contract](references/persistence.md) for detailed mode 
 | [references/curriculum.md](references/curriculum.md) | Official exam domain weights, 17 topic IDs, weekly roadmap |
 | [references/teaching-and-progress.md](references/teaching-and-progress.md) | Guided/Practice/Mock/Review behavior, grading, progress |
 | [references/dotskills-mcp-lab.md](references/dotskills-mcp-lab.md) | Five interactive build, security and deployment milestones |
-| [references/progress-template.md](references/progress-template.md) | Optional human-readable progress export |\n| [references/persistence.md](references/persistence.md) | Opt-in saving rules, resume, CLI usage, and error handling |\n| [scripts/study_state.py](scripts/study_state.py) | Dependency-free local JSON progress helper |
+| [references/progress-template.md](references/progress-template.md) | Optional human-readable progress export |
+| [references/persistence.md](references/persistence.md) | Opt-in saving rules, resume, CLI usage, and error handling |
+| [scripts/study_state.py](scripts/study_state.py) | Dependency-free local JSON progress helper |
 | [evals/evals.json](evals/evals.json) | Evaluator-only cases; **not shipped** by runtime adapters |
 
 ## Static checks
