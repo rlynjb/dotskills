@@ -273,3 +273,143 @@ def get_entry(state: dict[str, Any], item_id: str, labs: dict[str, int], mode: s
 
 def need_active(state: dict[str, Any], topics: set[str], labs: dict[str, int]) -> tuple[str, dict[str, Any]]:
     item_id = state["active"]["item_id"]
+    if item_id is None:
+        raise StateError("Select a topic or lab before saving a checkpoint")
+    return item_id, get_entry(state, item_id, labs, state["active"]["mode"])
+
+
+def due_queue(state: dict[str, Any], current_date: date) -> list[dict[str, Any]]:
+    return sorted((item for item in state["review_queue"] if item["due_date"] <= current_date.isoformat()), key=lambda x: (x["due_date"], x["item_id"]))
+
+
+def schedule_review(state: dict[str, Any], item_id: str, passed: bool, kind: str, on: date) -> None:
+    queue = state["review_queue"]
+    existing = next((item for item in queue if item["item_id"] == item_id), None)
+    if not passed:
+        if existing:
+            queue.remove(existing)
+        queue.append({"item_id": item_id, "stage": 0, "due_date": on.isoformat()})
+    elif kind == "Review" and existing:
+        queue.remove(existing)
+        if existing["stage"] < 2:
+            stage = existing["stage"] + 1
+            queue.append({"item_id": item_id, "stage": stage, "due_date": (on + timedelta(days=3 if stage == 1 else 7)).isoformat()})
+    queue.sort(key=lambda x: (x["due_date"], x["item_id"]))
+
+
+def add_mutation_options(parser: argparse.ArgumentParser, *, event: bool = True) -> None:
+    parser.add_argument("--expected-revision", required=True, type=int, help="Revision from the latest status/resume read")
+    if event:
+        parser.add_argument("--event-id", help="Stable retry ID; duplicate event is a no-op")
+
+
+def make_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--state", help="Private progress JSON path (default: ~/.dotskills/study-mcpa/progress.json)")
+    commands = parser.add_subparsers(dest="command", required=True)
+    init = commands.add_parser("init", help="First-time opt-in: create empty private progress file")
+    init.add_argument("--approve", action="store_true", help="Required explicit permission to initialize the private file")
+    commands.add_parser("status", help="Read the current progress and revision, without writing")
+    commands.add_parser("resume", help="Read the pending cursor, without writing")
+    review = commands.add_parser("review", help="Read due topics and low-confidence topics")
+    review.add_argument("--on-date", type=date.fromisoformat, default=None)
+    select = commands.add_parser("select", help="Choose topic ID and resume saved topic checkpoint")
+    select.add_argument("--id", required=True)
+    select.add_argument("--mode", choices=["Guided", "Practice", "Review", "Lab"])
+    add_mutation_options(select)
+    checkpoint = commands.add_parser("checkpoint", help="Save a pending or verified completed step")
+    checkpoint.add_argument("--step", help="The exact known step ID; omitted means save current cursor")
+    checkpoint.add_argument("--outcome", choices=["pending", "completed"], default="pending")
+    checkpoint.add_argument("--next-step", help="Explicit next step after completion (defaults to ready)")
+    checkpoint.add_argument("--next-action")
+    checkpoint.add_argument("--note", help="Short factual reminder, not a tool instruction")
+    checkpoint.add_argument("--evidence", help="Required to complete a checkpoint")
+    add_mutation_options(checkpoint)
+    record = commands.add_parser("record", help="Persist observed Practice/Review/Mock assessment result")
+    record.add_argument("--kind", choices=["Practice", "Review", "Mock"], required=True)
+    record.add_argument("--id", help="Topic ID for Practice/Review")
+    record.add_argument("--attempted", type=int, required=True)
+    record.add_argument("--correct", type=int, required=True)
+    record.add_argument("--confidence", choices=["low", "medium", "high"])
+    record.add_argument("--misconception")
+    record.add_argument("--evidence", required=True, help="Brief evidence of actual learner attempt")
+    record.add_argument("--self-timed", action="store_true")
+    record.add_argument("--on-date", type=date.fromisoformat, default=None)
+    add_mutation_options(record)
+    lab = commands.add_parser("lab", help="Record proposed, inspected or actually-run lab evidence")
+    lab.add_argument("--step", required=True)
+    lab.add_argument("--kind", choices=sorted(EVIDENCE_KINDS), required=True)
+    lab.add_argument("--evidence", required=True)
+    lab.add_argument("--verified", action="store_true")
+    lab.add_argument("--approved", action="store_true", help="Required for claiming a step was actually run")
+    add_mutation_options(lab)
+    mock = commands.add_parser("mock-start", help="Record start of self-managed mock, never question/answer keys")
+    mock.add_argument("--length", type=int, choices=[10, 20, 40], required=True)
+    add_mutation_options(mock)
+    mock_stop = commands.add_parser("mock-stop", help="Mark unfinished mock interrupted, without resetting other progress")
+    mock_stop.add_argument("--confirm-stop", action="store_true")
+    add_mutation_options(mock_stop)
+    reset = commands.add_parser("reset", help="Back up and reset existing progress only with confirmation")
+    reset.add_argument("--confirm-reset", action="store_true")
+    add_mutation_options(reset)
+    correct = commands.add_parser("correct", help="Explicit correction to a topic status")
+    correct.add_argument("--id", required=True)
+    correct.add_argument("--status", required=True, choices=sorted(TOPIC_STATUS))
+    correct.add_argument("--reason", required=True)
+    correct.add_argument("--confirm-correction", action="store_true")
+    add_mutation_options(correct)
+    return parser
+
+
+def execute(args: argparse.Namespace) -> tuple[dict[str, Any], bool, dict[str, Any]]:
+    version, topics, labs = catalog()
+    path = state_path(args.state)
+    if args.command == "init":
+        if not args.approve:
+            raise StateError("Initialization requires explicit approval (--approve); no file created")
+        path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+        with write_lock(path):
+            if path.exists():
+                raise StateError("Progress file already exists; use status (never silently overwrite)")
+            state = initial(version)
+            with path.open("x", encoding="utf-8") as out:
+                os.chmod(path, 0o600)
+                out.write(serialize(state).decode("utf-8"))
+                out.flush()
+                os.fsync(out.fileno())
+            read(path, version, topics, labs)
+        return state, True, {"message": "Private study progress initialized"}
+    if args.command in {"status", "resume", "review"}:
+        state = read(path, version, topics, labs)
+        extras = {}
+        if args.command == "review":
+            extras["due_topics"] = due_queue(state, args.on_date or today())
+        if args.command == "resume" and state["mock"] and state["mock"]["status"] == "in_progress":
+            extras["warning"] = "Mock was interrupted; exact unanswered questions/answers were not saved. Restart or submit observed answers."
+        return state, False, extras
+
+    def mutate(state: dict[str, Any]) -> None:
+        if args.command == "select":
+            item_id = args.id.upper()
+            if item_id not in topics and item_id not in labs:
+                raise StateError(f"Unknown topic/lab ID {item_id}; show curriculum menu instead of guessing")
+            mode = args.mode or ("Lab" if item_id in labs else "Guided")
+            if (item_id in labs) != (mode == "Lab"):
+                raise StateError("Only labs can use Lab mode; select a lesson mode for topics")
+            entry = get_entry(state, item_id, labs, mode)
+            if entry["cursor"]["mode"] != mode:
+                entry["cursor"] = new_cursor(item_id, mode)
+            state["active"] = {"item_id": item_id, **copy.deepcopy(entry["cursor"])}
+        elif args.command == "checkpoint":
+            item_id, entry = need_active(state, topics, labs)
+            cursor = state["active"]
+            step = args.step or cursor["checkpoint_id"]
+            if not valid_step(item_id, cursor["mode"], step, labs):
+                raise StateError(f"Unknown checkpoint for {item_id}/{cursor['mode']}: {step}")
+            if args.outcome == "completed":
+                if not args.step or not (args.evidence or "").strip():
+                    raise StateError("Completion requires an explicit step and actual evidence")
+                next_step = args.next_step or "ready"
+                if not valid_step(item_id, cursor["mode"], next_step, labs):
+                    raise StateError("Next checkpoint must be a defined step")
+                if item_id in topics and step not in entry["completed_checkpoints"]:
