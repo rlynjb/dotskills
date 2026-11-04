@@ -75,6 +75,9 @@ def state_path(cli_value: str | None) -> Path:
     path = Path(raw).expanduser().resolve()
     if path.is_relative_to(SKILL_DIR.resolve()):
         raise StateError("Personal progress must live outside the installed Study MCPA skill")
+    repo_root = SKILL_DIR.parents[1]
+    if (repo_root / "catalog.json").is_file() and path.is_relative_to(repo_root.resolve()):
+        raise StateError("Personal progress must live outside the public DotSkills repository")
     if path.suffix != ".json" or path.name.startswith("."):
         raise StateError("The state path must name a JSON file")
     return path
