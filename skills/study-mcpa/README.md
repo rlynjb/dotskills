@@ -133,6 +133,7 @@ See [persistent progress contract](references/persistence.md) for detailed mode 
 ```bash
 python3 scripts/validate_skill_repository_integrity.py
 python3 scripts/validate_evals.py --all
+python3 -m unittest discover -s tests -p "test_study_mcpa_state.py" -v
 ```
 
 These check package/JSON structure, not model teaching quality, deployed endpoint behavior, or real isolation. Run the `evaluate-skill` evaluation workflow with safe mock-only tooling before treating the skill as behaviorally tested.
