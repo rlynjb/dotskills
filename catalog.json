@@ -116,6 +116,15 @@
       "exposed": true
     },
     {
+      "name": "track-working-groups",
+      "category": "learning",
+      "purpose": "Track and organize working groups with stable IDs, private local state, public GitHub update detection, source-linked briefings, meeting preparation, and imported notes.",
+      "source": "dotskills",
+      "path": "skills/track-working-groups",
+      "reference_count": 0,
+      "exposed": true
+    },
+    {
       "name": "buffr-decision-support",
       "category": "decision-support",
       "purpose": "Buffr M0–M7 module reference and execution guidance; engine remains external.",

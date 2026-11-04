@@ -1,0 +1,4 @@
+#!/bin/sh
+# Optional terminal entry point; add this file to PATH to use the "wg" command.
+set -eu
+exec python3 "$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)/wg.py" "$@"
