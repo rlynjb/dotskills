@@ -1,5 +1,9 @@
 # MCPA curriculum, source map, and learning menu
 
+<!-- curriculum_version: 1 -->
+
+Stable topic IDs and their existing order are the source of truth for persisted study progress. Bump this version intentionally if IDs or checkpoint meaning change; never silently remap previously saved learner state.
+
 ## Source of truth (reviewed 2026-10-30)
 
 - [Linux Foundation MCPA exam / Domains & Competencies](https://training.linuxfoundation.org/certification/model-context-protocol-associate-mcpa/): the five domain weights below, competencies, online-proctored multiple-choice format and 90-minute duration.
