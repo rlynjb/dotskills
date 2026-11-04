@@ -231,6 +231,26 @@ class WorkingGroupTests(unittest.TestCase):
             with wg.locked(PACKAGE):
                 pass
 
+    def test_notes_root_symlink_is_rejected(self):
+        target = self.base / "elsewhere"
+        target.mkdir()
+        (self.base / "notes").symlink_to(target, target_is_directory=True)
+        with self.assertRaisesRegex(wg.WGError, "symlink"):
+            wg.note_file(self.base, self.registry["groups"][0], "meeting-2026-11-04")
+
+    def test_malformed_github_item_fails_source_without_checkpoint(self):
+        def malformed(url):
+            if urlsplit(url).path.endswith("/issues"):
+                return [{"title": "No issue number", "updated_at": TIME}]
+            return []
+        report = wg.run_update(self.registry, self.state, NOW,
+                               group_id="WG-0001", getter=malformed)
+        self.assertEqual(report["summary"]["sources_unavailable"], 1)
+        source = self.state["groups"]["WG-0001"]["sources"][
+            "github:aaif/wg-accuracy-and-reliability"]
+        self.assertIsNone(source.get("checked_at"))
+        self.assertEqual(source.get("seen"), {})
+
     def test_confirmation_flags_are_required(self):
         with self.assertRaises(wg.WGError):
             self.call("remove", "WG-0001")
