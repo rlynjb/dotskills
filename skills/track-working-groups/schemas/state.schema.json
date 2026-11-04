@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Track Working Groups - Source Checkpoints v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "groups"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "groups": {
+      "type": "object",
+      "patternProperties": {
+        "^WG-[0-9]{4,}$": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "sources"
+          ],
+          "properties": {
+            "sources": {
+              "type": "object",
+              "patternProperties": {
+                "^github:": {
+                  "type": "object",
+                  "required": [
+                    "seen"
+                  ],
+                  "properties": {
+                    "checked_at": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "date-time"
+                    },
+                    "seen": {
+                      "type": "object",
+                      "patternProperties": {
+                        "^UPD-[A-F0-9]{16}$": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "last_error": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

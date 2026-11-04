@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "groups": [
+    {
+      "id": "WG-0001",
+      "slug": "accuracy-reliability",
+      "name": "Accuracy & Reliability",
+      "organization": "AAIF",
+      "tracking_status": "active",
+      "membership_status": "unconfirmed",
+      "priority": "high",
+      "topics": [
+        "MCPA",
+        "agent reliability",
+        "DotSkills evals"
+      ],
+      "sources": [
+        {
+          "kind": "github",
+          "url": "https://github.com/aaif/wg-accuracy-and-reliability"
+        }
+      ],
+      "links": [
+        {
+          "label": "AAIF working groups calendar",
+          "url": "https://aaif.io/working-groups/calendar"
+        }
+      ],
+      "meetings": []
+    },
+    {
+      "id": "WG-0002",
+      "slug": "identity-trust",
+      "name": "Identity & Trust",
+      "organization": "AAIF",
+      "tracking_status": "active",
+      "membership_status": "unconfirmed",
+      "priority": "high",
+      "topics": [
+        "MCPA",
+        "MCP authorization",
+        "agent identity"
+      ],
+      "sources": [
+        {
+          "kind": "github",
+          "url": "https://github.com/aaif/wg-identity-and-trust"
+        }
+      ],
+      "links": [
+        {
+          "label": "AAIF working groups calendar",
+          "url": "https://aaif.io/working-groups/calendar"
+        }
+      ],
+      "meetings": []
+    },
+    {
+      "id": "WG-0003",
+      "slug": "security-privacy",
+      "name": "Security & Privacy",
+      "organization": "AAIF",
+      "tracking_status": "active",
+      "membership_status": "unconfirmed",
+      "priority": "medium",
+      "topics": [
+        "MCPA",
+        "agent security",
+        "skill safety"
+      ],
+      "sources": [
+        {
+          "kind": "github",
+          "url": "https://github.com/aaif/wg-security-and-privacy"
+        }
+      ],
+      "links": [
+        {
+          "label": "AAIF working groups calendar",
+          "url": "https://aaif.io/working-groups/calendar"
+        }
+      ],
+      "meetings": []
+    },
+    {
+      "id": "WG-0004",
+      "slug": "observability-traceability",
+      "name": "Observability & Traceability",
+      "organization": "AAIF",
+      "tracking_status": "active",
+      "membership_status": "unconfirmed",
+      "priority": "low",
+      "topics": [
+        "agent traces",
+        "evals",
+        "debugging"
+      ],
+      "sources": [
+        {
+          "kind": "github",
+          "url": "https://github.com/aaif/wg-observability-and-traceability"
+        }
+      ],
+      "links": [
+        {
+          "label": "AAIF working groups calendar",
+          "url": "https://aaif.io/working-groups/calendar"
+        }
+      ],
+      "meetings": []
+    },
+    {
+      "id": "WG-0005",
+      "slug": "workflows-process-integration",
+      "name": "Workflows & Process Integration",
+      "organization": "AAIF",
+      "tracking_status": "active",
+      "membership_status": "unconfirmed",
+      "priority": "low",
+      "topics": [
+        "MCPA",
+        "agent workflows",
+        "harness engineering"
+      ],
+      "sources": [
+        {
+          "kind": "github",
+          "url": "https://github.com/aaif/wg-workflows-and-process-integration"
+        }
+      ],
+      "links": [
+        {
+          "label": "AAIF working groups calendar",
+          "url": "https://aaif.io/working-groups/calendar"
+        }
+      ],
+      "meetings": []
+    }
+  ]
+}
