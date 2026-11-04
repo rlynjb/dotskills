@@ -77,6 +77,28 @@ python3 adapters/openai/install_codex.py --target ../my-project --skill study-mc
 
 The skill in the Git repository does **not** automatically become enabled in every client. The adapters install runtime files; check the harness's skill-loading behavior.
 
+## Optional private progress (v1)
+
+Study MCPA remains a **plain conversational skill**. If the harness can run local commands and the learner approves one private storage path, the bundled Python helper saves meaningful checkpoints automatically and supports a manual `checkpoint` command. No MCP server, database or clickable UI is needed.
+
+```bash
+# Run from the installed study-mcpa skill directory:
+python3 scripts/study_state.py init --approve  # first time, ONLY after permission
+python3 scripts/study_state.py resume          # read progress and revision
+python3 scripts/study_state.py select --id F-01 --mode Guided --expected-revision 0
+# After selection returns revision 1:
+python3 scripts/study_state.py checkpoint --step teach-back \
+  --next-action "Answer teach-back" --expected-revision 1
+# Manual save at any time (use latest reported revision):
+python3 scripts/study_state.py checkpoint --expected-revision 2
+```
+
+Default file: `~/.dotskills/study-mcpa/progress.json`; configurable with `STUDY_MCPA_STATE_PATH` or `--state`. This private file is not part of the public DotSkills repo and is never installed/published with the skill. Select a named topic conversationally; the agent maps an unambiguous phrase to an existing ID and saves the selection when authorized. `continue` reloads the exact pending checkpoint; switching topics preserves unfinished work.
+
+Automatic persistence is **agent-initiated**, not a background process. The agent must actually invoke the helper at each defined event. ChatGPT or any client **without access to the approved writable file** uses session-only progress and may offer a Markdown checkpoint; it cannot truthfully promise cross-chat local persistence. Destructive corrections/reset require separate confirmation.
+
+See [persistent progress contract](references/persistence.md) for detailed mode behavior, review queue, safe lab evidence and recovery.
+
 ## What is in scope
 
 - Official objectives, architecture and current-spec message flow, clear TypeScript-oriented examples, teach-back and scenario practice.
@@ -101,7 +123,7 @@ The skill in the Git repository does **not** automatically become enabled in eve
 | [references/curriculum.md](references/curriculum.md) | Official exam domain weights, 17 topic IDs, weekly roadmap |
 | [references/teaching-and-progress.md](references/teaching-and-progress.md) | Guided/Practice/Mock/Review behavior, grading, progress |
 | [references/dotskills-mcp-lab.md](references/dotskills-mcp-lab.md) | Five interactive build, security and deployment milestones |
-| [references/progress-template.md](references/progress-template.md) | Optional learner-owned study progress template |
+| [references/progress-template.md](references/progress-template.md) | Optional human-readable progress export |\n| [references/persistence.md](references/persistence.md) | Opt-in saving rules, resume, CLI usage, and error handling |\n| [scripts/study_state.py](scripts/study_state.py) | Dependency-free local JSON progress helper |
 | [evals/evals.json](evals/evals.json) | Evaluator-only cases; **not shipped** by runtime adapters |
 
 ## Static checks
