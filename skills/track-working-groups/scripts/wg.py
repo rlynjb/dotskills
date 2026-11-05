@@ -218,6 +218,18 @@ def validate_state(data):
                         "Invalid update fingerprint")
             require(source.get("last_error") is None or isinstance(source["last_error"], str),
                     "Invalid last error")
+    calendar = data.get("calendar")
+    if calendar is not None:
+        require(isinstance(calendar, dict), "Invalid calendar checkpoint")
+        if calendar.get("checked_at") is not None:
+            parse_time(calendar["checked_at"])
+        require(calendar.get("last_error") is None or
+                isinstance(calendar["last_error"], str), "Invalid calendar source error")
+        require(isinstance(calendar.get("seen", {}), dict), "Invalid calendar fingerprints")
+        for key, fingerprint in calendar.get("seen", {}).items():
+            require(isinstance(key, str) and re.fullmatch(r"MTG-[A-F0-9]{16}", key) and
+                    isinstance(fingerprint, str) and re.fullmatch(r"[a-f0-9]{64}", fingerprint),
+                    "Invalid calendar meeting fingerprint")
     return data
 
 
