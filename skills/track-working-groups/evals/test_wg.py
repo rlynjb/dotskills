@@ -11,6 +11,7 @@ import unittest
 from datetime import datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
+from unittest import mock
 from urllib.parse import urlsplit
 
 PACKAGE = Path(__file__).resolve().parents[1]
@@ -336,6 +337,26 @@ class WorkingGroupTests(unittest.TestCase):
         self.assertEqual(wg.load_json(self.base / "state.json")["calendar"]["checked_at"],
                          before["checked_at"])
 
+    def test_bare_wg_command_auto_fetches_and_persists_calendar(self):
+        with mock.patch.object(wg, "fetch_aaif_calendar", return_value=self.aaif_fixture()), \
+             mock.patch.object(wg, "github_events", return_value=[]):
+            result = self.call()
+        self.assertIn("Public AAIF calendar: ok", result)
+        self.assertIn("Other AAIF meetings", result)
+        self.assertEqual(wg.load_json(self.base / "reports" / "latest.json")
+                         ["calendar"]["status"], "ok")
+        self.assertEqual(len(wg.load_json(self.base / "state.json")
+                             ["calendar"]["seen"]), 3)
+
+    def test_first_calendar_outage_keeps_valid_empty_checkpoint(self):
+        report = wg.run_update(self.registry, self.state, NOW,
+                               update_github=False, calendar_error="Synthetic outage")
+        self.assertEqual(self.state["calendar"], {
+            "checked_at": None, "last_error": "Synthetic outage", "seen": {}})
+        wg.validate_state(self.state)
+        self.assertEqual(report["calendar"]["status"], "unavailable")
+        self.assertIn("NOT evidence", wg.render_briefing(report))
+
     def test_calendar_only_skips_github_without_changing_github_state(self):
         entries = wg.parse_aaif_calendar(self.aaif_fixture(), NOW)
         report = wg.run_update(self.registry, self.state, NOW,
@@ -372,9 +393,6 @@ class WorkingGroupTests(unittest.TestCase):
                       wg.format_pacific("2026-10-15T17:00:00Z"))
 
     def test_cancelled_event_is_not_reported(self):
-        page = self.aaif_fixture()
-        page = page.replace('\\"durationMinutes\\": 60}',
-                            '\\"durationMinutes\\": 60}')
         event = {"_id": "aaa:2026-11-05T18:00:00Z", "_type": "event",
                  "title": "Cancelled meeting", "startsAt": "2026-11-05T18:00:00Z",
                  "isCancelled": True,
