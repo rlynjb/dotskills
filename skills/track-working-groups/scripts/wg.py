@@ -473,7 +473,8 @@ def merge_meetings(manual, auto, now):
     for event in auto:
         duplicates = [key for key, entry in result.items()
                       if entry["starts_at"] == event["starts_at"]
-                      and slugify(entry["title"]) == slugify(event["title"])]
+                      and " ".join(entry["title"].split()).casefold() ==
+                      " ".join(event["title"].split()).casefold()]
         for key in duplicates:
             result.pop(key)
         result[event["id"]] = event
@@ -514,7 +515,9 @@ def run_update(registry, state, now, since_override=None, group_id=None, getter=
         state["calendar"] = {"checked_at": stamp, "last_error": None, "seen": seen}
         cal_status, checked_at, cal_error = "ok", stamp, None
     elif calendar_error is not None:
-        state["calendar"] = dict(prior_cal, last_error=calendar_error)
+        state["calendar"] = {"checked_at": prior_cal.get("checked_at"),
+                             "seen": dict(prior_cal.get("seen", {})),
+                             "last_error": calendar_error}
         cal_status, checked_at, cal_error = ("unavailable", prior_cal.get("checked_at"), calendar_error)
         changes = 0
     else:
@@ -994,11 +997,12 @@ def main(argv=None):
                 save_registry(base, registry)
         elif action in ("update", "meetings"):
             now = utc_now()
-            since = duration(args.since) if action == "update" and args.since else None
-            days = args.days
+            since_arg = getattr(args, "since", None)
+            since = duration(since_arg) if action == "update" and since_arg else None
+            days = getattr(args, "days", 14)
             require(1 <= days <= 90, "Calendar lookahead must be 1–90 days")
             events, cal_error = None, None
-            if not (action == "update" and args.no_calendar):
+            if not (action == "update" and getattr(args, "no_calendar", False)):
                 try:
                     events = parse_aaif_calendar(fetch_aaif_calendar(), now, days)
                 except WGError as exc:
