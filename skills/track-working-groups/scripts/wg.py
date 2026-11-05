@@ -14,6 +14,8 @@ import os
 import re
 import sys
 import tempfile
+from html.parser import HTMLParser
+from zoneinfo import ZoneInfo
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -37,6 +39,8 @@ GROUP_ID = re.compile(r"^WG-[0-9]{4,}$")
 SHA = re.compile(r"^[a-f0-9]{40}$")
 MAX_PAGES = 8
 PAGE_SIZE = 100
+AAIF_CALENDAR_URL = "https://aaif.io/working-groups/calendar"
+PACIFIC = ZoneInfo("America/Los_Angeles")
 
 
 class WGError(Exception):
@@ -336,18 +340,176 @@ def github_events(repo, since, getter=github_get):
     return sorted(unique.values(), key=lambda e: (e["updated_at"], e["id"]), reverse=True)
 
 
+
+class _InlineScripts(HTMLParser):
+    """Collect inline scripts only; no JavaScript is executed."""
+
+    def __init__(self):
+        super().__init__()
+        self.in_script = False
+        self.blocks = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "script" and not dict(attrs).get("src"):
+            self.in_script = True
+
+    def handle_endtag(self, tag):
+        if tag == "script":
+            self.in_script = False
+
+    def handle_data(self, data):
+        if self.in_script:
+            self.blocks.append(data)
+
+
+def fetch_aaif_calendar(url=AAIF_CALENDAR_URL):
+    """Read the public AAIF page. Reject external redirects and oversized pages."""
+    require(url == AAIF_CALENDAR_URL, "Unsupported calendar endpoint")
+    headers = {"User-Agent": "DotSkills-track-working-groups/1.1",
+               "Accept": "text/html"}
+    try:
+        with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=25) as response:
+            require(response.status == 200, "AAIF calendar returned unexpected HTTP status")
+            final = urllib.parse.urlsplit(response.geturl())
+            require(final.scheme == "https" and final.hostname == "aaif.io",
+                    "AAIF calendar redirected outside the official domain")
+            require("text/html" in response.headers.get("Content-Type", "").lower(),
+                    "AAIF calendar returned unexpected content type")
+            payload = response.read(3_000_001)
+            require(len(payload) <= 3_000_000, "AAIF calendar exceeded 3 MB limit")
+            return payload.decode("utf-8")
+    except urllib.error.HTTPError as exc:
+        raise WGError("AAIF calendar returned HTTP " + str(exc.code)) from exc
+    except (urllib.error.URLError, TimeoutError, UnicodeError) as exc:
+        raise WGError("AAIF public calendar unavailable") from exc
+
+
+def parse_aaif_calendar(page_html, now, days=14):
+    """Read official Next.js Flight event DATA and output a strict, safe field subset.
+
+    The upstream may include recordings, LFX join credentials and transcripts.
+    None of that content is copied to user records or output.
+    """
+    require(1 <= days <= 90, "Calendar lookahead must be 1–90 days")
+    require(isinstance(page_html, str), "AAIF response must be HTML text")
+    scripts = _InlineScripts()
+    scripts.feed(page_html)
+    chunks = []
+    flight = re.compile(r'self\.__next_f\.push\(\[\d+,("(?:\\.|[^"\\])*")\]\)', re.S)
+    for block in scripts.blocks:
+        match = flight.search(block)
+        if match:
+            try:
+                chunks.append(json.loads(match.group(1)))
+            except (ValueError, TypeError) as exc:
+                raise WGError("Malformed AAIF calendar page-data encoding") from exc
+    require(bool(chunks), "AAIF calendar has no readable event payload; check website changes")
+    stream = "".join(chunks)
+    event_prefix = re.compile(r'\{"_id"\s*:\s*"[^"]+"\s*,\s*"_type"\s*:\s*"event"')
+    raw_count = 0
+    found = {}
+    decoder = json.JSONDecoder()
+    window_end = now + timedelta(days=days)
+    for match in event_prefix.finditer(stream):
+        raw_count += 1
+        try:
+            event, _ = decoder.raw_decode(stream, match.start())
+        except ValueError as exc:
+            raise WGError("Malformed AAIF calendar event data") from exc
+        if not isinstance(event, dict) or not isinstance(event.get("meeting"), dict):
+            continue
+        provider = event["meeting"]
+        key = event.get("_id")
+        start_text = event.get("startsAt")
+        title = event.get("title")
+        group_slug = provider.get("groupSlug")
+        if not (isinstance(key, str) and 1 <= len(key) <= 180
+                and isinstance(start_text, str) and isinstance(title, str)
+                and isinstance(group_slug, str) and SLUG.fullmatch(group_slug)):
+            continue  # An unidentifiable event cannot be safely assigned to a group.
+        if event.get("cancelled") or event.get("isCancelled") or event.get("status") == "cancelled":
+            continue
+        starts = parse_time(start_text)
+        if not (now <= starts <= window_end):
+            continue
+        canonical = ("https://aaif.io/working-groups/" + group_slug)
+        duration_minutes = provider.get("durationMinutes")
+        end = event.get("endsAt")
+        if isinstance(end, str):
+            ends_at = iso(parse_time(end))
+        elif isinstance(duration_minutes, int) and 1 <= duration_minutes <= 480:
+            ends_at = iso(starts + timedelta(minutes=duration_minutes))
+        else:
+            ends_at = None
+        meeting = {"id": stable_id("MTG", "aaif|" + key),
+                   "title": " ".join(title.split())[:240],
+                   "starts_at": iso(starts), "ends_at": ends_at,
+                   "url": canonical, "source": "aaif_public_calendar",
+                   "group_slug": group_slug}
+        require(bool(meeting["title"]), "AAIF calendar returned an empty meeting title")
+        existing = found.get(meeting["id"])
+        require(existing is None or existing == meeting, "Conflicting AAIF calendar event IDs")
+        found[meeting["id"]] = meeting
+    require(raw_count > 0, "No AAIF calendar events found; site markup may have changed")
+    return sorted(found.values(), key=lambda m: (m["starts_at"], m["id"]))
+
+
+def merge_meetings(manual, auto, now):
+    """Prefer source-verified events over duplicate manual entries at the same time."""
+    result = {m["id"]: dict(m, source=m.get("source", "manual"))
+              for m in manual if parse_time(m["starts_at"]) >= now}
+    for event in auto:
+        duplicates = [key for key, entry in result.items()
+                      if entry["starts_at"] == event["starts_at"]
+                      and slugify(entry["title"]) == slugify(event["title"])]
+        for key in duplicates:
+            result.pop(key)
+        result[event["id"]] = event
+    return sorted(result.values(), key=lambda m: (m["starts_at"], m["id"]))
+
+
+def format_pacific(start):
+    return parse_time(start).astimezone(PACIFIC).strftime("%a %b %d, %Y %I:%M %p %Z")
+
+
 def group_meetings(group, now):
     return sorted([m for m in group["meetings"] if parse_time(m["starts_at"]) >= now],
                   key=lambda m: (parse_time(m["starts_at"]), m["id"]))
 
 
-def run_update(registry, state, now, since_override=None, group_id=None, getter=github_get):
+def run_update(registry, state, now, since_override=None, group_id=None, getter=github_get,
+               calendar_events=None, calendar_error=None, update_github=True):
     """Pure-ish core: inject getter and clock for reproducible tests; modify state only on success."""
     stamp = iso(now)
     report = {"schema_version": 1, "generated_at": stamp,
               "summary": {"groups_checked": 0, "new_or_changed": 0,
                           "sources_ok": 0, "sources_unavailable": 0},
               "groups": []}
+    require(not (calendar_events is not None and calendar_error is not None),
+            "Calendar results cannot be successful and failed together")
+    all_slugs = {g["slug"] for g in registry["groups"]}
+    auto_by_slug = {}
+    if calendar_events is not None:
+        for entry in calendar_events:
+            auto_by_slug.setdefault(entry["group_slug"], []).append(entry)
+    untracked = sorted([e for e in (calendar_events or [])
+                        if e["group_slug"] not in all_slugs],
+                       key=lambda m: (m["starts_at"], m["id"]))
+    prior_cal = state.get("calendar", {})
+    if calendar_events is not None:
+        seen = {entry["id"]: json_hash(entry) for entry in calendar_events}
+        changes = sum(prior_cal.get("seen", {}).get(k) != v for k, v in seen.items())
+        state["calendar"] = {"checked_at": stamp, "last_error": None, "seen": seen}
+        cal_status, checked_at, cal_error = "ok", stamp, None
+    elif calendar_error is not None:
+        state["calendar"] = dict(prior_cal, last_error=calendar_error)
+        cal_status, checked_at, cal_error = ("unavailable", prior_cal.get("checked_at"), calendar_error)
+        changes = 0
+    else:
+        cal_status, checked_at, cal_error, changes = "not_checked", prior_cal.get("checked_at"), None, 0
+    report["calendar"] = {"url": AAIF_CALENDAR_URL, "status": cal_status,
+                          "checked_at": checked_at, "error": cal_error,
+                          "new_or_changed": changes, "untracked_meetings": untracked}
     groups = [select_group(registry, group_id)] if group_id else [
         g for g in registry["groups"] if g["tracking_status"] == "active"]
     for group in ordered(groups):
@@ -355,13 +517,14 @@ def run_update(registry, state, now, since_override=None, group_id=None, getter=
             raise WGError("Archived group must be resumed before updating")
         summary = {"id": group["id"], "name": group["name"],
                    "priority": group["priority"], "topics": group["topics"],
-                   "sources": [], "updates": [], "meetings": group_meetings(group, now)}
+                   "sources": [], "updates": [], "meetings": merge_meetings(
+                       group_meetings(group, now), auto_by_slug.get(group["slug"], []), now)}
         report["summary"]["groups_checked"] += 1
         group_state = state["groups"].setdefault(group["id"], {"sources": {}})
-        if not group["sources"]:
+        if update_github and not group["sources"]:
             summary["sources"].append({"url": "", "status": "unconfigured",
                                        "checked_at": None, "new_count": 0, "error": "No supported source configured"})
-        for source in group["sources"]:
+        for source in (group["sources"] if update_github else []):
             repo = github_repo(source["url"])
             key = "github:" + repo
             previous = group_state["sources"].get(key, {"seen": {}})
@@ -391,6 +554,9 @@ def run_update(registry, state, now, since_override=None, group_id=None, getter=
                 group_state["sources"][key] = failed
                 report["summary"]["sources_unavailable"] += 1
             summary["sources"].append(source_report)
+        if not update_github:
+            summary["sources"].append({"url": "", "status": "not_checked",
+                                       "checked_at": None, "new_count": 0, "error": None})
         summary["updates"] = sorted(summary["updates"],
                                     key=lambda e: (-parse_time(e["updated_at"]).timestamp(), e["id"]))
         report["summary"]["new_or_changed"] += len(summary["updates"])
@@ -413,13 +579,22 @@ def render_briefing(report):
                  str(summary["new_or_changed"]) + " new/changed items; " +
                  str(summary["sources_ok"]) + " sources succeeded; " +
                  str(summary["sources_unavailable"]) + " sources unavailable.")
+    calendar = report.get("calendar", {})
+    lines.append("Public AAIF calendar: " + md(calendar.get("status", "not_checked")) +
+                 "; verified upcoming events: " +
+                 str(sum(len(g["meetings"]) for g in report["groups"]) +
+                     len(calendar.get("untracked_meetings", []))) +
+                 "; newly added/changed: " + str(calendar.get("new_or_changed", 0)) + ".")
     lines.extend(["", "## 2. Working Group Updates", ""])
     if not report["groups"]:
         lines.extend(["No active working groups are configured.", ""])
     for group in report["groups"]:
         lines.extend(["### " + md(group["id"]) + " — " + md(group["name"]), ""])
         if not group["updates"]:
-            lines.append("No new or changed items detected in successfully checked sources.")
+            if group["sources"] and all(src["status"] == "not_checked" for src in group["sources"]):
+                lines.append("GitHub updates were not checked (calendar-only request).")
+            else:
+                lines.append("No new or changed items detected in successfully checked sources.")
         for event in group["updates"]:
             lines.append("- " + md(event["id"]) + " | " + md(event["kind"]) + " (" +
                          md(event["state"]) + ") | [" + md(event["title"]) + "](" + event["url"] +
@@ -444,10 +619,24 @@ def render_briefing(report):
     lines.extend(["", "## 4. Upcoming Meetings", ""])
     meetings = [(g, m) for g in report["groups"] for m in g["meetings"]]
     if not meetings:
-        lines.append("No verified upcoming meetings in the local registry. Check official group calendars/LFX.")
-    for group, meeting in meetings:
-        label = md(group["id"]) + " — " + md(meeting["title"]) + " at " + meeting["starts_at"]
+        lines.append("No verified upcoming meetings in the current results; consult source status below.")
+    for group, meeting in sorted(meetings, key=lambda x: (x[1]["starts_at"], x[0]["id"], x[1]["id"])):
+        label = md(group["id"]) + " — " + md(meeting["title"]) + " — " + format_pacific(meeting["starts_at"])
+        label += " (" + md(meeting.get("source", "manual")) + ")"
         lines.append("- " + label + ((" — " + meeting["url"]) if meeting.get("url") else ""))
+    other = calendar.get("untracked_meetings", [])
+    if other:
+        lines.extend(["", "**Other AAIF meetings (not in your tracked group registry)**", ""])
+        for event in other[:15]:
+            lines.append("- " + md(event["title"]) + " — " + format_pacific(event["starts_at"]) +
+                         " — " + event["url"])
+        if len(other) > 15:
+            lines.append("- ...and " + str(len(other) - 15) + " more untracked AAIF meetings.")
+    if calendar.get("status") == "unavailable":
+        lines.append("AAIF calendar unavailable: " + md(calendar.get("error") or "unknown error") +
+                     ". Absence of events is NOT evidence that no meetings are scheduled.")
+    elif calendar.get("status") == "not_checked":
+        lines.append("AAIF public calendar was not checked; only saved manual meeting dates are listed.")
     lines.extend(["", "## 5. Learning Connections", ""])
     for group in report["groups"]:
         lines.append("- " + md(group["id"]) + ": " +
@@ -458,6 +647,9 @@ def render_briefing(report):
     lines.extend(["", "## 6. Sources & Checkpoint Status", ""])
     if not report["groups"]:
         lines.append("No sources checked.")
+    lines.append("- AAIF public calendar: " + md(calendar.get("status", "not_checked")) +
+                 " | last successful check: " + md(calendar.get("checked_at") or "never") +
+                 " | " + AAIF_CALENDAR_URL)
     for group in report["groups"]:
         for src in group["sources"]:
             lines.append("- " + group["id"] + " | " + md(src["status"]) +
@@ -496,6 +688,10 @@ def print_groups(groups):
 
 
 def status(registry, state):
+    calendar = state.get("calendar", {})
+    print("Public AAIF calendar | checked=" + str(calendar.get("checked_at") or "never") +
+          " | " + ("unavailable: " + calendar["last_error"] if calendar.get("last_error")
+                    else "no known error"))
     for group in ordered(registry["groups"]):
         pieces = []
         for src in group["sources"]:
@@ -629,11 +825,21 @@ def prep(registry, base, identity):
         print("- " + event["id"] + ": " + event["title"] + " — " + event["url"])
     if not entries:
         print("No recent items in the last saved briefing; run wg update " + group["slug"] + ".")
-    print("\n## Upcoming meetings")
-    for meeting in group_meetings(group, utc_now()):
-        print("- " + meeting["starts_at"] + " " + meeting["title"] + " " + str(meeting.get("url") or ""))
-    if not group_meetings(group, utc_now()):
-        print("No locally verified meeting date. See the linked official calendar.")
+    print("\n## Upcoming meetings (last saved report + manual records)")
+    records = group_meetings(group, utc_now())
+    if latest.is_file():
+        past = load_json(latest)
+        for item in past.get("groups", []):
+            if item.get("id") == group["id"] and past.get("calendar", {}).get("status") == "ok":
+                print("Calendar checked at " + str(past.get("calendar", {}).get("checked_at")))
+                records = merge_meetings(records, [m for m in item.get("meetings", [])
+                                                  if m.get("source") == "aaif_public_calendar"
+                                                  and parse_time(m["starts_at"]) >= utc_now()], utc_now())
+    for meeting in records:
+        print("- " + format_pacific(meeting["starts_at"]) + " " + meeting["title"] + " " +
+              str(meeting.get("url") or ""))
+    if not records:
+        print("No saved verified meeting date; check the public calendar using wg meetings.")
     print("\n## Existing notes")
     folder = base / "notes" / group["id"]
     if folder.is_dir() and not folder.is_symlink():
@@ -655,12 +861,17 @@ def parser():
     sub.add_parser("init", help="Seed your private registry without overwriting existing files")
     sub.add_parser("list", help="List all groups, including paused and archived")
     sub.add_parser("status", help="Show per-source checkpoints and errors")
+    meetings_live = sub.add_parser("meetings", help="Refresh AAIF public meetings only (no GitHub checks)")
+    meetings_live.add_argument("group", nargs="?")
+    meetings_live.add_argument("--days", type=int, default=14, help="1–90 day lookahead")
     sub.add_parser("validate", help="Validate registry and state against the v1 contract")
     links_p = sub.add_parser("links", help="Print official source and reference URLs")
     links_p.add_argument("group", nargs="?")
     upd = sub.add_parser("update", help="Refresh active groups or one selected group")
     upd.add_argument("group", nargs="?")
     upd.add_argument("--since", help="Expand lookback window: 30d, 2w, 48h")
+    upd.add_argument("--days", type=int, default=14, help="1–90 day meeting lookahead")
+    upd.add_argument("--no-calendar", action="store_true", help="Explicitly skip public AAIF calendar")
     add = sub.add_parser("add", help="Register a new group (agent can guide the input)")
     add.add_argument("--name", required=True)
     add.add_argument("--slug")
@@ -769,10 +980,21 @@ def main(argv=None):
         elif action == "meeting":
             if meeting_command(registry, args):
                 save_registry(base, registry)
-        elif action == "update":
-            since = duration(args.since) if getattr(args, "since", None) else None
-            report = run_update(registry, state, utc_now(), since,
-                                group_id=getattr(args, "group", None))
+        elif action in ("update", "meetings"):
+            now = utc_now()
+            since = duration(args.since) if action == "update" and args.since else None
+            days = args.days
+            require(1 <= days <= 90, "Calendar lookahead must be 1–90 days")
+            events, cal_error = None, None
+            if not (action == "update" and args.no_calendar):
+                try:
+                    events = parse_aaif_calendar(fetch_aaif_calendar(), now, days)
+                except WGError as exc:
+                    cal_error = str(exc)
+            report = run_update(registry, state, now, since,
+                                group_id=getattr(args, "group", None),
+                                calendar_events=events, calendar_error=cal_error,
+                                update_github=(action == "update"))
             saved = store_report(base, report, state)
             print(render_briefing(report))
             print("Saved briefing: " + str(saved))
