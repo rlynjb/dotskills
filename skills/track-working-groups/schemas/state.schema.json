@@ -63,6 +63,44 @@
         }
       },
       "additionalProperties": false
+    },
+    "calendar": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checked_at",
+        "last_error",
+        "seen"
+      ],
+      "properties": {
+        "checked_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_error": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "seen": {
+          "type": "object",
+          "patternProperties": {
+            "^MTG-[A-F0-9]{16}$": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
     }
   }
 }
