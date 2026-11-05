@@ -4,7 +4,7 @@ Generated (UTC): <run timestamp>
 
 ## 1. Overview
 
-Counts of checked groups, changed items, successes and failures.
+Counts of checked groups, changed GitHub items, successes and failures, plus AAIF public calendar availability and meeting counts.
 
 ## 2. Working Group Updates
 
@@ -16,7 +16,7 @@ Discussion/proposal candidates with evidence; no unverified formal-decision clai
 
 ## 4. Upcoming Meetings
 
-Verified future dates or "No locally verified meeting dates".
+Upcoming source-verified AAIF meetings associated with tracked groups, plus manually recorded dates. All times are displayed in Pacific time with daylight saving rules. List other source-verified AAIF events under **Other AAIF meetings (not in your tracked group registry)**. On calendar failure show **unavailable**, not a fabricated empty schedule. Meeting URLs are canonical AAIF group pages, never private join tokens.
 
 ## 5. Learning Connections
 
@@ -24,6 +24,6 @@ Configured tags, not invented conclusions.
 
 ## 6. Sources & Checkpoint Status
 
-Per-source URLs and last successful checks, including errors.
+Separate public GitHub and AAIF calendar URLs, last successful source checks, and explicit unavailable or not-checked statuses.
 
 *Human reference only; the executable renderer in scripts/wg.py is authoritative.*

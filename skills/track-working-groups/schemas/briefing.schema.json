@@ -100,7 +100,8 @@
                   "enum": [
                     "ok",
                     "unavailable",
-                    "unconfigured"
+                    "unconfigured",
+                    "not_checked"
                   ]
                 },
                 "checked_at": {
@@ -198,7 +199,121 @@
                       "type": "null"
                     }
                   ]
+                },
+                "source": {
+                  "enum": [
+                    "manual",
+                    "aaif_public_calendar"
+                  ]
+                },
+                "group_slug": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+                },
+                "ends_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "format": "date-time"
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "calendar": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "status",
+        "checked_at",
+        "error",
+        "new_or_changed",
+        "untracked_meetings"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "status": {
+          "enum": [
+            "ok",
+            "unavailable",
+            "not_checked"
+          ]
+        },
+        "checked_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "error": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "new_or_changed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "untracked_meetings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "title",
+              "starts_at",
+              "url"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^MTG-[0-9A-F]{16}$"
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1
+              },
+              "starts_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "source": {
+                "enum": [
+                  "manual",
+                  "aaif_public_calendar"
+                ]
+              },
+              "group_slug": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "ends_at": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
               }
             }
           }
