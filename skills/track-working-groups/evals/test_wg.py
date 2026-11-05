@@ -251,6 +251,148 @@ class WorkingGroupTests(unittest.TestCase):
         self.assertIsNone(source.get("checked_at"))
         self.assertEqual(source.get("seen"), {})
 
+
+    def aaif_fixture(self):
+        """Synthetic Flight stream with public event metadata and a private-looking join URL."""
+        entries = [
+            ("99263049290:2026-11-05T17:00:00Z", "Identity & Trust Working Group",
+             "identity-trust", "2026-11-05T17:00:00Z"),
+            ("96669513178:2026-11-05T18:00:00Z",
+             "Governance, Risk & Regulatory Alignment Working Group",
+             "governance-risk-regulatory-alignment", "2026-11-05T18:00:00Z"),
+            ("96916295650:2026-11-05T18:00:00Z",
+             "Observability & Tracing - Agent State, Context, and Reasoning",
+             "observability-traceability", "2026-11-05T18:00:00Z"),
+        ]
+        data = [{"_id": eid, "_type": "event", "title": title,
+                 "startsAt": starts, "endsAt": None,
+                 "joinUrl": "https://zoom-lfx.platform.linuxfoundation.org/meeting/123?password=SECRETPASS",
+                 "meeting": {"meetingId": eid.split(":")[0], "groupSlug": group,
+                             "durationMinutes": 60}}
+                for eid, title, group, starts in entries]
+        return "<html><script>self.__next_f.push([1," + json.dumps(
+            "a0:" + json.dumps(data)) + "])</script></html>"
+
+    def test_public_calendar_parses_three_source_events_with_stable_ids(self):
+        html = self.aaif_fixture()
+        entries = wg.parse_aaif_calendar(html, NOW, days=14)
+        again = wg.parse_aaif_calendar(html, NOW, days=14)
+        self.assertEqual(len(entries), 3)
+        self.assertEqual(entries, again)
+        self.assertEqual({e["group_slug"] for e in entries},
+                         {"identity-trust", "observability-traceability",
+                          "governance-risk-regulatory-alignment"})
+        self.assertTrue(all(e["id"].startswith("MTG-") for e in entries))
+        self.assertEqual(len({e["id"] for e in entries}), 3)
+        self.assertTrue(all(e["source"] == "aaif_public_calendar" for e in entries))
+
+    def test_public_calendar_drops_sensitive_join_data(self):
+        html = self.aaif_fixture()
+        parsed = wg.parse_aaif_calendar(html, NOW)
+        self.assertIn("SECRETPASS", html)
+        self.assertNotIn("SECRETPASS", json.dumps(parsed))
+        self.assertNotIn("zoom-lfx", json.dumps(parsed))
+        self.assertTrue(all(e["url"].startswith("https://aaif.io/working-groups/") for e in parsed))
+
+    def test_calendar_meeting_match_untracked_and_pacific_time(self):
+        entries = wg.parse_aaif_calendar(self.aaif_fixture(), NOW)
+        report = wg.run_update(self.registry, self.state, NOW, getter=lambda url: [],
+                               calendar_events=entries)
+        self.assertEqual(report["calendar"]["status"], "ok")
+        self.assertEqual(report["calendar"]["new_or_changed"], 3)
+        self.assertEqual(len(report["calendar"]["untracked_meetings"]), 1)
+        self.assertEqual(report["calendar"]["untracked_meetings"][0]["group_slug"],
+                         "governance-risk-regulatory-alignment")
+        by_group = {g["id"]: g for g in report["groups"]}
+        self.assertEqual(len(by_group["WG-0002"]["meetings"]), 1)
+        self.assertEqual(len(by_group["WG-0004"]["meetings"]), 1)
+        self.assertEqual(len(by_group["WG-0001"]["meetings"]), 0)
+        self.assertIn("09:00 AM PST", wg.render_briefing(report))
+        self.assertIn("10:00 AM PST", wg.render_briefing(report))
+        self.assertIn("Other AAIF meetings", wg.render_briefing(report))
+        self.assertNotIn("SECRETPASS", json.dumps(report))
+        self.assertEqual(len(self.registry["groups"]), 5)  # Do not add governance as member.
+
+    def test_calendar_checkpoint_replay_and_error_isolation(self):
+        entries = wg.parse_aaif_calendar(self.aaif_fixture(), NOW)
+        first = wg.run_update(self.registry, self.state, NOW, getter=lambda url: [],
+                              calendar_events=entries)
+        self.assertEqual(first["calendar"]["new_or_changed"], 3)
+        before = copy.deepcopy(self.state["calendar"])
+        second = wg.run_update(self.registry, self.state, NOW, getter=lambda url: [],
+                               calendar_events=entries)
+        self.assertEqual(second["calendar"]["new_or_changed"], 0)
+        failed = wg.run_update(self.registry, self.state, NOW.replace(hour=16),
+                               getter=lambda url: [], calendar_error="Synthetic outage")
+        self.assertEqual(failed["calendar"]["status"], "unavailable")
+        self.assertEqual(self.state["calendar"]["checked_at"], before["checked_at"])
+        self.assertEqual(self.state["calendar"]["seen"], before["seen"])
+        self.assertEqual(failed["summary"]["sources_ok"], 5)
+        self.assertNotIn("No verified upcoming meetings in the local registry",
+                         wg.render_briefing(failed))
+        self.assertIn("NOT evidence", wg.render_briefing(failed))
+        wg.validate_state(self.state)
+        wg.store_report(self.base, failed, self.state)
+        self.assertEqual(wg.load_json(self.base / "state.json")["calendar"]["checked_at"],
+                         before["checked_at"])
+
+    def test_calendar_only_skips_github_without_changing_github_state(self):
+        entries = wg.parse_aaif_calendar(self.aaif_fixture(), NOW)
+        report = wg.run_update(self.registry, self.state, NOW,
+                               update_github=False, calendar_events=entries)
+        self.assertEqual(report["summary"]["sources_ok"], 0)
+        self.assertTrue(all(g["sources"][0]["status"] == "not_checked"
+                            for g in report["groups"]))
+        self.assertIn("GitHub updates were not checked", wg.render_briefing(report))
+        self.assertEqual(self.state["groups"]["WG-0002"]["sources"], {})
+        self.assertEqual(len(report["calendar"]["untracked_meetings"]), 1)
+
+    def test_public_meetings_override_manual_same_start_and_title(self):
+        entries = wg.parse_aaif_calendar(self.aaif_fixture(), NOW)
+        group = wg.select_group(self.registry, "WG-0002")
+        group["meetings"].append({
+            "id": wg.stable_id("MTG", "manual-demo"),
+            "title": "Identity & Trust Working Group",
+            "starts_at": "2026-11-05T17:00:00Z",
+            "url": None})
+        report = wg.run_update(self.registry, self.state, NOW,
+                               getter=lambda url: [], calendar_events=entries)
+        group_report = next(g for g in report["groups"] if g["id"] == "WG-0002")
+        self.assertEqual(len(group_report["meetings"]), 1)
+        self.assertEqual(group_report["meetings"][0]["source"], "aaif_public_calendar")
+
+    def test_calendar_safety_rejects_wrong_format_dates_and_windows(self):
+        with self.assertRaisesRegex(wg.WGError, "readable event payload"):
+            wg.parse_aaif_calendar("<html>No Flight data</html>", NOW)
+        with self.assertRaisesRegex(wg.WGError, "1–90"):
+            wg.parse_aaif_calendar(self.aaif_fixture(), NOW, days=91)
+        self.assertEqual(wg.parse_aaif_calendar(self.aaif_fixture(),
+                                                NOW + wg.timedelta(days=40)), [])
+        self.assertIn("10:00 AM PDT",
+                      wg.format_pacific("2026-10-15T17:00:00Z"))
+
+    def test_cancelled_event_is_not_reported(self):
+        page = self.aaif_fixture()
+        page = page.replace('\\"durationMinutes\\": 60}',
+                            '\\"durationMinutes\\": 60}')
+        event = {"_id": "aaa:2026-11-05T18:00:00Z", "_type": "event",
+                 "title": "Cancelled meeting", "startsAt": "2026-11-05T18:00:00Z",
+                 "isCancelled": True,
+                 "meeting": {"groupSlug": "identity-trust", "durationMinutes": 60}}
+        html = '<script>self.__next_f.push([1,' + json.dumps(
+            "a0:" + json.dumps([event])) + '])</script>'
+        self.assertEqual(wg.parse_aaif_calendar(html, NOW), [])
+
+    def test_calendar_schema_extensions_and_old_state_compatibility(self):
+        state_schema = json.loads((PACKAGE / "schemas" / "state.schema.json").read_text())
+        report_schema = json.loads((PACKAGE / "schemas" / "briefing.schema.json").read_text())
+        self.assertIn("calendar", state_schema["properties"])
+        self.assertIn("calendar", report_schema["properties"])
+        self.assertIn("source", report_schema["properties"]["groups"]["items"]
+                      ["properties"]["meetings"]["items"]["properties"])
+        self.assertEqual(wg.validate_state({"schema_version": 1, "groups": {}}),
+                         {"schema_version": 1, "groups": {}})
+
     def test_confirmation_flags_are_required(self):
         with self.assertRaises(wg.WGError):
             self.call("remove", "WG-0001")
