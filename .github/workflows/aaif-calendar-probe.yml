@@ -1,4 +1,4 @@
-name: Temporary AAIF meeting structured payload inspection
+name: Temporary live AAIF calendar adapter smoke test
 on:
   push:
     branches: [fix/wg-aaif-public-calendar-ingestion]
@@ -8,42 +8,25 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Inspect RSC meeting records without exposing join links
+      - uses: actions/checkout@v4
+      - name: Live public-AAIF event check (no credentials)
         run: |
           python3 - <<'PY'
-          import json, re, urllib.request
-          from html.parser import HTMLParser
-          class S(HTMLParser):
-              def __init__(self):super().__init__();self.capture=False;self.parts=[]
-              def handle_starttag(self,t,a):
-                  if t=="script" and not dict(a).get("src"):self.capture=True
-              def handle_endtag(self,t):
-                  if t=="script":self.capture=False
-              def handle_data(self,s):
-                  if self.capture:self.parts.append(s)
-          for url in ["https://aaif.io/working-groups/calendar","https://aaif.io/working-groups/identity-trust"]:
-              with urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0"}),timeout=25) as f:
-                  raw=f.read(3_000_000).decode("utf-8","replace")
-              print("\nURL",url,"raw",len(raw))
-              h=S();h.feed(raw)
-              blocks=[]
-              for script in h.parts:
-                  m=re.fullmatch(r'self.__next_f.push\(\[(\d+),("(?:\\.|[^"\\])*")\]\)',script,re.S)
-                  if m:
-                      try:blocks.append(json.loads(m.group(2)))
-                      except ValueError as e:print("decode error",str(e))
-              joined="".join(blocks)
-              print("RSC blocks",len(blocks),"size",len(joined),"startsAt",joined.count('"startsAt"'),"occurrenceId",joined.count('"occurrenceId"'),"nov06",joined.count("2026-11"),"epoch 17938",joined.count("17938"))
-              print("RSC prefixes",[(i,b[:55]) for i,b in enumerate(blocks[:10])])
-              for field in ["startsAt","meetingId","occurrenceId","groupSlug","summary","title","eventId","2026-11"]:
-                  it=list(re.finditer(re.escape(field),joined))
-                  print("FIELD",field,len(it))
-                  for m in it[:2]:
-                      excerpt=joined[max(0,m.start()-135):m.end()+170]
-                      excerpt=re.sub(r'https://zoom-lfx[^"\s,}]+','[redacted join url]',excerpt)
-                      print("SAMPLE",repr(excerpt))
-              for m in list(re.finditer(r'"startsAt":"2026-11-[^"]+"',joined))[:9]:
-                  excerpt=joined[max(0,m.start()-280):m.end()+400]
-                  excerpt=re.sub(r'https://zoom-lfx[^"\s,}]+','[redacted join url]',excerpt)
-                  print("NOV EVENT",repr(excerpt[:650]))
+          from pathlib import Path
+          from datetime import datetime,timezone
+          import importlib.util
+          path=Path("skills/track-working-groups/scripts/wg.py")
+          spec=importlib.util.spec_from_file_location("wg",path)
+          wg=importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(wg)
+          now=datetime(2026,11,5,15,0,tzinfo=timezone.utc)
+          events=wg.parse_aaif_calendar(wg.fetch_aaif_calendar(),now,14)
+          print("SAFE EVENT COUNT",len(events))
+          slugs={"identity-trust","observability-traceability","governance-risk-regulatory-alignment"}
+          today=[e for e in events if e["starts_at"].startswith("2026-11-05") and e["group_slug"] in slugs]
+          for e in today:
+              print(e["group_slug"],e["id"],e["starts_at"],wg.format_pacific(e["starts_at"]))
+          assert slugs <= set(e["group_slug"] for e in today), "Expected three Nov 5 public events in official page"
+          assert all(e["url"].startswith("https://aaif.io/working-groups/") for e in events)
+          assert all("zoom" not in str(e).lower() for e in events)
           PY
