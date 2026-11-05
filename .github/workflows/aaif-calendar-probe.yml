@@ -1,4 +1,4 @@
-name: Temporary AAIF public calendar feed discovery
+name: Temporary AAIF meeting structured payload inspection
 on:
   push:
     branches: [fix/wg-aaif-public-calendar-ingestion]
@@ -8,39 +8,42 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Inspect official site HTML and Javascript for public calendar endpoints
+      - name: Inspect RSC meeting records without exposing join links
         run: |
           python3 - <<'PY'
-          import re, html, urllib.request,urllib.parse
-          def get(url):
-              with urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0"}),timeout=25) as r:
-                  return r.read(3_000_000).decode("utf-8","replace")
-          u="https://aaif.io/working-groups/calendar"
-          s=get(u)
-          print("HTML size",len(s))
-          scripts=list(dict.fromkeys(re.findall(r'<script[^>]+src="([^"]+)"',s)))
-          print("Script count",len(scripts))
-          words=["api.lfx","lfx.dev","events/","/api/","calendar","meeting","eventCalendar","sanity","startTime","meetingId","eventDate","getEvents"]
-          for word in words:
-              matches=list(re.finditer(re.escape(word),s,re.I))
-              print("HTML",word,len(matches))
-              for m in matches[:2]:
-                  print("  ",repr(s[max(0,m.start()-120):m.end()+200]))
-          print("HTML lfx urls", list(dict.fromkeys(re.findall(r'https?[^"\\\\ ]{0,180}lfx[^"\\\\ ]*',s,re.I)))[:20])
-          for path in scripts:
-              url=urllib.parse.urljoin(u,path)
-              try:
-                  js=get(url)
-              except Exception as e:
-                  print("JS FAIL",path,str(e)[:100])
-                  continue
-              matches={}
-              for word in ["api.lfx","lfx.dev","/api/","event-calendar","meeting","calendar","eventStart","startDate","sanity"]:
-                  n=list(re.finditer(re.escape(word),js,re.I))
-                  if n:matches[word]=len(n)
-              if matches.get("lfx.dev") or matches.get("api.lfx") or (matches.get("meeting",0)>4 and matches.get("calendar",0)>4) or matches.get("event-calendar"):
-                  print("MATCHED JS",path,"len",len(js),"counts",matches)
-                  for word in ["api.lfx","lfx.dev","/api/","event-calendar","getEvents","meeting","calendar"]:
-                      for m in list(re.finditer(re.escape(word),js,re.I))[:2]:
-                          print("  ",word,repr(js[max(0,m.start()-190):m.end()+280]))
+          import json, re, urllib.request
+          from html.parser import HTMLParser
+          class S(HTMLParser):
+              def __init__(self):super().__init__();self.capture=False;self.parts=[]
+              def handle_starttag(self,t,a):
+                  if t=="script" and not dict(a).get("src"):self.capture=True
+              def handle_endtag(self,t):
+                  if t=="script":self.capture=False
+              def handle_data(self,s):
+                  if self.capture:self.parts.append(s)
+          for url in ["https://aaif.io/working-groups/calendar","https://aaif.io/working-groups/identity-trust"]:
+              with urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0"}),timeout=25) as f:
+                  raw=f.read(3_000_000).decode("utf-8","replace")
+              print("\nURL",url,"raw",len(raw))
+              h=S();h.feed(raw)
+              blocks=[]
+              for script in h.parts:
+                  m=re.fullmatch(r'self.__next_f.push\(\[(\d+),("(?:\\.|[^"\\])*")\]\)',script,re.S)
+                  if m:
+                      try:blocks.append(json.loads(m.group(2)))
+                      except ValueError as e:print("decode error",str(e))
+              joined="".join(blocks)
+              print("RSC blocks",len(blocks),"size",len(joined),"startsAt",joined.count('"startsAt"'),"occurrenceId",joined.count('"occurrenceId"'),"nov06",joined.count("2026-11"),"epoch 17938",joined.count("17938"))
+              print("RSC prefixes",[(i,b[:55]) for i,b in enumerate(blocks[:10])])
+              for field in ["startsAt","meetingId","occurrenceId","groupSlug","summary","title","eventId","2026-11"]:
+                  it=list(re.finditer(re.escape(field),joined))
+                  print("FIELD",field,len(it))
+                  for m in it[:2]:
+                      excerpt=joined[max(0,m.start()-135):m.end()+170]
+                      excerpt=re.sub(r'https://zoom-lfx[^"\s,}]+','[redacted join url]',excerpt)
+                      print("SAMPLE",repr(excerpt))
+              for m in list(re.finditer(r'"startsAt":"2026-11-[^"]+"',joined))[:9]:
+                  excerpt=joined[max(0,m.start()-280):m.end()+400]
+                  excerpt=re.sub(r'https://zoom-lfx[^"\s,}]+','[redacted join url]',excerpt)
+                  print("NOV EVENT",repr(excerpt[:650]))
           PY
