@@ -19,7 +19,7 @@ Skills are grouped by use.
 | Skill | Purpose | What you'll learn |
 | --- | --- | --- |
 | [code-review](skills/code-review/SKILL.md) | Review code through a software-engineering book lens, explaining evidence-backed findings, trade-offs, and suggested review comments. | Software design (APOSD), algorithms, DDIA, data engineering, and SDI. |
-| [refine-requirements](skills/refine-requirements/SKILL.md) | Refine feature requirements against existing code, identify functional and nonfunctional gaps, and prepare stakeholder questions and design handoffs. | Requirements engineering: FRs/NFRs, scope, edge cases, and trade-offs. |
+| [refine-requirements](skills/refine-requirements/SKILL.md) | Refine requirements and collaboratively design real features through four recommendation-first SDI steps, explicit technical decisions, and an approved implementation handoff. | System Design (SDI), DDIA 2e, algorithms, software design (APOSD), and data engineering (FODE). |
 | [learn-repo](skills/learn-repo/SKILL.md) | Learn an unfamiliar codebase through a selectable question menu, code-backed deep dives, and recent-change analysis. | System design (SDI), architecture, code/data flows, and trade-offs. |
 | [study-mcpa](skills/study-mcpa/SKILL.md) | Study for Linux Foundation MCPA with a selectable topic menu, guided practice, mock questions, and optional hands-on DotSkills MCP Server labs. | MCP fundamentals, protocol security, integrations, and hands-on server concepts. |
 | [track-working-groups](skills/track-working-groups/SKILL.md) | Track public working-group updates, manage group metadata and private checkpoints, and prepare source-backed meeting briefings. | Technical governance, working-group processes, and source-backed research. |
