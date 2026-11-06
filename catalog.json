@@ -91,6 +91,14 @@
       "reference_count": 1
     },
     {
+      "name": "refine-requirements-light",
+      "category": "engineering",
+      "purpose": "Read-only, noninteractive four-step SDI assessment of workplace Jira tickets. Verify relevant existing application code and candidate patterns before recommending a minimal high-level change, with focused DDIA/FODE data-flow analysis and evidence-backed risks.",
+      "source": "dotskills",
+      "path": "skills/refine-requirements-light",
+      "reference_count": 0
+    },
+    {
       "name": "learn-repo",
       "category": "learning",
       "purpose": "Read-only, overview-first repository learning menu: all material evidence-anchored questions first, followed by learner-selected Guided/Practice deep dives across three stages and five book lenses.",
