@@ -19,11 +19,11 @@ Skills are grouped by use.
 | Skill | Purpose | What you'll learn |
 | --- | --- | --- |
 | [code-review](skills/code-review/SKILL.md) | Review code through a software-engineering book lens, explaining evidence-backed findings, trade-offs, and suggested review comments. | Software design (APOSD), algorithms, DDIA, data engineering, and SDI. |
-| [refine-requirements](skills/refine-requirements/SKILL.md) | Refine requirements and collaboratively design real features through four recommendation-first SDI steps, explicit technical decisions, and an approved implementation handoff. | System Design (SDI), DDIA 2e, algorithms, software design (APOSD), and data engineering (FODE). |
-| [learn-repo](skills/learn-repo/SKILL.md) | Learn an unfamiliar codebase through a selectable question menu, code-backed deep dives, and recent-change analysis. | System design (SDI), architecture, code/data flows, and trade-offs. |
+| [refine-requirements](skills/refine-requirements/SKILL.md) | Refine requirements and collaboratively design real features through four recommendation-first SDI steps, explicit technical decisions, and an approved implementation handoff. | Applied SDI (Alex Xu's four steps): requirements, architecture sketching, technical decisions, and defending trade-offs using relevant DDIA, AT, APOSD, and FODE concepts. |
+| [learn-repo](skills/learn-repo/SKILL.md) | Learn an unfamiliar codebase through a selectable question menu, code-backed deep dives, and recent-change analysis. | SDI (Alex Xu's four steps) for whole-system architecture: scope, components, data flows, bottlenecks, and trade-offs. |
 | [study-mcpa](skills/study-mcpa/SKILL.md) | Study for Linux Foundation MCPA with a selectable topic menu, guided practice, mock questions, and optional hands-on DotSkills MCP Server labs. | MCP fundamentals, protocol security, integrations, and hands-on server concepts. |
 | [track-working-groups](skills/track-working-groups/SKILL.md) | Track public working-group updates, manage group metadata and private checkpoints, and prepare source-backed meeting briefings. | Technical governance, working-group processes, and source-backed research. |
-| [learn-implementation](skills/learn-implementation/SKILL.md) | Learn an implementation through an evidence-backed question and design-decision menu, then Alex Xu's four-step guided deep dives into code, trade-offs, and failure modes. | SDI applied to existing code: design decisions, execution flows, and trade-offs. |
+| [learn-implementation](skills/learn-implementation/SKILL.md) | Learn an implementation through an evidence-backed question and design-decision menu, then Alex Xu's four-step guided deep dives into code, trade-offs, and failure modes. | SDI (Alex Xu's four steps) for features and subsystems: requirements, design decisions, code/data flows, failure modes, and trade-offs. |
 
 ### Decision support
 
