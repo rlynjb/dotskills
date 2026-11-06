@@ -1,22 +1,22 @@
 ---
 name: refine-requirements-light
-description: "One-pass, read-only SDI assessment for assigned Jira tickets and changes in an existing codebase. Inspect company standards and similar implementations first, then report requirements, a reuse-first high-level design, targeted full-stack data-flow analysis, and trade-offs/risks. Use DDIA 2nd edition and FODE selectively; no interactive interview, decision-approval loop, or code changes."
+description: "One-pass, read-only SDI analysis of assigned Jira tickets against the company application codebase. Verify current components, subsystems, patterns, contracts and standards before proposing a reuse-first high-level design, then trace relevant full-stack data flow and report trade-offs/risks. DDIA 2nd edition and FODE are selective lenses; no interviews or code changes."
 ---
 
 # Refine Requirements Light
 
 ## Purpose
 
-Produce a **concise, actionable engineering overview** of an assigned Jira ticket or feature change in an **existing codebase** using Alex Xu's four-step System Design Interview (SDI) framework. Make it easier to understand **what needs to change, where it belongs, what can be reused, how data moves, and what might break** before a developer or coding agent implements it.
+Produce a **concise, actionable engineering overview** of an assigned Jira ticket or feature change **against the company's existing application codebase** using Alex Xu's four-step System Design Interview (SDI) framework. Make it easier to understand **what needs to change, where it belongs, what can be reused, how data moves, and what might break** before a developer or coding agent implements it. An existing application does **not** prove that a relevant subsystem, pattern, integration, or architecture path exists: **discover and verify each one before citing it or recommending reuse**.
 
 This is the **workplace-oriented, noninteractive sibling** of Refine Requirements (../refine-requirements/SKILL.md). It is **not** a shortened interview session: do the investigation and deliver **all four SDI steps in one response**. Do not show a learning menu, quiz, force the user to choose an option, pause at checkpoints, or require technical-decision approval just to produce the assessment. A proposed design is **not** automatically an approved engineering decision.
 
 ## Priorities and evidence
 
-1. **Company/project conventions first.** Respect accessible repository instructions, architecture docs/ADRs, existing service/module boundaries, shared libraries, contracts, established tests, migrations, and documented team requirements. Books supply reasoning lenses, **not mandates to replace existing conventions**.
-2. **Codebase-first and reuse-first.** Scope the ticket, then inspect **relevant** existing paths, comparable features, their callers, services, models, tests, and config. Search only as broadly as needed to establish likely impact and reuse; do not map the entire repository by default.
+1. **Verify actual application code and standards first.** Inspect accessible repository instructions and applicable company/team conventions alongside real entry points, modules, contracts, tests and ADRs. Respect **verified** conventions and boundaries; do **not assume** that a relevant subsystem, reusable pattern, or documented architecture exists for the ticket. Books supply reasoning lenses, **not mandates to replace company code**.
+2. **Codebase-first, verify-before-recommend.** Scope the ticket, locate candidate feature paths/subsystems, inspect their real callers, responsibilities, contracts, services, models, tests and config, then decide whether they fit. Cite paths/symbols for each verified finding. If no matching pattern is found within the inspected scope, say **NO SUITABLE PATTERN FOUND IN INSPECTED SCOPE**; if inspection is incomplete or access is missing, say **NOT VERIFIED**. Neither outcome proves that no pattern exists anywhere. Do not map the entire repository by default.
 3. **Distinguish authority and evidence.** Approved tickets/specs/stakeholder decisions establish product requirements. Code establishes **observed behavior**, not necessarily approved intent. Label essential claims **CONFIRMED**, **OBSERVED**, **PROPOSED**, **ASSUMED**, or **NOT VERIFIED**; cite concrete repository paths/symbols/test names, ticket sections, or source links when possible. Do not invent approval, throughput, SLA targets, data guarantees, or implementation history.
-4. **Prefer the smallest coherent change.** Check whether the feature should **FOLLOW** an existing pattern, **ADAPT** it, genuinely needs something **NEW**, or remains **NOT VERIFIED**. Avoid duplicate logic, parallel services, needless interfaces/wrappers, unnecessary new dependencies, new state stores, speculative abstractions, or a redesign with no demonstrated benefit. Do not force reuse when it violates a real requirement.
+4. **Prefer the smallest coherent verified extension.** After investigating candidate patterns, choose **FOLLOW** (verified fit), **ADAPT** (verified partial fit), **NEW REQUIRED** (justify with inspected evidence and constraints), **NO SUITABLE PATTERN FOUND IN INSPECTED SCOPE**, or **NOT VERIFIED**. Avoid duplicate logic, parallel services, needless interfaces/wrappers, unnecessary dependencies, new stores and speculative abstractions. Never force reuse if it violates a requirement or confuses module ownership.
 5. **Do the work in one pass.** If information is missing, make a clearly conditional recommendation and list the minimum decision/evidence needed; **do not stop to interview the user**. One-pass does not mean fabricate missing facts.
 
 ## Workflow — four SDI steps, one report
@@ -25,17 +25,17 @@ This is the **workplace-oriented, noninteractive sibling** of Refine Requirement
 
 - State the ticket's user/system goal, actors, trigger, expected observable outcome, in-scope and out-of-scope behavior.
 - Extract the **material** functional requirements (FRs), non-functional requirements (NFRs), business rules, compatibility constraints, and acceptance criteria. Separate confirmed facts from proposed wording and unanswered product choices.
-- Identify the likely areas affected, but do not prescribe a new architecture before inspecting how similar behavior works today.
+- Identify candidate affected areas as hypotheses; do not presume the location of a subsystem or prescribe an architecture before verifying relevant application code and its current behavior.
 - Note meaningful edge cases, permissions, dependencies, assumptions, and missing decisions. Link consequential FR/NFR gaps to a suggested ticket clarification.
 - For a small ticket, keep requirements short; don't invent an enterprise-scale design exercise.
 
-### Step 2 — Propose a high-level design grounded in the existing codebase
+### Step 2 — Verify existing patterns, then recommend a high-level design
 
-- Show **where the feature belongs**: likely UI entry points, routes, API handlers, existing services, models/storage, integrations, shared patterns and tests. Cite actual paths/symbols where inspected.
-- Make the **existing-pattern/reuse assessment** explicit for each relevant area: **FOLLOW / ADAPT / NEW REQUIRED / NOT VERIFIED** and why. If no pattern exists, explain the scoped evidence limit.
-- Sketch the **current** relevant component/request path and the **minimal proposed change**. Use an abbreviated text flow by default; a small Mermaid diagram is optional when several components or async boundaries make the flow clearer.
-- State the recommendation **first** (reuse/extension before redesign), with the constraints that could change it. Any proposed components/contracts are **proposals**, not claims about existing code or approved decisions.
-- Honor team standards and established integration boundaries. Do not recommend a new service, framework, database, queue or abstraction merely because a reference book features it.
+1. **Locate:** from the ticket and application entry points, identify candidate pages/routes, API handlers, services, subsystems, models, integrations, shared utilities and tests. These are **candidates**, not assumed components.
+2. **Verify:** inspect the actual code and relevant callers/contracts to establish which candidates exist, their responsibilities, current request/data paths, relevant company conventions and whether they fit the ticket. Ground every material mapping in paths/symbols/tests; mark uncertain links **NOT VERIFIED**.
+3. **Assess reuse:** provide an evidence map with **candidate area | verified path/symbol | observed behavior | ticket fit | FOLLOW / ADAPT / NEW REQUIRED / NO SUITABLE PATTERN FOUND IN INSPECTED SCOPE / NOT VERIFIED**. A pattern is reusable only if its contracts and behavior fit. An inaccessible or unsuccessful bounded search is not proof of absence.
+4. **Recommend:** **only after that verification**, propose the smallest suitable high-level change, reusing/extending confirmed patterns first where appropriate. If a new component or approach is justified, explain the documented constraint/gap and minimal footprint. If evidence is insufficient, provide a **conditional proposal** and the next verification step—do not pretend a subsystem exists.
+5. **Sketch:** distinguish **OBSERVED CURRENT FLOW** from **PROPOSED FLOW**, and briefly show affected components/ownership, integration boundaries and API/data movement. Prefer a compact text trace; add a small diagram only when it clarifies actual flow. Never invent a new service, framework, database, queue or abstraction just because a textbook features it.
 
 ### Step 3 — Targeted deep dive: key code paths and data flow
 
@@ -48,7 +48,7 @@ This is the **workplace-oriented, noninteractive sibling** of Refine Requirement
 
 ### Step 4 — Wrap up: bottlenecks, trade-offs, risks and readiness
 
-- Compare **keep/reuse/adapt** with a new approach **only when a material alternative exists**. Give a recommended direction, why it fits the current codebase, and a brief disadvantage or condition that would change it.
+- Compare **keep/reuse/adapt** against a justified new approach **only when a material alternative exists**. Reference the **verified code path and fit** behind the recommendation; name evidence gaps, disadvantages and conditions that would change it.
 - Highlight the **top consequential** risks: logic duplication, bloated abstractions, contract breakage, authorization/security, data loss/staleness, retry/concurrency, performance, operability, migration/cutover, and testing gaps—but only those relevant to this ticket.
 - Give a **minimal implementation footprint** (affected modules, key changes, compatibility work and focused validation), not a giant project plan or invented file diffs.
 - State readiness: **READY FOR REVIEW**, **CONDITIONAL** (nonblocking assumptions and owners), or **BLOCKED** (essential information/decision missing). A ready assessment is **not** sign-off to implement.
@@ -61,7 +61,7 @@ Start with a **Ticket Snapshot**: goal, repository/branch or inspected revision,
 Then use these headings in order:
 
 1. **Step 1 — Requirements & scope**: key FRs/NFRs and acceptance, bounds, unknowns.
-2. **Step 2 — Existing patterns & high-level design**: short path/reuse map; current → proposed flow, or **NOT VERIFIED**.
+2. **Step 2 — Verify patterns & recommend high-level design**: evidence-backed candidate path/subsystem/reuse map; **observed current** → **proposed** flow; explicitly flag unverified areas before recommending an approach.
 3. **Step 3 — Deep dive & data flow**: relevant request/read/write trace and critical code/test touchpoints; apply DDIA/FODE only if warranted.
 4. **Step 4 — Trade-offs, risks & readiness**: preferred minimal change, realistic alternatives, material risks, verification plan and readiness.
 5. **Open decisions / questions for the ticket**: concise owner-specific blockers; write **None identified from inspected evidence** when appropriate.
@@ -78,7 +78,8 @@ Then use these headings in order:
 ## Example invocation
 
     Use refine-requirements-light on Jira ticket <KEY> in this repository.
-    Inspect our existing patterns, standards, paths and tests first.
+    Investigate and VERIFY the relevant existing application code paths,
+    candidate subsystems, patterns, contracts and standards first.
     Give me one concise assessment following the four SDI steps:
     requirements/scope, reuse-first high-level design, targeted full-stack
     read/write data flow (DDIA/FODE if relevant), and trade-offs/risks.
