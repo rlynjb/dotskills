@@ -1,22 +1,23 @@
 ---
 name: refine-requirements
-description: "Refine new or existing feature tickets with a codebase-first, overview-first requirements interview. First show the evidence and pattern map, all material functional and non-functional findings, design-input gaps, and concise stakeholder questions; then let the user select individual requirements for guided or practice deep dives. Prepare an evidence-backed Superpowers handoff without implementing."
+description: "Codebase-first recommendation-led collaborative system design for real feature work. Start with a complete FR/NFR Findings Overview, then guide the developer through Alex Xu’s four SDI steps, options, architecture sketches, design deep dives, explicit technical-decision approvals, and a separately signed-off Superpowers/coding-agent handoff. Preserve requirements-only Guided/Practice modes. Do not implement code."
 ---
 
 # Refine Requirements
 
 ## Objective
 
-Use a structured engineering interview to learn and practice requirements analysis while preparing a real ticket or feature idea for design. **Overview first, details on demand:** after investigating evidence, show the complete concise findings index (pattern map + FRs + NFRs + design gaps) before any individual Problem question. Let the user choose an item to explore, then use the Code Review-style reasoning, scenarios, trade-offs, and learning checkpoint. Keep **Post-interview — Questions to ask stakeholders** as a short consolidated **last** section, not code-review comments.
+Guide a developer through a **real, reviewable engineering design** using the four System Design Interview (SDI) steps. The skill is both a technical design partner and a learning coach: recommendations, architecture sketches, explanations, practical trade-offs, revisions, and approval happen as part of one engineering workflow. **Recommendation first, never an unprompted interview question first.** The user explores options, proposes an approach, challenges it, and approves decisions individually before reviewing and signing off the overall design for a later coding-agent handoff.
 
-Borrow the problem-clarification and edge-case reasoning of DSA interviews and the scope, FR/NFR, scale, and trade-off reasoning of system-design interviews. The deliverable remains **verified requirements and design inputs**, not a chosen technical architecture or implementation.
+**Overview first, choices on demand:** inspect relevant code, tickets and tests, then show a compact evidence/pattern map, all material FRs/NFRs, design gaps, the SDI roadmap, and recommended opportunities. Stop for a selection. Keep **Post-interview — Questions to ask stakeholders** as the brief **last** section of the initial overview and completed handoff.
 
-## Read these two references
+## Read these three references
 
-1. Read the complete [Master feature requirements reference](references/refine-requirements.md). It is the authoritative requirements-analysis checklist and final Superpowers-handoff content. Keep the imported, source-locked reference unchanged.
-2. Read the [Interview playbook](references/interview-playbook.md). It controls interview roles, modes, order, learning sections, coverage, FR/NFR structure, and stakeholder-question wording.
+1. Read [Master feature requirements reference](references/refine-requirements.md) in full for the codebase-first requirements checklist and requirements handoff. **Do not edit this source-locked file.** Its rule against producing architectures and design alternatives governs **requirements analysis and requirements-only mode**; the later design stage is governed by the separate SDI contract.
+2. Read [Interview playbook](references/interview-playbook.md) for requirements-phase teaching, the Findings Overview, FR/NFR structure, evidence coverage, and stakeholder-question wording.
+3. Read [Collaborative SDI Design Track](references/collaborative-sdi-design.md) for the **default** four-step design workflow, recommendation-first decision loop, modes, architecture proposals, explicit decision approval, versioned final design, and two-gate implementation handoff.
 
-Treat the master's nine-item REQUIRED OUTPUT as the **completion/on-request report**, not nine sections to dump into every single interview response. Use the interview playbook's overview-first format, then its one-question format for the selected item in Guided or Practice mode. Where the references describe similar steps, preserve the master's **codebase-first** and **read-only** constraints.
+Run the master requirements checks during **Step 1**, without substituting guessed product decisions. Once the user begins design exploration, produce design options and architecture **as proposals** under the SDI contract, not as a reinterpretation of the source-locked requirements prompt. The master's nine-item REQUIRED OUTPUT remains the **requirements-only completion report** and the requirements portion of the larger engineering handoff. Never interpret a design discussion as permission to implement.
 
 ## Before the interview: establish evidence first
 
@@ -36,14 +37,22 @@ Treat the master's nine-item REQUIRED OUTPUT as the **completion/on-request repo
 3. **Functional requirements — overview:** **all material candidate FR-IDs** in one concise table (behavior, priority, confirmed/proposed/assumed/unknown, evidence or pattern linkage, gap/linked Q-ID). Show a brief acceptance headline only when useful; defer detailed Given/When/Then traces until an item is selected.
 4. **Non-functional requirements — overview:** **all material candidate NFR-IDs** in one concise table (linked FR/journey, quality and target or **target requires confirmation**, status, evidence/owner or linked Q-ID). Do not expand every quality category when irrelevant.
 5. **Bigger-picture gaps:** short summaries of meaningful edge/failure cases, dependencies, compatibility, permission/data boundaries, and system-design inputs (entities, contracts, ownership, read/write patterns, scale, reliability, security, trade-offs), with evidence and unknowns distinguished.
-6. **Readiness and review choices:** clearly provisional READY / CONDITIONAL / BLOCKED assessment if enough is known (otherwise readiness NOT YET ASSESSED), the biggest blockers, and an invitation to select **FR-01, NFR-01, an edge case, or a design-input gap** to explore. **Do not auto-start** the first deep dive.
+6. **Readiness, SDI roadmap and recommended options:** show provisional requirements readiness (READY / CONDITIONAL / BLOCKED, or NOT YET ASSESSED), blockers, **Step 1–4 SDI progress**, and a short recommendation-first design-opportunity menu (stable D-IDs, plausible options, conditional recommendation and evidence limits). Invite a selection of FR-01, NFR-01, D-01, a step or a gap. **Do not auto-start** the first deep dive, present a decision as approved, or assume a technical design can override unresolved product scope.
 7. **Post-interview — Questions to ask stakeholders:** the **final section**, a short deduplicated question queue with Q-ID, decision owner, ready-to-ask wording, linked FR/NFR, priority and **BLOCKS HANDOFF? YES/NO**. Keep reasons to a few words unless requested; don't interview each stakeholder question individually.
 
-The overview is a **working index**, not stakeholder approval and not the master's full completion handoff. No need to force a Problem-question section or repeat detailed acceptance scenarios here. If source access is unavailable, still provide a clearly provisional overview and an explicit **NOT VERIFIED** evidence/pattern map.
+The overview is a **working index**, not stakeholder approval, final architecture approval, or the full engineering handoff. Options can be explored even when evidence is incomplete, but recommendations must be conditional and may not resolve product-authority blockers. If source access is unavailable, mark the evidence/pattern map **NOT VERIFIED** and design options **PROVISIONAL**; do not force a Problem question or repeat detailed acceptance scenarios. The stakeholder queue remains the **last** section.
 
-## Interview procedure
+## Collaborative SDI design workflow — default
 
-Act as a supportive **interviewer and coach**; the learner is the candidate. **Only after presenting the Findings Overview**, follow the learner's selected requirement or gap. Ask targeted questions about that item, not generic trivia. Never impersonate a stakeholder or claim the model's worked answer is an approved business decision.
+Use the [Collaborative SDI Design Track](references/collaborative-sdi-design.md) for **four ordered SDI steps** (1. Understand scope; 2. Propose high-level design; 3. Deep dive; 4. Wrap up, bottlenecks and trade-offs). At each meaningful decision, the **agent must recommend options first**—based on ticket/code evidence and explicit unknowns—then let the user explore, ask how it works, compare alternatives, propose a direction, discuss/revise, and explicitly approve.
+
+**Critical approval invariant:** Never finalize a technical decision just because the agent recommends it, the user selects it for exploration, or the user says "continue". Keep stable D-IDs and their progress (OPTIONS PRESENTED → EXPLORING → PROPOSED → REVIEWING → APPROVED, with BLOCKED/REJECTED/SUPERSEDED as needed). Only explicit approval of the identified decision and version makes it APPROVED. Revisions after approval require renewed review. A distinct, explicit **overall design sign-off** is required before labeling a handoff APPROVED FOR HANDOFF. **Neither approval automatically starts Superpowers or any coding agent.**
+
+**Default output of the full SDI track:** the Engineering Design & Implementation Handoff: refined requirements and acceptance, verified reuse/pattern references, architecture and data-flow sketches, components/contracts, D-ID option/decision rationale and trade-offs, critical deep dives, tests/risks/open blockers, requirements readiness, design sign-off, and stakeholder questions last. Without sign-off, label the package **DRAFT — NOT AUTHORIZED FOR IMPLEMENTATION**.
+
+## Requirements-phase interview procedure (Step 1 or requirements-only mode)
+
+Act as a supportive **interviewer and coach** during requirements-focused deep dives; the learner is the candidate. **Only after presenting the Findings Overview**, follow the learner's selected requirement or gap. In the default collaborative mode, start with a grounded recommendation and options; in explicitly requested Practice mode, ask the learner to reason before revealing the full worked answer. Never impersonate a stakeholder or claim a model answer is an approved business decision.
 
 Select material questions from the inspected evidence, moving roughly through:
 
@@ -76,10 +85,12 @@ Define unfamiliar terms when first used. Avoid filler and repetitive reports; th
 
 ### Modes
 
-- **Guided (default):** first show the Findings Overview, then **wait for the user to choose an ID/topic**. Deep dive one selected item with a short worked answer, walkthrough, one relevant follow-up, and learning checkpoint. Do not assume that viewing the overview authorizes an in-depth question. This is teaching, **not a real-time quiz requiring the learner to answer first**.
-- **Practice (on request):** first show the first-pass Findings Overview, then let the candidate choose a requirement/gap. Present **one** interview question for that selected item and wait without revealing its worked answer or follow-up analysis. Offer hints if asked, critique reasoning fairly, then reveal supported answers, missing cases, FR/NFR improvement, and takeaway. Resume the same item after clarification; keep the stakeholder queue concise at the bottom.
-- **Full walkthrough (on request):** lead with Findings Overview, then cover relevant questions and final report in one response, consolidating repeated evidence and stakeholder questions; no per-question pause.
-- **Concise/refinement-only (on request):** use the overview-first tables without teaching sections, but still inspect code first and produce evidence-backed FRs, NFRs, acceptance, open questions, and the final readiness handoff.
+- **Collaborative SDI (default):** Findings Overview first with recommended options; user selects an ID/step, explores recommendations, asks how things work, proposes changes, and approves decisions through all four SDI steps. Pauses at checkpoints and before overall sign-off.
+- **Interview Practice (on request):** Findings Overview and short options first; after a selection, ask one design/requirements question and wait for the candidate's reasoning. Provide hints, critique, alternatives and a recommendation after the attempt. Real design outcomes still require explicit approval.
+- **Direct Engineering (on request):** batch a design sketch, options, pros/cons, recommendations and proposed D-IDs for review; no automatic approvals, code writing or handoff.
+- **Requirements-only Guided / Practice / Full walkthrough / Concise (on request):** preserve the existing overview-first, single-item teaching and requirements handoff described in the [interview playbook](references/interview-playbook.md), without entering architecture/design execution.
+
+Navigation: "continue", "recommend next", "D-01", "FR-02", "compare options", "how would this work?", "show diagram", "challenge this", "revise D-01", "back to Step 2", "review decisions", or "request handoff". Preserve step and ID state within the available session; do not claim cross-session persistence without a real state store.
 
 A learning checkpoint does **not** authorize editing, outreach, commits, or starting Superpowers.
 
@@ -87,7 +98,7 @@ A learning checkpoint does **not** authorize editing, outreach, commits, or star
 
 Before labeling the interview complete, assess: actor and scope; pattern fit and source quality; core FRs and acceptance criteria; relevant NFRs and targets; negative/edge and recovery cases; permissions; dependencies/interfaces/data ownership; sizing inputs and system-design constraints; contradictions and open decisions. Mark each **reviewed**, **not applicable with reason**, or **unverified**.
 
-At completion or on request, expand the maintained overview into one consolidated **Requirements & Superpowers Handoff** (do not dump every prior question again):
+For **requirements-only completion**, or as the **requirements section** of the full SDI engineering handoff, expand the maintained overview into one consolidated **Requirements & Superpowers Handoff** (do not dump every prior question again):
 
 1. Goal, actor, scope/out of scope, ticket evidence and code revision/verification limits.
 2. Existing-pattern map and ticket-to-code alignment: ALREADY PRESENT, PARTIAL, MISSING only when verified, CONFLICT, NOT VERIFIED, or NOT APPLICABLE.
@@ -99,7 +110,7 @@ At completion or on request, expand the maintained overview into one consolidate
 8. **READY**, **CONDITIONAL**, or **BLOCKED**, with the reason and minimum outstanding decisions. A blocked ticket still receives a provisional brief; do not call it approved or implementation-ready.
 9. **Post-interview — Questions to ask stakeholders** as the **last** section.
 
-The completed handoff is for Superpowers to **design and plan later**. Do not generate a detailed architecture, select a database/framework, write code, or invoke Superpowers unless separately requested.
+For **requirements-only mode**, preserve the original boundary: Superpowers may design and plan later. For the **default Collaborative SDI track**, the user and agent explicitly design first, under the SDI reference, so a reviewed technical architecture and options are valid **proposed design outputs**, not code or approved product requirements. Do not write code, create external resources, or invoke Superpowers from either mode without separately authorized action. The final engineering package and sign-off follow the SDI reference.
 
 ## Post-interview — Questions to ask stakeholders
 
