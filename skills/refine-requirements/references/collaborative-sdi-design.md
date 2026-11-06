@@ -19,6 +19,22 @@ The agent is a **researcher, recommending design partner, and optional interview
 
 Keep post-interview **Questions to ask stakeholders** as the final section of the initial overview and completed full handoff; keep interim responses focused without duplicating the whole queue unless it changed or is needed to make a blocker visible.
 
+## Five-book engineering lens integration
+
+**Alex Xu's System Design Interview (SDI) is the process scaffold, not the only source of reasoning.** Use the four named SDI stages in order, then apply the following books selectively to **real engineering recommendations**, technical alternatives and worked traces. Explain concepts while producing engineering artifacts, not as a detached quiz. The imported requirements checklist is still requirements-only; these lenses may inform architecture in the explicit collaborative design phase.
+
+| Lens | When it helps | How to apply it to design options |
+| --- | --- | --- |
+| **System Design Interview (SDI) — Alex Xu** | Scoping, architectural boundaries, critical components, and wrap-up | Use Step 1–4 to structure the conversation, recommendations and review. |
+| **Designing Data-Intensive Applications, 2nd ed. (DDIA)** | Storage/query choices, read/write workloads, consistency, transactions, concurrency, recovery, scaling | Explain guarantees and failure modes; compare alternatives under evidenced access patterns. Do not claim a database, index or transaction provides an unverified guarantee. |
+| **Algorithmic Thinking — Daniel Zingaro** | Transformations, selection/ranking, deduplication, ordering, data structures, or heavy computations | Define input/output and invariants; trace an example and compare actual complexity or limits when relevant. Do not force big-O analysis onto simple glue code or mistake network latency for constant-time computation. |
+| **A Philosophy of Software Design (APOSD) — John Ousterhout** | Module boundaries, abstractions, interfaces, coupling, information hiding, evolving contracts | Compare where complexity lives and how a future change propagates; favor comprehensible responsibilities without inventing unnecessary abstraction. |
+| **Fundamentals of Data Engineering (FODE) — Joe Reis and Matt Housley** | Ingestion, transformations, data quality, pipeline/consumer contracts, lifecycle and operations | Trace source → ingestion → storage/transformation → serving and failure/recovery; identify ownership and data quality boundaries. |
+
+**Selection rule:** Choose the most relevant lens or two per material decision based on the inspected implementation and its constraints; mention others only if a distinct concern appears. For a frontend-only change, DDIA or FODE might be NOT APPLICABLE. For a transactional Go API, DDIA plus APOSD may matter; for a data import, FODE plus DDIA or Algorithmic Thinking might matter. Explain why the lens fits, its practical concept, a small worked example and the resulting trade-off. Never present a book-inspired suggestion as a quote or as proof that a particular architecture is correct. If no book is relevant, skip the label.
+
+**Decision record addition:** For each D-ID, optionally add `Engineering lens / principle / evidence`, showing which idea shaped the recommendation and what actual repository/ticket evidence or unverified assumption supports it. Principles do **not** override explicit user approval, stakeholder authority, or tested behavior.
+
 ## Four steps — named and ordered after selection
 
 Use Alex Xu's four-step SDI framing, adapted to a real feature. Show **Step X of 4**, current D-ID/FR-ID, statuses, and the next checkpoint. For tiny tickets stay proportionate; do not invent a distributed system or force three options when only one sensible approach exists.
