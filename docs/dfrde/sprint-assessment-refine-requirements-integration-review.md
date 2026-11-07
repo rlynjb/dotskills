@@ -351,7 +351,9 @@ dotskills/
 
 ## 3. Contract — What must every participant guarantee?
 
-**SDI support:** Component deep dive and trade-offs. **Focus:** agreed interfaces and invariants, not speculative implementation details.
+**SDI support:** Steps 3–4 — Component deep dive and trade-offs. **Focus:** Translate the reviewed architecture into explicit contracts, interfaces, behavioral guarantees, permissions, and invariants.
+
+**Distinction:** Stage 2 uses SDI Steps 3–4 to reason about architecture; Stage 3 uses those findings to formalize agreements between components.
 
 ### What to do
 
