@@ -16,7 +16,7 @@
 | Collaborators / decision owners | `[Names / roles]` |
 | Target repository and branch | `[Repo link / branch / commit SHA]` |
 | Target environment / harness | `[Claude, Codex, other; verify]` |
-| Last updated | `[YYYY-MM-DD]` |
+| Last updated | 2026-11-07 (Stage 3 proposal documented; not approved) |
 | Next review checkpoint | `[Meeting / question / date]` |
 
 > **Document status:** This is a *proposal and working record*, not evidence that the team approved a design, ran an agent, or completed tests. Replace placeholders only when backed by decisions or observed results.
@@ -36,6 +36,7 @@
   - [Candidate options (PROPOSED, not selected)](#candidate-options-proposed-not-selected)
   - [Proposed integration flow](#proposed-integration-flow)
 - [3. Contract — What must every participant guarantee?](#3-contract--what-must-every-participant-guarantee)
+  - [Contract ownership and workflow composition (PROPOSED)](#contract-ownership-and-workflow-composition-proposed)
   - [Contract register](#contract-register)
   - [Example proposed refinement handoff (not implemented)](#example-proposed-refinement-handoff-not-implemented)
   - [Behavioral guarantees and invariants](#behavioral-guarantees-and-invariants)
@@ -235,6 +236,41 @@ flowchart TD
 
 **SDI support:** Component deep dive and trade-offs. **Focus:** agreed interfaces and invariants, not speculative implementation details.
 
+### Contract ownership and workflow composition (PROPOSED)
+
+**Recommendation:** Each skill owns its contract; an integration owns compatibility checks. This is a proposed long-term convention, **not an approved architecture or an implemented file layout**.
+
+- **Skill contract:** Keep each skill independently usable. Define required inputs/outputs, behavior, trust and authority boundaries, failure handling, and versioning in its own `references/contract.md` when complexity warrants it; small skills may use a contract section in `SKILL.md`.
+- **`SKILL.md` remains the execution entrypoint.** It should reference the contract and state essential operational constraints. Documentation alone does not enforce permissions; host/tool/service controls must do that.
+- **Integration ownership:** The orchestrator or dedicated workflow owns sequencing, output-to-input handoff mapping, compatible contract versions, validation, and block/escalation behavior. It **references** skill contracts rather than duplicating them.
+- **Avoid premature extraction:** Initially keep orchestration within `sprint-assessment/SKILL.md` if Sprint Assessment is the single consumer. Introduce an independent `workflows/` definition only when the orchestration needs reuse across multiple consumers or becomes too complex to maintain inside the skill. A workflow composes skills; it does not merge or execute them by itself.
+- **Fail safely on contract mismatch:** If Refine Requirements omits acceptance criteria required by Sprint Assessment, report the missing requirement and block or route for clarification; never silently invent it.
+
+**Stage 3 review sequence:** (3A) define each participant's contract; (3B) review producer/consumer compatibility, permissions and handoff failures when composition is needed; (3C) obtain human approval of the contract baseline. Plan checks here; execute authorized contract, integration and behavioral tests in **Stage 5**. Track contract version changes and regression risk.
+
+#### Proposed long-term repository structure (illustrative; not created)
+
+```text
+dotskills/
+├── skills/
+│   ├── refine-requirements/
+│   │   ├── SKILL.md
+│   │   ├── references/contract.md
+│   │   └── evals/
+│   └── sprint-assessment/
+│       ├── SKILL.md
+│       ├── references/contract.md
+│       └── evals/
+├── workflows/                       # Optional extraction
+│   └── sprint-refinement/
+│       ├── workflow.md              # Sequence, handoffs, escalation
+│       └── evals/compatibility/
+└── docs/dfrde/
+    └── sprint-assessment-refine-requirements-integration-review.md
+```
+
+**Validation scopes:** skill = does each skill honor its own contract?; integration = are producer and consumer compatible?; system = does the full workflow achieve its outcome within effective authority and reliability boundaries?
+
 ### Contract register
 
 | Contract | Producer | Consumer | Owner | Version | Status |
@@ -308,6 +344,8 @@ flowchart TD
 - [ ] Experimental metadata (such as `allowed-tools`) is **not** treated as a portable security enforcement guarantee.
 
 **Stage 3 deliverables:**
+- [ ] Skill-owned contract scope/location and version compatibility reviewed
+- [ ] Separate workflow extraction justified or explicitly deferred
 - [ ] Interface and handoff contract reviewed
 - [ ] Ownership and authority boundaries confirmed
 - [ ] Failure and partial-result semantics reviewed
@@ -419,6 +457,7 @@ Use these as recurring lenses rather than extra lifecycle stages.
 | D-03 | Design | Central, per-worker, hybrid or minimal integration? | `[Options]` | `[Owner]` | `[Link]` | OPEN |
 | D-04 | Contract | What is the machine-readable handoff and status model? | `[Proposed schema]` | `[Owner]` | `[Link]` | OPEN |
 | D-05 | Contract | Which read/write permissions are enforced and where? | `[Alternatives]` | `[Owner]` | `[Link]` | OPEN |
+| D-07 | Contract | Who owns skill contracts and when should orchestration become a separate workflow? | PROPOSED: per-skill ownership; Sprint Assessment orchestrates initially; extract optional reusable workflow; validate handoffs | `[Owner]` | This Stage 3 proposal | OPEN |
 | D-06 | Evaluate | What is the minimum acceptance/eval gate? | `[Threshold / scenarios]` | `[Owner]` | `[Link]` | OPEN |
 
 ## Review meeting notes
