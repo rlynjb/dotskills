@@ -21,6 +21,8 @@
 
 > **Document status:** This is a *proposal and working record*, not evidence that the team approved a design, ran an agent, or completed tests. Replace placeholders only when backed by decisions or observed results.
 
+> **START HERE — CURRENT ACTION:** Stage 1 (Discover) is **IN PROGRESS**. Go to [Stage 1 → What to do](#what-to-do), beginning with current-state source verification and a coworker review of responsibilities. Treat existing proposals as drafts until evidence and decisions are recorded.
+
 ## Table of contents
 
 - [0. How to use this record](#0-how-to-use-this-record)
@@ -28,37 +30,43 @@
   - [SDI mapping](#sdi-mapping)
   - [Stage tracker](#stage-tracker)
 - [1. Discover — What problem are we solving?](#1-discover--what-problem-are-we-solving)
-  - [Proposed problem statement — REVIEW REQUIRED](#proposed-problem-statement--review-required)
-  - [Existing-state inventory](#existing-state-inventory)
-  - [Requirements and scope](#requirements-and-scope)
-  - [Stakeholder questions](#stakeholder-questions)
+  - [What to do](#what-to-do)
+  - [Reference information](#reference-information)
   - [Deliverables](#deliverables)
+  - [Review gate](#review-gate)
 - [2. Design — What architecture best fits the requirements?](#2-design--what-architecture-best-fits-the-requirements)
-  - [Candidate options (PROPOSED, not selected)](#candidate-options-proposed-not-selected)
-  - [Proposed integration flow](#proposed-integration-flow)
+  - [What to do](#what-to-do-1)
+  - [Reference information](#reference-information-1)
   - [Deliverables](#deliverables-1)
+  - [Review gate](#review-gate-1)
 - [3. Contract — What must every participant guarantee?](#3-contract--what-must-every-participant-guarantee)
-  - [Contract ownership and workflow composition (PROPOSED)](#contract-ownership-and-workflow-composition-proposed)
-  - [Contract register](#contract-register)
-  - [Example proposed refinement handoff (not implemented)](#example-proposed-refinement-handoff-not-implemented)
-  - [Behavioral guarantees and invariants](#behavioral-guarantees-and-invariants)
-  - [Trust / security / authority boundary](#trust--security--authority-boundary)
-  - [Failure and recovery contract](#failure-and-recovery-contract)
-  - [Agent Skills packaging and portability](#agent-skills-packaging-and-portability)
+  - [What to do](#what-to-do-2)
+  - [Reference information](#reference-information-2)
   - [Deliverables](#deliverables-2)
+  - [Review gate](#review-gate-2)
 - [4. Implement — Make only the reviewed change](#4-implement--make-only-the-reviewed-change)
+  - [What to do](#what-to-do-3)
+  - [Reference information](#reference-information-3)
   - [Deliverables](#deliverables-3)
+  - [Review gate](#review-gate-3)
 - [5. Evaluate — Verify observed behavior against expectations](#5-evaluate--verify-observed-behavior-against-expectations)
+  - [What to do](#what-to-do-4)
+  - [Reference information](#reference-information-4)
   - [Deliverables](#deliverables-4)
+  - [Review gate](#review-gate-4)
 - [6. Release — Approve, operate and improve](#6-release--approve-operate-and-improve)
+  - [What to do](#what-to-do-5)
+  - [Reference information](#reference-information-5)
   - [Deliverables](#deliverables-5)
-- [Cross-cutting quality checklist](#cross-cutting-quality-checklist)
+  - [Review gate](#review-gate-5)
+- [Cross-cutting review criteria — reference, not a task list](#cross-cutting-review-criteria--reference-not-a-task-list)
 - [Decision log — single source of truth for team choices](#decision-log--single-source-of-truth-for-team-choices)
 - [Review meeting notes](#review-meeting-notes)
+  - [`[YYYY-MM-DD]` — `[Meeting title]`](#yyyy-mm-dd--meeting-title)
 - [Open questions / evidence backlog](#open-questions--evidence-backlog)
 - [Links and references](#links-and-references)
 
-> When you add or rename review sections, update these links to keep the document navigable.
+> Stage links lead to **actions**, **reference notes**, **deliverables**, and the **review gate**. Rebuild links if headings change.
 
 ---
 
@@ -72,6 +80,15 @@
 6. Obtain separate, explicit authorization before repo edits, risky execution, tool side effects, or release. This document does not grant runtime permissions.
 7. **When resuming work:** read this latest record first, inspect the current Agent Arcade source revision, and reconcile the record with actual evidence before making recommendations or changes. Update the stage tracker, relevant section, decision log, and `Last updated` field as the review progresses.
 8. This record is the **continuity reference for the review**; it does not supersede the implementation repository, approved team decisions, or runtime evidence.
+
+**Reading each stage**
+
+| Section | Meaning | Update rule |
+| --- | --- | --- |
+| **What to do** | Actions to complete; **only this stage section uses action checkboxes** | Check off after doing the work; record result and evidence. |
+| **Reference information** | Existing findings, draft options, examples, stakeholder questions | Edit content as knowledge changes; proposals are not approvals. |
+| **Deliverables** | Specific artifacts or decisions that must be produced | Change status and link the actual evidence; **not a second to-do list**. |
+| **Review gate** | Decision or approval required to proceed | Record reviewer, date, scope, outcome, and supporting link. |
 
 ### Process layers
 
@@ -117,7 +134,21 @@ flowchart TB
 
 **SDI support:** Step 1 — understand requirements and scope.
 
-### Proposed problem statement — REVIEW REQUIRED
+### What to do
+
+> **ACTION CHECKLIST — work to perform.** Check an item only after the action is completed and its result is recorded.
+
+- [ ] **Verify the current state.** Inspect the latest Agent Arcade skill files and repository revision; separate documented behavior from tested runtime behavior.
+- [ ] **Confirm the problem with the coworker/skill owners.** Agree on the PM/engineering pain point, intended users, and what a successful integration should improve.
+- [ ] **Clarify ownership.** Decide who evaluates requirements sufficiency, who evaluates sprint readiness, and which decisions require human confirmation.
+- [ ] **Record requirements and constraints.** Fill in FRs, NFRs, non-goals, target runtimes, data sources, permissions, and measurable success criteria.
+- [ ] **Assign unresolved evidence checks.** Track delegation, test/CI, portability, and permission-enforcement unknowns in the evidence backlog.
+
+### Reference information
+
+> **REFERENCE ONLY — not a task list.** Use the context, proposals, questions, and templates below while completing the actions above. Drafts are not approvals or runtime evidence.
+
+#### Proposed problem statement — REVIEW REQUIRED
 
 Sprint Assessment assesses Jira tickets for sprint readiness. Refine Requirements helps identify incomplete or ambiguous requirements and propose clarifying questions. The integration should provide a consistent way to surface requirements gaps, preserve supporting evidence, and avoid treating unresolved requirements as confirmed—without duplicating responsibilities or silently changing existing workflows.
 
@@ -125,7 +156,7 @@ Sprint Assessment assesses Jira tickets for sprint readiness. Refine Requirement
 
 > `[Revise with coworker; include the user/business problem, not only the proposed solution.]`
 
-### Existing-state inventory
+#### Existing-state inventory
 
 | Item | Current understanding | Evidence status | Verification needed |
 | --- | --- | --- | --- |
@@ -136,7 +167,7 @@ Sprint Assessment assesses Jira tickets for sprint readiness. Refine Requirement
 | Tests and CI | Prior audit found no verified behavioral test evidence | UNVERIFIED for latest revision | Inspect current tests, CI and eval artifacts |
 | Permissions | Some policies described in prompts; enforcement not yet established | UNVERIFIED | Inspect real host/tool allowlists and identities |
 
-### Requirements and scope
+#### Requirements and scope
 
 **Intended users / stakeholders:** `[PMs, engineering leads, developers, others—confirm]`
 
@@ -144,15 +175,15 @@ Sprint Assessment assesses Jira tickets for sprint readiness. Refine Requirement
 
 **Functional requirements (FR):**
 
-- [ ] FR-01: `[When / given / expected behavior]`
-- [ ] FR-02: `[When / given / expected behavior]`
-- [ ] FR-03: `[When / given / expected behavior]`
+- FR-01: `[When / given / expected behavior]`
+- FR-02: `[When / given / expected behavior]`
+- FR-03: `[When / given / expected behavior]`
 
 **Nonfunctional requirements (NFR):**
 
-- [ ] NFR-01: `[Reliability / consistency / latency / cost / portability target, with measure]`
-- [ ] NFR-02: `[Permission / confidentiality / auditability requirement]`
-- [ ] NFR-03: `[Recovery / operational support requirement]`
+- NFR-01: `[Reliability / consistency / latency / cost / portability target, with measure]`
+- NFR-02: `[Permission / confidentiality / auditability requirement]`
+- NFR-03: `[Recovery / operational support requirement]`
 
 **Constraints:** `[Existing company codebase, Jira/Confluence, harness, tools, team conventions, timeline, etc.]`
 
@@ -162,30 +193,38 @@ Sprint Assessment assesses Jira tickets for sprint readiness. Refine Requirement
 
 - `[Assumption + what evidence would confirm or reject it]`
 
-### Stakeholder questions
+#### Stakeholder questions
 
-- [ ] Does Refine Requirements **validate**, **propose improvements**, or do both? Who confirms the answer?
-- [ ] Who owns the final *sprint readiness* decision versus *requirements sufficiency*?
-- [ ] What does the current flow do when requirements or acceptance criteria are missing?
-- [ ] What data sources are authoritative and who may access them?
-- [ ] Must the integration remain advisory/read-only?
-- [ ] Which harnesses or platforms must be supported **now** versus later?
-- [ ] What is the simplest acceptable solution, including **no new agent**?
+- Does Refine Requirements **validate**, **propose improvements**, or do both? Who confirms the answer?
+- Who owns the final *sprint readiness* decision versus *requirements sufficiency*?
+- What does the current flow do when requirements or acceptance criteria are missing?
+- What data sources are authoritative and who may access them?
+- Must the integration remain advisory/read-only?
+- Which harnesses or platforms must be supported **now** versus later?
+- What is the simplest acceptable solution, including **no new agent**?
 
 **Meeting notes / answers:**
 
 > `[Date / participants / answer / supporting link]`
 
 ### Deliverables
-- [ ] Problem statement reviewed
-- [ ] Existing as-is workflow and source revision recorded
-- [ ] FRs/NFRs, non-goals and constraints recorded
-- [ ] Evidence gaps and decision owners identified
-- [ ] Initial acceptance measures drafted
 
-**Deliverable links / evidence:** `[Link completed artifacts, source references, and team review decisions here]`
+> **OUTPUTS — evidence to produce, not additional tasks.** Update each row's status and link when the artifact exists; do not mark an unreviewed proposal as approved.
 
-**Checkpoint:** `REVIEW REQUIRED — [Who reviews? When? Decision/evidence link?]`
+| Output / artifact to produce | Current status | Evidence / location |
+| --- | --- | --- |
+| Reviewed problem statement and success measures | PROPOSED — REVIEW REQUIRED | [Proposed problem statement](#proposed-problem-statement--review-required) |
+| Current-state inventory + source revision / as-is flow | DRAFT — SOURCE REFRESH NEEDED | [Existing-state inventory](#existing-state-inventory) |
+| FRs, NFRs, constraints, non-goals | TEMPLATE — NEEDS INPUT | [Requirements and scope](#requirements-and-scope) |
+| Stakeholder decisions, owner assignments, evidence gaps | OPEN | [Decision log](#decision-log--single-source-of-truth-for-team-choices) / [Evidence backlog](#open-questions--evidence-backlog) |
+
+### Review gate
+
+**Must be true before moving on:** The problem, current-state evidence, scope, and initial success criteria have been reviewed with the relevant owner. Evidence gaps are assigned or marked as blockers.
+
+**Existing checkpoint:** `REVIEW REQUIRED — [Who reviews? When? Decision/evidence link?]`
+
+**Reviewer / decision / date / link:** `[Add only after explicit review]`
 
 ---
 
@@ -193,7 +232,21 @@ Sprint Assessment assesses Jira tickets for sprint readiness. Refine Requirement
 
 **SDI support:** Steps 2–4 — high-level design, component deep dive, bottlenecks and trade-offs.
 
-### Candidate options (PROPOSED, not selected)
+### What to do
+
+> **ACTION CHECKLIST — work to perform.** Check an item only after the action is completed and its result is recorded.
+
+- [ ] **Draw or validate the as-is workflow.** Do not use a proposed diagram as evidence of current runtime behavior.
+- [ ] **Compare integration options.** Evaluate central refinement, per-worker refinement, hybrid, and the minimal-change option.
+- [ ] **Apply SDI reasoning.** Review high-level flow, orchestration ownership, critical component boundaries, context-sharing, and failure cases.
+- [ ] **Choose a proposed direction with the coworker.** Record trade-offs (coupling, reliability, cost, latency, portability) and rejected alternatives.
+- [ ] **Capture the design decision.** Update D-03 and link the reviewed to-be diagram, owner, and remaining assumptions.
+
+### Reference information
+
+> **REFERENCE ONLY — not a task list.** Use the context, proposals, questions, and templates below while completing the actions above. Drafts are not approvals or runtime evidence.
+
+#### Candidate options (PROPOSED, not selected)
 
 | Option | Description | Benefits | Risks / trade-offs | Decision |
 | --- | --- | --- | --- | --- |
@@ -202,7 +255,7 @@ Sprint Assessment assesses Jira tickets for sprint readiness. Refine Requirement
 | C. Hybrid | Initial triage then targeted per-ticket refinement | Flexible and efficient when well-scoped | Added orchestration complexity | OPEN |
 | D. Minimal / keep current | Add validation and reporting without another delegation layer | Lower complexity | May not address every gap | OPEN |
 
-### Proposed integration flow
+#### Proposed integration flow
 
 ```mermaid
 flowchart TD
@@ -230,15 +283,23 @@ flowchart TD
 **Decision rationale and alternatives rejected:** `[Document with reviewer and source references]`
 
 ### Deliverables
-- [ ] Verified as-is diagram
-- [ ] At least one meaningful alternative compared
-- [ ] Proposed to-be flow reviewed with coworker
-- [ ] Ownership and platform assumptions checked
-- [ ] Major risks and trade-offs recorded
 
-**Deliverable links / evidence:** `[Link completed artifacts, source references, and team review decisions here]`
+> **OUTPUTS — evidence to produce, not additional tasks.** Update each row's status and link when the artifact exists; do not mark an unreviewed proposal as approved.
 
-**Checkpoint:** `HUMAN REVIEW REQUIRED — design approval and owner [TBD]`
+| Output / artifact to produce | Current status | Evidence / location |
+| --- | --- | --- |
+| Evidence-based as-is flow | UNVERIFIED | `[Link verified diagram + repo revision]` |
+| Options/trade-offs and recommendation | PROPOSED | [Candidate options](#candidate-options-proposed-not-selected) |
+| Reviewed to-be integration flow | PROPOSED — NOT APPROVED | [Conceptual integration flow](#proposed-integration-flow) |
+| Design decision record + alternatives rejected | OPEN | [Decision log](#decision-log--single-source-of-truth-for-team-choices) |
+
+### Review gate
+
+**Must be true before moving on:** The team has selected and recorded an integration direction and reviewed major trade-offs. A conceptual drawing alone is not approval.
+
+**Existing checkpoint:** `HUMAN REVIEW REQUIRED — design approval and owner [TBD]`
+
+**Reviewer / decision / date / link:** `[Add only after explicit review]`
 
 ---
 
@@ -246,7 +307,22 @@ flowchart TD
 
 **SDI support:** Component deep dive and trade-offs. **Focus:** agreed interfaces and invariants, not speculative implementation details.
 
-### Contract ownership and workflow composition (PROPOSED)
+### What to do
+
+> **ACTION CHECKLIST — work to perform.** Check an item only after the action is completed and its result is recorded.
+
+- [ ] **Define skill responsibilities and contract locations.** Agree on what belongs in each skill and whether a reusable workflow definition is necessary.
+- [ ] **Specify the handoff.** Set required/optional fields, types, statuses, source/provenance links, contract version, and compatibility checks.
+- [ ] **Agree on behavioral guarantees.** Define readiness/completeness rules, invariants, human overrides, and acceptable partial results.
+- [ ] **Set trust, permissions, and failure contracts.** Identify effective enforcement points, identities, write approvals, retries, escalation, and safe stops.
+- [ ] **Plan tests before implementation.** Turn each critical rule into measurable acceptance, failure, and misuse cases; agree on the minimum evaluation gate.
+- [ ] **Review and record approval.** Resolve or explicitly defer contested contract decisions and link the owner/approval evidence.
+
+### Reference information
+
+> **REFERENCE ONLY — not a task list.** Use the context, proposals, questions, and templates below while completing the actions above. Drafts are not approvals or runtime evidence.
+
+#### Contract ownership and workflow composition (PROPOSED)
 
 **Recommendation:** Each skill owns its contract; an integration owns compatibility checks. This is a proposed long-term convention, **not an approved architecture or an implemented file layout**.
 
@@ -281,7 +357,7 @@ dotskills/
 
 **Validation scopes:** skill = does each skill honor its own contract?; integration = are producer and consumer compatible?; system = does the full workflow achieve its outcome within effective authority and reliability boundaries?
 
-### Contract register
+#### Contract register
 
 | Contract | Producer | Consumer | Owner | Version | Status |
 | --- | --- | --- | --- | --- | --- |
@@ -290,7 +366,7 @@ dotskills/
 | Readiness assessment result | Sprint Assessment | PM / reviewer | `[Owner]` | `[v]` | DRAFT |
 | Delegation / execution receipt | Runtime / worker | Orchestrator / reviewer | `[Owner]` | `[v]` | OPEN |
 
-### Example proposed refinement handoff (not implemented)
+#### Example proposed refinement handoff (not implemented)
 
 ```json
 {
@@ -307,23 +383,23 @@ dotskills/
 ```
 
 **Contract decisions still required:**
-- [ ] Mandatory vs optional fields, types and version strategy
-- [ ] Valid status enum: `[ready / needs_clarification / blocked / error / ...]`
-- [ ] Definition of *requirements complete* and *sprint ready*
-- [ ] Success, partial success, no-op and failure semantics
-- [ ] Who may override a finding and how it is recorded
-- [ ] Whether and where machine-readable schema validation occurs
+- Mandatory vs optional fields, types and version strategy
+- Valid status enum: `[ready / needs_clarification / blocked / error / ...]`
+- Definition of *requirements complete* and *sprint ready*
+- Success, partial success, no-op and failure semantics
+- Who may override a finding and how it is recorded
+- Whether and where machine-readable schema validation occurs
 
-### Behavioral guarantees and invariants
+#### Behavioral guarantees and invariants
 
-- [ ] A critical unresolved requirement cannot silently become an approved requirement.
-- [ ] A worker's *self-report* of execution is not sufficient proof that the tool or delegated agent ran.
-- [ ] Each material finding links to a source or is explicitly labeled an assumption.
-- [ ] Unauthorized side effects are prevented by enforced tool/host/service permissions, not only prompt wording.
-- [ ] Duplicate processing / retries are addressed where they could cause repeated side effects.
-- [ ] `[Additional team-defined invariant]`
+- A critical unresolved requirement cannot silently become an approved requirement.
+- A worker's *self-report* of execution is not sufficient proof that the tool or delegated agent ran.
+- Each material finding links to a source or is explicitly labeled an assumption.
+- Unauthorized side effects are prevented by enforced tool/host/service permissions, not only prompt wording.
+- Duplicate processing / retries are addressed where they could cause repeated side effects.
+- `[Additional team-defined invariant]`
 
-### Trust / security / authority boundary
+#### Trust / security / authority boundary
 
 | Topic | Contract question | Enforcement location / evidence |
 | --- | --- | --- |
@@ -334,7 +410,7 @@ dotskills/
 | Secrets / privacy | What sensitive data can enter context and traces? | `[Verify]` |
 | Audit trail | Can a reviewer identify input, tool call, worker and outcome? | `[Verify]` |
 
-### Failure and recovery contract
+#### Failure and recovery contract
 
 | Condition | Expected safe behavior | Retry / escalation | Acceptance check |
 | --- | --- | --- | --- |
@@ -345,46 +421,61 @@ dotskills/
 | Attempted unauthorized write | Deny action and record violation | Stop / escalate | `[Case ID]` |
 | Schema mismatch | Reject/flag incompatible handoff | Version negotiation or fail safely | `[Case ID]` |
 
-### Agent Skills packaging and portability
+#### Agent Skills packaging and portability
 
-- [ ] Each skill has valid `SKILL.md` and required metadata (`name`, `description`) where Agent Skills conformance is the target.
-- [ ] Optional references, scripts and assets follow the target specification and supported runtime conventions.
-- [ ] Skill **format** compliance is tested separately from **behavioral** correctness.
-- [ ] Runtime compatibility matrix records actual tool discovery, invocation, delegation, permissions and result handling.
-- [ ] Experimental metadata (such as `allowed-tools`) is **not** treated as a portable security enforcement guarantee.
+- Each skill has valid `SKILL.md` and required metadata (`name`, `description`) where Agent Skills conformance is the target.
+- Optional references, scripts and assets follow the target specification and supported runtime conventions.
+- Skill **format** compliance is tested separately from **behavioral** correctness.
+- Runtime compatibility matrix records actual tool discovery, invocation, delegation, permissions and result handling.
+- Experimental metadata (such as `allowed-tools`) is **not** treated as a portable security enforcement guarantee.
 
 ### Deliverables
-- [ ] Skill-owned contract scope/location and version compatibility reviewed
-- [ ] Separate workflow extraction justified or explicitly deferred
-- [ ] Interface and handoff contract reviewed
-- [ ] Ownership and authority boundaries confirmed
-- [ ] Failure and partial-result semantics reviewed
-- [ ] Acceptance criteria and evaluation cases specified *before implementation*
-- [ ] Contract version and change process agreed
 
-**Deliverable links / evidence:** `[Link completed artifacts, source references, and team review decisions here]`
+> **OUTPUTS — evidence to produce, not additional tasks.** Update each row's status and link when the artifact exists; do not mark an unreviewed proposal as approved.
 
-**Checkpoint:** `HUMAN REVIEW REQUIRED — contract, behavior and authorization scope [TBD]`
+| Output / artifact to produce | Current status | Evidence / location |
+| --- | --- | --- |
+| Per-skill contract ownership, location, versioning decision | PROPOSED — NOT APPROVED | [Contract ownership proposal](#contract-ownership-and-workflow-composition-proposed) / [Contract register](#contract-register) |
+| Producer → consumer handoff schema and invariants | ILLUSTRATIVE DRAFT | [Handoff example](#example-proposed-refinement-handoff-not-implemented) / [Proposed invariants](#behavioral-guarantees-and-invariants) |
+| Trust/permission boundary and failure/recovery behavior | PROPOSED — ENFORCEMENT UNVERIFIED | [Trust boundary](#trust--security--authority-boundary) / [Failure contract](#failure-and-recovery-contract) |
+| Acceptance criteria + evaluation plan, including negative cases | NOT APPROVED | [Evaluation scenarios](#5-evaluate--verify-observed-behavior-against-expectations) |
+| Reviewed contract baseline, owners and change/version rules | OPEN | [Decision log](#decision-log--single-source-of-truth-for-team-choices) |
+
+### Review gate
+
+**Must be true before moving on:** Both skill owners agree on contract boundaries, safe failure behavior, measurable acceptance checks, and who enforces permissions. Unresolved critical authority decisions block implementation.
+
+**Existing checkpoint:** `HUMAN REVIEW REQUIRED — contract, behavior and authorization scope [TBD]`
+
+**Reviewer / decision / date / link:** `[Add only after explicit review]`
 
 ---
 
 ## 4. Implement — Make only the reviewed change
+
+**Purpose:** Apply only the reviewed design under separately approved write scope.
+
+### What to do
+
+> **ACTION CHECKLIST — work to perform.** Check an item only after the action is completed and its result is recorded.
+
+- [ ] **Get a new, explicit write authorization.** Confirm affected scope and source revision; design approval alone does not authorize repository changes.
+- [ ] **Review existing implementation conventions.** Identify target files, tools, branch, and minimal dependency or adapter changes.
+- [ ] **Apply the smallest approved change.** Keep skill contracts and orchestration consistent with the reviewed design.
+- [ ] **Review deviations.** Record any changed scope or interface, and return to Design/Contract for material differences.
+- [ ] **Document rollback and link the change.** Capture PR/commit and evidence of reviewable modifications.
+
+### Reference information
+
+> **REFERENCE ONLY — not a task list.** Use the context, proposals, questions, and templates below while completing the actions above. Drafts are not approvals or runtime evidence.
 
 **Approved scope:** `NOT AUTHORIZED / [Add exact approval, actor, date]`
 
 **Source revision / working branch:** `[Add]`
 
 **Planned changes:**
-- [ ] `[File or module — change — expected behavior]`
-- [ ] `[File or module — change — expected behavior]`
-
-**Implementation checklist:**
-- [ ] Reconfirm exact workspace, branch and permitted tools
-- [ ] Check existing patterns before introducing new structures
-- [ ] Keep change small and reviewable
-- [ ] Preserve unrelated current behavior
-- [ ] Record deviations from approved contracts
-- [ ] Document rollback steps
+- `[File or module — change — expected behavior]`
+- `[File or module — change — expected behavior]`
 
 **Implementation / PR links:** `[Add only after changes exist]`
 
@@ -392,18 +483,41 @@ dotskills/
 
 ### Deliverables
 
-- [ ] Approved implementation scope, reviewer, target branch, and reference to the reviewed design/contract.
-- [ ] Reviewable change set (commit or PR) linked to the agreed behavior and interface boundaries.
-- [ ] Changes to tool permissions, runtime enforcement, or platform adapters documented with evidence, if applicable.
-- [ ] Implementation deviations, unresolved items, and any required design/contract re-review recorded.
-- [ ] Rollback or reversion procedure captured and reviewed.
+> **OUTPUTS — evidence to produce, not additional tasks.** Update each row's status and link when the artifact exists; do not mark an unreviewed proposal as approved.
 
-**Deliverable links / evidence:** `[PR, commit SHA, changed files, approval or rollback notes — add when available]`
-**Checkpoint:** `Explicit approval for implementation writes; record reviewer [TBD]`
+| Output / artifact to produce | Current status | Evidence / location |
+| --- | --- | --- |
+| Scope-level approval, branch and source revision | NOT AUTHORIZED | `[Approval / owner / branch / commit]` |
+| Reviewable implementation change set | NOT STARTED | `[PR / commit / changed files]` |
+| Deviation log, dependency/permission changes, rollback procedure | NOT STARTED | `[Deviation / rollback / review links]` |
+
+### Review gate
+
+**Must be true before moving on:** The code change is authorized, reviewable, and consistent with the accepted contract; material deviations have been re-reviewed. This is not a release approval.
+
+**Existing checkpoint:** `Explicit approval for implementation writes; record reviewer [TBD]`
+
+**Reviewer / decision / date / link:** `[Add only after explicit review]`
 
 ---
 
 ## 5. Evaluate — Verify observed behavior against expectations
+
+**Purpose:** Compare expected behavior with observed results; authorized evaluations only.
+
+### What to do
+
+> **ACTION CHECKLIST — work to perform.** Check an item only after the action is completed and its result is recorded.
+
+- [ ] **Confirm evaluation authorization and environment.** Identify harness/version, isolation, permitted actions, and baseline availability.
+- [ ] **Run approved scenarios.** Cover normal, incomplete, conflicting, dependency failure, partial worker failure, unauthorized-write, regression, and supported-runtime cases.
+- [ ] **Collect execution evidence.** Record observed output, source revision, tool/worker traces, grader or reviewer notes, and links.
+- [ ] **Compare observed results against expected contracts.** Flag violations and distinguish model, skill, tool, harness, or fixture failures.
+- [ ] **Assess residual risks and get human review.** Loop back to earlier stages if a requirement or contract is invalidated.
+
+### Reference information
+
+> **REFERENCE ONLY — not a task list.** Use the context, proposals, questions, and templates below while completing the actions above. Drafts are not approvals or runtime evidence.
 
 **Evaluation execution status:** `NOT RUN`
 
@@ -432,19 +546,42 @@ dotskills/
 
 ### Deliverables
 
-- [ ] Pre-change baseline linked, or its absence explicitly marked `UNVERIFIED`.
-- [ ] Executed evaluation results for successful, ambiguous, failure, and misuse scenarios, with expected versus observed outcomes.
-- [ ] Contract/handoff, permission-boundary, partial-failure, and regression results documented with reproducible fixtures and execution traces.
-- [ ] Supported-runtime compatibility checked where in scope; untested runtimes clearly marked `NOT RUN`.
-- [ ] Failures diagnosed, remediation or re-review actions recorded, and residual risks assessed.
-- [ ] Evaluation evidence reviewed by the decision owner; release recommendation documented without implying release approval.
+> **OUTPUTS — evidence to produce, not additional tasks.** Update each row's status and link when the artifact exists; do not mark an unreviewed proposal as approved.
 
-**Deliverable links / evidence:** `[Eval report, fixtures, traces, baseline, reviewer feedback — add when available]`
-**Checkpoint:** `Human review of evidence and residual risk; no release implied.`
+| Output / artifact to produce | Current status | Evidence / location |
+| --- | --- | --- |
+| Comparable baseline or explicitly documented gap | UNVERIFIED | `[Baseline artifact or reason unavailable]` |
+| Expected-vs-observed eval report with reproducing evidence | NOT RUN | `[Case results / fixtures / traces]` |
+| Permission, handoff, failure, regression, runtime coverage | NOT RUN | [Scenario matrix](#reference-information-4) / `[Runtime matrix / logs]` |
+| Failure triage, residual-risk review, release recommendation | NOT REVIEWED | `[Reviewer decision / mitigation links]` |
+
+### Review gate
+
+**Must be true before moving on:** The reviewer has examined actual test evidence and residual risks. Unrun cases cannot be recorded as passing; a release still requires Stage 6 approval.
+
+**Existing checkpoint:** `Human review of evidence and residual risk; no release implied.`
+
+**Reviewer / decision / date / link:** `[Add only after explicit review]`
 
 ---
 
 ## 6. Release — Approve, operate and improve
+
+**Purpose:** Decide whether to release and establish operational ownership.
+
+### What to do
+
+> **ACTION CHECKLIST — work to perform.** Check an item only after the action is completed and its result is recorded.
+
+- [ ] **Review evaluation evidence and open risks.** Ensure required contract, behavioral, and authorization checks are complete or consciously deferred.
+- [ ] **Request explicit go/no-go approval.** Record reviewer, date, scope, and rationale.
+- [ ] **Confirm release package and operations.** Document version, verified runtimes, compatibility, rollout/adoption, ownership, monitoring, incident handling, and rollback.
+- [ ] **Record the observed outcome.** Link the actual merge/release, or document BLOCKED/DEFERRED with next steps.
+- [ ] **Set the feedback loop.** Assign follow-up work, monitoring owners, and next review checkpoint.
+
+### Reference information
+
+> **REFERENCE ONLY — not a task list.** Use the context, proposals, questions, and templates below while completing the actions above. Drafts are not approvals or runtime evidence.
 
 **Release decision:** `NOT STARTED`
 
@@ -461,31 +598,38 @@ dotskills/
 
 ### Deliverables
 
-- [ ] Explicit go/no-go decision, reviewer, date, and supporting evaluation evidence recorded.
-- [ ] Version, updated integration documentation, contract compatibility, and verified runtime support recorded.
-- [ ] Rollout/adoption, rollback, and incident-response instructions reviewed with named owners.
-- [ ] Monitoring signals, feedback channel, and follow-up review cadence agreed.
-- [ ] Actual merge/release evidence linked if released, or `BLOCKED` / `DEFERRED` rationale recorded otherwise.
-- [ ] Post-release issues and improvement backlog captured for the next DFRDE cycle.
+> **OUTPUTS — evidence to produce, not additional tasks.** Update each row's status and link when the artifact exists; do not mark an unreviewed proposal as approved.
 
-**Deliverable links / evidence:** `[Release/tag/merge, approval, operating notes, follow-up backlog — add when available]`
-**Checkpoint:** `Explicit human go/no-go; mark RELEASED only with actual release evidence.`
+| Output / artifact to produce | Current status | Evidence / location |
+| --- | --- | --- |
+| Go/no-go decision with human sign-off | NOT STARTED | `[Reviewer / date / approval]` |
+| Release version, compatibility and updated documentation | NOT STARTED | `[Version / supported runtimes / docs]` |
+| Rollout, monitoring, incident and rollback plan with owners | NOT STARTED | `[Operating plan / contacts]` |
+| Release evidence or deferral and follow-up backlog | NOT STARTED | `[Merge / tag / defer rationale / tasks]` |
+
+### Review gate
+
+**Must be true before moving on:** Explicit release authorization and verifiable release/merge evidence exist, or the work is marked BLOCKED/DEFERRED. Approval of a plan is not proof of deployment.
+
+**Existing checkpoint:** `Explicit human go/no-go; mark RELEASED only with actual release evidence.`
+
+**Reviewer / decision / date / link:** `[Add only after explicit review]`
 
 ---
 
-## Cross-cutting quality checklist
+## Cross-cutting review criteria — reference, not a task list
 
 Use these as recurring lenses rather than extra lifecycle stages.
 
-- [ ] **Standards:** Target Agent Skills format is clear; conformance validated separately from functionality.
-- [ ] **Responsibility:** Skill and worker ownership do not overlap ambiguously.
-- [ ] **Invocation:** Trigger conditions, delegation and stop conditions are defined.
-- [ ] **Contracts:** Inputs, outputs, statuses, invariants and schema versions are explicit.
-- [ ] **Trust:** External context and worker outputs have provenance and are treated as data, not authority.
-- [ ] **Permissions:** Effective tool/service scope matches intended read/write policy.
-- [ ] **Failure behavior:** Timeouts, retries, partial results, escalation and idempotency are reviewed.
-- [ ] **Evaluation:** Baseline, success/misuse/regression scenarios and execution evidence exist.
-- [ ] **Governance:** Owner, review gates, versioning, rollout and rollback are identified.
+- **Standards:** Target Agent Skills format is clear; conformance validated separately from functionality.
+- **Responsibility:** Skill and worker ownership do not overlap ambiguously.
+- **Invocation:** Trigger conditions, delegation and stop conditions are defined.
+- **Contracts:** Inputs, outputs, statuses, invariants and schema versions are explicit.
+- **Trust:** External context and worker outputs have provenance and are treated as data, not authority.
+- **Permissions:** Effective tool/service scope matches intended read/write policy.
+- **Failure behavior:** Timeouts, retries, partial results, escalation and idempotency are reviewed.
+- **Evaluation:** Baseline, success/misuse/regression scenarios and execution evidence exist.
+- **Governance:** Owner, review gates, versioning, rollout and rollback are identified.
 
 ---
 
