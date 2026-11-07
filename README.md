@@ -11,7 +11,7 @@ Skills are grouped by use.
 | Skill | Purpose | What you'll learn |
 | --- | --- | --- |
 | [evaluate-skill](skills/evaluate-skill/SKILL.md) | Evaluate and improve agent skills through guided tests, evidence-based diagnosis, and approved changes. | LLM evals, test cases, assertions, grading, and regression analysis. |
-| [audit-skill](skills/audit-skill/SKILL.md) | Explore, audit, or compare skills to understand their workflows, identify gaps, and spot overlaps without making changes. | Skill auditing, evidence quality, gaps, and responsibility boundaries. |
+| [audit-skill](skills/audit-skill/SKILL.md) | Review one or more skills automatically with at-a-glance profiles, standards and quality checks, Mermaid workflows, cross-platform compatibility, risks, and handoffs; read-only. | Skill contracts, Agent Skills compliance, evidence quality, trust, portability, responsibility boundaries, and proposed eval cases. |
 | [integrate-skills](skills/integrate-skills/SKILL.md) **(draft)** | Learn how to collaboratively design, connect, evaluate, and release multi-skill workflows; walkthrough only, no automated changes. | Multi-skill collaboration, composition, handoffs, and release planning. |
 
 ### Everyday workflows
