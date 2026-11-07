@@ -9,6 +9,14 @@
   ],
   "skills": [
     {
+      "name": "design-first-review-driven-engineering",
+      "category": "methodology",
+      "purpose": "Domain-agnostic, design-first and review-driven engineering lifecycle for skills, tools, agents, harnesses, applications and infrastructure: discover, design, contract, implement, evaluate, and release with human gates and evidence.",
+      "source": "dotskills",
+      "path": "skills/design-first-review-driven-engineering",
+      "reference_count": 0
+    },
+    {
       "name": "evaluate-skill",
       "category": "methodology",
       "purpose": "Optional evidence-driven, conference-informed, human-gated workflow for learning, evaluating, and refining agent skills, with diagnosis-first specialist routing and regression checks.",
