@@ -115,6 +115,17 @@ flowchart TB
 | 3. Deep-dive key components | DFRDE Design + Contract | Ownership, APIs/handoffs, trust/permissions, failure semantics |
 | 4. Identify bottlenecks and trade-offs | DFRDE Design + Contract; revisit during Evaluate | Decision rationale and performance/reliability risks |
 
+#### Using SDI during DFRDE
+
+Use SDI as a **reasoning aid within DFRDE**, not a separate required lifecycle:
+
+- **Stage 1 — Discover (SDI Step 1):** Clarify the problem, functional/nonfunctional requirements, scope and constraints. For existing systems, verify the current architecture before making design assumptions.
+- **Stage 2 — Design (SDI Steps 2–4; primary SDI stage):** Sketch the high-level integration, deep-dive into critical components, compare alternatives and trade-offs, then ask the team to choose a direction. For this integration, decide who orchestrates the skills and whether a separate workflow is justified.
+- **Stage 3 — Contract (informed by SDI Steps 3–4):** Translate the reviewed design into concrete inputs, outputs, ownership, permissions, failure behavior and measurable acceptance criteria. Reopen Stage 2 if contract details expose an architectural problem.
+- **Stages 4–6 — Implement, Evaluate, Release:** Follow DFRDE's implementation, evidence and approval gates. Revisit SDI reasoning only if new evidence challenges the design.
+
+**Keep it proportional:** A small change may need only a brief architecture check; use the full SDI walkthrough for meaningful architecture or integration decisions. **SDI shapes the design; DFRDE carries it through implementation, verification and release.**
+
 ### Stage tracker
 
 | Stage | Status | Required review / outcome | Evidence link |
