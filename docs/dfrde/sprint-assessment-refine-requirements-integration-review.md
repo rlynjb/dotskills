@@ -32,9 +32,11 @@
   - [Existing-state inventory](#existing-state-inventory)
   - [Requirements and scope](#requirements-and-scope)
   - [Stakeholder questions](#stakeholder-questions)
+  - [Deliverables](#deliverables)
 - [2. Design — What architecture best fits the requirements?](#2-design--what-architecture-best-fits-the-requirements)
   - [Candidate options (PROPOSED, not selected)](#candidate-options-proposed-not-selected)
   - [Proposed integration flow](#proposed-integration-flow)
+  - [Deliverables](#deliverables-1)
 - [3. Contract — What must every participant guarantee?](#3-contract--what-must-every-participant-guarantee)
   - [Contract ownership and workflow composition (PROPOSED)](#contract-ownership-and-workflow-composition-proposed)
   - [Contract register](#contract-register)
@@ -43,9 +45,13 @@
   - [Trust / security / authority boundary](#trust--security--authority-boundary)
   - [Failure and recovery contract](#failure-and-recovery-contract)
   - [Agent Skills packaging and portability](#agent-skills-packaging-and-portability)
+  - [Deliverables](#deliverables-2)
 - [4. Implement — Make only the reviewed change](#4-implement--make-only-the-reviewed-change)
+  - [Deliverables](#deliverables-3)
 - [5. Evaluate — Verify observed behavior against expectations](#5-evaluate--verify-observed-behavior-against-expectations)
+  - [Deliverables](#deliverables-4)
 - [6. Release — Approve, operate and improve](#6-release--approve-operate-and-improve)
+  - [Deliverables](#deliverables-5)
 - [Cross-cutting quality checklist](#cross-cutting-quality-checklist)
 - [Decision log — single source of truth for team choices](#decision-log--single-source-of-truth-for-team-choices)
 - [Review meeting notes](#review-meeting-notes)
@@ -170,12 +176,14 @@ Sprint Assessment assesses Jira tickets for sprint readiness. Refine Requirement
 
 > `[Date / participants / answer / supporting link]`
 
-**Stage 1 deliverables:**
+### Deliverables
 - [ ] Problem statement reviewed
 - [ ] Existing as-is workflow and source revision recorded
 - [ ] FRs/NFRs, non-goals and constraints recorded
 - [ ] Evidence gaps and decision owners identified
 - [ ] Initial acceptance measures drafted
+
+**Deliverable links / evidence:** `[Link completed artifacts, source references, and team review decisions here]`
 
 **Checkpoint:** `REVIEW REQUIRED — [Who reviews? When? Decision/evidence link?]`
 
@@ -221,12 +229,14 @@ flowchart TD
 
 **Decision rationale and alternatives rejected:** `[Document with reviewer and source references]`
 
-**Stage 2 deliverables:**
+### Deliverables
 - [ ] Verified as-is diagram
 - [ ] At least one meaningful alternative compared
 - [ ] Proposed to-be flow reviewed with coworker
 - [ ] Ownership and platform assumptions checked
 - [ ] Major risks and trade-offs recorded
+
+**Deliverable links / evidence:** `[Link completed artifacts, source references, and team review decisions here]`
 
 **Checkpoint:** `HUMAN REVIEW REQUIRED — design approval and owner [TBD]`
 
@@ -343,7 +353,7 @@ dotskills/
 - [ ] Runtime compatibility matrix records actual tool discovery, invocation, delegation, permissions and result handling.
 - [ ] Experimental metadata (such as `allowed-tools`) is **not** treated as a portable security enforcement guarantee.
 
-**Stage 3 deliverables:**
+### Deliverables
 - [ ] Skill-owned contract scope/location and version compatibility reviewed
 - [ ] Separate workflow extraction justified or explicitly deferred
 - [ ] Interface and handoff contract reviewed
@@ -351,6 +361,8 @@ dotskills/
 - [ ] Failure and partial-result semantics reviewed
 - [ ] Acceptance criteria and evaluation cases specified *before implementation*
 - [ ] Contract version and change process agreed
+
+**Deliverable links / evidence:** `[Link completed artifacts, source references, and team review decisions here]`
 
 **Checkpoint:** `HUMAN REVIEW REQUIRED — contract, behavior and authorization scope [TBD]`
 
@@ -378,6 +390,15 @@ dotskills/
 
 **Deviations / new issues:** `[Record and reopen design/contract if material]`
 
+### Deliverables
+
+- [ ] Approved implementation scope, reviewer, target branch, and reference to the reviewed design/contract.
+- [ ] Reviewable change set (commit or PR) linked to the agreed behavior and interface boundaries.
+- [ ] Changes to tool permissions, runtime enforcement, or platform adapters documented with evidence, if applicable.
+- [ ] Implementation deviations, unresolved items, and any required design/contract re-review recorded.
+- [ ] Rollback or reversion procedure captured and reviewed.
+
+**Deliverable links / evidence:** `[PR, commit SHA, changed files, approval or rollback notes — add when available]`
 **Checkpoint:** `Explicit approval for implementation writes; record reviewer [TBD]`
 
 ---
@@ -409,6 +430,16 @@ dotskills/
 
 **Decision:** `NOT REVIEWED`
 
+### Deliverables
+
+- [ ] Pre-change baseline linked, or its absence explicitly marked `UNVERIFIED`.
+- [ ] Executed evaluation results for successful, ambiguous, failure, and misuse scenarios, with expected versus observed outcomes.
+- [ ] Contract/handoff, permission-boundary, partial-failure, and regression results documented with reproducible fixtures and execution traces.
+- [ ] Supported-runtime compatibility checked where in scope; untested runtimes clearly marked `NOT RUN`.
+- [ ] Failures diagnosed, remediation or re-review actions recorded, and residual risks assessed.
+- [ ] Evaluation evidence reviewed by the decision owner; release recommendation documented without implying release approval.
+
+**Deliverable links / evidence:** `[Eval report, fixtures, traces, baseline, reviewer feedback — add when available]`
 **Checkpoint:** `Human review of evidence and residual risk; no release implied.`
 
 ---
@@ -428,6 +459,16 @@ dotskills/
 | Rollback / reversion | `[Steps]` |
 | Follow-up improvements | `[Prioritized backlog]` |
 
+### Deliverables
+
+- [ ] Explicit go/no-go decision, reviewer, date, and supporting evaluation evidence recorded.
+- [ ] Version, updated integration documentation, contract compatibility, and verified runtime support recorded.
+- [ ] Rollout/adoption, rollback, and incident-response instructions reviewed with named owners.
+- [ ] Monitoring signals, feedback channel, and follow-up review cadence agreed.
+- [ ] Actual merge/release evidence linked if released, or `BLOCKED` / `DEFERRED` rationale recorded otherwise.
+- [ ] Post-release issues and improvement backlog captured for the next DFRDE cycle.
+
+**Deliverable links / evidence:** `[Release/tag/merge, approval, operating notes, follow-up backlog — add when available]`
 **Checkpoint:** `Explicit human go/no-go; mark RELEASED only with actual release evidence.`
 
 ---
