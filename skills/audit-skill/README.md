@@ -1,228 +1,168 @@
 # Audit Skill
 
-**`audit-skill` helps you understand, assess, or compare agent skills without modifying or executing them.** It now supports **Explore Mode** for getting acquainted with one unfamiliar skill, in addition to its existing evidence-backed Audit and Compare workflows.
+**`audit-skill` is one read-only, overview-first workflow for reviewing one or more agent skills.** It automatically adjusts its scope from independent single-skill analysis to multi-skill responsibility and handoff analysis. There is **no Explore/Audit/Compare mode selection**.
 
-The central idea: **understand first → choose an angle → investigate with evidence → decide whether evaluation or improvement is warranted.** A documented instruction is not proof that an agent follows it.
+The first result is a compact, complete review of what each skill does, how it works, what evidence exists, what is unverified, and what the team should discuss. Choose any finding or topic afterward for a deeper explanation.
 
 ## Table of contents
 
-- [Choose a mode](#choose-a-mode)
-- [First-response mode guide](#first-response-mode-guide)
-- [Explore Mode: learn one skill](#explore-mode-learn-one-skill)
-- [First response and question menu](#first-response-and-question-menu)
-- [Deep dives and methodology lenses](#deep-dives-and-methodology-lenses)
-- [Audit and Compare modes](#audit-and-compare-modes)
-- [Evidence and safety boundaries](#evidence-and-safety-boundaries)
+- [How it works](#how-it-works)
+- [What the first report contains](#what-the-first-report-contains)
+- [Quality and standards checks](#quality-and-standards-checks)
+- [Cross-platform compatibility](#cross-platform-compatibility)
 - [How to invoke](#how-to-invoke)
+- [Evidence and safety rules](#evidence-and-safety-rules)
 - [Relationship to other DotSkills skills](#relationship-to-other-dotskills-skills)
-- [Files and status](#files-and-status)
 
-## Choose a mode
-
-| Mode | Use when | Result |
-| --- | --- | --- |
-| **Explore** | "Help me understand this one skill" | Overview, Skill Contract, workflow/evidence orientation, **complete initial question menu**, learner-chosen deep dives |
-| **Audit** | "Assess this skill and find missing validation" | Evidence-backed gaps/risks, existing controls, recommendations, three **proposed** test cases |
-| **Compare** | "How do these two skills overlap?" | Both skill contracts, overlapping and distinct decisions, conflicting instructions, handoffs, and audit findings |
-
-**Explore** is the default for a single skill when the user wants to learn or gives no assessment goal. Explicit audit/assessment requests still use **Audit**. Comparison requests use **Compare** only with a second accessible skill. These are **modes of the same skill**, not three separate skills.
+## How it works
 
 ```text
-                     Existing skill(s)
-                            |
-                 Read-only source discovery
-                            |
-               Choose mode from user intent
-           /                |                 \
-     EXPLORE              AUDIT             COMPARE
-    Learn one         Assess one        Examine 2+ skills
-       |                  |                 |
-  Skill overview      Evidence &         Contracts &
-  + question menu     gap report         overlaps/risks
-       |                  |                 |
-  Choose Q / T / F     Choose finding     Choose finding
-       |                  |                 |
-  Guided deep dive    Review next step   Review next step
-           \                |               /
-           Human decides whether to request Evaluate Skill
+                 One or more target skills
+                           |
+             Read-only source inspection
+                           |
+              Audit Skill — At a Glance
+              /                       \
+       For every skill          Only with 2+ skills
+       - Contract/profile       - Responsibility matrix
+       - Standards review       - Shared/unique decisions
+       - Current-state flow     - Conflicts/duplication
+       - Quality & evidence     - Handoff/integration options
+       - Runtime parity                |
+              \                       /
+               Findings + NOT RUN eval proposals
+                           |
+                 Human selects topic/finding
+                           |
+               Cited, focused deep dive
+                           |
+              Human decides next workflow
 ```
 
-## First-response mode guide
+1. **Find and inspect** each available skill, references, agents, manifests, tests and relevant history, with source revision and line evidence.
+2. **Apply the same review criteria to every skill**, whether one or several were supplied.
+3. **Add relationships automatically** only when there are two or more accessible skills. Otherwise mark inter-skill comparison NOT APPLICABLE.
+4. **Report all criteria at a glance** with existing safeguards before risks, source limitations and proposed tests that have **not** run.
+5. **Wait for a requested deep dive.** Never silently change the skill or run a behavioral evaluation.
 
-**Whenever you start `audit-skill`, its first output begins with a small mode explanation before the Skill Snapshot or Executive Summary.** The skill selects the mode from your request and keeps going; you do not have to answer a mode-selection question when your intent is clear.
+If a named target cannot be accessed, label it NOT ASSESSED and avoid constructing a fictitious comparison.
 
-```text
-Audit Skill — Mode Guide
-Explore (1 skill): Learn its purpose, workflow, decisions, and concepts.
-Audit (1 skill): Assess gaps, risks, evidence, and missing safeguards.
-Compare (2+ skills): Examine overlaps, conflicting responsibilities, and handoffs.
-Active mode: Explore — one skill was provided without a request to assess it.
-To switch: "Audit Sprint Assessment" or
-           "Compare Sprint Assessment with Refine Requirements".
+## What the first report contains
 
-Skill Snapshot
-...
-```
+The report begins **Audit Skill — At a Glance** (not a mode guide or a long question menu):
 
-The **Active mode** line changes based on your request. **Audit works with one skill**; only Compare needs multiple accessible skills. The guide appears once at the start of each invocation, not before every question or deep dive. It does not alter the existing read-only safeguards or the Explore question-first flow.
-
-## Explore Mode: learn one skill
-
-Use Explore when you want to know *how a skill works* before deciding whether anything needs to be improved. This mode does **not** require finding a defect, producing a readiness score, or writing evals.
-
-The process follows five steps:
-
-1. **Inspect:** read the target `SKILL.md` and relevant references, scripts, templates, and tests progressively. Record what was accessible and the source revision.
-2. **Orient:** summarize the **Skill Contract** — purpose, trigger, inputs, workflow, decisions, outputs, validation, and handoff.
-3. **Map:** show the major stage/decision/handoff flow and a small **Evidence & Pattern Map** linking concepts to file/line evidence and verification status.
-4. **Offer a menu:** provide the **material initial questions** for all applicable topics. Do not pre-answer them or hide them behind an arbitrary "top three".
-5. **Let the learner choose:** pause for a topic, question, finding, workflow stage, or request for a recommended learning order. Then investigate only that selection.
-
-### First response and question menu
-
-Organize the menu under these nine perspectives. `T-xx` identifies a stable topic, while `Q-xx` identifies a stable question.
-
-| Topic | Explore questions such as ... |
+| Output | What it communicates |
 | --- | --- |
-| **T-01 Purpose & boundaries** | Why does this skill exist? What triggers it and when should it stop? |
-| **T-02 Structure & dependencies** | What are the entry point, references, scripts, templates, and dependencies? |
-| **T-03 Inputs & context** | What information does the skill require? How is context selected and trusted? |
-| **T-04 Workflow & decisions** | What happens at each stage? How are decisions made? |
-| **T-05 Outputs & handoffs** | What does it produce? Where does that output go? |
-| **T-06 Validation & reliability** | What checks exist? What is documented versus actually verified? |
-| **T-07 Trust & tool boundaries** | What tools, permissions, and possible side effects matter? |
-| **T-08 Observability & failures** | What evidence exists for failures, traces, feedback, and uncertainty? |
-| **T-09 Lifecycle & trade-offs** | How is the skill versioned, maintained, tested, and made portable? |
+| **Target/source boundary** | Which skills and revisions were inspected; what was inaccessible; no tests or target skill execution |
+| **Skill profile(s)** | Purpose, activation, inputs, dependencies, steps/decisions, agents and tools, outputs, permissions, failures and handoffs |
+| **Quality dashboard** | Q-01–Q-10 verdicts for each skill, supporting paths/lines, and key unknowns |
+| **Agent Skills specification matrix** | Required format vs recommended/optional structure; normative claims tied to the published specification |
+| **Mermaid current-state diagram(s)** | One flowchart per target, including decisions, delegation, stop conditions and unverified edges |
+| **Relationship analysis (2+ only)** | Shared/unique responsibility matrix, conflicts, duplicate decisions, and proposed handoff/compose/merge alternatives |
+| **Cross-runtime matrix** | Explicit host-by-capability compatibility evidence and adapter needs |
+| **Evidence and risk map** | Existing safeguards first; source-backed F-xx findings, impact/confidence, and unanswered questions |
+| **Evaluation recommendations** | At least three realistic synthetic cases and pass/fail criteria, all **NOT RUN**, plus smallest next step |
 
-The agent derives **concrete, target-specific questions** from inspected files, not from assumptions. The menu includes every material question identified on the initial pass, with concise source pointers. It marks uncertain questions `PROVISIONAL / NOT VERIFIED`, inapplicable topics `NOT APPLICABLE`, and noteworthy patterns or unknowns with optional `F-xx` IDs. **A finding is not automatically a defect.**
+The main report remains concise. A selected `F-xx`, `Q-xx`, diagram, workflow stage or contract receives an evidence-backed deep dive without switching modes. Never present a hypothetical path as a tested run.
 
-For example, an **illustrative menu only** for Sprint Assessment might read:
+### Mermaid example (illustrative only)
 
-```text
-Audit Skill — Mode Guide
-Explore (1 skill): Learn how it works.
-Audit (1 skill): Assess gaps, risks, and safeguards.
-Compare (2+ skills): Examine overlap and handoffs.
-Active mode: Explore — one skill, no assessment requested.
-To switch: "Audit Sprint Assessment" or "Compare Sprint Assessment with Refine Requirements".
-
-Skill Snapshot: Sprint Assessment [source revision, inspected files, known limitations]
-Skill Contract: [purpose / inputs / decisions / outputs / handoff]
-Workflow: [documented stages and decision points]
-Evidence Map: [claim -> file:line -> documented / implemented / observed / unverified]
-
-T-01 Purpose & boundaries
-  Q-01 When should Sprint Assessment be invoked? [source or NOT VERIFIED]
-T-03 Inputs & context
-  Q-02 Which requirements and stakeholder answers does it consume? [source or NOT VERIFIED]
-T-04 Workflow & decisions
-  Q-03 How does it determine sprint readiness? [source or NOT VERIFIED]
-  Q-04 How does it reason about sizing or uncertainty? [source or NOT VERIFIED]
-T-07 Trust & tool boundaries
-  Q-05 Can it call tools or change external systems? [source or NOT VERIFIED]
-T-09 Lifecycle & trade-offs
-  Q-06 What evaluations or regression checks exist? [source or NOT VERIFIED]
-
-F-01 [Optional observed pattern or unresolved question; not a proven defect]
-
-Choose Q-xx, T-xx, F-xx, a stage, or a named concept.
+```mermaid
+flowchart TD
+    A["Skill receives task"] --> B{"Required evidence available?"}
+    B -->|Yes| C["Documented evaluation steps"]
+    B -->|No| D["Clarify or stop as unresolved"]
+    C --> E["Evidence-backed result"]
+    D --> E
 ```
 
-This is **not an actual audit of Sprint Assessment**: the example questions are prompts for investigation, not verified facts. A real first pass covers every applicable topic, not just the illustrative subset above.
+A real diagram must come from the target files and label which edges are inferred or unverified. For two skills, keep **as-is** diagrams distinct from any **PROPOSED** integration diagram.
 
-### Deep dives and methodology lenses
+## Quality and standards checks
 
-After you choose, Explore uses a **guided, one-topic-at-a-time** walkthrough:
+The [Agent Skills specification](https://agentskills.io/specification) is the standards baseline for `SKILL.md`, naming/frontmatter and supporting resources. Its actual requirements are distinct from the team-defined engineering quality expectations below.
 
-**What/why → actual skill evidence → worked example or documented decision path → trade-offs and unknowns → takeaway/checkpoint.**
-
-You can ask for **Fast** or **Deep Dive** depth. You may select any question out of order. The skill keeps question IDs stable, tracks `covered / pending / not applicable / not verified`, and doesn't repeat the full menu unless asked or new evidence materially changes it.
-
-Your five DotSkills methodology skills provide relevant **angles**, not mandatory steps or automatic tool execution:
-
-| Methodology lens | Explore where useful |
-| --- | --- |
-| [Context Engineering](../context-engineering/SKILL.md) | Inputs, context provenance, freshness, missing information (`T-03`) |
-| [Correctness & Verification](../correctness-and-verification/SKILL.md) | Decision criteria, invariants, evidence, existing checks (`T-04`, `T-06`) |
-| [Trust & Governance](../agent-trust-and-governance/SKILL.md) | Permissions, authority, external effects, unsafe instructions (`T-07`) |
-| [Observability & Feedback](../agent-observability-and-feedback/SKILL.md) | Traces, failure paths, feedback (`T-08`) |
-| [Skill Lifecycle & Release](../skill-lifecycle-and-release/SKILL.md) | Versions, evaluation coverage, portability (`T-09`) |
-
-Explore **teaches relevant concepts** using target evidence. It does not need an observed failure, and it does not invoke specialist skills unless you separately request that workflow.
-
-## Audit and Compare modes
-
-These preserve the original five-phase assessment workflow. **Overlap analysis is optional in Audit and active in Compare**; learning about a single skill does not require another skill.
-
-| Phase | Audit (one skill) | Compare (two or more skills) |
+| ID | Requirement | What a reviewer should find |
 | --- | --- | --- |
-| **1. Inventory** | Extract Skill Contract | Extract each Skill Contract |
-| **2. Workflow** | Map decisions, source evidence and handoffs | Map each workflow and evidence |
-| **3. Overlap** | Skip (`NOT ASSESSED`) | Find shared context, duplicate decisions, conflicts and missing handoffs |
-| **4. Validation** | Review existing safeguards, then rank supported gaps and risks | Review safeguards and gaps, including cross-skill inconsistencies |
-| **5. Test design** | Propose three representative behavioral cases, **NOT RUN** | Propose cases testing each skill and key interfaces, **NOT RUN** |
+| Q-01 | Purpose and boundaries | Intended job, who uses it, when it should not activate |
+| Q-02 | Activation and discovery | Invocation, triggers, incorrect-trigger behavior |
+| Q-03 | Structure, inputs and dependencies | Source files, context, tools/MCP, credentials and environment assumptions |
+| Q-04 | Workflow and orchestration | Steps, decisions, dynamic vs named agents, delegation, approvals and result aggregation |
+| Q-05 | Contracts and outputs | Explicit inputs, outputs, guarantees, invariants, ownership and failed handoffs |
+| Q-06 | Context and trust | Provenance, freshness, conflicting or untrusted information and evidence |
+| Q-07 | Permissions and side effects | Enforced authorization, least privilege, scoped writes and human approval |
+| Q-08 | Failure and stop behavior | Unavailable tools, ambiguous inputs, partial batches, retries, stop conditions |
+| Q-09 | Evals and observability | Existing tests, CI, scenarios, execution traces, expected and observed outcomes |
+| Q-10 | Lifecycle and portability | Owners, versioning, review/rollback, compatible hosts, adapters and regressions |
 
-The first Audit/Compare report presents an Executive Summary, Skill Contract(s), Evidence & Pattern Map, Workflow Map, Existing Validation, ranked Gaps & Risks, minimal proposed Validation Layer, three `NOT RUN` scenarios, and questions for human review. **Compare** also includes Overlap Analysis. After that, the user selects a finding to investigate.
+For each applicable item show **PASS (static)**, **GAP**, **UNVERIFIED**, or **NOT APPLICABLE**, with a reason and evidence. A written instruction to check something does not prove the check actually ran.
 
-The original [Sprint Assessment versus Refine Requirements audit prompt](references/sprint-assessment-audit.md) remains preserved as a comparison example. Its proposed division between requirements refinement and sprint planning is a **hypothesis** until both skill sources can be inspected.
+The separate **standards compliance matrix** distinguishes required specification elements, recommendations and experimental/host-specific behavior. It should not imply full standards conformance if the published specification was not consulted or a validator was not run.
 
-## Evidence and safety boundaries
+## Cross-platform compatibility
 
-- **DOCUMENTED INSTRUCTIONS:** the skill says something should happen.
-- **IMPLEMENTED CHECK:** an available script/test contains a check.
-- **OBSERVED RESULT:** supplied or actually authorized test evidence demonstrates a result.
-- **NOT VERIFIED:** unavailable source or missing execution evidence.
+An Agent Skills-compatible Markdown directory does **not** guarantee that a multi-agent workflow behaves the same in every harness. The review explicitly covers:
 
-All three modes operate **read-only**. The agent does not change files, run target agents or scripts, commit, post to GitLab/GitHub, contact stakeholders, or execute evaluations. A convincing `SKILL.md` is not proof of reliable or safe behavior, and read-only prompt text does not enforce a sandbox; the consuming host must restrict access and tool effects.
+1. Skill packaging and installation.
+2. Discovery, triggers and invocation.
+3. Context loading and configuration inheritance.
+4. Tools, shell names, MCP integrations and local paths.
+5. Agent delegation, concurrency and worker result aggregation.
+6. User identity, permission and approval enforcement.
+7. Output schemas, error handling, timeouts and partial failures.
+8. Eval evidence, adapter ownership and supported versions.
 
-For workplace use, inspect proprietary sources **only through approved access** and do not paste sensitive skill contents into the public DotSkills repository. If a source is missing, the response must identify the limitation rather than invent evidence.
+Use a runtime × capability matrix with **SUPPORTED (evidenced)**, **ADAPTER REQUIRED**, **NOT SUPPORTED (evidenced)** and **NOT VERIFIED**. When runtimes are unspecified, say so. Do not assume Claude Code and Codex have interchangeable tool names or delegation APIs.
 
 ## How to invoke
 
-**Explore a single skill:**
+**One skill — no mode to select:**
 
 ```text
-Use audit-skill in Explore Mode on our Sprint Assessment skill.
-Read only. First give me a Skill Contract, workflow and evidence map,
-then the complete initial menu of relevant questions across the learning
-topics. Cite source files/lines or mark NOT VERIFIED.
-Do not rank issues, design evals, modify files, or run anything.
-Wait for me to choose a question or topic for a deep dive.
+Use audit-skill on Sprint Assessment in this repository.
+Start with a complete at-a-glance report including the skill contract,
+Mermaid current-state flow, Agent Skills compliance matrix, ten quality
+requirements, cross-platform compatibility, risks and NOT RUN eval cases.
+Cite file/line evidence. Do not execute the skill or edit anything.
 ```
 
-**Audit a single skill:**
+**Two skills — comparison happens automatically:**
 
 ```text
-Use audit-skill in Audit Mode on Sprint Assessment.
-Read only. Show its contract, workflow, existing safeguards,
-evidence-backed validation gaps, and three proposed test cases.
-Do not execute cases or edit the skill.
+Use audit-skill on Sprint Assessment and Refine Requirements.
+Inspect each independently, then include the ownership/overlap matrix,
+conflicting decisions, missing handoffs and PROPOSED integration choices.
+Include standards, quality, runtime-compatibility and evidence checks.
+Read-only; no execution or edits. Pause for my review.
 ```
 
-**Compare two skills:**
+**Focused follow-up:**
 
 ```text
-Use audit-skill in Compare Mode on Sprint Assessment
-and Refine Requirements, if both are accessible.
-Compare decision ownership, overlap and handoffs, with source evidence.
-Keep the first report concise; do not execute tests or edit files.
+Deep dive F-02. Show the exact source evidence, implementation status,
+risk, trade-offs and the smallest useful validation step.
 ```
+
+The optional [Sprint Assessment example](references/sprint-assessment-audit.md) provides task-specific prompts, not an alternative workflow.
+
+## Evidence and safety rules
+
+- **DOCUMENTED INSTRUCTIONS** = written guidance; **IMPLEMENTED CHECK** = code/config check found; **OBSERVED RESULT** = actual authorized trace; **NOT VERIFIED** = not established.
+- Cite relevant file paths and lines; distinguish a referenced file from an actually loaded file.
+- Report existing safeguards **before** gaps. Missing evidence must not become a fabricated failure or a passing test.
+- The audit is **read-only** and never executes target agents, scripts, evals, live Jira/Confluence actions or repo mutations. Approved read-only file/repository sources may be inspected.
+- Prompt text cannot enforce permissions. Only host/tool/server controls can enforce read-only authority.
+- Preserve approved workplace data boundaries; do not paste confidential sources into a public repository.
 
 ## Relationship to other DotSkills skills
 
 | Skill | Responsibility |
 | --- | --- |
-| **Audit Skill** (this skill) | **Explore** how one skill works; **Audit** its documented safeguards and gaps; **Compare** skill responsibilities. Read-only, overview-first. |
-| [Evaluate Skill](../evaluate-skill/SKILL.md) | Teaches eval design, supports authorized behavior testing, diagnoses failures with five lenses, and makes human-approved improvements. No bundled model runner. |
-| [Learn Repo](../learn-repo/SKILL.md) | Teaches an **entire codebase** with a question-first learning menu and repo/book lenses. |
-| [Refine Requirements](../refine-requirements/SKILL.md) | Refines feature requirements and design inputs; a possible **target** of Audit Skill. |
+| **Audit Skill** (this skill) | Single workflow for independent and multi-skill source audits, compliance, contracts, trust, diagrams and portability; **no execution or edits** |
+| [Evaluate Skill](../evaluate-skill/SKILL.md) | Separately authorized behavioral evaluation, diagnosis, human-approved changes and regression review; runtime safety gates still apply |
+| [Integrate Skills](../integrate-skills/SKILL.md) | Draft collaboration/architecture walkthrough for connecting independently reviewed skills; not an implementation runner |
+| [Learn Repo](../learn-repo/SKILL.md) | Guided learning of an entire codebase rather than skill-specific audit |
 
-**Recommended sequence:** Explore to understand → Audit to assess (if needed) → Evaluate Skill to evaluate/improve (only after a separate, approved request). Modes are not automatically chained.
+**Recommended path:** Audit as-is → discuss contracts/decisions with humans → separately authorize evaluation or implementation when warranted.
 
-## Files and status
-
-- [`SKILL.md`](SKILL.md) — runtime instructions and mode routing, including Explore's initial question-menu and deep-dive contract.
-- [`README.md`](README.md) — human-facing overview, examples, safeguards and comparison of modes.
-- [`references/sprint-assessment-audit.md`](references/sprint-assessment-audit.md) — preserved original Sprint Assessment comparison prompt.
-
-**Status:** Explore Mode is an instruction workflow, not a new eval engine or an independently verified model behavior. Repository structural checks do not prove the mode behaves correctly in live model runs.
+**Status:** This revision defines a single review procedure, not a proven new agent runtime or eval engine. Static documentation checks alone do not establish behavioral reliability.
