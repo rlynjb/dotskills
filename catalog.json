@@ -19,7 +19,7 @@
     {
       "name": "audit-skill",
       "category": "methodology",
-      "purpose": "Read-only Explore/Audit/Compare modes: evidence-backed skill learning menus and deep dives, single-skill validation-gap audits, and cross-skill overlap analysis.",
+      "purpose": "Unified read-only evidence-backed review of one or more skills: contracts, Agent Skills compliance, quality matrices, Mermaid workflows, trust, evaluation gaps, cross-platform compatibility and automatic multi-skill handoff analysis.",
       "source": "dotskills",
       "path": "skills/audit-skill",
       "reference_count": 0
