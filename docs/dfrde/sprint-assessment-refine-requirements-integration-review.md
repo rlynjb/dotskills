@@ -16,7 +16,7 @@
 | Collaborators / decision owners | `[Names / roles]` |
 | Target repository and branch | `[Repo link / branch / commit SHA]` |
 | Target environment / harness | `[Claude, Codex, other; verify]` |
-| Last updated | 2026-11-07 (Stage 3 proposal documented; not approved) |
+| Last updated | 2026-11-07 (architecture proposal organized under Stage 2; contracts under Stage 3; not approved) |
 | Next review checkpoint | `[Meeting / question / date]` |
 
 > **Document status:** This is a *proposal and working record*, not evidence that the team approved a design, ran an agent, or completed tests. Replace placeholders only when backed by decisions or observed results.
@@ -239,6 +239,7 @@ Sprint Assessment assesses Jira tickets for sprint readiness. Refine Requirement
 - [ ] **Draw or validate the as-is workflow.** Do not use a proposed diagram as evidence of current runtime behavior.
 - [ ] **Compare integration options.** Evaluate central refinement, per-worker refinement, hybrid, and the minimal-change option.
 - [ ] **Apply SDI reasoning.** Review high-level flow, orchestration ownership, critical component boundaries, context-sharing, and failure cases.
+- [ ] **Review the modular architecture.** Discuss independent skill ownership, who orchestrates today, and whether a separate workflow is actually justified.
 - [ ] **Choose a proposed direction with the coworker.** Record trade-offs (coupling, reliability, cost, latency, portability) and rejected alternatives.
 - [ ] **Capture the design decision.** Update D-03 and link the reviewed to-be diagram, owner, and remaining assumptions.
 
@@ -278,61 +279,15 @@ flowchart TD
 - How will the design work across the supported runtimes without assuming identical tool/delegation semantics?
 - Which failure/cost/latency/scalability trade-offs are acceptable?
 
-**Chosen option:** `UNDECIDED`
+#### Proposed modular architecture (PROPOSED)
 
-**Decision rationale and alternatives rejected:** `[Document with reviewer and source references]`
+**Design direction for team review, not an approved decision:** Keep Refine Requirements and Sprint Assessment independently reusable, with each skill owning its capability and contract. For now, prefer Sprint Assessment as the integration's orchestration owner; extract a separate workflow only if coordination becomes independently reusable or too complex for the skill.
 
-### Deliverables
+- **Skill:** Owns its behavior and interface. A short contract may live in `SKILL.md`; complex contracts may be kept in `references/contract.md` and referenced by `SKILL.md`.
+- **Orchestration:** Owns sequencing, handoffs, and escalation between skills. A separate `workflows/` directory is **optional**, not a prerequisite; composition does not merge skills, and a workflow document alone does not execute anything.
+- **Trade-offs:** Skill independence supports extension and reuse, but adds interface maintenance, compatibility checks, and the risk of duplicate orchestration. Avoid introducing directories or abstraction layers without a concrete need.
 
-> **OUTPUTS — evidence to produce, not additional tasks.** Update each row's status and link when the artifact exists; do not mark an unreviewed proposal as approved.
-
-| Output / artifact to produce | Current status | Evidence / location |
-| --- | --- | --- |
-| Evidence-based as-is flow | UNVERIFIED | `[Link verified diagram + repo revision]` |
-| Options/trade-offs and recommendation | PROPOSED | [Candidate options](#candidate-options-proposed-not-selected) |
-| Reviewed to-be integration flow | PROPOSED — NOT APPROVED | [Conceptual integration flow](#proposed-integration-flow) |
-| Design decision record + alternatives rejected | OPEN | [Decision log](#decision-log--single-source-of-truth-for-team-choices) |
-
-### Review gate
-
-**Must be true before moving on:** The team has selected and recorded an integration direction and reviewed major trade-offs. A conceptual drawing alone is not approval.
-
-**Existing checkpoint:** `HUMAN REVIEW REQUIRED — design approval and owner [TBD]`
-
-**Reviewer / decision / date / link:** `[Add only after explicit review]`
-
----
-
-## 3. Contract — What must every participant guarantee?
-
-**SDI support:** Component deep dive and trade-offs. **Focus:** agreed interfaces and invariants, not speculative implementation details.
-
-### What to do
-
-> **ACTION CHECKLIST — work to perform.** Check an item only after the action is completed and its result is recorded.
-
-- [ ] **Define skill responsibilities and contract locations.** Agree on what belongs in each skill and whether a reusable workflow definition is necessary.
-- [ ] **Specify the handoff.** Set required/optional fields, types, statuses, source/provenance links, contract version, and compatibility checks.
-- [ ] **Agree on behavioral guarantees.** Define readiness/completeness rules, invariants, human overrides, and acceptable partial results.
-- [ ] **Set trust, permissions, and failure contracts.** Identify effective enforcement points, identities, write approvals, retries, escalation, and safe stops.
-- [ ] **Plan tests before implementation.** Turn each critical rule into measurable acceptance, failure, and misuse cases; agree on the minimum evaluation gate.
-- [ ] **Review and record approval.** Resolve or explicitly defer contested contract decisions and link the owner/approval evidence.
-
-### Reference information
-
-> **REFERENCE ONLY — not a task list.** Use the context, proposals, questions, and templates below while completing the actions above. Drafts are not approvals or runtime evidence.
-
-#### Contract ownership and workflow composition (PROPOSED)
-
-**Recommendation:** Each skill owns its contract; an integration owns compatibility checks. This is a proposed long-term convention, **not an approved architecture or an implemented file layout**.
-
-- **Skill contract:** Keep each skill independently usable. Define required inputs/outputs, behavior, trust and authority boundaries, failure handling, and versioning in its own `references/contract.md` when complexity warrants it; small skills may use a contract section in `SKILL.md`.
-- **`SKILL.md` remains the execution entrypoint.** It should reference the contract and state essential operational constraints. Documentation alone does not enforce permissions; host/tool/service controls must do that.
-- **Integration ownership:** The orchestrator or dedicated workflow owns sequencing, output-to-input handoff mapping, compatible contract versions, validation, and block/escalation behavior. It **references** skill contracts rather than duplicating them.
-- **Avoid premature extraction:** Initially keep orchestration within `sprint-assessment/SKILL.md` if Sprint Assessment is the single consumer. Introduce an independent `workflows/` definition only when the orchestration needs reuse across multiple consumers or becomes too complex to maintain inside the skill. A workflow composes skills; it does not merge or execute them by itself.
-- **Fail safely on contract mismatch:** If Refine Requirements omits acceptance criteria required by Sprint Assessment, report the missing requirement and block or route for clarification; never silently invent it.
-
-**Stage 3 review sequence:** (3A) define each participant's contract; (3B) review producer/consumer compatibility, permissions and handoff failures when composition is needed; (3C) obtain human approval of the contract baseline. Plan checks here; execute authorized contract, integration and behavioral tests in **Stage 5**. Track contract version changes and regression risk.
+**Team questions:** Who owns orchestration today? Do the skills need to be reused separately? What would justify extracting a shared workflow? Can we add or replace a skill without unexpected changes to existing skills?
 
 #### Proposed long-term repository structure (illustrative; not created)
 
@@ -355,7 +310,65 @@ dotskills/
     └── sprint-assessment-refine-requirements-integration-review.md
 ```
 
-**Validation scopes:** skill = does each skill honor its own contract?; integration = are producer and consumer compatible?; system = does the full workflow achieve its outcome within effective authority and reliability boundaries?
+**Implementation note:** This is a long-term reference layout, **not a required Stage 4 file plan**. Stage 4 should update only the files needed for the team's approved design.
+
+**Chosen option:** `UNDECIDED`
+
+**Decision rationale and alternatives rejected:** `[Document with reviewer and source references]`
+
+### Deliverables
+
+> **OUTPUTS — evidence to produce, not additional tasks.** Update each row's status and link when the artifact exists; do not mark an unreviewed proposal as approved.
+
+| Output / artifact to produce | Current status | Evidence / location |
+| --- | --- | --- |
+| Evidence-based as-is flow | UNVERIFIED | `[Link verified diagram + repo revision]` |
+| Options/trade-offs and recommendation | PROPOSED | [Candidate options](#candidate-options-proposed-not-selected) |
+| Reviewed to-be integration flow | PROPOSED — NOT APPROVED | [Conceptual integration flow](#proposed-integration-flow) |
+| Modular architecture and workflow-extraction decision | PROPOSED — NOT APPROVED | [Architecture proposal](#proposed-modular-architecture-proposed) / [Reference layout](#proposed-long-term-repository-structure-illustrative-not-created) |
+| Design decision record + alternatives rejected | OPEN | [Decision log](#decision-log--single-source-of-truth-for-team-choices) |
+
+### Review gate
+
+**Must be true before moving on:** The team has selected and recorded the integration direction, orchestration owner, and whether a separate workflow is justified. A conceptual drawing alone is not approval.
+
+**Existing checkpoint:** `HUMAN REVIEW REQUIRED — design approval and owner [TBD]`
+
+**Reviewer / decision / date / link:** `[Add only after explicit review]`
+
+---
+
+## 3. Contract — What must every participant guarantee?
+
+**SDI support:** Component deep dive and trade-offs. **Focus:** agreed interfaces and invariants, not speculative implementation details.
+
+### What to do
+
+> **ACTION CHECKLIST — work to perform.** Check an item only after the action is completed and its result is recorded.
+
+- [ ] **Define participant guarantees.** Using the Stage 2 architecture decision, agree on each skill's contract location, owner, version, and behavioral commitments.
+- [ ] **Specify the handoff.** Set required/optional fields, types, statuses, source/provenance links, contract version, and compatibility checks.
+- [ ] **Agree on behavioral guarantees.** Define readiness/completeness rules, invariants, human overrides, and acceptable partial results.
+- [ ] **Set trust, permissions, and failure contracts.** Identify effective enforcement points, identities, write approvals, retries, escalation, and safe stops.
+- [ ] **Plan tests before implementation.** Turn each critical rule into measurable acceptance, failure, and misuse cases; agree on the minimum evaluation gate.
+- [ ] **Review and record approval.** Resolve or explicitly defer contested contract decisions and link the owner/approval evidence.
+
+### Reference information
+
+> **REFERENCE ONLY — not a task list.** Use the context, proposals, questions, and templates below while completing the actions above. Drafts are not approvals or runtime evidence.
+
+#### Contract guarantees and compatibility (PROPOSED)
+
+Apply the architecture selected in Stage 2; this stage defines **what each participant guarantees**, not where orchestration should live.
+
+- **Skill-owned guarantees:** Record required inputs/outputs, behavioral invariants, trust/authority boundaries, failure behavior, owners, and contract version in the agreed per-skill location. `SKILL.md` remains the execution entrypoint and must surface critical operational constraints.
+- **Integration compatibility:** Specify producer → consumer field mapping, required/optional values, accepted versions, provenance, and handling of missing or incompatible data. Do not duplicate either skill's contract in the orchestration layer.
+- **Safe failures:** If acceptance criteria are missing or outputs are incompatible, flag or block the handoff and request clarification; do not invent approval or silently mark requirements complete.
+- **Enforcement and verification:** Host/tool/service controls enforce permissions; contract prose does not. Define structural, behavioral, negative-path, and regression checks now; run authorized evaluations in Stage 5.
+
+**Validation scopes:** skill = honors its contract; integration = compatible handoffs; system = reliable end-to-end behavior within effective authority boundaries.
+
+**Stage 3 review gate:** Obtain human agreement on interfaces, ownership, permissions, failure semantics, versions, and acceptance checks before implementation. Reopen Stage 2 if contract details reveal an architectural flaw.
 
 #### Contract register
 
@@ -435,7 +448,7 @@ dotskills/
 
 | Output / artifact to produce | Current status | Evidence / location |
 | --- | --- | --- |
-| Per-skill contract ownership, location, versioning decision | PROPOSED — NOT APPROVED | [Contract ownership proposal](#contract-ownership-and-workflow-composition-proposed) / [Contract register](#contract-register) |
+| Per-skill contract guarantees, location, and versioning agreement | PROPOSED — NOT APPROVED | [Proposed guarantees](#contract-guarantees-and-compatibility-proposed) / [Contract register](#contract-register) |
 | Producer → consumer handoff schema and invariants | ILLUSTRATIVE DRAFT | [Handoff example](#example-proposed-refinement-handoff-not-implemented) / [Proposed invariants](#behavioral-guarantees-and-invariants) |
 | Trust/permission boundary and failure/recovery behavior | PROPOSED — ENFORCEMENT UNVERIFIED | [Trust boundary](#trust--security--authority-boundary) / [Failure contract](#failure-and-recovery-contract) |
 | Acceptance criteria + evaluation plan, including negative cases | NOT APPROVED | [Evaluation scenarios](#5-evaluate--verify-observed-behavior-against-expectations) |
@@ -642,7 +655,7 @@ Use these as recurring lenses rather than extra lifecycle stages.
 | D-03 | Design | Central, per-worker, hybrid or minimal integration? | `[Options]` | `[Owner]` | `[Link]` | OPEN |
 | D-04 | Contract | What is the machine-readable handoff and status model? | `[Proposed schema]` | `[Owner]` | `[Link]` | OPEN |
 | D-05 | Contract | Which read/write permissions are enforced and where? | `[Alternatives]` | `[Owner]` | `[Link]` | OPEN |
-| D-07 | Contract | Who owns skill contracts and when should orchestration become a separate workflow? | PROPOSED: per-skill ownership; Sprint Assessment orchestrates initially; extract optional reusable workflow; validate handoffs | `[Owner]` | This Stage 3 proposal | OPEN |
+| D-07 | Design | Should skill contracts remain individually owned and when should orchestration be extracted? | PROPOSED: per-skill ownership; Sprint Assessment orchestrates initially; extract only if reusable or needed | `[Owner]` | [Stage 2 architecture](#proposed-modular-architecture-proposed) | OPEN |
 | D-06 | Evaluate | What is the minimum acceptance/eval gate? | `[Threshold / scenarios]` | `[Owner]` | `[Link]` | OPEN |
 
 ## Review meeting notes
