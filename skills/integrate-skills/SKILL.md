@@ -29,7 +29,7 @@ See the [README](README.md) for the original collaboration flow adapted as an ed
 - Explain a selected step in beginner-friendly terms: **why it matters → decisions to make → hypothetical output → checkpoint**.
 - Use a hypothetical Skill A and Skill B if real skills are not supplied. Do not require access to a second skill just to learn the process.
 - Clarify that **compose** keeps independent responsibilities connected, **merge** consolidates overlapping ownership, and **handoff** passes a defined result from one skill to another.
-- Mention other DotSkills skills as potential **future** tools: `audit-skill` for exploring/comparing, `refine-requirements` for an agreed contract, and `evaluate-skill` for approved behavior tests. Do not invoke them automatically.
+- Mention other DotSkills skills as potential **future** tools: `audit-skill` for unified independent/multi-skill source reviews, `refine-requirements` for an agreed contract, and `evaluate-skill` for approved behavior tests. Do not invoke them automatically.
 - Keep all approvals, examples, proposed changes, and results explicitly **hypothetical**. No claim of execution or release without observed evidence.
 
 ## Hard boundaries
