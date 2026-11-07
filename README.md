@@ -6,11 +6,19 @@
 
 Skills are grouped by use.
 
+### Engineering methodologies & frameworks
+
+| Framework / skill | Purpose | What you'll learn |
+| --- | --- | --- |
+| [apply-dfrde](skills/apply-dfrde/SKILL.md) — Design-First, Review-Driven Engineering | Guide the engineering lifecycle from discovery and design to contracts, implementation, evaluation, and release, with human review gates. | Engineering lifecycle, design and contract decisions, evidence-based validation, and release readiness. |
+| [SDI](skills/apply-dfrde/README.md#relationship-to-the-system-design-interview-sdi-framework) — System Design Interview framework *(not a standalone skill)* | Structure architectural reasoning: clarify requirements, propose a high-level design, dive into components, and examine trade-offs. Applied in [refine-requirements](skills/refine-requirements/SKILL.md) and other learning workflows. | Requirements analysis, system architecture, component behavior, bottlenecks, and technical trade-offs. |
+
+**How they fit together:** SDI helps reason through a design; DFRDE guides the broader engineering process through implementation, verification, and release. Use SDI within DFRDE when architectural complexity warrants it.
+
 ### Skill development and assessment
 
 | Skill | Purpose | What you'll learn |
 | --- | --- | --- |
-| [apply-dfrde](skills/apply-dfrde/SKILL.md) | Guide design-first, review-driven engineering for tools, skills, agents, harnesses, applications, and infrastructure using explicit reviews and testable contracts. | Architecture discovery, design decisions, interfaces, human approval, evaluation evidence, and release planning. |
 | [evaluate-skill](skills/evaluate-skill/SKILL.md) | Evaluate and improve agent skills through guided tests, evidence-based diagnosis, and approved changes. | LLM evals, test cases, assertions, grading, and regression analysis. |
 | [audit-skill](skills/audit-skill/SKILL.md) | Review one or more skills automatically with at-a-glance profiles, standards and quality checks, Mermaid workflows, cross-platform compatibility, risks, and handoffs; read-only. | Skill contracts, Agent Skills compliance, evidence quality, trust, portability, responsibility boundaries, and proposed eval cases. |
 | [integrate-skills](skills/integrate-skills/SKILL.md) **(draft)** | Learn how to collaboratively design, connect, evaluate, and release multi-skill workflows; walkthrough only, no automated changes. | Multi-skill collaboration, composition, handoffs, and release planning. |
