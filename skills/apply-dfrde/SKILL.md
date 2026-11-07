@@ -1,9 +1,9 @@
 ---
-name: design-first-review-driven-engineering
-description: "Guide a design-first, review-driven engineering lifecycle for building or changing skills, tools, agents, harnesses, applications, services, and infrastructure. Discover existing reality, review designs, agree on contracts, implement with approval, evaluate against evidence, and plan release and feedback. Domain-agnostic and human-gated; do not assume specialist skills or execution permissions."
+name: apply-dfrde
+description: "Apply a design-first, review-driven engineering lifecycle for building or changing skills, tools, agents, harnesses, applications, services, and infrastructure. Discover existing reality, review designs, agree on contracts, implement with approval, evaluate against evidence, and plan release and feedback. Domain-agnostic and human-gated; do not assume specialist skills or execution permissions."
 ---
 
-# Design-First, Review-Driven Engineering
+# Apply DFRDE — Design-First, Review-Driven Engineering
 
 ## Purpose
 

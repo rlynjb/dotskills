@@ -1,4 +1,4 @@
-# Design-First, Review-Driven Engineering
+# Apply DFRDE — Design-First, Review-Driven Engineering
 
 An **engineering methodology skill** for developing, changing and integrating *anything technical*: agent skills, MCP tools, agents, harnesses, applications, services, data systems and infrastructure.
 
@@ -23,14 +23,14 @@ A failure can loop back to discovery, design or contracts. Determine acceptance 
 
 **A new MCP tool:**
 ```text
-Use design-first-review-driven-engineering to guide a new MCP tool.
+Use apply-dfrde to guide a new MCP tool.
 Start with the engineering overview and Stage 1. Help me review
 alternatives and the API/security contract before proposing code.
 ```
 
 **An existing agent harness:**
 ```text
-Use design-first-review-driven-engineering on this agent harness refactor.
+Use apply-dfrde on this agent harness refactor.
 Inspect existing behavior and architecture before designing. Include
 execution boundaries, tool permissions, failure recovery and regression
 evidence. Pause at design/implementation gates.
@@ -38,7 +38,7 @@ evidence. Pause at design/implementation gates.
 
 **Two related agent skills:**
 ```text
-Use design-first-review-driven-engineering to guide an integration of
+Use apply-dfrde to guide an integration of
 Sprint Assessment and Refine Requirements. Use the existing skill
 auditing/evaluation capabilities only if available and separately
 approved. Keep current-state evidence separate from proposed integration.
@@ -46,7 +46,7 @@ approved. Keep current-state evidence separate from proposed integration.
 
 **A small application change:**
 ```text
-Use design-first-review-driven-engineering on this small feature.
+Use apply-dfrde on this small feature.
 Keep the process lightweight, reuse existing patterns, define acceptance
 checks and ask me before writing changes.
 ```

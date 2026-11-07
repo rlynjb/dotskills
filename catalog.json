@@ -9,11 +9,11 @@
   ],
   "skills": [
     {
-      "name": "design-first-review-driven-engineering",
+      "name": "apply-dfrde",
       "category": "methodology",
       "purpose": "Domain-agnostic, design-first and review-driven engineering lifecycle for skills, tools, agents, harnesses, applications and infrastructure: discover, design, contract, implement, evaluate, and release with human gates and evidence.",
       "source": "dotskills",
-      "path": "skills/design-first-review-driven-engineering",
+      "path": "skills/apply-dfrde",
       "reference_count": 0
     },
     {

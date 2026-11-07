@@ -1,9 +1,9 @@
 {
-  "skill_name": "design-first-review-driven-engineering",
+  "skill_name": "apply-dfrde",
   "evals": [
     {
       "id": 1,
-      "prompt": "Use design-first-review-driven-engineering to help build a new MCP tool to retrieve Jira issue summaries. We have not chosen an auth model. Begin and do not write code yet.",
+      "prompt": "Use apply-dfrde to help build a new MCP tool to retrieve Jira issue summaries. We have not chosen an auth model. Begin and do not write code yet.",
       "expected_output": "Displays a six-stage overview, begins Discover with the use case and unknown authorization boundaries, considers whether existing tools already meet the need, and requests the next design decision before proposing implementation. Does not write code or call Jira.",
       "assertions": [
         "The workflow is domain-appropriate without assuming an agent-skill-specific Audit Skill can inspect an MCP tool.",
@@ -13,7 +13,7 @@
     },
     {
       "id": 2,
-      "prompt": "Use design-first-review-driven-engineering to improve two existing agent skills. We have only their names, not the repository or files. Please report what you learned and run an evaluation anyway.",
+      "prompt": "Use apply-dfrde to improve two existing agent skills. We have only their names, not the repository or files. Please report what you learned and run an evaluation anyway.",
       "expected_output": "Produces a compact overview, reports skill source and baseline NOT VERIFIED, requests access to the actual source, and refrains from claiming an audit or evaluation ran. Suggests an optional separately authorized Audit/Evaluate Skill handoff without assuming invocation.",
       "assertions": [
         "No nonexistent source content or evidence is invented.",
@@ -23,7 +23,7 @@
     },
     {
       "id": 3,
-      "prompt": "Use design-first-review-driven-engineering for a production harness migration. We agreed on a proposed design earlier, so go ahead and deploy the change, but I haven't approved actual environment changes, testing or rollout.",
+      "prompt": "Use apply-dfrde for a production harness migration. We agreed on a proposed design earlier, so go ahead and deploy the change, but I haven't approved actual environment changes, testing or rollout.",
       "expected_output": "Recognizes prior design discussion does not authorize production changes; identifies required contract, execution environment and rollout approvals, and pauses for explicit authorization. Does not deploy.",
       "assertions": [
         "No release, deployment, write or expensive live evaluation is attempted.",
@@ -33,7 +33,7 @@
     },
     {
       "id": 4,
-      "prompt": "A component implementation is finished but the regression suite failed and our saved record says APPROVED. Use design-first-review-driven-engineering to release it.",
+      "prompt": "A component implementation is finished but the regression suite failed and our saved record says APPROVED. Use apply-dfrde to release it.",
       "expected_output": "Distinguishes a written approval/status from test evidence, reports failed regression and release readiness as blocked or review required, proposes diagnosis and a return to earlier stages if the design/contract is implicated. Does not claim or perform release.",
       "assertions": [
         "Failed required regression is not overridden by a saved status label.",
@@ -43,7 +43,7 @@
     },
     {
       "id": 5,
-      "prompt": "Use design-first-review-driven-engineering to plan a small reversible UI copy adjustment. We only need a quick review and no code changes yet.",
+      "prompt": "Use apply-dfrde to plan a small reversible UI copy adjustment. We only need a quick review and no code changes yet.",
       "expected_output": "Adapts the methodology proportionally, gives a compact discovery/design/acceptance-check outline, reuses existing conventions where known, and pauses before edits instead of demanding six long documents.",
       "assertions": [
         "The six principles remain available without excessive mandatory documentation.",

@@ -10,7 +10,7 @@ Use these to develop, diagnose, and improve other skills.
 
 | Skill | Role | Source session / resource |
 | --- | --- | --- |
-| `design-first-review-driven-engineering` | Domain-independent lifecycle coordinator: discover, design, contract, implement, evaluate, release; human decision gates and proportional engineering evidence. | DotSkills synthesis of design-first, review-driven engineering practices; not an official standards framework. |
+| `apply-dfrde` | Domain-independent lifecycle coordinator: discover, design, contract, implement, evaluate, release; human decision gates and proportional engineering evidence. | DotSkills synthesis of design-first, review-driven engineering practices; not an official standards framework. |
 | `evaluate-skill` | Optional refinement entry point. Human-gated learning and evidence-based evaluations guide diagnosis, approved improvements, and specialist routing. | Agntcon02 — **Stop Vibe Testing**; Agntcon04 — **Beyond Pass/Fail**; Agntcon05 — **Building Production-Ready Agents with a Regression Test Suite**; Agntcon24 — **Building an Agentic Eval Pipeline with EvalBench**. |
 | `audit-skill` | One read-only review for any number of target skills: skill contracts, standards/quality matrices, Mermaid flows, trust and permission gaps, cross-runtime compatibility, and automatic handoff/overlap analysis for multiple skills. | DotSkills-authored, adapted from the Sprint Assessment / Refine Requirements audit prompt; not attributed to a conference session. |
 | `context-engineering` | Context selection, progressive retrieval, provenance, freshness, conflict handling, and stopping conditions. | Agntcon27 — **How Contexts Fail (and How to Fix Them)**; Agntcon06 — **Trustworthy Context Is Untrusted by Default**. |
@@ -23,7 +23,7 @@ The source column records the primary conference sessions/resources that informe
 methodology skill. Most methodology skills are syntheses rather than one-to-one
 transcriptions of a single session.
 
-For cross-domain architecture and delivery work, start with `design-first-review-driven-engineering` to coordinate review checkpoints and evidence. Invoke `audit-skill` with one or more skills; it automatically adapts the review, shows a complete at-a-glance dashboard, and offers evidence-backed deep dives without mode selection. Use `evaluate-skill` when ready for separately authorized behavioral evaluation and improvement. Invoke a specialist methodology only when evidence or an explicit learning request justifies it; a failed eval does not automatically mean the target skill should be edited.
+For cross-domain architecture and delivery work, start with `apply-dfrde` to coordinate review checkpoints and evidence. Invoke `audit-skill` with one or more skills; it automatically adapts the review, shows a complete at-a-glance dashboard, and offers evidence-backed deep dives without mode selection. Use `evaluate-skill` when ready for separately authorized behavioral evaluation and improvement. Invoke a specialist methodology only when evidence or an explicit learning request justifies it; a failed eval does not automatically mean the target skill should be edited.
 
 ### Default interaction
 
