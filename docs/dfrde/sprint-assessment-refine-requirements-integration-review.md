@@ -678,4 +678,4 @@ Use these as recurring lenses rather than extra lifecycle stages.
 
 ---
 
-**Next action:** Review Stage 1's proposed problem statement and confirm the intended division of responsibility between Sprint Assessment and Refine Requirements. Capture the outcome in `D-01` and the meeting notes before progressing to Stage 2.
+**Next action:** Start with [Stage 1 → What to do](#what-to-do): verify the latest Agent Arcade source files and revision, then review the problem statement and responsibilities with the coworker. Record evidence in Stage 1 Deliverables and decisions in `D-01` / `D-02` before proceeding to Stage 2.
