@@ -21,6 +21,38 @@
 
 > **Document status:** This is a *proposal and working record*, not evidence that the team approved a design, ran an agent, or completed tests. Replace placeholders only when backed by decisions or observed results.
 
+## Table of contents
+
+- [0. How to use this record](#0-how-to-use-this-record)
+  - [Process layers](#process-layers)
+  - [SDI mapping](#sdi-mapping)
+  - [Stage tracker](#stage-tracker)
+- [1. Discover — What problem are we solving?](#1-discover--what-problem-are-we-solving)
+  - [Proposed problem statement — REVIEW REQUIRED](#proposed-problem-statement--review-required)
+  - [Existing-state inventory](#existing-state-inventory)
+  - [Requirements and scope](#requirements-and-scope)
+  - [Stakeholder questions](#stakeholder-questions)
+- [2. Design — What architecture best fits the requirements?](#2-design--what-architecture-best-fits-the-requirements)
+  - [Candidate options (PROPOSED, not selected)](#candidate-options-proposed-not-selected)
+  - [Proposed integration flow](#proposed-integration-flow)
+- [3. Contract — What must every participant guarantee?](#3-contract--what-must-every-participant-guarantee)
+  - [Contract register](#contract-register)
+  - [Example proposed refinement handoff (not implemented)](#example-proposed-refinement-handoff-not-implemented)
+  - [Behavioral guarantees and invariants](#behavioral-guarantees-and-invariants)
+  - [Trust / security / authority boundary](#trust--security--authority-boundary)
+  - [Failure and recovery contract](#failure-and-recovery-contract)
+  - [Agent Skills packaging and portability](#agent-skills-packaging-and-portability)
+- [4. Implement — Make only the reviewed change](#4-implement--make-only-the-reviewed-change)
+- [5. Evaluate — Verify observed behavior against expectations](#5-evaluate--verify-observed-behavior-against-expectations)
+- [6. Release — Approve, operate and improve](#6-release--approve-operate-and-improve)
+- [Cross-cutting quality checklist](#cross-cutting-quality-checklist)
+- [Decision log — single source of truth for team choices](#decision-log--single-source-of-truth-for-team-choices)
+- [Review meeting notes](#review-meeting-notes)
+- [Open questions / evidence backlog](#open-questions--evidence-backlog)
+- [Links and references](#links-and-references)
+
+> When you add or rename review sections, update these links to keep the document navigable.
+
 ---
 
 ## 0. How to use this record
