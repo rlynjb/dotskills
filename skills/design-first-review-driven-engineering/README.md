@@ -83,7 +83,7 @@ Default behavior is planning and authorized read-only inspection. Before writes,
 
 ### Compare the two frameworks
 
-\`\`\`mermaid
+```mermaid
 flowchart TB
     subgraph SDI["System Design Interview — design reasoning"]
       direction TB
@@ -99,7 +99,7 @@ flowchart TB
       D4 --> D5["5. Evaluate"]
       D5 --> D6["6. Release"]
     end
-\`\`\`
+```
 
 The stages overlap, but they are not a perfect one-to-one mapping:
 
@@ -114,7 +114,7 @@ The stages overlap, but they are not a perfect one-to-one mapping:
 
 Use the SDI steps to strengthen **Discover, Design and Contract** when the engineering task involves meaningful architecture decisions. For a small, reversible change, a lightweight design discussion may be enough. For a new agent harness, distributed service or multi-agent workflow, a deeper SDI walkthrough may be warranted.
 
-\`\`\`mermaid
+```mermaid
 flowchart TD
     A["DFRDE: Discover"] --> B["DFRDE: Design"]
     subgraph SDI["Optional SDI reasoning — inform Discover, Design and Contract"]
@@ -130,7 +130,7 @@ flowchart TD
     D --> E["DFRDE: Evaluate"]
     E --> F["DFRDE: Release"]
     E -. "New evidence / failed assumptions" .-> B
-\`\`\`
+```
 
 **Review occurs throughout:** clarify human ownership and get design agreement before committing to an approach; agree on contracts and authority before implementation; review observed test evidence before release. The lifecycle is iterative, **not a strict waterfall**.
 
@@ -152,7 +152,7 @@ flowchart TD
 5. **Evaluate** representative tickets and failures, comparing baseline versus integrated behavior and checking for regressions.
 6. **Release** only with reviewed evidence, an owner, a rollback path, and an agreed operating plan.
 
-\`\`\`mermaid
+```mermaid
 flowchart LR
     P["Problem or change"] --> DISC["DFRDE: Discover"]
     DISC --> DESIGN["DFRDE: Design"]
@@ -162,7 +162,7 @@ flowchart LR
     IMPL --> TEST["DFRDE: Evaluate"]
     TEST --> REL["DFRDE: Release"]
     TEST -. "Fail / revise" .-> DESIGN
-\`\`\`
+```
 
 ### Memory aid
 
