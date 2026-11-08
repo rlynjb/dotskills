@@ -1,5 +1,7 @@
 # Engineering record — reusable, lightweight template
 
+**Use this for small or reversible work.** For a full six-stage guided working document with action checklists, Discovery question prefill, diagrams, teammate prompts, deliverables and review gates, use the [domain-agnostic engineering review template](../../../docs/dfrde/engineering-review-template.md) if repository source is available. These are lightweight and detailed versions of the **same methodology**, not competing standards.
+
 Use only when a durable handoff or human-review artifact is useful. **Do not write this into the user's repository without explicit approval.** This template works for skills, tools, agents, harnesses, applications, data systems and infrastructure. Remove irrelevant sections and avoid inventing required approvals.
 
 ```markdown
