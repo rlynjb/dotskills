@@ -339,7 +339,8 @@ class WorkingGroupTests(unittest.TestCase):
 
     def test_bare_wg_command_auto_fetches_and_persists_calendar(self):
         with mock.patch.object(wg, "fetch_aaif_calendar", return_value=self.aaif_fixture()), \
-             mock.patch.object(wg, "github_events", return_value=[]):
+             mock.patch.object(wg, "github_events", return_value=[]), \
+             mock.patch.object(wg, "utc_now", return_value=NOW):
             result = self.call()
         self.assertIn("Public AAIF calendar: ok", result)
         self.assertIn("Other AAIF meetings", result)
