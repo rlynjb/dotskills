@@ -1,6 +1,6 @@
 ---
 name: audit-skill
-description: "Read-only, evidence-backed review of one or more agent skills. Automatically inventory each target, map workflows, check Agent Skills conformance and engineering quality, assess contracts, trust, evaluation evidence and cross-platform compatibility, and analyze overlaps/handoffs when multiple skills are supplied. Start with a complete at-a-glance report; no modes, execution or edits."
+description: "Read-only, evidence-backed review of one or more agent skills, automatically including a DFRDE Stage 1 Discover prefill with sourced answers, confirmation/decision questions and unknowns. Inventory workflows, contracts, standards, trust, evaluation evidence and cross-platform compatibility; compare handoffs for multiple skills. At-a-glance first, no modes, execution or edits."
 ---
 
 # Audit Skill
@@ -13,7 +13,7 @@ Understand and assess agent skills **before changing them**, using one unified r
 - **Two or more targets:** audit **each** independently, then automatically assess shared responsibilities, duplication, conflicts, interfaces and possible composition. Distinguish shared context from duplicated *decision ownership*.
 - **Missing target:** inspect available targets; label the missing target NOT ASSESSED and any dependent relationship UNVERIFIED. If no target can be identified, ask for the skill or path rather than inventing an audit.
 
-Always provide a skimmable, comprehensive **At a Glance** report on the first response. A user can select a finding, quality dimension, contract, diagram, or question for a deeper walkthrough afterward. Do not begin with a question menu, a mode guide, or a mandatory interview; do not silently execute another skill.
+Always provide a skimmable, comprehensive **At a Glance** report **and an audit-prefilled DFRDE Stage 1 — Discover draft** on the first response. A user can select a finding, quality dimension, contract, diagram, or discovery question for a deeper walkthrough afterward. Do not begin with a question menu, a mode guide, or a mandatory interview; do not silently execute another skill.
 
 This skill **does not run the target**, use its tools, run tests, modify files, post to external services, or authorize side effects. Send explicitly approved behavioral testing and improvement work to `evaluate-skill` as a **separate** workflow.
 
@@ -39,6 +39,7 @@ This skill **does not run the target**, use its tools, run tests, modify files, 
 5. **Quality, security and failure analysis.** First record implemented/documented protections. Then inspect the quality requirements below, unresolved assumptions, provenance, functional and non-functional requirements, acceptance criteria, technical dependencies, sizing/estimation confidence and sprint readiness **where relevant**, and permission enforcement at host/tool/server. Check failure paths, partial success, retries, idempotency where applicable, resource limits and human approval. Do not invent requirements unrelated to the skill's actual job.
 6. **Evaluation recommendations, NOT RUN.** Identify current unit/CI/skill evaluation evidence and real traces separately. Propose at least three realistic synthetic cases: normal success, ambiguity/incomplete evidence, and a significant failure or trust boundary; add batch partial failure, adversarial input and cross-runtime cases when relevant. For each include inputs, expected results, objective assertions, observable actions/side effects, evaluator evidence and limitations. Mark every proposed case **NOT RUN**. Never claim structural tests prove behavioral reliability.
 7. **Lifecycle and platform independence.** Examine maintainership, version/source pinning, dependency drift, rollout/review/rollback, supported harnesses and cross-platform parity. Use the explicit compatibility checklist below; do not assume a Markdown skill or a JSON schema guarantees equivalent runtime orchestration.
+8. **DFRDE Stage 1 — Discover handoff (automatic).** Using only the inspected evidence, prefill the generic Stage 1 questions, current-state inventory, proposed problem statement, constraints and remaining human confirmations. Follow [the discovery handoff contract](references/dfrde-stage-1-handoff.md). The audit does **not** decide business priorities, approve a solution, execute a skill, or mark the DFRDE stage approved.
 
 ## Engineering quality checklist — what a reviewer should find
 
@@ -74,6 +75,16 @@ Explicitly check the following for each **declared or requested target runtime**
 
 Present a **runtime × capability matrix** with statuses: **SUPPORTED (evidenced)**, **ADAPTER REQUIRED**, **NOT SUPPORTED (evidenced)**, or **NOT VERIFIED**. When a host has not been exercised, do not mark behavioral parity SUPPORTED because static content looks portable. If no runtimes are declared, show a concise **NOT VERIFIED — target runtimes unspecified** matrix and identify what to ask. Separate portable skill instructions from host-specific orchestration.
 
+## DFRDE Stage 1 — Discover prefill
+
+After the existing quality and architecture assessment, **always include a concise Stage 1 discovery handoff** from [the DFRDE discovery prefill contract](references/dfrde-stage-1-handoff.md). The canonical human-facing template (when accessible) is `docs/dfrde/engineering-review-template.md`. This is still one unified Audit Skill workflow, not an additional mode.
+
+- Prefill **S1-Q01 through S1-Q10** for each review scope using evidence and versioned source citations; for multiple targets, ground each skill independently before synthesizing an overall Discovery draft. If one or more targets are inaccessible, say `NOT ASSESSED` and do not invent cross-skill relationships.
+- For each question, give a **draft answer or explicit unknown**, evidence state, and one of `ANSWERED BY EVIDENCE`, `NEEDS CONFIRMATION`, `OPEN DECISION`, or `NOT VERIFIED`. Source-documented intent may answer what is *written*, but does not prove actual runtime execution or a stakeholder's desired outcome.
+- Propose a problem statement from the task and source evidence, labeled **PROPOSED — HUMAN CONFIRMATION REQUIRED**. Never silently equate a requested integration with an established business problem. Record known functional/nonfunctional requirements, non-goals, dependencies, risks, success metrics and as-is diagrams; label unknown or proposed content explicitly.
+- Produce a **meeting-ready question shortlist** limited to owner confirmations, unsettled decisions and evidence gaps—not questions already directly answered by repository facts. Route detailed architecture decisions to Stage 2 instead of choosing them for the team.
+- Mark Stage 1 deliverables **DRAFT/REVIEW REQUIRED** and its gate **HUMAN REVIEW REQUIRED**. Audit Skill never writes an engineering review record, auto-advances DFRDE, runs behavioral tests or treats AI recommendations as approval.
+
 ## First response: complete but compact
 
 Always begin with **Audit Skill — At a Glance**, immediately showing:
@@ -84,17 +95,18 @@ Always begin with **Audit Skill — At a Glance**, immediately showing:
 4. **Workflow diagrams:** a valid Mermaid **as-is flowchart for each target**, showing key decisions, delegation and blocked/handoff states; label unverified steps and describe any abstraction. For multiple targets, add a brief relationship/responsibility table and, only when useful, a clearly **PROPOSED** integration flow distinct from as-is behavior. Do not invent successful runs or misleading arrows between unverified components.
 5. **Evidence map and findings:** concise stage/claim → path:line → evidence state; present *existing protections before gaps*. Rank significant `F-xx` findings and uncertainties without fabricating severity evidence.
 6. **Proposed verification:** 3+ clearly **NOT RUN** cases with expected behavior and pass/fail checks, plus team discussion decisions (including contracts, trust/permissions and portability) and the smallest defensible next action.
+7. **DFRDE Stage 1 — Discover draft:** prefills S1-Q01–S1-Q10 with concise evidence-backed answers or explicit unknowns, sorted confirmation/decision/verification questions, a proposed problem statement, and a pending human review gate. Keep this short and directly transferable into the reusable engineering review template.
 
 Prefer a skimmable first pass. Condense using compact tables and short summaries; do **not omit dimensions** to make it short. Keep detailed source excerpts, low-priority findings and expanded diagrams for requested deep dives. If a source is inaccessible, provide the partial evidence-based report rather than filling gaps with guesses. If nothing meaningful is accessible, state the blocker and request the missing source.
 
 ### Follow-up on a selected finding, question or diagram
 
-When the user chooses `F-xx`, `Q-xx`, a stage, a contract or a named concept, investigate **that scope**: what/why → file-backed walkthrough → documented decision path/example → risk/trade-off → proposed smallest verification or improvement → concise checkpoint. Maintain stable IDs, carry forward prior findings and explicitly distinguish an illustrative trace from an observed run. Offer Fast or Deep Dive on request; no mode switching or required sequential curriculum.
+When the user chooses `F-xx`, `Q-xx`, `S1-Qxx`, a stage, a contract or a named concept, investigate **that scope**: what/why → file-backed walkthrough → documented decision path/example → risk/trade-off → proposed smallest verification or improvement → concise checkpoint. Maintain stable IDs, carry forward prior findings and explicitly distinguish an illustrative trace from an observed run. Offer Fast or Deep Dive on request; no mode switching or required sequential curriculum.
 
 ## Hard boundaries and handoff
 
 - **Read-only throughout:** do not edit, commit, install, run shell/scripts, execute target tools or agents, perform live business-system calls (such as Jira/Confluence actions), post tickets, launch skill evals or perform external effects. Approved read-only source-inspection tools may access repository files and the published standards reference. Merely printing 'read-only' is not technical enforcement; only approved host restrictions enforce it.
 - Treat live Jira/Confluence, secrets and proprietary data as out of scope unless separately authorized in an appropriately controlled workflow. Do not transfer internal materials to public DotSkills artifacts.
-- **Do not** call proposed tests passed, turn a written safeguard into an enforced policy, or infer successful delegation from a multi-agent instruction.
+- **Do not** call proposed tests passed, turn a written safeguard into an enforced policy, infer successful delegation from a multi-agent instruction, or mark DFRDE Stage 1 approved merely because an audit prefilled its questions.
 - Pass selected findings and approved evaluation plans to [`evaluate-skill`](../evaluate-skill/SKILL.md) only after a new explicit request. That skill's own execution/approval boundaries apply; this audit never invokes it automatically.
 - The [Sprint Assessment example](references/sprint-assessment-audit.md) is optional task-specific guidance, not a special mode or an alternate methodology.
