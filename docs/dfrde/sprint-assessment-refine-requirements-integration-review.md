@@ -554,15 +554,42 @@ Apply the architecture selected in Stage 2; this stage defines **what each parti
 
 **Purpose:** Apply only the reviewed design under separately approved write scope.
 
+**Learn — why this stage exists:** Implementation changes only what the team has reviewed. A design decision does not authorize repository writes, tool calls, or production operations. **Example:** If the approved contract only adds a structured refinement result, don't introduce a new agent runtime unless a separate design review justifies it.
+
 ### What to do
 
 > **ACTION CHECKLIST — work to perform.** Check an item only after the action is completed and its result is recorded.
 
-- [ ] **Get a new, explicit write authorization.** Confirm affected scope and source revision; design approval alone does not authorize repository changes.
-- [ ] **Review existing implementation conventions.** Identify target files, tools, branch, and minimal dependency or adapter changes.
-- [ ] **Apply the smallest approved change.** Keep skill contracts and orchestration consistent with the reviewed design.
-- [ ] **Review deviations.** Record any changed scope or interface, and return to Design/Contract for material differences.
-- [ ] **Document rollback and link the change.** Capture PR/commit and evidence of reviewable modifications.
+- [ ] **Step 1 — Get a new, explicit write authorization.** Confirm affected scope and source revision; design approval alone does not authorize repository changes.
+- [ ] **Step 2 — Review existing implementation conventions.** Identify target files, tools, branch, and minimal dependency or adapter changes.
+- [ ] **Step 3 — Apply the smallest approved change.** Keep skill contracts and orchestration consistent with the reviewed design.
+- [ ] **Step 4 — Review deviations.** Record any changed scope or interface, and return to Design/Contract for material differences.
+- [ ] **Step 5 — Document rollback and link the change.** Capture PR/commit and evidence of reviewable modifications.
+
+### Guided walkthrough — how to complete the actions
+
+Use the checklist above for task status. These explanations show what evidence to look for and where to record it; they are not a second set of tasks.
+
+| Step | How to do it | Where to record it |
+| --- | --- | --- |
+| **1** | Confirm the approved architecture and contract; ask for **explicit** write scope, branch and tool permissions before modifying source. | Approval and source revision |
+| **2** | Inspect the existing skill entrypoint, worker/harness code, manifest, references, tests and naming conventions. Identify the smallest coherent set of files to edit. | Planned changes |
+| **3** | Implement the reviewed handoff, validation, and safe defaults. Keep the old path working where backward compatibility is required; don't silently add privileges. | PR/commit evidence |
+| **4** | If source inspection exposes a new architectural or contract issue, record the deviation and return to Stage 2/3 for review. | Deviation log |
+| **5** | Prepare and document a safe rollback path; link the diff and request review by someone accountable for the feature. | Rollback and change review |
+
+### Questions for your teammate
+
+> **Suggested opening:** “Now that the design is reviewed, can we agree on the smallest permitted change and on what must stay backward compatible?”
+
+| # | Ask this | Record the answer in |
+| --- | --- | --- |
+| 1 | Which files, branch, and tools are we allowed to change? Who approves those writes? | Explicit scope and authorization |
+| 2 | Can we reuse the existing skill entrypoints and runtime adapters? | Smallest approved change |
+| 3 | Which existing workflows or integrations must not break? | Regression expectations |
+| 4 | What would trigger design/contract re-review? | Deviation criteria |
+
+**Discussion results:** `[Meeting date / attendees / decisions / evidence / outstanding questions / owner]`
 
 ### Reference information
 
@@ -604,15 +631,45 @@ Apply the architecture selected in Stage 2; this stage defines **what each parti
 
 **Purpose:** Compare expected behavior with observed results; authorized evaluations only.
 
+**Learn — why this stage exists:** Evaluation compares an expected outcome with actual observed behavior. A valid `SKILL.md` or a plausible parent-agent summary does **not** prove correct execution. **Example:** for missing acceptance criteria, verify that the workflow returns clarification (with provenance), never fabricates readiness, and records whether any worker actually ran.
+
+**Watch out for:** hiding a permission failure inside an average score or reporting NOT RUN scenarios as passing.
+
 ### What to do
 
 > **ACTION CHECKLIST — work to perform.** Check an item only after the action is completed and its result is recorded.
 
-- [ ] **Confirm evaluation authorization and environment.** Identify harness/version, isolation, permitted actions, and baseline availability.
-- [ ] **Run approved scenarios.** Cover normal, incomplete, conflicting, dependency failure, partial worker failure, unauthorized-write, regression, and supported-runtime cases.
-- [ ] **Collect execution evidence.** Record observed output, source revision, tool/worker traces, grader or reviewer notes, and links.
-- [ ] **Compare observed results against expected contracts.** Flag violations and distinguish model, skill, tool, harness, or fixture failures.
-- [ ] **Assess residual risks and get human review.** Loop back to earlier stages if a requirement or contract is invalidated.
+- [ ] **Step 1 — Confirm evaluation authorization and environment.** Identify harness/version, isolation, permitted actions, and baseline availability.
+- [ ] **Step 2 — Run approved scenarios.** Cover normal, incomplete, conflicting, dependency failure, partial worker failure, unauthorized-write, regression, and supported-runtime cases.
+- [ ] **Step 3 — Collect execution evidence.** Record observed output, source revision, tool/worker traces, grader or reviewer notes, and links.
+- [ ] **Step 4 — Compare observed results against expected contracts.** Flag violations and distinguish model, skill, tool, harness, or fixture failures.
+- [ ] **Step 5 — Assess residual risks and get human review.** Loop back to earlier stages if a requirement or contract is invalidated.
+
+### Guided walkthrough — how to complete the actions
+
+Use the checklist above for task status. These explanations show what evidence to look for and where to record it; they are not a second set of tasks.
+
+| Step | How to do it | Where to record it |
+| --- | --- | --- |
+| **1** | Record safe pre-change baseline when available, chosen runtime/model versions, source revision, test fixtures and authorized execution environment. | Baseline and environment |
+| **2** | Run normal and incomplete-ticket end-to-end cases; check field/status guarantees in the handoff separately. | E-01/E-02 and contract checks |
+| **3** | Run safe/isolated negative scenarios: conflicting context, unavailable tools, partial worker failure, schema mismatch and unauthorized-write denial. | E-03–E-06 |
+| **4** | Check regressions and any claimed target runtime: discovery, activation, delegation, tool authority, results, receipts. Format conformance is a separate check. | E-07/E-08 and compatibility matrix |
+| **5** | Collect output/traces; distinguish model, skill, harness, tool and fixture failures. Review results and unresolved risks with the decision owner. | Observed findings and review |
+
+### Questions for your teammate
+
+> **Suggested opening:** “Let's choose real ticket scenarios and agree on what counts as success, how we'll observe it, and what failures block release.”
+
+| # | Ask this | Record the answer in |
+| --- | --- | --- |
+| 1 | What are the 2–3 most representative real tickets to start with? | Fixtures and expected outcomes |
+| 2 | Which safety/failure scenarios are release blockers rather than average-score inputs? | Minimum acceptance gate |
+| 3 | Can we prove workers were dispatched and identify what each did? | Execution receipt/trace requirements |
+| 4 | How will we tell a model failure from a harness, tool, skill or fixture issue? | Diagnostic approach |
+| 5 | Which runtime compatibility claims are supported by actual results? | Verified matrix and limitations |
+
+**Discussion results:** `[Meeting date / attendees / decisions / evidence / outstanding questions / owner]`
 
 ### Reference information
 
@@ -668,15 +725,43 @@ Apply the architecture selected in Stage 2; this stage defines **what each parti
 
 **Purpose:** Decide whether to release and establish operational ownership.
 
+**Learn — why this stage exists:** Release is a human decision to make a change available and support it over time. Passing tests does not automatically authorize rollout. **Example:** if the skill works in Claude but Codex has not been tested, claim support only for the tested runtime and record the portability gap.
+
 ### What to do
 
 > **ACTION CHECKLIST — work to perform.** Check an item only after the action is completed and its result is recorded.
 
-- [ ] **Review evaluation evidence and open risks.** Ensure required contract, behavioral, and authorization checks are complete or consciously deferred.
-- [ ] **Request explicit go/no-go approval.** Record reviewer, date, scope, and rationale.
-- [ ] **Confirm release package and operations.** Document version, verified runtimes, compatibility, rollout/adoption, ownership, monitoring, incident handling, and rollback.
-- [ ] **Record the observed outcome.** Link the actual merge/release, or document BLOCKED/DEFERRED with next steps.
-- [ ] **Set the feedback loop.** Assign follow-up work, monitoring owners, and next review checkpoint.
+- [ ] **Step 1 — Review evaluation evidence and open risks.** Ensure required contract, behavioral, and authorization checks are complete or consciously deferred.
+- [ ] **Step 2 — Request explicit go/no-go approval.** Record reviewer, date, scope, and rationale.
+- [ ] **Step 3 — Confirm release package and operations.** Document version, verified runtimes, compatibility, rollout/adoption, ownership, monitoring, incident handling, and rollback.
+- [ ] **Step 4 — Record the observed outcome.** Link the actual merge/release, or document BLOCKED/DEFERRED with next steps.
+- [ ] **Step 5 — Set the feedback loop.** Assign follow-up work, monitoring owners, and next review checkpoint.
+
+### Guided walkthrough — how to complete the actions
+
+Use the checklist above for task status. These explanations show what evidence to look for and where to record it; they are not a second set of tasks.
+
+| Step | How to do it | Where to record it |
+| --- | --- | --- |
+| **1** | Compare the actual implementation, approved contracts, eval results, and known limitations; list blocking versus accepted risks. | Readiness summary |
+| **2** | Ask the accountable owner for an explicit go/no-go decision. Record scope, date, approval and remaining conditions. | Release decision |
+| **3** | Assign maintainer/support owner; document version, verified runtimes, deployment/adoption steps, monitoring, recovery and rollback. | Operating plan |
+| **4** | Publish or merge only with release authorization, then link real deployment/merge/tag evidence; otherwise label DEFERRED/BLOCKED. | Observed release outcome |
+| **5** | Define follow-up monitoring, user feedback, eval regression additions and a trigger for the next design/contract review. | Maintenance backlog |
+
+### Questions for your teammate
+
+> **Suggested opening:** “Given the observed evidence and unresolved risks, who is comfortable approving the release and supporting it afterward?”
+
+| # | Ask this | Record the answer in |
+| --- | --- | --- |
+| 1 | Who owns this skill integration after the initial developer finishes? | Maintainer and escalation contact |
+| 2 | Which versions and runtimes are officially supported? | Release scope and compatibility note |
+| 3 | What metrics and traces reveal failures in normal use? | Observability signals and owner |
+| 4 | How will we roll back a faulty skill or contract version? | Incident and rollback procedure |
+| 5 | Which future edits require another review and regression evaluation? | Governance/change policy |
+
+**Discussion results:** `[Meeting date / attendees / decisions / evidence / outstanding questions / owner]`
 
 ### Reference information
 
