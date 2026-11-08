@@ -1,6 +1,8 @@
 # Design-First, Review-Driven Engineering (DFRDE)
 ## Living Engineering Review — Sprint Assessment + Refine Requirements
 
+> **Project-specific record:** This file tracks one integration and intentionally mentions its participants, tools and decisions. For a new DFRDE review in **any engineering domain**, copy the [domain-agnostic engineering review template](engineering-review-template.md) instead of reusing this project's assumptions.
+
 > **Purpose:** A working document to update *throughout* the engineering review. It captures questions, evidence, decisions, contracts, and validation—not just a one-time plan.
 >
 > **Mental model:** The feature/integration is **what we are building**. **DFRDE is the underlying engineering process** guiding how we discover, design, contract, implement, evaluate, and release it. **SDI** strengthens architectural reasoning; specialist skills and tools support targeted work. Mentioning a specialist does **not** invoke or authorize it.
