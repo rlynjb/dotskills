@@ -145,15 +145,46 @@ Use SDI as a **reasoning aid within DFRDE**, not a separate required lifecycle:
 
 **SDI support:** Step 1 — understand requirements and scope.
 
+**Learn — why this stage exists:** Discovery means understanding the *problem and current behavior* before designing a fix. Reading a skill instruction tells us what is documented, not whether the runtime executed it. **Example:** a ticket lacks acceptance criteria; first find out what Sprint Assessment currently does, and what the team wants to happen.
+
+**Watch out for:** mistaking our proposed integration for an approved requirement, or treating an agent's self-description as observed behavior.
+
 ### What to do
 
 > **ACTION CHECKLIST — work to perform.** Check an item only after the action is completed and its result is recorded.
 
-- [ ] **Verify the current state.** Inspect the latest Agent Arcade skill files and repository revision; separate documented behavior from tested runtime behavior.
-- [ ] **Confirm the problem with the coworker/skill owners.** Agree on the PM/engineering pain point, intended users, and what a successful integration should improve.
-- [ ] **Clarify ownership.** Decide who evaluates requirements sufficiency, who evaluates sprint readiness, and which decisions require human confirmation.
-- [ ] **Record requirements and constraints.** Fill in FRs, NFRs, non-goals, target runtimes, data sources, permissions, and measurable success criteria.
-- [ ] **Assign unresolved evidence checks.** Track delegation, test/CI, portability, and permission-enforcement unknowns in the evidence backlog.
+- [ ] **Step 1 — Verify the current state.** Inspect the latest Agent Arcade skill files and repository revision; separate documented behavior from tested runtime behavior.
+- [ ] **Step 2 — Confirm the problem with the coworker/skill owners.** Agree on the PM/engineering pain point, intended users, and what a successful integration should improve.
+- [ ] **Step 3 — Clarify ownership.** Decide who evaluates requirements sufficiency, who evaluates sprint readiness, and which decisions require human confirmation.
+- [ ] **Step 4 — Record requirements and constraints.** Fill in FRs, NFRs, non-goals, target runtimes, data sources, permissions, and measurable success criteria.
+- [ ] **Step 5 — Assign unresolved evidence checks.** Track delegation, test/CI, portability, and permission-enforcement unknowns in the evidence backlog.
+
+### Guided walkthrough — how to complete the actions
+
+The checkboxes above are the actual tasks; use this explanation to learn how to perform them. Record evidence rather than checking boxes because an answer sounds plausible.
+
+| Step | How to do it | Where to record it |
+| --- | --- | --- |
+| **1** | Open the current repo revision; inspect Sprint Assessment and Refine Requirements `SKILL.md`, references, agent definitions, and tool/manifest configuration. Trace input → processing → worker delegation → output. Quote paths and mark untested paths UNVERIFIED. | Current-state inventory, Q-01/Q-03 |
+| **2** | Ask for one real ticket that was hard to assess. Describe the PM/engineering pain point and how a better outcome would be recognized before suggesting a solution. | Team-edited problem statement |
+| **3** | Use a responsibility table: requirement gaps/questions vs readiness, sizing, aggregation and human decisions. Identify ambiguous or overlapping ownership. | D-01, D-02 |
+| **4** | Write 2–3 FR scenarios with Given/When/Then and measurable NFRs for safety, evidence, portability and performance where applicable. Include non-goals. | Requirements and scope |
+| **5** | For each unknown, note evidence needed, who can verify it, and whether it blocks the next stage; do not run unapproved side-effectful tests. | Evidence backlog |
+
+### Questions for your teammate
+
+> **Suggested opening:** “Before deciding how these skills call each other, could we agree on the problem, the current behavior, and which team member owns each decision?”
+
+| # | Ask this | Record the answer in |
+| --- | --- | --- |
+| 1 | What concrete problem are PMs/developers experiencing during sprint assessment? | Real ticket example; desired outcome and success measure |
+| 2 | Does Refine Requirements validate, propose changes, or both? Who decides unresolved requirements? | D-01, decision owner |
+| 3 | Who makes the final sprint readiness call? | D-02 and clear responsibility boundaries |
+| 4 | Which Jira/Confluence data can we trust as evidence, and are actions read-only? | Data sources and actual permission constraints |
+| 5 | Which runtimes matter now, and are we adopting the Agent Skills format as the baseline? | Target compatibility and standardization decision |
+| 6 | Could the problem be solved with a simple deterministic check instead of another agent? | Simplest acceptable option / non-goals |
+
+**Discussion results:** `[Meeting date / attendees / decisions (D-IDs) / evidence / outstanding questions / owner]`
 
 ### Reference information
 
@@ -204,20 +235,6 @@ Sprint Assessment assesses Jira tickets for sprint readiness. Refine Requirement
 
 - `[Assumption + what evidence would confirm or reject it]`
 
-#### Stakeholder questions
-
-- Does Refine Requirements **validate**, **propose improvements**, or do both? Who confirms the answer?
-- Who owns the final *sprint readiness* decision versus *requirements sufficiency*?
-- What does the current flow do when requirements or acceptance criteria are missing?
-- What data sources are authoritative and who may access them?
-- Must the integration remain advisory/read-only?
-- Which harnesses or platforms must be supported **now** versus later?
-- What is the simplest acceptable solution, including **no new agent**?
-
-**Meeting notes / answers:**
-
-> `[Date / participants / answer / supporting link]`
-
 ### Deliverables
 
 > **OUTPUTS — evidence to produce, not additional tasks.** Update each row's status and link when the artifact exists; do not mark an unreviewed proposal as approved.
@@ -243,16 +260,48 @@ Sprint Assessment assesses Jira tickets for sprint readiness. Refine Requirement
 
 **SDI support:** Steps 2–4 — high-level design, component deep dive, bottlenecks and trade-offs.
 
+**Learn — why this stage exists:** Design is about comparing realistic ways to meet the Stage 1 requirements. Use **SDI Step 2** for a high-level architecture and buy-in, then **Steps 3–4** to deep-dive critical components, risks and trade-offs. **Example:** refining once before ticket dispatch is different from refining within each worker.
+
+**Watch out for:** introducing new agent/workflow files simply because extra layers look more architecturally sophisticated.
+
 ### What to do
 
 > **ACTION CHECKLIST — work to perform.** Check an item only after the action is completed and its result is recorded.
 
-- [ ] **Draw or validate the as-is workflow.** Do not use a proposed diagram as evidence of current runtime behavior.
-- [ ] **Compare integration options.** Evaluate central refinement, per-worker refinement, hybrid, and the minimal-change option.
-- [ ] **Apply SDI reasoning.** Review high-level flow, orchestration ownership, critical component boundaries, context-sharing, and failure cases.
-- [ ] **Review the modular architecture.** Discuss independent skill ownership, who orchestrates today, and whether a separate workflow is actually justified.
-- [ ] **Choose a proposed direction with the coworker.** Record trade-offs (coupling, reliability, cost, latency, portability) and rejected alternatives.
-- [ ] **Capture the design decision.** Update D-03 and link the reviewed to-be diagram, owner, and remaining assumptions.
+- [ ] **Step 1 — Draw or validate the as-is workflow.** Do not use a proposed diagram as evidence of current runtime behavior.
+- [ ] **Step 2 — Compare integration options.** Evaluate central refinement, per-worker refinement, hybrid, and the minimal-change option.
+- [ ] **Step 3 — Apply SDI reasoning.** Review high-level flow, orchestration ownership, critical component boundaries, context-sharing, and failure cases.
+- [ ] **Step 4 — Review the modular architecture.** Discuss independent skill ownership, who orchestrates today, and whether a separate workflow is actually justified.
+- [ ] **Step 5 — Choose a proposed direction with the coworker.** Record trade-offs (coupling, reliability, cost, latency, portability) and rejected alternatives.
+- [ ] **Step 6 — Capture the design decision.** Update D-03 and link the reviewed to-be diagram, owner, and remaining assumptions.
+
+### Guided walkthrough — how to complete the actions
+
+The checkboxes above are the actual tasks; use this explanation to learn how to perform them. Record evidence rather than checking boxes because an answer sounds plausible.
+
+| Step | How to do it | Where to record it |
+| --- | --- | --- |
+| **1** | Use Stage 1's verified source paths to draw an **as-is** flow. Separate declared plugin agents from ad hoc per-ticket workers; runtime execution remains UNVERIFIED without traces. | Verified as-is diagram |
+| **2** | Compare central, per-worker, hybrid and minimal/no-new-agent designs against consistency, duplicated work, latency/cost, failure isolation and complexity. | Candidate options table |
+| **3** | Draw a **to-be** diagram with entrypoint, source data, trigger, skill invocation, worker boundaries, handoff, aggregator, result and human review. Label as PROPOSED. | Proposed integration flow |
+| **4** | Distinguish the **skill** (task instructions), **agent/worker** (runtime executor), **workflow** (sequencing), and **harness** (actual tool/permission execution). Decide where orchestration currently belongs. | D-03 and D-07 |
+| **5** | Walk through missing requirements, failed worker, duplicate retry, stale/conflicting context, cross-platform tool mismatch and unauthorized actions. Record trade-offs and mitigations. | Design trade-offs and Stage 3 inputs |
+| **6** | Show your teammate the simplest adequate design and an alternative. Record approval, rejection or OPEN with reviewer and rationale—do not infer buy-in. | Design decision and review gate |
+
+### Questions for your teammate
+
+> **Suggested opening:** “Here are the integration options and the current skill boundaries. Which approach gives us the clearest ownership with the least unnecessary complexity?”
+
+| # | Ask this | Record the answer in |
+| --- | --- | --- |
+| 1 | Where should refinement run: before batch dispatch, within each worker, only as needed, or not at all? | D-03 and rationale |
+| 2 | Who owns orchestration, aggregation, state and final readiness output? | Owner for each component and state |
+| 3 | Must each skill work independently? What would justify extracting a `workflows/` definition? | D-07 and extraction criteria |
+| 4 | Which checks can be deterministic instead of agent decisions? | Simplification opportunities |
+| 5 | What minimum context crosses agent boundaries, and what trace proves dispatch? | Handoff and execution evidence needs |
+| 6 | How do we handle runtime-specific tools, permissions and delegation without pretending portability? | Compatibility and adapter strategy |
+
+**Discussion results:** `[Meeting date / attendees / decisions (D-IDs) / evidence / outstanding questions / owner]`
 
 ### Reference information
 
@@ -282,14 +331,6 @@ flowchart TD
 
 > **Diagram status:** Conceptual illustration, not an approved or observed architecture. The team must decide whether triage is centralized, per-worker, or otherwise.
 
-**Design questions:**
-- What invokes each skill and what are its stop/skip conditions?
-- Which component owns orchestration, state, aggregation, and final readiness output?
-- What information crosses agent boundaries (minimum necessary context)?
-- Should a deterministic check replace an agentic decision at any step?
-- How will the design work across the supported runtimes without assuming identical tool/delegation semantics?
-- Which failure/cost/latency/scalability trade-offs are acceptable?
-
 #### Proposed modular architecture (PROPOSED)
 
 **Design direction for team review, not an approved decision:** Keep Refine Requirements and Sprint Assessment independently reusable, with each skill owning its capability and contract. For now, prefer Sprint Assessment as the integration's orchestration owner; extract a separate workflow only if coordination becomes independently reusable or too complex for the skill.
@@ -298,7 +339,6 @@ flowchart TD
 - **Orchestration:** Owns sequencing, handoffs, and escalation between skills. A separate `workflows/` directory is **optional**, not a prerequisite; composition does not merge skills, and a workflow document alone does not execute anything.
 - **Trade-offs:** Skill independence supports extension and reuse, but adds interface maintenance, compatibility checks, and the risk of duplicate orchestration. Avoid introducing directories or abstraction layers without a concrete need.
 
-**Team questions:** Who owns orchestration today? Do the skills need to be reused separately? What would justify extracting a shared workflow? Can we add or replace a skill without unexpected changes to existing skills?
 
 #### Proposed long-term repository structure (illustrative; not created)
 
@@ -355,16 +395,49 @@ dotskills/
 
 **Distinction:** Stage 2 uses SDI Steps 3–4 to reason about architecture; Stage 3 uses those findings to formalize agreements between components.
 
+**Learn — why this stage exists:** A contract defines what each participant **receives, returns, guarantees and does when it cannot fulfill its work**. It is different from implementation detail. A written 'read-only' rule is a promise, not enforced authorization. **Example:** a `needs_clarification` result must not be silently converted into an approved `ready` result.
+
+**Watch out for:** agreeing only on a JSON shape while ignoring status meanings, failure cases, provenance and who may approve overrides.
+
 ### What to do
 
 > **ACTION CHECKLIST — work to perform.** Check an item only after the action is completed and its result is recorded.
 
-- [ ] **Define participant guarantees.** Using the Stage 2 architecture decision, agree on each skill's contract location, owner, version, and behavioral commitments.
-- [ ] **Specify the handoff.** Set required/optional fields, types, statuses, source/provenance links, contract version, and compatibility checks.
-- [ ] **Agree on behavioral guarantees.** Define readiness/completeness rules, invariants, human overrides, and acceptable partial results.
-- [ ] **Set trust, permissions, and failure contracts.** Identify effective enforcement points, identities, write approvals, retries, escalation, and safe stops.
-- [ ] **Plan tests before implementation.** Turn each critical rule into measurable acceptance, failure, and misuse cases; agree on the minimum evaluation gate.
-- [ ] **Review and record approval.** Resolve or explicitly defer contested contract decisions and link the owner/approval evidence.
+- [ ] **Step 1 — Define participant guarantees.** Using the Stage 2 architecture decision, agree on each skill's contract location, owner, version, and behavioral commitments.
+- [ ] **Step 2 — Specify the handoff.** Set required/optional fields, types, statuses, source/provenance links, contract version, and compatibility checks.
+- [ ] **Step 3 — Agree on behavioral guarantees.** Define readiness/completeness rules, invariants, human overrides, and acceptable partial results.
+- [ ] **Step 4 — Set trust, permissions, and failure contracts.** Identify effective enforcement points, identities, write approvals, retries, escalation, and safe stops.
+- [ ] **Step 5 — Plan tests before implementation.** Turn each critical rule into measurable acceptance, failure, and misuse cases; agree on the minimum evaluation gate.
+- [ ] **Step 6 — Review and record approval.** Resolve or explicitly defer contested contract decisions and link the owner/approval evidence.
+
+### Guided walkthrough — how to complete the actions
+
+The checkboxes above are the actual tasks; use this explanation to learn how to perform them. Record evidence rather than checking boxes because an answer sounds plausible.
+
+| Step | How to do it | Where to record it |
+| --- | --- | --- |
+| **1** | List ticket input, refinement result, readiness result and delegation receipt. For each, name producer, consumer, owner, version and where the contract is documented. | Contract register |
+| **2** | Take a complete and an incomplete Jira example. For every handoff field define type, required/optional status, valid values, evidence link and version compatibility. | Refinement handoff, D-04 |
+| **3** | Agree on definitions of requirements complete vs sprint ready and rules that must always hold (invariants); specify who may override and how. | Behavioral guarantees |
+| **4** | Map untrusted sources, service/user identity, access scopes, approval requirements and actual host/tool/service enforcement; label missing evidence UNVERIFIED. | Trust/permissions table, D-05 |
+| **5** | Define safe behavior for missing fields, incompatible schemas, tool failure, timeout, retries, duplicates, one worker failing, and partial results. | Failure/recovery table |
+| **6** | Turn each critical guarantee into expected results and negative cases now. Separate format conformance from actual behavior, integration compatibility and end-to-end success. | E-01–E-08, D-06 and evaluation plan |
+
+### Questions for your teammate
+
+> **Suggested opening:** “Can we walk one ticket through the handoff field by field and agree on behavior for missing data, permissions and failures before implementing it?”
+
+| # | Ask this | Record the answer in |
+| --- | --- | --- |
+| 1 | What must Sprint Assessment provide to Refine Requirements, and exactly what comes back? | Required fields, types, statuses, D-04 |
+| 2 | How do we distinguish complete requirements, sprint readiness, blocked, needs clarification and error? | Status definitions and invariants |
+| 3 | Who owns each skill contract and when is a separate workflow contract needed? | Contract location, D-07 compatibility |
+| 4 | Who actually authenticates to Jira/Confluence, and what technically blocks unauthorized writes? | Identity, least privilege, D-05 |
+| 5 | What happens if a ticket worker fails, a tool times out, or results conflict? | Partial completion, retry, escalation |
+| 6 | How do we prove worker execution and source validity instead of trusting a summary? | Trace/receipt and provenance requirements |
+| 7 | What are the minimum passing and failing test cases before implementation is accepted? | D-06, evaluation plan and owner |
+
+**Discussion results:** `[Meeting date / attendees / decisions (D-IDs) / evidence / outstanding questions / owner]`
 
 ### Reference information
 
