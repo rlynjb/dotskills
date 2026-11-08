@@ -2,12 +2,13 @@
 
 **`audit-skill` is one read-only, overview-first workflow for reviewing one or more agent skills.** It automatically adjusts its scope from independent single-skill analysis to multi-skill responsibility and handoff analysis. There is **no Explore/Audit/Compare mode selection**.
 
-The first result is a compact, complete review of what each skill does, how it works, what evidence exists, what is unverified, and what the team should discuss. Choose any finding or topic afterward for a deeper explanation.
+The first result is a compact, complete review of what each skill does, how it works, what evidence exists, what is unverified, and what the team should discuss. It also **prefills DFRDE Stage 1 — Discover** with sourced answers and targeted human-confirmation questions, without editing documents or approving decisions. Choose any finding or topic afterward for a deeper explanation.
 
 ## Table of contents
 
 - [How it works](#how-it-works)
 - [What the first report contains](#what-the-first-report-contains)
+- [DFRDE Stage 1 — Discover prefill](#dfrde-stage-1--discover-prefill)
 - [Quality and standards checks](#quality-and-standards-checks)
 - [Cross-platform compatibility](#cross-platform-compatibility)
 - [How to invoke](#how-to-invoke)
@@ -62,8 +63,9 @@ The report begins **Audit Skill — At a Glance** (not a mode guide or a long qu
 | **Cross-runtime matrix** | Explicit host-by-capability compatibility evidence and adapter needs |
 | **Evidence and risk map** | Existing safeguards first; source-backed F-xx findings, impact/confidence, and unanswered questions |
 | **Evaluation recommendations** | At least three realistic synthetic cases and pass/fail criteria, all **NOT RUN**, plus smallest next step |
+| **DFRDE Stage 1 Discover handoff** | Draft answers to S1-Q01–S1-Q10, problem hypothesis, known constraints, unresolved evidence, priority team questions and pending review gate |
 
-The main report remains concise. A selected `F-xx`, `Q-xx`, diagram, workflow stage or contract receives an evidence-backed deep dive without switching modes. Never present a hypothetical path as a tested run.
+The main report remains concise. A selected `F-xx`, `Q-xx`, `S1-Qxx`, diagram, workflow stage or contract receives an evidence-backed deep dive without switching modes. Never present a hypothetical path as a tested run.
 
 ### Mermaid example (illustrative only)
 
@@ -77,6 +79,33 @@ flowchart TD
 ```
 
 A real diagram must come from the target files and label which edges are inferred or unverified. For two skills, keep **as-is** diagrams distinct from any **PROPOSED** integration diagram.
+
+## DFRDE Stage 1 — Discover prefill
+
+The Audit Skill **automatically produces a read-only Stage 1 Discovery draft** after inspecting one or more agent skills. Its purpose is to **answer the questions that repository evidence can answer before a team review** and surface only the remaining human or runtime questions.
+
+Use [the generic DFRDE engineering review template](../../docs/dfrde/engineering-review-template.md#1-discover--what-problem-and-existing-reality-are-we-working-with) as the destination for an approved copy. The [discovery handoff contract](references/dfrde-stage-1-handoff.md) defines what to prefill.
+
+| Question status | What to do |
+| --- | --- |
+| **ANSWERED BY EVIDENCE** | Give the concise answer, inspected version and exact path:line; distinguish documented intent from observed behavior |
+| **NEEDS CONFIRMATION** | Ask a stakeholder to confirm business purpose, user intent, ownership or proposed success metrics |
+| **OPEN DECISION** | Carry architecture/ownership alternatives into Stage 2 rather than letting the agent choose |
+| **NOT VERIFIED** | Identify missing source or runtime evidence and how to obtain it safely |
+
+Stage 1 outputs include a **PROPOSED problem statement**, known/unknown requirements and constraints, a current-state inventory, evidence backlog and **priority teammate questions**—not a transcript of every question already settled by the code. No team approval, live execution or file modification is implied.
+
+### Audit-assisted invocation example
+
+```text
+Use audit-skill on the existing skill(s). Give the full At a Glance
+review and prefill all DFRDE Stage 1 Discover questions (S1-Q01–S1-Q10).
+Cite inspected files/lines and versions. Mark business goals and desired
+success metrics PROPOSED until confirmed. Separate answered facts from
+needs-confirmation, open design decisions and not-verified runtime
+questions. Present a meeting-ready shortlist. Do not run tests, edit
+the engineering record or advance to Stage 2.
+```
 
 ## Quality and standards checks
 
@@ -143,7 +172,7 @@ Deep dive F-02. Show the exact source evidence, implementation status,
 risk, trade-offs and the smallest useful validation step.
 ```
 
-The optional [Sprint Assessment example](references/sprint-assessment-audit.md) provides task-specific prompts, not an alternative workflow.
+The [generic Stage 1 handoff contract](references/dfrde-stage-1-handoff.md) defines the reusable Discovery output. The optional [Sprint Assessment example](references/sprint-assessment-audit.md) provides task-specific prompts, not an alternative workflow.
 
 ## Evidence and safety rules
 
@@ -158,7 +187,7 @@ The optional [Sprint Assessment example](references/sprint-assessment-audit.md) 
 
 | Skill | Responsibility |
 | --- | --- |
-| **Audit Skill** (this skill) | Single workflow for independent and multi-skill source audits, compliance, contracts, trust, diagrams and portability; **no execution or edits** |
+| **Audit Skill** (this skill) | Single workflow for independent and multi-skill source audits, compliance, contracts, trust, diagrams and portability, plus evidence-prefilled DFRDE Stage 1 questions; **no execution or edits** |
 | [Evaluate Skill](../evaluate-skill/SKILL.md) | Separately authorized behavioral evaluation, diagnosis, human-approved changes and regression review; runtime safety gates still apply |
 | [Integrate Skills](../integrate-skills/SKILL.md) | Draft collaboration/architecture walkthrough for connecting independently reviewed skills; not an implementation runner |
 | [Learn Repo](../learn-repo/SKILL.md) | Guided learning of an entire codebase rather than skill-specific audit |
