@@ -51,6 +51,14 @@ Keep the process lightweight, reuse existing patterns, define acceptance
 checks and ask me before writing changes.
 ```
 
+## Audit-assisted Stage 1 — Discover
+
+For **existing agent skills**, use `audit-skill` to prefill [Stage 1 — Discover in the reusable engineering review template](../../docs/dfrde/engineering-review-template.md#1-discover--what-problem-and-existing-reality-are-we-working-with). It inspects the available skills and produces evidence-backed answers to `S1-Q01` through `S1-Q10`, plus current-state diagrams, assumptions, risks and targeted questions for teammates.
+
+Distinguish **ANSWERED BY EVIDENCE** (with source), **NEEDS CONFIRMATION** (human intent), **OPEN DECISION** (design choices) and **NOT VERIFIED** (missing evidence or runtime tests). The problem statement remains **PROPOSED** until the owner confirms it. A completed audit does not automatically approve Discovery, run a skill, or save a review file.
+
+For a tool, application, agent harness or infrastructure change, use relevant domain-specific source inspection instead of assuming `audit-skill` is universal. The DFRDE template itself stays domain-agnostic.
+
 ## Composition and authority
 
 This skill **coordinates engineering decisions**, not the implementation details of every domain. When auditing an actual agent skill, it may recommend [Audit Skill](../audit-skill/SKILL.md). For separately authorized skill behavior tests, it may recommend [Evaluate Skill](../evaluate-skill/SKILL.md). Mentioning a skill or an agent is **not an execution or tool permission**. For non-skill domains it should select appropriate tools/tests rather than assuming a skill-specific evaluator works everywhere.
@@ -63,6 +71,7 @@ Default behavior is planning and authorized read-only inspection. Before writes,
 - [`references/lifecycle.md`](references/lifecycle.md) — detailed six-stage method and human gates.
 - [`references/domain-adaptation.md`](references/domain-adaptation.md) — optional per-domain considerations.
 - [`references/engineering-record.md`](references/engineering-record.md) — optional lightweight decision/evidence template.
+- [`docs/dfrde/engineering-review-template.md`](../../docs/dfrde/engineering-review-template.md) — **canonical reusable full review template** with beginner-friendly actions, guided steps, questions, deliverables and review gates for all six stages.
 - [`evals/evals.json`](evals/evals.json) — proposed scenario-based tests for this skill itself (**NOT RUN**).
 
 **Current status:** documented methodology with static evaluation cases; not a verified behavioral orchestration engine. Do not infer portability or runtime execution from successful packaging.
