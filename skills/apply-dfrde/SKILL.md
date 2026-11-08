@@ -22,7 +22,7 @@ Coordinate the process; do not redefine every domain's standards or impersonate 
    - **Shared, security-sensitive, irreversible or production:** explicit decisions, authority boundary, failure analysis, test evidence, reviewer and rollback.
 4. Display a short **Engineering Overview**: outcome, scope, six stages, known/unknown evidence, current stage, next meaningful checkpoint. Begin or resume the earliest justified unfinished stage; do **not** auto-implement simply because the user requested the methodology.
 
-Load [lifecycle and gates](references/lifecycle.md) for stage criteria, approval rules and transitions. Consult [domain adaptation](references/domain-adaptation.md) **only for relevant domain(s)**. Use [engineering record](references/engineering-record.md) when an artifact or durable handoff is useful. Do not load all references by default.
+Load [lifecycle and gates](references/lifecycle.md) for stage criteria, approval rules and transitions. Consult [domain adaptation](references/domain-adaptation.md) **only for relevant domain(s)**. For a durable, guided, domain-agnostic review document, copy [the DFRDE engineering review template](../../docs/dfrde/engineering-review-template.md) **when the repository source is accessible**; use the [lightweight engineering record](references/engineering-record.md) when the full template is unavailable or disproportionate. Do not load all references by default, and do not write a canonical record without explicit approval.
 
 ## One engineering lifecycle
 
@@ -48,14 +48,14 @@ Load [lifecycle and gates](references/lifecycle.md) for stage criteria, approval
 
 ## Specialist collaboration — explicit, optional
 
-- When the target **is an agent skill**, `audit-skill` can supply a read-only skill inventory, workflow/trust review and standards/compatibility matrix; `evaluate-skill` can guide separately approved behavioral evaluation and improvements under **its own isolation and human-approval gates**.
+- When the target **is an agent skill**, `audit-skill` can supply a read-only skill inventory, workflow/trust review and standards/compatibility matrix **plus a Stage 1 Discover prefill**: source-backed answers, a proposed problem statement, question classifications, and an evidence backlog. Use this as a **draft** in the engineering record and request human confirmation of the problem, success criteria and owners. `evaluate-skill` can guide separately approved behavioral evaluation and improvements under **its own isolation and human-approval gates**.
 - For tools, apps, agent runtimes, backend and infrastructure, **do not** route to skill-only Audit/Evaluate capabilities as if they were universal. Use appropriate available domain tools and tests, or design a manual/portable handoff.
 - A handoff specifies **task, bounded scope, input evidence, expected output, permissions, success/stop criteria, owner and source version**. Validate the specialist's actual output; do not treat its self-report as independent proof.
 - If a specialist is unavailable or platform-specific, continue the general lifecycle without pretending it executed. Do not recursively spawn agents just to make the workflow look multi-agent.
 
 ## Guided interaction and checkpoints
 
-At each stage, provide **what this stage establishes → verified current evidence → recommended next action and alternatives → decision/approval needed**. Invite user input rather than mechanically interviewing them. Present a compact status view with one clear next step. Do not make decisions for stakeholders.
+At each stage, provide **what this stage establishes → verified current evidence → recommended next action and alternatives → decision/approval needed**. In Stage 1, prefill what approved sources establish before asking teammates questions; classify remaining items as **ANSWERED BY EVIDENCE**, **NEEDS CONFIRMATION**, **OPEN DECISION**, or **NOT VERIFIED**. For existing agent skills, an available Audit Skill handoff supports this, but written source evidence never substitutes for confirming the business problem or observing real execution. Invite user input rather than mechanically interviewing them. Present a compact status view with one clear next step. Do not make decisions for stakeholders.
 
 Use **HUMAN REVIEW REQUIRED** to pause before adopting a substantive architecture/contract decision, before implementation writes, before potentially costly or externally consequential evaluations, and before release. Approval must be explicit and scoped; silence, generic feedback, or a previous stage's approval does not authorize a different action.
 
