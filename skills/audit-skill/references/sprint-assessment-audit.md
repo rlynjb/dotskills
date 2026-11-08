@@ -23,6 +23,16 @@ Also supply:
   PROPOSED, never as already implemented.
 - Evidence-backed risk findings and three or more NOT RUN synthetic
   eval scenarios with observable assertions.
+- A DFRDE Stages 1–3 prefill aligned to the generic engineering review
+  template: S1-Q01–S1-Q10 discovered facts, S2-Q01–S2-Q05 conditional
+  design alternatives/trade-offs, and S3-Q01–S3-Q06 candidate contracts,
+  invariants, permission/failure boundaries, and NOT RUN acceptance checks.
+  For Stage 2, distinguish keep-as-is, central refinement, and per-ticket
+  alternatives when supported by sources; do not pick an architecture.
+  For Stage 3, bind contract proposals to those options and preserve
+  explicit HUMAN REVIEW REQUIRED gates for all three stages.
+- A meeting-ready list of only unresolved confirmations, open decisions
+  and missing evidence; do not ask again what file/line evidence proves.
 
 Cite paths and line numbers. Do not execute target skills, shell
 commands, agent workers, Jira/Confluence effects or eval cases. Do not
@@ -78,3 +88,6 @@ edit source files. Preserve gaps and pause for human review.
 - Cross-platform parity is not claimed without runtime evidence.
 - Cases are **NOT RUN** and the team receives an explicit list of questions,
   owners/decisions to confirm, and a smallest next validation step.
+- The Stage 2 design options and Stage 3 interface/behavior contracts are
+  **PROPOSED / CONDITIONAL** until the responsible people resolve Stage 1
+  intent and approve a design; no decision or contract is silently finalized.
