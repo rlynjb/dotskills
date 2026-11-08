@@ -9,14 +9,14 @@
 | --- | --- |
 | Project | Agent Arcade — Sprint Assessment + Refine Requirements integration |
 | Canonical location | `docs/dfrde/sprint-assessment-refine-requirements-integration-review.md` in `rlynjb/dotskills` |
-| Review record version | `0.1-draft` |
+| Review record version | `0.2-draft` (guide reorganization, no new team approvals) |
 | Started | 2026-11-07 |
 | Current stage | **1 — Discover (IN PROGRESS)** |
 | Review owner | `[Name / role]` |
 | Collaborators / decision owners | `[Names / roles]` |
 | Target repository and branch | `[Repo link / branch / commit SHA]` |
 | Target environment / harness | `[Claude, Codex, other; verify]` |
-| Last updated | 2026-11-07 (architecture proposal organized under Stage 2; contracts under Stage 3; not approved) |
+| Last updated | 2026-11-08 (beginner learning guide and standards reference added; architecture/contracts not approved) |
 | Next review checkpoint | `[Meeting / question / date]` |
 
 > **Document status:** This is a *proposal and working record*, not evidence that the team approved a design, ran an agent, or completed tests. Replace placeholders only when backed by decisions or observed results.
@@ -89,6 +89,44 @@
 | **Reference information** | Existing findings, draft options, examples, stakeholder questions | Edit content as knowledge changes; proposals are not approvals. |
 | **Deliverables** | Specific artifacts or decisions that must be produced | Change status and link the actual evidence; **not a second to-do list**. |
 | **Review gate** | Decision or approval required to proceed | Record reviewer, date, scope, outcome, and supporting link. |
+
+### Beginner quick start — before, during and after a team review
+
+**Use this as a working conversation guide, not an exam or a six-stage meeting agenda.** A stage can take more than one meeting; some actions happen alone before talking to your teammate.
+
+| When | Your job | Example |
+| --- | --- | --- |
+| **Before the meeting** | Read **Learn** and the **Guided walkthrough** for your current stage. Inspect any available approved source evidence. Bring one real scenario and 2–3 priority questions. | Verify what the current Sprint Assessment skill **documents** about ticket dispatch; don't claim a runtime trace exists. |
+| **During the meeting** | Open **Questions for your teammate**, compare alternatives, and ask who owns the decision. Agree on requirements or explicitly leave an OPEN item. | “Should incomplete requirements become questions or a blocked readiness result?” |
+| **After the meeting** | Write the answer with date/owner in **Decision log**, update any evidence links in **Deliverables**, and only advance at the **Review gate**. | Record D-01 and D-02 as OPEN or APPROVED with a meeting reference. |
+
+**Evidence vocabulary:** `OBSERVED` = actually inspected/executed with source or trace; `DOCUMENTED` = file says so; `INFERRED` = reasoned from partial evidence; `UNVERIFIED` = not yet checked; `PROPOSED` = suggested future behavior; `NOT RUN` = test not executed. A completed checklist item is not proof of a runtime test.
+
+**A practical first 30-minute conversation** (not a requirement to approve all three stages):
+
+| Minutes | Focus | Your question |
+| --- | --- | --- |
+| 0–5 | Current behavior and problem (Discover) | What gap are we actually solving? |
+| 5–15 | Options and responsibilities (Design) | Where should validation/refinement live? |
+| 15–25 | Preview of handoff, permissions and failures (Contract) | What must each skill guarantee and who enforces access? |
+| 25–30 | Open decisions, owner and next evidence | What do we agree on, and what stays OPEN? |
+
+**Four decisions to carry through the process:** refinement placement (**D-03**), readiness/handoff contract (**D-04**), enforceable tool permissions (**D-05**), and the minimum evaluation gate (**D-06**). Don't make any of these on behalf of your teammate.
+
+**Confidentiality:** This review lives in a personal GitHub repository; don't paste proprietary Jira descriptions, internal code, credentials, private security findings or sensitive logs into a public document. Use approved redacted examples and access-controlled source links.
+
+### Terminology — read this once
+
+| Term | Plain-English meaning |
+| --- | --- |
+| **DFRDE** | The underlying engineering method: discover → design → contract → implement → evaluate → release, with human review. |
+| **SDI** | A way to reason about requirements and architecture within DFRDE, especially Stages 1–3. |
+| **Skill** | Reusable instructions/resources for a task; a `SKILL.md` alone isn't a running background process. |
+| **Agent / ticket worker** | A runtime-executed worker that may reason and call tools. A per-ticket worker may be different from a reusable declared agent file. |
+| **Workflow / orchestrator** | Sequence, delegation, aggregation and error handling between participants. A workflow description alone doesn't execute anything. |
+| **Harness / runtime** | The system that loads skills, runs agents, provides tools, manages context and enforces actual permissions. |
+| **Contract / invariant** | Agreed inputs/outputs and behavior / a rule that must hold even on error paths. |
+| **Evaluation / receipt** | Test of expected vs observed behavior / trace or record of what actually ran. |
 
 ### Process layers
 
@@ -801,6 +839,140 @@ Use the checklist above for task status. These explanations show what evidence t
 
 ---
 
+## Standards and Team Discussion Guide — reference library
+
+> **How to use this section:** Read it when a Stage 1–6 task references standards, skill structure, authority or evaluation. These are **reference lenses**, not another lifecycle or mandatory set of tasks. They incorporate the earlier *Agent Arcade: Standards and Team Discussion Guide*.
+
+### What the Agent Skills standard does—and does not do
+
+The Linux Foundation announced on **October 22, 2026** that Anthropic contributed Agent Skills to the Agentic AI Foundation (AAIF). The published open specification describes **how a skill is packaged and discovered**, not a universal architecture for business-specific orchestration, contracts, security enforcement or production approval.
+
+- **Required format:** a skill directory with `SKILL.md` containing YAML frontmatter with `name` and `description`, followed by Markdown instructions.
+- **Optional supporting material:** `references/` for deeper documentation, `scripts/` for executable helpers, `assets/` for templates/resources, plus optional frontmatter such as `license`, `compatibility` and `metadata`.
+- **Progressive disclosure:** discovery reads names/descriptions; activation loads `SKILL.md`; supporting references load when needed. Keep the entrypoint focused and move long material into references.
+- **Validation:** `skills-ref validate ./path-to-skill` checks structural conformance (where the reference utility is installed). It **does not** prove tool permission enforcement, correct delegation or task success.
+- **Important caution:** `allowed-tools` is **experimental** in the specification, with varying runtime support. A tool list in Markdown is not a universal security boundary.
+
+Sources: [Official Agent Skills specification](https://agentskills.io/specification) · [Reference repository](https://github.com/agentskills/agentskills) · [Linux Foundation AAIF announcement (October 22, 2026)](https://www.linuxfoundation.org/press/agentic-ai-foundation-announces-four-new-projects-agent-skills-open-responses-openenv-and-opensandbox).
+
+**Two separate review layers**
+
+| Layer | What it checks | Example evidence |
+| --- | --- | --- |
+| **Standards compliance** | File layout, required metadata, supported references and discoverability | `SKILL.md` inspection, format validator output |
+| **Operational reliability** | Clear responsibility, real tool permissions, contracts, failure recovery, worker traces, behavioral evals, governance | Reviewed contract, actual permission policy, execution receipts, observed eval report |
+
+### Skill vs worker vs workflow — decide before adding new files
+
+```text
+Agent Arcade target structure — ILLUSTRATIVE, NOT INSPECTED/APPROVED
+agent-arcade/
+└── skills/
+    ├── sprint-assessment/
+    │   ├── SKILL.md                    # purpose, triggers, procedure, stop conditions
+    │   ├── references/
+    │   │   ├── contract.md             # optional: detailed I/O + rules
+    │   │   └── rubric.md               # optional: readiness criteria
+    │   └── evals/                      # team-defined tests; not required by spec
+    └── refine-requirements/
+        ├── SKILL.md
+        ├── references/
+        │   ├── contract.md             # optional: refinement output contract
+        │   └── question-bank.md        # optional: stakeholder question patterns
+        └── evals/
+
+workflows/                             # OPTIONAL, only if independently needed
+└── sprint-refinement/
+    └── workflow.md                     # sequencing, mapping, escalation
+
+Platform-specific adapters / agents      # location and shape depend on actual runtime
+```
+
+The structure above is a **teaching example**, not the verified workplace repository and not a request to create those files. The living review remains in `dotskills/docs/dfrde/`. Verify Agent Arcade's current layout with its owner before naming any required new paths.
+
+**When deciding the skill structure, ask:**
+
+| Question | Recommended default to challenge with evidence |
+| --- | --- |
+| Does the skill have one clear responsibility and trigger? | Keep each skill independently meaningful; avoid ambiguous overlap. |
+| Does `SKILL.md` tell the agent when to stop or ask for clarification? | State activation, stop/no-op, and failure behavior explicitly. |
+| Where should detailed contracts live? | Put concise essential guarantees in `SKILL.md`; use optional `references/contract.md` when detailed enough to justify it. |
+| Where should orchestration live? | Prefer an existing coordinator when there is one consumer; extract a shared workflow only for proven reuse or complexity. |
+| Does each ticket need a new agent? | Compare task complexity and isolation needs against a deterministic check or simple function. |
+| Is portability proven? | Test skill discovery, invocation, tools, delegated workers, output parsing and effective permissions per runtime; don't infer from file format. |
+
+### Five behavioral checks — from the Agent Skills conference discussion
+
+| Check | What to ask | First DFRDE stage |
+| --- | --- | --- |
+| **Discover** | Can the agent locate the appropriate skill for this request? | 1 / 5 |
+| **Activate** | Does it invoke the skill at the right time—and skip it when unnecessary? | 2 / 5 |
+| **Execute** | Does the procedure produce the expected ticket result? | 3 / 5 |
+| **Authorize** | Does the actual runtime/service constrain permitted actions, including delegated workers? | 3 / 5 |
+| **Verify** | Can we inspect outputs and execution evidence rather than trusting self-report? | 3 / 5 |
+
+These are **team behavioral-review heuristics**, not additional mandatory frontmatter fields under the Agent Skills specification.
+
+### Eight areas to discuss with the team
+
+| Topic from the earlier discussion guide | Most useful stage | Decision or evidence to capture |
+| --- | --- | --- |
+| Standards adoption | 1 / 3 | Portable skill format baseline and target runtimes |
+| Skill responsibilities | 1 / 3 | Refine Requirements vs Sprint Assessment ownership |
+| Invocation and orchestration | 2 / 3 | Central, per-worker, hybrid or minimal flow; stop conditions |
+| Handoff contracts | 3 | Inputs/outputs, statuses, schema version, invariants |
+| Trust, identity and permissions | 3 / 5 | Source provenance, effective access and write enforcement |
+| Failure and recovery | 3 / 5 | Partial success, retries, idempotency, safe stops |
+| Evaluation and observability | 3 / 5 / 6 | Baseline, user-journey evals, worker traces and thresholds |
+| Governance and release | 4 / 6 | Maintainer, reviews, change control, release/rollback |
+
+### Nine things a well-engineered skill should make reviewable
+
+| Quality requirement | Concrete question |
+| --- | --- |
+| **Purpose and boundaries** | When should the skill run, and when should it *not* run? |
+| **Dependencies** | Which tools, environment, runtime and identities are required? |
+| **Procedure** | What are its ordered steps, branches, worker handoffs and stop conditions? |
+| **Contracts** | What are required inputs/outputs, versions, statuses and invariants? |
+| **Trust model** | What sources are authoritative, and how are claims verified/cited? |
+| **Permissions** | What actions are allowed, prohibited, approved, and enforced by real controls? |
+| **Failure behavior** | What happens on timeout, missing data, bad versions, retries and partial success? |
+| **Evaluation evidence** | Which realistic success, negative, misuse, and regression tests actually ran? |
+| **Lifecycle** | Who owns the skill, reviews changes, versions it, monitors it and rolls it back? |
+
+### Practical compatibility matrix — fill with evidence, not assumptions
+
+| Capability | Runtime A `[name/version]` | Runtime B `[name/version]` | Evidence |
+| --- | --- | --- | --- |
+| Discover `SKILL.md` | NOT TESTED | NOT TESTED | `[Link]` |
+| Activate/skip correctly | NOT TESTED | NOT TESTED | `[Link]` |
+| Tool/API calls mapped correctly | NOT TESTED | NOT TESTED | `[Link]` |
+| Per-ticket worker dispatch and receipt | NOT TESTED | NOT TESTED | `[Link]` |
+| Tool permission enforcement | NOT TESTED | NOT TESTED | `[Link]` |
+| Output contract and errors | NOT TESTED | NOT TESTED | `[Link]` |
+
+A fully formatted skill may still fail any of these runtime tests.
+
+### Conference sessions to revisit by stage
+
+These are the presentation links collected in the earlier AgentCon/MCPCon guide; use them as **optional learning references**, not as proof that Agent Arcade has implemented their recommendations.
+
+| Stage | Session / presentation | What to learn or discuss |
+| --- | --- | --- |
+| 1 / 3 | [Lizzie Siegle — Gotta Catch ’Em All: Agent Skills](https://drive.google.com/file/d/1dmm3d5Y3o5lbmaRuEUkIJDXUI95QrCfx/view) | Discovery, activation, permission and verification; when a skill should stop |
+| 1 / 2 | [Takeshwari Kamal — Should This Be an AI Agent?](https://drive.google.com/file/d/1qURpZHbKHcuS2NrvlO901ZN2p2WBu_7B/view) | Compare agentic work with deterministic alternatives |
+| 2 / 3 | [Martin Bliss — Don't Share the Database, Share the Contracts](https://drive.google.com/file/d/1E4J2rfYLoN-H9wnK_K3f6bGshiwmDUmo/view) | Isolated contexts and explicit interface contracts |
+| 2 / 3 | [Anishma Mavuram — When Agents Spawn Agents](https://drive.google.com/file/d/1_jXpA_vFEBAAPYeklZmliAs9jNWZTyWx/view) | Bounded delegation, child-agent permissions |
+| 2 / 5 | [Chris Knuteson — Stop Writing Agents, Declare Them](https://drive.google.com/file/d/1f9v2ZupSLbcik_AkKJgtfVu9mmVZ5jjI/view) | Execution receipts versus self-reported execution |
+| 3 | [Shub Argha — Trustworthy Context Is Untrusted by Default](https://drive.google.com/file/d/19aoCF7WZ2GfVi7vb5ISZHIPKkQOtjjz1/view) | Provenance, untrusted Jira/Confluence content, source authority |
+| 3 | [Masato Kozuka — Stop Running Agents as Service Accounts](https://drive.google.com/file/d/1pFtRiB7w-_B4G10fbOwEZvq5PcAqf80Z/view) | User-scoped identity and auditability |
+| 3 / 5 | [Vikas Luthra — Prove What Your Agent Did](https://drive.google.com/file/d/1ZiZn1h8IuQDEjBVibU8gzortXJABLidk/view) | Traceable tool calls and results |
+| 4 / 6 | [Michael Larson — Shipping Agent Skills Safely](https://drive.google.com/file/d/1eU_vKOAiG-8nZzbYNWaTBZE-TvFxw6j3/view) | Skill versioning, eval gates, review and safe release |
+| 5 | [Kurtis Van Gent and Haoyu Wang — Building an Agentic Eval Pipeline](https://drive.google.com/file/d/1us0-hWJPMvH7dw2ZGoCvbRRUtJBFSyBf/view) | Test complete user journeys, not only tool invocations |
+| 5 | [Han Xu — Why Your Agent Is Failing](https://drive.google.com/file/d/10e0bWIwOfzSptB8UHQ1M_Vf5X0n54B55/view) | Distinguish model, tool, harness and evaluation failures |
+| 1 / 6 | [Jonathan Hefner — How Open Standards Become Real](https://drive.google.com/file/d/15VBUiiEWlrpmM07kHLrXAMCHCoI0wufy/view) | Distinguish specification from an implementation's support |
+| 2 / 3 | [Karthik Karunanithi — The MCP Cold-Start Problem](https://drive.google.com/file/d/1AT1V9r0LR0E8LeXN6A7AOqfNcgwoYjX4/view) | Progressive tool discovery, context and exposure trade-offs |
+
 ## Cross-cutting review criteria — reference, not a task list
 
 Use these as recurring lenses rather than extra lifecycle stages.
@@ -853,7 +1025,7 @@ Use these as recurring lenses rather than extra lifecycle stages.
 
 ## Links and references
 
-- [DFRDE skill and README](https://github.com/rlynjb/dotskills/tree/main/skills/design-first-review-driven-engineering)
+- [DFRDE skill and README](https://github.com/rlynjb/dotskills/tree/main/skills/apply-dfrde)
 - [Official Agent Skills specification](https://agentskills.io/specification)
 - [Agent Skills specification repository](https://github.com/agentskills/agentskills)
 - SDI — *System Design Interview* framework by Alex Xu
