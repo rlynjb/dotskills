@@ -8,6 +8,7 @@
 | --- | --- |
 | **[Engineering review template](engineering-review-template.md)** | **Start here for any new project**. Copy into the approved workspace, rename it, and fill it progressively. Stages 1–3 can be prefilled as evidence-backed Discovery answers, proposed Design alternatives and conditional Contract drafts; approvals remain human-owned. |
 | [Sprint Assessment + Refine Requirements integration review](sprint-assessment-refine-requirements-integration-review.md) | Existing **project-specific example and working record**. Preserve its actual findings, choices and questions; don't copy its Agent Arcade assumptions into unrelated work. |
+| [Refine Requirements — Light: initial Stages 1–3 review](refine-requirements-light-stages-1-3-initial-review.md) | **Source-backed initial review** of the standalone Light skill: Discovery answers, conditional Design options, proposed Contract, audit findings and NOT RUN eval cases. No runtime verification or human approval implied. |
 | [Apply DFRDE skill](../../skills/apply-dfrde/SKILL.md) | Guided six-stage method and human approval gates. |
 | [Audit Skill](../../skills/audit-skill/SKILL.md) | For existing agent skills: source-backed audit plus **DFRDE Stages 1–3 draft prefills** (no execution, edits or assumed approvals). |
 | [Lightweight record](../../skills/apply-dfrde/references/engineering-record.md) | Short alternative when the full six-stage discussion template would add unnecessary overhead. |
