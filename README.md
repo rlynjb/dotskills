@@ -29,6 +29,7 @@ Skills are grouped by use.
 
 | Skill | Purpose | What you'll learn |
 | --- | --- | --- |
+| [refine-documentation](skills/refine-documentation/SKILL.md) | Clean up existing documents with a minimal editorial pass: remove repetition and jargon without adding facts or losing decisions. | Clear editing, information preservation, and concise technical writing. |
 | [code-review](skills/code-review/SKILL.md) | Review code through a software-engineering book lens, explaining evidence-backed findings, trade-offs, and suggested review comments. | Software design (APOSD), algorithms, DDIA, data engineering, and SDI. |
 | [refine-requirements](skills/refine-requirements/SKILL.md) | Refine requirements and collaboratively design real features through four recommendation-first SDI steps, explicit technical decisions, and an approved implementation handoff. | Applied SDI (Alex Xu's four steps): requirements, architecture sketching, technical decisions, and defending trade-offs using relevant DDIA, AT, APOSD, and FODE concepts. |
 | [refine-requirements-light](skills/refine-requirements-light/SKILL.md) | Review assigned tickets against verified application code, reuse existing patterns where appropriate, and deliver a noninteractive four-step SDI engineering assessment. | Applied SDI for ticket analysis: scope, verified patterns, high-level design, relevant DDIA/FODE data flows, and technical risks. |

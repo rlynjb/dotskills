@@ -107,6 +107,14 @@
       "reference_count": 0
     },
     {
+      "name": "refine-documentation",
+      "category": "documentation",
+      "purpose": "Minimal editorial cleanup for existing documents: remove repetition and filler, use plain English, and preserve unique information, structure, status, decisions, and links without generating new content.",
+      "source": "dotskills",
+      "path": "skills/refine-documentation",
+      "reference_count": 0
+    },
+    {
       "name": "learn-repo",
       "category": "learning",
       "purpose": "Read-only, overview-first repository learning menu: all material evidence-anchored questions first, followed by learner-selected Guided/Practice deep dives across three stages and five book lenses.",

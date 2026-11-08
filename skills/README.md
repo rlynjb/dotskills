@@ -61,6 +61,8 @@ the implementation.
 
 ## Task skills
 
+The `refine-documentation` task skill performs minimal, content-preserving editorial cleanup of existing documents. It is domain-independent and does not add research or new decisions.
+
 Task skills perform the user's actual work, for example code review, investigation,
 requirements refinement, learning, and decision support. They are targets that the
 methodology skills can evaluate and improve; they are not children of the methodology
