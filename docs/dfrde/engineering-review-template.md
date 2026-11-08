@@ -379,4 +379,3 @@ Record `APPROVED` only when confirmed by an accountable reviewer; transcript inf
 - Engineering methodology: [Apply DFRDE](../../skills/apply-dfrde/SKILL.md)
 - Detailed stage guidance: [Lifecycle reference](../../skills/apply-dfrde/references/lifecycle.md)
 - Domain adaptation: [Domain-specific lenses](../../skills/apply-dfrde/references/domain-adaptation.md)
-- Project-specific example: [Integration review](sprint-assessment-refine-requirements-integration-review.md) — an example, **not** a general template.
