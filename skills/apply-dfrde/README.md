@@ -51,11 +51,11 @@ Keep the process lightweight, reuse existing patterns, define acceptance
 checks and ask me before writing changes.
 ```
 
-## Audit-assisted Stage 1 — Discover
+## Audit-assisted Stages 1–3 — Discover, Design, Contract
 
-For **existing agent skills**, use `audit-skill` to prefill [Stage 1 — Discover in the reusable engineering review template](../../docs/dfrde/engineering-review-template.md#1-discover--what-problem-and-existing-reality-are-we-working-with). It inspects the available skills and produces evidence-backed answers to `S1-Q01` through `S1-Q10`, plus current-state diagrams, assumptions, risks and targeted questions for teammates.
+For **existing agent skills**, use `audit-skill` to prefill the [reusable engineering review template](../../docs/dfrde/engineering-review-template.md) through the **first three stages**. It inspects available skills and prepares **Stage 1** source-backed questions `S1-Q01–S1-Q10`, **Stage 2** provisional design options and trade-offs `S2-Q01–S2-Q05`, and **Stage 3** conditional contract and evaluation proposals `S3-Q01–S3-Q06`. The result includes current-state diagrams, explicit evidence gaps and targeted team questions.
 
-Distinguish **ANSWERED BY EVIDENCE** (with source), **NEEDS CONFIRMATION** (human intent), **OPEN DECISION** (design choices) and **NOT VERIFIED** (missing evidence or runtime tests). The problem statement remains **PROPOSED** until the owner confirms it. A completed audit does not automatically approve Discovery, run a skill, or save a review file.
+Distinguish **ANSWERED BY EVIDENCE** (with source), **NEEDS CONFIRMATION** (human intent), **OPEN DECISION** (design choices) and **NOT VERIFIED** (missing evidence or runtime tests). The Stage 1 problem statement remains **PROPOSED** until confirmed; Stage 2 options remain **PROPOSED** until design review; Stage 3 contracts remain **CONDITIONAL / NOT APPROVED** until architecture and owners are settled. A completed audit does not advance any gate, run a skill, or save a review file.
 
 For a tool, application, agent harness or infrastructure change, use relevant domain-specific source inspection instead of assuming `audit-skill` is universal. The DFRDE template itself stays domain-agnostic.
 
