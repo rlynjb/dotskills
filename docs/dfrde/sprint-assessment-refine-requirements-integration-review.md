@@ -5,23 +5,13 @@
 >
 > **Mental model:** The feature/integration is **what we are building**. **DFRDE is the underlying engineering process** guiding how we discover, design, contract, implement, evaluate, and release it. **SDI** strengthens architectural reasoning; specialist skills and tools support targeted work. Mentioning a specialist does **not** invoke or authorize it.
 
-| Field | Value |
-| --- | --- |
-| Project | Agent Arcade — Sprint Assessment + Refine Requirements integration |
-| Canonical location | `docs/dfrde/sprint-assessment-refine-requirements-integration-review.md` in `rlynjb/dotskills` |
-| Review record version | `0.2-draft` (guide reorganization, no new team approvals) |
-| Started | 2026-11-07 |
-| Current stage | **1 — Discover (IN PROGRESS)** |
-| Review owner | `[Name / role]` |
-| Collaborators / decision owners | `[Names / roles]` |
-| Target repository and branch | `[Repo link / branch / commit SHA]` |
-| Target environment / harness | `[Claude, Codex, other; verify]` |
-| Last updated | 2026-11-08 (beginner learning guide and standards reference added; architecture/contracts not approved) |
-| Next review checkpoint | `[Meeting / question / date]` |
+### Review progress
 
-> **Document status:** This is a *proposal and working record*, not evidence that the team approved a design, ran an agent, or completed tests. Replace placeholders only when backed by decisions or observed results.
+- **Current:** Stage 1 — Discover (`IN PROGRESS`)
+- **Next:** [Verify the current skill behavior and discuss responsibilities with your teammate](#what-to-do).
+- **Open decisions:** `D-01` (refinement scope) and `D-02` (sprint-readiness owner).
 
-> **START HERE — CURRENT ACTION:** Stage 1 (Discover) is **IN PROGRESS**. Go to [Stage 1 → What to do](#what-to-do), beginning with current-state source verification and a coworker review of responsibilities. Treat existing proposals as drafts until evidence and decisions are recorded.
+*Working draft — no team approval or runtime verification is implied.*
 
 ## Table of contents
 
@@ -93,7 +83,7 @@
 4. Capture each substantive decision in the **Decision log** with its owner and evidence; do not imply approval from silence.
 5. Move stages forward only after the indicated human review. If new evidence invalidates a design or contract, loop back and revise.
 6. Obtain separate, explicit authorization before repo edits, risky execution, tool side effects, or release. This document does not grant runtime permissions.
-7. **When resuming work:** read this latest record first, inspect the current Agent Arcade source revision, and reconcile the record with actual evidence before making recommendations or changes. Update the stage tracker, relevant section, decision log, and `Last updated` field as the review progresses.
+7. **When resuming work:** read this latest record first, inspect the current Agent Arcade source revision, and reconcile the record with actual evidence before making recommendations or changes. Update the stage tracker, relevant section, and decision log as the review progresses.
 8. This record is the **continuity reference for the review**; it does not supersede the implementation repository, approved team decisions, or runtime evidence.
 
 **Reading each stage**
