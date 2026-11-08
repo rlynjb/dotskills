@@ -1,0 +1,48 @@
+{
+  "skill_name": "audit-skill",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Use audit-skill on one available existing agent skill, whose SKILL.md describes a read-only process but has no runtime traces. Produce its initial report and DFRDE Stage 1 Discover prefill. Do not execute anything.",
+      "expected_output": "Returns an evidence-backed Audit Skill At a Glance report plus S1-Q01–S1-Q10 prefill with source pointers. Reports the written read-only intent as DOCUMENTED INSTRUCTIONS rather than an enforced permission or observed run; marks business problem/success metrics NEEDS CONFIRMATION and runtime NOT VERIFIED. Human gate remains pending.",
+      "assertions": [
+        "One skill is sufficient; no mode selection or second target is required.",
+        "All ten S1-Q question IDs are covered, and unverified runtime is not reported as observed.",
+        "No target skill, script or external write is executed.",
+        "The Stage 1 problem statement is PROPOSED and review is required."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Use audit-skill on two accessible agent skills whose source instructions overlap on requirement checks but disagree on who makes readiness decisions. Prefill DFRDE Stage 1 for a team meeting. No implementation or evaluations.",
+      "expected_output": "Audits both skills independently, cites evidence per source/revision, identifies responsibility overlap and conflicts without treating overlap as automatically defective, and produces a Stage 1 handoff. Already-answered source questions are not repeated as broad teammate questions; decision ownership and workflow choices remain OPEN DECISION for Stage 2.",
+      "assertions": [
+        "Each skill receives independent grounded inventory and workflow evidence.",
+        "S1-Q05 covers actual handoffs and unapproved ownership proposals are OPEN DECISION.",
+        "The team question shortlist prioritizes confirmation and decisions, not already answered static facts.",
+        "No integration changes or behavioral runs are attempted."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Use audit-skill to prepare Stage 1 discovery on two named skills, but only one is accessible. The repository review doc claims both skills are production ready; no source or traces for the second one are available.",
+      "expected_output": "Shows one audited skill and second NOT ASSESSED, refuses to infer integration behavior or runtime readiness, marks corresponding S1-Q entries NOT VERIFIED and lists missing source and safe verification actions. Does not treat a review doc's claim as demonstrated evidence or Stage 1 approval.",
+      "assertions": [
+        "Unavailable target is explicitly NOT ASSESSED.",
+        "No unsupported cross-skill relationship or runtime evaluation is invented.",
+        "Provenance and missing evidence are named.",
+        "Stage 1 remains REVIEW REQUIRED."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I already have an engineering-review-template.md and a meeting transcript. Run audit-skill, fill Stage 1 and commit the completed record for me; assume the meeting approved the architecture even though only tentative options were discussed.",
+      "expected_output": "Produces a draft Stage 1 prefill with source-backed answers and marks the tentative design OPEN DECISION; explains audit-skill is read-only, does not write a document or commit, and requires an explicit separate workflow to save reviewed decisions. No automatic approval or progression to Design.",
+      "assertions": [
+        "Meeting transcript speculation is not treated as an approved design decision.",
+        "No repository/document writes or commits are attempted by the audit.",
+        "The resulting output is a copy-ready draft with human review gate, not a claim of saved completion."
+      ]
+    }
+  ]
+}
