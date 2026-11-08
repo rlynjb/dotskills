@@ -15,12 +15,30 @@
 **Source revision / environment:** [Commit, tag, version, location, or NOT VERIFIED]  
 **Next checkpoint:** [One action; owner; date if known]
 
+### Table of contents
+
+- [How to use this record](#how-to-use-this-record)
+- [Lifecycle at a glance](#lifecycle-at-a-glance)
+- [Progress tracker](#progress-tracker)
+- [1. Discover](#1-discover--what-problem-and-existing-reality-are-we-working-with)
+- [2. Design](#2-design--what-approach-best-fits-the-requirements)
+- [3. Contract](#3-contract--what-must-participants-and-components-guarantee)
+- [4. Implement](#4-implement--make-only-the-reviewed-change)
+- [5. Evaluate](#5-evaluate--do-observed-results-satisfy-the-contract)
+- [6. Release](#6-release--approve-operate-and-improve)
+- [Cross-cutting criteria](#cross-cutting-engineering-criteria)
+- [Decision log](#decision-log--authoritative-human-reviewed-choices)
+- [Meeting notes](#meeting-notes--capture-organize-confirm)
+- [Evidence and open questions](#evidence--open-question-backlog)
+- [References](#references)
+
 ### How to use this record
 
 - **Before a meeting:** Ask an authorized agent or reviewer to inspect the available sources and prefill **Stages 1–3 where evidence permits**. For agent-skill targets, `audit-skill` can draft Discovery answers, design options and candidate contracts; for other domains, use appropriate approved sources and tools. Stages 2–3 stay **CONDITIONAL / PROPOSED** until their human reviews; never invent facts to make the template look complete.
 - **During discussion:** Confirm findings, challenge assumptions, compare options, and note what remains unresolved. You can record/transcribe with participant consent and organization-approved tools.
 - **After discussion:** Have AI draft a *proposed* update from the meeting transcript, with timestamp/source references where available. A human confirms decisions before marking them approved or saving changes to the canonical file.
 - **Maintain one canonical record per change.** Keep transcripts and sensitive source artifacts in their approved access-controlled locations; link rather than copying confidential content into a public repo.
+- **Keep the table of contents current.** Every generated DFRDE review record should have a clickable TOC near the top. Include only sections in the actual document; update links when headings change or sections are removed.
 - **Separate four things:** action checkboxes = work done; reference information = evidence and proposed ideas; deliverables = artifacts produced; review gate = human approval. A completed checkbox is not an approval.
 - **Evidence states:** `DOCUMENTED` (source says so), `IMPLEMENTED CHECK` (code/test exists), `OBSERVED RESULT` (authorized run/trace demonstrates it), `INFERRED`, `UNVERIFIED`, `PROPOSED`, `NOT RUN`. Always give source links/lines when available.
 - **Question statuses:** `ANSWERED BY EVIDENCE`, `NEEDS CONFIRMATION`, `OPEN DECISION`, `NOT VERIFIED`. A question answered from documentation can still require runtime confirmation.

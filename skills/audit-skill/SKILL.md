@@ -113,6 +113,8 @@ Always begin with **Audit Skill — At a Glance**, immediately showing:
 
 Prefer a skimmable first pass. Condense using compact tables and short summaries; do **not omit dimensions** to make it short. Keep detailed source excerpts, low-priority findings and expanded diagrams for requested deep dives. If a source is inaccessible, provide the partial evidence-based report rather than filling gaps with guesses. If nothing meaningful is accessible, state the blocker and request the missing source.
 
+**When the requested output is a standalone DFRDE review document:** Use the [engineering review template](../../docs/dfrde/engineering-review-template.md) for the Stage 1–3 record when accessible, drawing on this read-only audit's evidence-backed handoff. Include a clickable **Table of contents** near the top, linking to each major section actually present (such as audit overview, Discover, Design, Contract, team discussion, decisions and next checkpoint). Update links if headings change. For a conversational audit-only response, continue to lead with **Audit Skill — At a Glance**. The audit itself remains read-only and never writes or approves the record.
+
 ### Follow-up on a selected finding, question or diagram
 
 When the user chooses `F-xx`, `Q-xx`, `S1-Qxx`, `S2-Qxx`, `S3-Qxx`, a stage, a contract or a named concept, investigate **that scope**: what/why → file-backed walkthrough → documented decision path/example → risk/trade-off → proposed smallest verification or improvement → concise checkpoint. Maintain stable IDs, carry forward prior findings and explicitly distinguish an illustrative trace from an observed run. Offer Fast or Deep Dive on request; no mode switching or required sequential curriculum.

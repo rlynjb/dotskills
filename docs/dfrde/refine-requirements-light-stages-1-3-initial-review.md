@@ -6,6 +6,16 @@
 
 **Next:** Confirm the problem, success criteria, and review owner. Links point to the inspected source revision. Documented behavior is not a tested result. Keep workplace evidence outside this public repository.
 
+## Table of contents
+
+- [Audit Skill — At a Glance](#audit-skill--at-a-glance)
+- [1. Discover](#1-discover--what-problem-and-existing-reality-are-we-working-with)
+- [2. Design](#2-design--what-approach-best-fits-the-requirements)
+- [3. Contract](#3-contract--what-must-participants-and-components-guarantee)
+- [Prioritized team discussion](#prioritized-team-discussion--ask-only-what-the-source-cannot-settle)
+- [Decision log](#decision-log-no-decisions-approved)
+- [Next checkpoint and status](#next-checkpoint-and-status)
+
 ## Audit Skill — At a Glance
 
 **Purpose and trigger (DOCUMENTED):** A one-pass, noninteractive, read-only assessment of assigned Jira feature work, using four SDI steps and *verified* relevant existing application code. It is intended to provide an actionable technical overview before implementation, not to implement or approve a design. **[source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L3-L76).**

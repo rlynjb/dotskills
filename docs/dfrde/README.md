@@ -15,7 +15,7 @@
 
 ## Recommended routine
 
-1. Copy the [engineering review template](engineering-review-template.md) into the project-approved repository or internal documentation system. Keep this reusable source file unchanged.
+1. Copy the [engineering review template](engineering-review-template.md) into the project-approved repository or internal documentation system. Keep this reusable source file unchanged. Preserve its clickable table of contents, removing links to unused sections and updating links whenever headings change.
 2. For an existing **agent skill**, request an **Audit Skill Stages 1–3 handoff** for one or multiple skills: Discover (as-is evidence), Design (proposed options), and Contract (candidate guarantees). For other domains, use the appropriate read-only architecture inspection instead.
 3. Ask AI to prefill **S1-, S2- and S3- questions**, each with a source, evidence status and **ANSWERED BY EVIDENCE**, **NEEDS CONFIRMATION**, **OPEN DECISION**, or **NOT VERIFIED**. Draft architecture and contracts remain PROPOSED/CONDITIONAL, not approved.
 4. Review the problem statement and only unanswered questions with collaborators. Recording/transcription requires appropriate participant consent and approved handling of organizational data.
