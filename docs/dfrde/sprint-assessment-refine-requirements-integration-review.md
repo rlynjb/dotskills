@@ -26,47 +26,62 @@
 ## Table of contents
 
 - [0. How to use this record](#0-how-to-use-this-record)
+  - [Beginner quick start — before, during and after a team review](#beginner-quick-start--before-during-and-after-a-team-review)
+  - [Terminology — read this once](#terminology--read-this-once)
   - [Process layers](#process-layers)
   - [SDI mapping](#sdi-mapping)
   - [Stage tracker](#stage-tracker)
 - [1. Discover — What problem are we solving?](#1-discover--what-problem-are-we-solving)
   - [What to do](#what-to-do)
-  - [Reference information](#reference-information)
+  - [Guided walkthrough — how to complete the actions](#guided-walkthrough--how-to-complete-the-actions)
+  - [Questions for your teammate](#questions-for-your-teammate)
   - [Deliverables](#deliverables)
   - [Review gate](#review-gate)
 - [2. Design — What architecture best fits the requirements?](#2-design--what-architecture-best-fits-the-requirements)
   - [What to do](#what-to-do-1)
-  - [Reference information](#reference-information-1)
+  - [Guided walkthrough — how to complete the actions](#guided-walkthrough--how-to-complete-the-actions-1)
+  - [Questions for your teammate](#questions-for-your-teammate-1)
   - [Deliverables](#deliverables-1)
   - [Review gate](#review-gate-1)
 - [3. Contract — What must every participant guarantee?](#3-contract--what-must-every-participant-guarantee)
   - [What to do](#what-to-do-2)
-  - [Reference information](#reference-information-2)
+  - [Guided walkthrough — how to complete the actions](#guided-walkthrough--how-to-complete-the-actions-2)
+  - [Questions for your teammate](#questions-for-your-teammate-2)
   - [Deliverables](#deliverables-2)
   - [Review gate](#review-gate-2)
 - [4. Implement — Make only the reviewed change](#4-implement--make-only-the-reviewed-change)
   - [What to do](#what-to-do-3)
-  - [Reference information](#reference-information-3)
+  - [Guided walkthrough — how to complete the actions](#guided-walkthrough--how-to-complete-the-actions-3)
+  - [Questions for your teammate](#questions-for-your-teammate-3)
   - [Deliverables](#deliverables-3)
   - [Review gate](#review-gate-3)
 - [5. Evaluate — Verify observed behavior against expectations](#5-evaluate--verify-observed-behavior-against-expectations)
   - [What to do](#what-to-do-4)
-  - [Reference information](#reference-information-4)
+  - [Guided walkthrough — how to complete the actions](#guided-walkthrough--how-to-complete-the-actions-4)
+  - [Questions for your teammate](#questions-for-your-teammate-4)
   - [Deliverables](#deliverables-4)
   - [Review gate](#review-gate-4)
 - [6. Release — Approve, operate and improve](#6-release--approve-operate-and-improve)
   - [What to do](#what-to-do-5)
-  - [Reference information](#reference-information-5)
+  - [Guided walkthrough — how to complete the actions](#guided-walkthrough--how-to-complete-the-actions-5)
+  - [Questions for your teammate](#questions-for-your-teammate-5)
   - [Deliverables](#deliverables-5)
   - [Review gate](#review-gate-5)
+- [Standards and Team Discussion Guide — reference library](#standards-and-team-discussion-guide--reference-library)
+  - [What the Agent Skills standard does—and does not do](#what-the-agent-skills-standard-doesand-does-not-do)
+  - [Skill vs worker vs workflow — decide before adding new files](#skill-vs-worker-vs-workflow--decide-before-adding-new-files)
+  - [Five behavioral checks — from the Agent Skills conference discussion](#five-behavioral-checks--from-the-agent-skills-conference-discussion)
+  - [Eight areas to discuss with the team](#eight-areas-to-discuss-with-the-team)
+  - [Nine things a well-engineered skill should make reviewable](#nine-things-a-well-engineered-skill-should-make-reviewable)
+  - [Practical compatibility matrix — fill with evidence, not assumptions](#practical-compatibility-matrix--fill-with-evidence-not-assumptions)
+  - [Conference sessions to revisit by stage](#conference-sessions-to-revisit-by-stage)
 - [Cross-cutting review criteria — reference, not a task list](#cross-cutting-review-criteria--reference-not-a-task-list)
 - [Decision log — single source of truth for team choices](#decision-log--single-source-of-truth-for-team-choices)
 - [Review meeting notes](#review-meeting-notes)
-  - [`[YYYY-MM-DD]` — `[Meeting title]`](#yyyy-mm-dd--meeting-title)
 - [Open questions / evidence backlog](#open-questions--evidence-backlog)
 - [Links and references](#links-and-references)
 
-> Stage links lead to **actions**, **reference notes**, **deliverables**, and the **review gate**. Rebuild links if headings change.
+> Start with [Beginner quick start](#beginner-quick-start--before-during-and-after-a-team-review), then open the current stage's **What to do**, **Guided walkthrough**, **Questions for your teammate**, **Deliverables**, and **Review gate**. The standards and conference material lives in a separate reference library.
 
 ---
 
@@ -380,26 +395,9 @@ flowchart TD
 
 #### Proposed long-term repository structure (illustrative; not created)
 
-```text
-dotskills/
-├── skills/
-│   ├── refine-requirements/
-│   │   ├── SKILL.md
-│   │   ├── references/contract.md
-│   │   └── evals/
-│   └── sprint-assessment/
-│       ├── SKILL.md
-│       ├── references/contract.md
-│       └── evals/
-├── workflows/                       # Optional extraction
-│   └── sprint-refinement/
-│       ├── workflow.md              # Sequence, handoffs, escalation
-│       └── evals/compatibility/
-└── docs/dfrde/
-    └── sprint-assessment-refine-requirements-integration-review.md
-```
+For an easy-to-follow example of **where `SKILL.md`, skill contracts, optional workflow definitions and evals belong**, see [Skill vs worker vs workflow — decide before adding new files](#skill-vs-worker-vs-workflow--decide-before-adding-new-files).
 
-**Implementation note:** This is a long-term reference layout, **not a required Stage 4 file plan**. Stage 4 should update only the files needed for the team's approved design.
+**Important:** Agent Arcade's actual repository structure and platform-specific agents/adapters still require source verification. The diagrams are **PROPOSED**, not new files, and the living DFRDE review belongs separately in `dotskills/docs/dfrde/`. Stage 4 should only edit paths selected in a reviewed design.
 
 **Chosen option:** `UNDECIDED`
 
