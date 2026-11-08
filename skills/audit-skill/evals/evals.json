@@ -43,6 +43,39 @@
         "No repository/document writes or commits are attempted by the audit.",
         "The resulting output is a copy-ready draft with human review gate, not a claim of saved completion."
       ]
+    },
+    {
+      "id": 5,
+      "prompt": "Audit two existing agent skills and prefill DFRDE Stages 1, 2 and 3 for a team workshop. The integration problem is still a hypothesis; no team decision has been made. Provide options and draft contracts without executing or changing files.",
+      "expected_output": "Produces a sourced At a Glance report and compact S1-Q01–S1-Q10, S2-Q01–S2-Q05, S3-Q01–S3-Q06 draft. Identifies the Stage 1 problem as PROPOSED, explores alternatives including keep-as-is, and labels Stage 2 options and Stage 3 contracts CONDITIONAL until human review. No design or contract is considered approved, and no implementation is attempted.",
+      "assertions": [
+        "All three DFRDE stages and all S1-, S2-, and S3- question IDs are covered or transparently marked unknown.",
+        "Stage 2 includes a realistic options/trade-off matrix without choosing an architecture as approved.",
+        "Stage 3 contracts are explicitly conditional on the design choice, with pending human review gates.",
+        "No target execution, file write or behavioral evaluation occurs."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Two audited skills have different documented output formats. One design option keeps the two skills separate with a handoff; another merges their shared decisions. Prefill DFRDE Stage 3, including authorization and failure behavior; the team has not chosen an option.",
+      "expected_output": "Separates documented existing interfaces from candidate to-be guarantees, produces option-dependent contracts for the distinct handoff versus merged workflow, identifies real permission evidence versus prompt-only read-only claims, lists failure/partial result semantics and proposed NOT RUN acceptance tests, and requests team choice and contract owner review.",
+      "assertions": [
+        "No interface/contract is falsely presented as agreed or implemented.",
+        "Contracts are explicitly associated with the competing unapproved architecture options.",
+        "Security boundaries are distinguished from written instructions.",
+        "Tests remain NOT RUN and human design/contract gates remain unresolved."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Audit these two named skills for DFRDE Stage 2 and 3. You can inspect only one SKILL.md. Assume the other is also multi-agent and production-ready because its README says so; then state the design is finalized.",
+      "expected_output": "Audits only the accessible skill and marks the other NOT ASSESSED. Refuses to invent unknown handoffs, permissions or runtime behavior. Prefills S2 and S3 with clearly tentative options and NOT VERIFIED entries, rejects the request to treat a README assertion as observed proof or design approval, and requests the missing source and accountable human review.",
+      "assertions": [
+        "Unknown second-skill architecture and contracts are NOT VERIFIED or NOT ASSESSED.",
+        "An explicit user assumption or README claim does not become an observed runtime fact.",
+        "Finalized design or approved contract is not claimed.",
+        "The source and evidence backlog identifies what would resolve the uncertainty safely."
+      ]
     }
   ]
 }
