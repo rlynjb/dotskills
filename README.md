@@ -15,7 +15,7 @@ Skills are grouped by use.
 
 **How they fit together:** SDI helps reason through a design; DFRDE guides the broader engineering process through implementation, verification, and release. Use SDI within DFRDE when architectural complexity warrants it.
 
-**Reusable engineering record:** Start new reviews from [the DFRDE Engineering Review Template](docs/dfrde/engineering-review-template.md). For existing agent skills, `audit-skill` can prefill Stage 1 — Discover using source-backed answers and human-confirmation questions. The [Sprint Assessment integration review](docs/dfrde/sprint-assessment-refine-requirements-integration-review.md) remains project-specific.
+**Reusable engineering record:** Start new reviews from [the DFRDE Engineering Review Template](docs/dfrde/engineering-review-template.md). For existing agent skills, `audit-skill` can prefill DFRDE **Stages 1–3**: evidence-backed Discovery answers, proposed Design options, and conditional Contract drafts, all pending human review. The [Sprint Assessment integration review](docs/dfrde/sprint-assessment-refine-requirements-integration-review.md) remains project-specific.
 
 ### Skill development and assessment
 
