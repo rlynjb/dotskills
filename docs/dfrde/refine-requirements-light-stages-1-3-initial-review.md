@@ -84,11 +84,11 @@ This diagram is a synthesis of **S:L16–20, L24–55, L57–76**. No branching 
 | **Q-05 Contracts & outputs** | PASS (written); parser compatibility UNVERIFIED | Five section contract + readiness states, **S:L49–69**; no machine-enforced response schema inspected |
 | **Q-06 Context & trust** | PASS (written); behavior UNVERIFIED | Separates product authority, observed code and proposals, **S:L16–20, L76** |
 | **Q-07 Permissions & effects** | UNVERIFIED (enforcement) | Read-only declared, **S:L71–76**, but no actual host/tool permissions inspected |
-| **Q-08 Failure & stopping** | PARTIAL / GAP (static detail) | Missing-code, no-match and absent-ticket cases addressed, **S:L17, L20, L69, L73**; tool failure/timeout and stale-context recovery not explicitly specified |
+| **Q-08 Failure & stopping** | GAP (partial documented coverage) | Missing-code, no-match and absent-ticket cases addressed, **S:L17, L20, L69, L73**; tool failure/timeout and stale-context recovery not explicitly specified |
 | **Q-09 Evals & observability** | GAP (behavioral evidence) | No Light-specific eval fixture or run evidence in inspected package; repo-wide CI is not Light behavior testing |
 | **Q-10 Lifecycle & portability** | UNVERIFIED | Source tracked in Git and adapter docs exist; version-by-version Claude/Codex behavioral parity untested |
 
-The `PARTIAL / GAP` shorthand above denotes a *documentation gap*, not a confirmed runtime defect; use the Audit Skill's canonical `GAP` classification when triaging.
+The Q-08 `GAP` reflects incomplete documented handling of some operational failures; it is **not** a confirmed runtime defect.
 
 ### Agent Skills specification — structural checks only
 
