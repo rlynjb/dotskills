@@ -43,7 +43,7 @@ Use the same stable IDs as the canonical template. Every question receives an an
 
 When only one skill is accessible, S1-Q05 addresses its own interfaces and marks inter-skill relationships NOT APPLICABLE. If a second skill is named but inaccessible, mark it NOT ASSESSED and do not fabricate overlap. When greenfield work has no existing skill source, recommend starting general DFRDE Discovery instead of inventing an Audit Skill result.
 
-## Minimal first-response handoff shape
+## Stage 1 portion of the first-response handoff
 
 After **Audit Skill — At a Glance** (profiles, workflow/evidence, standards and quality, cross-runtime, findings, proposed NOT RUN cases), include:
 
@@ -64,7 +64,7 @@ After **Audit Skill — At a Glance** (profiles, workflow/evidence, standards an
 **Top questions for teammate:** confirmations and unresolved choices only.
 **Evidence backlog:** missing runtime proof, owner and safe verification method.
 **Stage 1 deliverables:** draft inventory, questions and problem; approval pending.
-**Stage 1 gate:** HUMAN REVIEW REQUIRED. Stop before Design/implementation.
+**Stage 1 gate:** HUMAN REVIEW REQUIRED. Do not adopt a design or begin implementation; separate **conditional** Stage 2 design and Stage 3 contract drafts may appear alongside this section under [the Stage 2–3 handoff](dfrde-stages-2-3-handoff.md), without advancing any gate.
 ```
 
 Keep cells short on the first pass; offer a deep dive by `S1-Qxx`, `F-xx` or domain. The handoff is **copy-ready text**, not automatically saved into a public repository, workplace document, or canonical record.
