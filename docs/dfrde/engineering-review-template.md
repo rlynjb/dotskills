@@ -17,7 +17,7 @@
 
 ### How to use this record
 
-- **Before a meeting:** Ask an authorized agent or reviewer to inspect the available sources and prefill Stage 1 where evidence exists. For agent-skill targets, `audit-skill` can produce the Stage 1 handoff; for other domains, use the appropriate approved source and tools. Never invent facts to make the template look complete.
+- **Before a meeting:** Ask an authorized agent or reviewer to inspect the available sources and prefill **Stages 1–3 where evidence permits**. For agent-skill targets, `audit-skill` can draft Discovery answers, design options and candidate contracts; for other domains, use appropriate approved sources and tools. Stages 2–3 stay **CONDITIONAL / PROPOSED** until their human reviews; never invent facts to make the template look complete.
 - **During discussion:** Confirm findings, challenge assumptions, compare options, and note what remains unresolved. You can record/transcribe with participant consent and organization-approved tools.
 - **After discussion:** Have AI draft a *proposed* update from the meeting transcript, with timestamp/source references where available. A human confirms decisions before marking them approved or saving changes to the canonical file.
 - **Maintain one canonical record per change.** Keep transcripts and sensitive source artifacts in their approved access-controlled locations; link rather than copying confidential content into a public repo.
@@ -70,7 +70,7 @@ flowchart TD
 
 ### Guided walkthrough — optional audit-assisted prefill
 
-For existing **agent skills**, use the existing `audit-skill` read-only review of one or more skills. Ask for a **DFRDE Stage 1 — Discover handoff**. For another domain, use its own relevant inspector, diagrams and tests; do not assume a skill-specific audit applies to all domains.
+For existing **agent skills**, use the existing `audit-skill` read-only review of one or more skills. Ask for a **DFRDE Stages 1–3 prefill**: Stage 1 evidence-backed Discovery, Stage 2 conditional architecture options, and Stage 3 conditional contracts. Fill this stage first with the Stage 1 portion; keep later draft answers explicitly pending review. For another domain, use its own relevant inspector, diagrams and tests; do not assume a skill-specific audit applies to all domains.
 
 ```mermaid
 flowchart TD
@@ -162,14 +162,28 @@ flowchart TD
 
 Identify the smallest architecture that addresses the confirmed problem. Deep dive only into high-impact components; route unresolved foundational questions back to Discover. Record sketches and diagrams as **PROPOSED** until reviewed.
 
-### Questions for collaborators
+**Audit-assisted prefill (for existing agent skills):** The read-only `audit-skill` can prefill the Stage 2 questions using inspected design constraints and workflow evidence. It can **recommend options, not approve or select an architecture**. If Stage 1 is unconfirmed, label this entire section **CONDITIONAL — based on proposed Discovery assumptions**. For other domains, use appropriate authorized architecture inspection and the same question table.
 
-| Question | Decision / evidence to capture |
-| --- | --- |
-| What are the viable approaches and why choose one? | Options, constraints and trade-offs |
-| What existing patterns or subsystems should we preserve? | Inspected source links |
-| What could fail, scale poorly or expand authority? | Risks and alternatives |
-| Who agrees to the design direction? | Owner, date, decision ID |
+### Questions for collaborators — source-prefilled where possible
+
+| ID | Question | Evidence-backed answer / proposed option | Source and evidence state | Question status | Human owner / next step |
+| --- | --- | --- | --- | --- | --- |
+| S2-Q01 | What approaches might address the confirmed *or proposed* problem, including keeping existing behavior or a simpler change? | [PROPOSED options, not a selected solution] | [Source path:line / hypothesis] | OPEN DECISION | [Owner] |
+| S2-Q02 | What existing patterns, subsystems, tools and architecture constraints should be preserved? | [Inspected as-is components] | [Source revision, path:line] | NOT VERIFIED | [Confirm missing source] |
+| S2-Q03 | Where should coordination, decision ownership and handoffs live? | [As-is ownership vs PROPOSED to-be boundaries] | [Source path:line] | OPEN DECISION | [Owner] |
+| S2-Q04 | What trade-offs, bottlenecks, failure and trust risks, costs or portability constraints matter? | [Source-backed risks vs hypothetical trade-offs] | [Sources; measured values only if observed] | NEEDS CONFIRMATION | [Owner] |
+| S2-Q05 | What design direction and rationale has the accountable reviewer approved? | [Approved decision link OR OPEN] | [Actual review evidence or UNVERIFIED] | OPEN DECISION | [Reviewer / D-ID] |
+
+Use **ANSWERED BY EVIDENCE**, **NEEDS CONFIRMATION**, **OPEN DECISION**, or **NOT VERIFIED** for each question, and distinguish the *as-is answer* from the *to-be proposal*. Do not repeat fully answered source facts as open-ended teammate questions. Preserve unresolved questions and assign an owner.
+
+**Architecture options — PROPOSED, not approved**
+
+| Option | What changes compared with as-is | Benefit / trade-off | Evidence / assumption | Status |
+| --- | --- | --- | --- | --- |
+| A. Keep current / smallest adequate change | [As-is baseline] | [Trade-off] | [Source] | PROPOSED |
+| B. Alternative approach | [Difference] | [Trade-off] | [Source / UNVERIFIED] | PROPOSED |
+
+**Design visuals:** [Link to cited as-is Mermaid diagram] / [Optional clearly labeled PROPOSED to-be Mermaid diagram]. Do not draw undocumented or untested behavior as if already implemented.
 
 ### Deliverables
 
@@ -202,15 +216,28 @@ Identify the smallest architecture that addresses the confirmed problem. Deep di
 
 A **contract** states what a participant promises; an **invariant** is a property that must hold across states (including errors). Verify if a host/service enforces a security rule rather than relying on the rule appearing in a prompt.
 
-### Questions for collaborators
+**Audit-assisted prefill (for existing agent skills):** `audit-skill` can inventory *documented* interfaces and guarantees, then draft candidate contracts based on each **PROPOSED Stage 2 design option**. If the team hasn't chosen a design, keep separate option-dependent contracts or label a shared minimum contract **CONDITIONAL — NOT APPROVED**. Do not silently turn a candidate into a binding requirement. Other engineering domains should use their relevant interface and policy evidence.
 
-| Question | Record |
-| --- | --- |
-| Who owns each guarantee and how is it verified? | Contract owner, version, acceptance |
-| What must be supplied and returned for every handoff? | Required/optional fields or interface behavior |
-| What should always be true, including partial failures? | Invariants and failure semantics |
-| Which restrictions are technically enforced? | Identity, tool/server/host policy evidence |
-| What is the minimum agreed evaluation gate? | Cases, observable outcomes, reviewer |
+### Questions for collaborators — draft contracts, pending approval
+
+| ID | Question | Existing evidence / candidate answer | Source and evidence state | Question status | Reviewer / next action |
+| --- | --- | --- | --- | --- | --- |
+| S3-Q01 | Who produces and consumes information, owns each guarantee, and maintains the contract/version? | [Existing or PROPOSED responsibilities] | [Path:line / UNVERIFIED] | NEEDS CONFIRMATION | [Owner] |
+| S3-Q02 | What inputs/outputs, FR/NFR, states, acceptance criteria and invariants are required? | [Documented vs PROPOSED guarantees] | [Path:line / proposal] | OPEN DECISION | [Owner] |
+| S3-Q03 | What trust, identity, permission, approval and forbidden-effect rules apply and are truly enforced? | [Actual host/tool rules vs prompt-only] | [Enforcement evidence or NOT VERIFIED] | NOT VERIFIED | [Reviewer] |
+| S3-Q04 | What failures, missing data, timeouts, retries, duplicates, conflicts and partial results must be handled? | [Existing behavior vs PROPOSED safe defaults] | [Path:line / gap] | OPEN DECISION | [Owner] |
+| S3-Q05 | What objective evaluations, baseline and regression cases should verify the guarantees? | [Existing tests vs PROPOSED tests — NOT RUN] | [Test paths/trace if present] | OPEN DECISION | [Reviewer] |
+| S3-Q06 | Where is the contract maintained, versioned and approved, and how are incompatible changes handled? | [Existing document/manifest vs proposal] | [Source / UNVERIFIED] | NEEDS CONFIRMATION | [Owner / D-ID] |
+
+Use **ANSWERED BY EVIDENCE**, **NEEDS CONFIRMATION**, **OPEN DECISION**, or **NOT VERIFIED** for each question. The existence of a written rule does not establish that a runtime enforces it. Test proposals are **NOT RUN**, not passing tests.
+
+**Contract proposal — one row per interface/handoff when relevant**
+
+| Producer → consumer | Input/output contract | Required behavior and invariants | Trust/permission and failure semantics | Source / status |
+| --- | --- | --- | --- | --- |
+| [As-is or PROPOSED] | [Fields or interface, not necessarily JSON] | [Documented vs candidate] | [Enforced / prompt-only / NOT VERIFIED] | [Path:line; NOT APPROVED] |
+
+**Stage 2 dependency:** [Approved option and decision reference, or `UNCONFIRMED — option-specific draft only`]. **Contract approval:** `HUMAN REVIEW REQUIRED`.
 
 ### Deliverables
 
