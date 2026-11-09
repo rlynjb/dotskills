@@ -29,12 +29,29 @@ This is a **read-only inspection of what the skill says it should do**. It is no
 
 ### Skill overview
 
-- **Purpose:** Give a developer a one-pass engineering assessment of a Jira ticket against **verified existing code**, before implementation. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L8-L12)
-- **Inputs:** Ticket and acceptance criteria, applicable team standards, and authorized access to relevant code, contracts, or tests. If code cannot be inspected, the assessment must say so. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L14-L31)
-- **Workflow:** Four SDI steps—scope requirements, inspect existing patterns, examine critical data/contract paths, and summarize risks/readiness. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L23-L55)
-- **Outputs:** Ticket Snapshot, five prescribed report sections, evidence-backed reuse decisions, open questions, and `READY FOR REVIEW` / `CONDITIONAL` / `BLOCKED` readiness labels. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L49-L69)
-- **Boundaries:** The skill instructs the agent not to edit code, post to Jira, deploy, launch coding agents, or auto-approve its proposals. **Host enforcement has not been inspected.** [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L71-L76)
-- **Cross-skill comparison:** NOT APPLICABLE; this audit has one target. The [README](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/README.md#L1-L7) describes the interactive full Refine Requirements skill as a separate companion, not an automatically invoked worker.
+- **Purpose:** One-pass, code-grounded assessment of an assigned Jira ticket before implementation. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L8-L12)
+- **Inputs** ([skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L14-L31)):
+  - Assigned Jira ticket, requirements, and acceptance criteria.
+  - Applicable team or company standards.
+  - Authorized access to relevant application code, contracts, and tests, when available.
+  - If access is missing, mark what could not be verified.
+- **Workflow:** Four SDI steps in one pass ([skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L23-L55)):
+  1. **Scope** requirements and unknowns.
+  2. **Inspect** existing code before recommending reuse or changes.
+  3. **Examine** relevant code paths, contracts, and data flow.
+  4. **Summarize** trade-offs, risks, readiness, and open questions.
+- **Outputs:** **One engineering review report**, not separate files, containing ([skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L49-L69)):
+  - **Ticket Snapshot:** Ticket summary and inspected sources.
+  - **Step 1 — Requirements & scope.**
+  - **Step 2 — Verified patterns & high-level design:** Includes evidence-backed reuse decisions.
+  - **Step 3 — Deep dive & data flow.**
+  - **Step 4 — Trade-offs, risks & readiness:** Includes `READY FOR REVIEW`, `CONDITIONAL`, or `BLOCKED`.
+  - **Open decisions / questions** for the ticket.
+- **Boundaries** ([skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L71-L76)):
+  - Do not edit code, post to Jira, deploy, or launch coding agents as part of the review.
+  - Proposals do not authorize implementation.
+  - **Not verified:** Whether host permissions technically enforce these restrictions.
+- **Cross-skill comparison:** NOT APPLICABLE; this audit has one target. The [README](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/README.md#L1-L7) describes the interactive Refine Requirements skill as a separate companion, not an automatically invoked worker.
 
 ### Documented workflow (not an observed run)
 
