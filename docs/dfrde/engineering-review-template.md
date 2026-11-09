@@ -35,15 +35,15 @@
 
 ### How to use this record
 
-- **Before a meeting:** Ask an authorized agent or reviewer to inspect the available sources and prefill **Stages 1–3 where evidence permits**. For agent-skill targets, `audit-skill` can draft Discovery answers, design options and candidate contracts; for other domains, use appropriate approved sources and tools. Stages 2–3 stay **CONDITIONAL / PROPOSED** until their human reviews; never invent facts to make the template look complete.
-- **Eight core questions, three stages:** Use **3 Discover + 3 Design + 2 Contract** questions as the default. Expand an answer only where project complexity warrants it; don't add a longer mandatory questionnaire. This is our lightweight adaptation of [Google design documents](https://abseil.io/resources/swe-book/html/ch10.html), [Mozilla architecture review](https://github.com/mozilla/firefox-browser-architecture/blob/master/text/0006-architecture-review-process.md), and, **when cloud concerns matter**, [AWS Well-Architected](https://docs.aws.amazon.com/wellarchitected/latest/userguide/waf.html). These companies **do not** prescribe these exact eight questions. ISO/IEC/IEEE standards remain background references, not a certification checklist.
+- **Before a meeting:** Inspect approved sources to establish current facts. For agent skills, `audit-skill` provides **evidence-backed findings**, not questions. **Only when a DFRDE Stages 1–3 prefill is requested**, use those findings to draft answers to the eight questions defined below. For other domains, inspect relevant approved sources. Stages 2–3 remain **CONDITIONAL / PROPOSED** pending human review; do not invent facts to fill the template.
+- **Question ownership:** **This template is the single source of truth for eight questions: 3 Discover, 3 Design, 2 Contract.** The Audit Skill must not invent, copy, or maintain a second question list. It supplies findings to answer these questions **only for a requested prefill**. Expand answers as needed, not the mandatory question count. Our checklist adapts ideas from [Google design documents](https://abseil.io/resources/swe-book/html/ch10.html), [Mozilla architecture review](https://github.com/mozilla/firefox-browser-architecture/blob/master/text/0006-architecture-review-process.md), and, when cloud concerns apply, [AWS Well-Architected](https://docs.aws.amazon.com/wellarchitected/latest/userguide/waf.html). None publishes this exact eight-question list; ISO/IEC/IEEE standards remain background references, not a compliance claim.
 - **During discussion:** Confirm findings, challenge assumptions, compare options, and note what remains unresolved. You can record/transcribe with participant consent and organization-approved tools.
 - **After discussion:** Have AI draft a *proposed* update from the meeting transcript, with timestamp/source references where available. A human confirms decisions before marking them approved or saving changes to the canonical file.
 - **Maintain one canonical record per change.** Keep transcripts and sensitive source artifacts in their approved access-controlled locations; link rather than copying confidential content into a public repo.
 - **Keep the table of contents current.** Every generated DFRDE review record should have a clickable TOC near the top. Include only sections in the actual document; update links when headings change or sections are removed.
 - **Separate four things:** action checkboxes = work done; reference information = evidence and proposed ideas; deliverables = artifacts produced; review gate = human approval. A completed checkbox is not an approval.
 - **Evidence states:** `DOCUMENTED` (source says so), `IMPLEMENTED CHECK` (code/test exists), `OBSERVED RESULT` (authorized run/trace demonstrates it), `INFERRED`, `UNVERIFIED`, `PROPOSED`, `NOT RUN`. **Link the exact source file and relevant lines directly beside each supported claim** (prefer commit-pinned links). Do not use evidence keys or a separate evidence lookup table. If evidence is unavailable, state `UNVERIFIED` or `NOT RUN` rather than inventing a link.
-- **Skill audits:** Use the optional **Audit Skill — At a Glance** section before Stage 1. Keep the overview, workflow, ten-dimension dashboard, skill format check, compatibility, and main open questions concise. No ranked findings or proposed evaluation cases here. Written rules do not prove tested behavior or technical enforcement.
+- **Skill audits:** An **audit-only** request produces a concise **Audit Skill — At a Glance** (overview, workflow, ten-dimension findings, format, compatibility, and evidence gaps). It does **not** automatically generate or prefill Stage 1–3 questions. If a DFRDE prefill is explicitly requested, the eight questions from this template are answered using audit findings. Never confuse documented rules with tested behavior or technical enforcement.
 - **Question statuses:** `ANSWERED BY EVIDENCE`, `NEEDS CONFIRMATION`, `OPEN DECISION`, `NOT VERIFIED`. A question answered from documentation can still require runtime confirmation.
 - **Stage statuses:** `NOT STARTED`, `IN PROGRESS`, `REVIEW REQUIRED`, `APPROVED`, `BLOCKED`, `COMPLETED`, `NOT APPLICABLE`. No stage automatically advances because an AI generated text.
 - **Permissions:** Documentation and read-only source analysis are not permission to run specialists, modify repositories, call live tools, test against production, or release. Seek explicit approval for the exact effects.
@@ -170,7 +170,7 @@ List **only the few material unknowns** that affect understanding or the next hu
 
 ### Guided walkthrough — optional audit-assisted prefill
 
-For existing **agent skills**, use the existing `audit-skill` read-only review of one or more skills. Ask for a **DFRDE Stages 1–3 prefill**: Stage 1 evidence-backed Discovery, Stage 2 conditional architecture options, and Stage 3 conditional contracts. Fill this stage first with the Stage 1 portion; keep later draft answers explicitly pending review. For another domain, use its own relevant inspector, diagrams and tests; do not assume a skill-specific audit applies to all domains.
+For existing **agent skills**, use the read-only Audit Skill findings as evidence. When a **DFRDE Stages 1–3 prefill** is explicitly requested, answer **only the eight questions in this template**: Stage 1 for current facts, Stages 2–3 for conditional options and contracts. The Audit Skill never authors questions or approves decisions. Other domains use appropriate approved inspection.
 
 ```mermaid
 flowchart TD
@@ -257,7 +257,7 @@ Cover the essential facts inside these answers rather than introducing extra man
 
 Identify the smallest architecture that addresses the confirmed problem. Deep dive only into high-impact components; route unresolved foundational questions back to Discover. Record sketches and diagrams as **PROPOSED** until reviewed.
 
-**Audit-assisted prefill (for existing agent skills):** The read-only `audit-skill` can prefill the Stage 2 questions using inspected design constraints and workflow evidence. It can **recommend options, not approve or select an architecture**. If Stage 1 is unconfirmed, label this entire section **CONDITIONAL — based on proposed Discovery assumptions**. For other domains, use appropriate authorized architecture inspection and the same question table.
+**Audit-assisted prefill (for existing agent skills):** When requested, answer the **three Stage 2 questions already in this template** using documented architecture and constraints from the Audit Skill. It must not add questions, approve an option, or choose an architecture. If Stage 1 is unconfirmed, mark the design **CONDITIONAL**.
 
 ### Questions for collaborators — source-prefilled where possible
 
@@ -309,7 +309,7 @@ Use **ANSWERED BY EVIDENCE**, **NEEDS CONFIRMATION**, **OPEN DECISION**, or **NO
 
 A **contract** states what a participant promises; an **invariant** is a property that must hold across states (including errors). Verify if a host/service enforces a security rule rather than relying on the rule appearing in a prompt.
 
-**Audit-assisted prefill (for existing agent skills):** `audit-skill` can inventory *documented* interfaces and guarantees, then draft candidate contracts based on each **PROPOSED Stage 2 design option**. If the team hasn't chosen a design, keep separate option-dependent contracts or label a shared minimum contract **CONDITIONAL — NOT APPROVED**. Do not silently turn a candidate into a binding requirement. Other engineering domains should use their relevant interface and policy evidence.
+**Audit-assisted prefill (for existing agent skills):** When requested, answer the **two Stage 3 questions already in this template** using documented interfaces, limitations, permissions, and guarantees from the Audit Skill. Candidate contracts depend on **PROPOSED Stage 2 options** and remain **CONDITIONAL — NOT APPROVED** until human review.
 
 ### Questions for collaborators — draft contracts, pending approval
 
