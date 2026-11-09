@@ -91,7 +91,9 @@ Use this section when a skill is being reviewed with `audit-skill`. **Write for 
 
 ### Ten-dimension review dashboard
 
-**What this is:** A project-specific review rubric combining software engineering, AI reliability, security and trust, and lifecycle concerns. It is informed by established practices (e.g., NIST AI RMF, OWASP guidance and the Agent Skills specification), but **it is not itself an official industry standard, compliance test, or certification**. Use it when an `audit-skill` review is relevant; omit it when a different assessment fits the work better.
+**About this dashboard:** The Audit Skill uses these ten review areas to give a quick picture of an agent skill: its purpose, activation, inputs, workflow, outputs, trust boundaries, permissions, failure handling, existing evaluation evidence, and portability. The dashboard shows **what is documented, what is missing, and what still needs verification**. It is not ten additional DFRDE stages or a score out of ten.
+
+This is a **project-specific engineering review rubric** that brings together software engineering, AI reliability, security and trust, and lifecycle concerns. The underlying ideas also appear in practices such as NIST AI RMF, OWASP guidance, and the Agent Skills specification, but **the ten-dimension dashboard itself is not an official industry standard, compliance assessment, or certification**. Keep this explanation in generated skill-review documents; omit the dashboard for reviews where it does not apply.
 
 **How to read it:** Report what the sources **document**, what actual runs/tests **demonstrate**, and what is **still unknown**. Write findings for a beginner, placing a clickable source-file link (ideally to the relevant lines) **in the same row as the claim**, or clearly labeling missing evidence, plus a specific next check when needed. Do not infer actual behavior, tool access, security controls or portability from instructions alone.
 
