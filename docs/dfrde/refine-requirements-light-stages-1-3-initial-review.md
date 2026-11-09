@@ -1,301 +1,239 @@
 # DFRDE — Initial Engineering Review: Refine Requirements — Light
 
-## Review summary
+**Fresh audit-assisted prefill | November 8, 2026 | Human review required**
 
-- **Scope:** Public Refine Requirements — Light skill only.
-  - No workplace Jira ticket reviewed
-  - No private application code reviewed
-  - No runtime execution reviewed
-- **Reviewed on:** November 8, 2026
-- **Current status:**
-  - **Stage 1 — Discover:** Review required
-  - **Stage 2 — Design:** Proposed
-  - **Stage 3 — Contract:** Not approved
-  - **Stages 4–6:** Not started
-- **Next step:** Confirm the problem, success criteria, and review owner.
+This is a newly generated review of the **current public skill documentation** using the updated [Audit Skill](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/audit-skill/SKILL.md) and [DFRDE Engineering Review Template](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/docs/dfrde/engineering-review-template.md). It replaces the previous initial-review content; findings below are based on the inspected sources, not on the previous report.
 
-> Source links appear directly beside the findings they support and point to the inspected revision. There is no separate evidence-key lookup table. Documented behavior is not a tested result. Keep workplace evidence outside this public repository.
+- **Target:** [Refine Requirements — Light](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md); supporting [README](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/README.md)
+- **Inspected source revision:** [`5a758852a6dca17e97fe7fb424652bced94d00a6`](https://github.com/rlynjb/dotskills/commit/5a758852a6dca17e97fe7fb424652bced94d00a6) (links below are pinned to this revision).
+- **Scope:** Public skill instructions, README, [Claude adapter](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/adapters/claude/README.md), [Codex/OpenAI adapter](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/adapters/openai/README.md), and [repository CI configuration](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/.github/workflows/validate.yml); published [Agent Skills specification](https://agentskills.io/specification).
+- **Not inspected or run:** Workplace Jira tickets, private application code, actual Claude/Codex execution, Jira integrations, host permissions, or Light-specific behavioral results.
+- **Review gates:** Stage 1 **REVIEW REQUIRED**; Stage 2 **CONDITIONAL / PROPOSED**; Stage 3 **CONDITIONAL / NOT APPROVED**. Stages 4–6 **NOT STARTED**.
+- **Owner:** UNASSIGNED. **Next step:** Confirm the skill's actual user/problem and whether any change is needed.
+
+The words **documented**, **not verified**, and **proposed** are not interchangeable. A rule written in a skill does not prove that a running agent follows it or that technical permissions enforce it. Source links are included **beside findings**; there is no evidence-key table.
 
 ## Table of contents
 
 - [Audit Skill — At a Glance](#audit-skill--at-a-glance)
-- [1. Discover](#1-discover--what-problem-and-existing-reality-are-we-working-with)
-- [2. Design](#2-design--what-approach-best-fits-the-requirements)
-- [3. Contract](#3-contract--what-must-participants-and-components-guarantee)
-- [Prioritized team discussion](#prioritized-team-discussion--ask-only-what-the-source-cannot-settle)
-- [Decision log](#decision-log-no-decisions-approved)
-- [Next checkpoint and status](#next-checkpoint-and-status)
+- [1. Discover](#1-discover--current-state-and-problem)
+- [2. Design](#2-design--conditional-options)
+- [3. Contract](#3-contract--candidate-guarantees)
+- [Team discussion](#team-discussion--remaining-decisions)
+- [Decision log](#decision-log)
+- [Next checkpoint](#next-checkpoint)
 
 ## Audit Skill — At a Glance
 
-This is a **quick look at the skill as written**, to help with DFRDE Stages 1–3. It is not a test run, a design approval, or an evaluation plan.
+This is a **read-only inspection of what the skill says it should do**. It is not a test, a certification, or an approval to implement changes.
 
 ### Skill overview
 
-- **What it does:** Reviews an assigned Jira feature or ticket and checks relevant existing code before suggesting an approach. [Skill instructions](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L8-L38).
-- **What it needs:** Ticket requirements and acceptance criteria, company conventions, and authorized access to relevant application code when available. [Skill instructions](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L16-L47).
-- **What it produces:** A ticket summary, four system-design review steps, open questions, and a readiness label (`READY FOR REVIEW`, `CONDITIONAL`, or `BLOCKED`). [Skill instructions](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L49-L69).
-- **What it must not do:** Edit source code, post to Jira, deploy, or launch other agents. These are **written rules**; actual tool restrictions have not been checked. [Skill instructions](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L71-L76).
+- **Purpose:** Give a developer a one-pass engineering assessment of a Jira ticket against **verified existing code**, before implementation. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L8-L12)
+- **Inputs:** Ticket and acceptance criteria, applicable team standards, and authorized access to relevant code, contracts, or tests. If code cannot be inspected, the assessment must say so. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L14-L31)
+- **Workflow:** Four SDI steps—scope requirements, inspect existing patterns, examine critical data/contract paths, and summarize risks/readiness. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L23-L55)
+- **Outputs:** Ticket Snapshot, five prescribed report sections, evidence-backed reuse decisions, open questions, and `READY FOR REVIEW` / `CONDITIONAL` / `BLOCKED` readiness labels. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L49-L69)
+- **Boundaries:** The skill instructs the agent not to edit code, post to Jira, deploy, launch coding agents, or auto-approve its proposals. **Host enforcement has not been inspected.** [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L71-L76)
+- **Cross-skill comparison:** NOT APPLICABLE; this audit has one target. The [README](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/README.md#L1-L7) describes the interactive full Refine Requirements skill as a separate companion, not an automatically invoked worker.
 
-**Review limit:** Only public skill files and repository documentation were inspected. No workplace Jira ticket, application code, or running instance of the skill was reviewed.
-
-### Documented workflow (not an execution trace)
+### Documented workflow (not an observed run)
 
 ```mermaid
 flowchart TD
-    T["Assigned Jira ticket / feature request"] --> G{"Ticket identifiable?"}
-    G -->|"No — exceptional case"| ASK["Ask for identifying information"]
-    G -->|Yes| S1["SDI 1: Scope FR/NFR, actors, acceptance, unknowns"]
-    S1 --> ACCESS{"Relevant application code accessible?"}
-    ACCESS -->|Yes| VERIFY["SDI 2: Locate + inspect real patterns, callers, contracts, standards"]
-    ACCESS -->|No / incomplete| UNKNOWN["Mark reuse and design NOT VERIFIED; ticket-only provisional assessment"]
-    VERIFY --> FIT{"Fit supported by inspected code?"}
-    FIT -->|Fits / partial / justified new| PLAN["FOLLOW / ADAPT / NEW REQUIRED; proposed high-level change"]
-    FIT -->|No suitable in inspected scope| NONE["Report scoped search limitation"]
-    PLAN --> DEEP["SDI 3: Targeted code/data flow + critical contracts"]
-    NONE --> DEEP
-    UNKNOWN --> DEEP
-    DEEP --> WRAP["SDI 4: Trade-offs, risks, readiness + open questions"]
-    WRAP --> OUT["One read-only engineering brief"]
+    A["Assigned Jira ticket"] --> B{"Enough ticket information?"}
+    B -->|No identifiable ticket| X["Request identifying information"]
+    B -->|Yes| C["SDI 1: Scope requirements and unknowns"]
+    C --> D{"Relevant application code accessible?"}
+    D -->|Yes| E["SDI 2: Inspect actual paths and contracts"]
+    D -->|No or incomplete| U["Mark reuse/design NOT VERIFIED"]
+    E --> F{"Inspected pattern fits?"}
+    F -->|Full or partial fit| G["FOLLOW or ADAPT"]
+    F -->|New justified| H["NEW REQUIRED"]
+    F -->|No match in inspected scope| I["Report bounded no-match"]
+    G --> J["SDI 3: Targeted flow and contract analysis"]
+    H --> J
+    I --> J
+    U --> J
+    J --> K["SDI 4: Risks, readiness, open questions"]
+    K --> L["One read-only engineering brief for human review"]
 ```
 
-Diagram based on [the skill instructions](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L16-L76); no execution was observed.
+Based on the [workflow and boundaries](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L22-L76). The flowchart depicts **written instructions**, not execution traces, worker activity, or actual Jira access.
 
 ### Ten-dimension review dashboard
 
-**What this is:** A project-specific engineering review rubric that combines software engineering, AI reliability, security and trust, and lifecycle concerns. It reflects ideas found in established practices (such as NIST AI RMF, OWASP guidance, and the Agent Skills specification), but **this exact ten-dimension dashboard is not an official industry standard, a compliance assessment, or a certification**.
+**About this dashboard:** The Audit Skill checks ten areas: purpose, activation, inputs, workflow, outputs, context and trust, permissions, failure handling, evaluation evidence, and portability. It provides a quick view of **what is documented, what is missing, and what still needs verification**. These are **not ten DFRDE stages** or a score out of ten.
 
-**How to read it:** Each row shows (1) what the reviewed files describe, (2) what has not yet been checked, and (3) a direct source link or the evidence still needed. **A written instruction is not proof that the skill follows it when run.** No runtime execution was observed for this initial review.
+It is a **project-specific engineering rubric** that consolidates software engineering, AI reliability, security and trust, and lifecycle concerns. The underlying ideas also occur in frameworks such as NIST AI RMF, OWASP guidance, and the Agent Skills specification; **this exact dashboard is not an official standard or compliance certification**.
 
-**Status guide:**
+**How to read statuses:** **Documented (not tested)** means written instructions were inspected; **Needs verification** means actual behavior or protection was not checked; **Partial gap** means the writing does not cover every relevant case; **Evidence gap** means no supporting observed results were available within the inspected scope. Missing evidence is **not proof of failure**.
 
-- **Documented (not tested):** The inspected files describe the behavior or rule. Earlier reviews called this `PASS (static)`: *static* means reading code/docs without running the skill.
-- **Needs verification:** A claim or protection has not been checked in the actual tools or operating setup. This is **unknown**, not a failure.
-- **Partial gap:** Some situations are documented, but others are not addressed in the inspected instructions. It is not necessarily a runtime defect.
-- **Evidence gap:** The inspected sources did not contain skill-specific test runs, results, or traces proving behavior. Missing evidence is not proof the behavior fails.
-
-**Jargon translated:** *Runtime* = the skill actually running in a host such as Claude Code or Codex. *Environment* = the real Jira/code access, connected tools, settings, and permissions. *Parser compatibility* = whether another program can reliably read the skill's output. *Enforcement* = a technical permission/control that prevents an action, rather than merely telling the agent not to do it. *Behavioral evidence* = test results or execution traces showing what actually happened.
-
-| Area | Finding in plain English | What this means / supporting source |
+| Area | Finding | Meaning and direct source |
 | --- | --- | --- |
-| **Q-01 Purpose & boundaries** | **Documented (not tested)** | The skill describes its job and what it must not do. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L8-L76) |
-| **Q-02 Activation & discovery** | **Documented; activation not tested** | The skill has a name and example invocation. No test showed whether a host selects it for appropriate requests. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L1-L87) |
-| **Q-03 Inputs & dependencies** | **Documented; real access not checked** | The instructions name required ticket, code and standards inputs. Actual Jira/repository access and permissions were not examined. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L16-L38) |
-| **Q-04 Workflow & decisions** | **Documented (not tested)** | The four SDI steps and reuse decisions are explained. No run showed whether the agent follows them correctly. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L22-L55) |
-| **Q-05 Contracts & outputs** | **Documented; machine-reading not tested** | The expected sections and readiness labels are specified. It has not been shown that a downstream program could reliably parse the output; no enforced output schema was inspected. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L49-L69) |
-| **Q-06 Context & trust** | **Documented; actual behavior not tested** | The instructions distinguish confirmed source facts from proposals and uncertainty. No test checked whether the skill consistently respects that distinction. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L16-L76) |
-| **Q-07 Permissions & effects** | **Needs verification: real restrictions** | The skill says **read-only**, but the host's tool permissions were not inspected to see whether writes are technically prevented. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L71-L76) |
-| **Q-08 Failure & stopping** | **Partial gap: some failures not described** | Missing tickets/code and no-match cases are addressed, but tool failures, timeouts and stale information lack explicit recovery guidance. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L17-L73) |
-| **Q-09 Evals & observability** | **Evidence gap: no skill-specific test results found** | No Light-specific evaluation fixture, execution trace or graded run was found among the [inspected skill files](https://github.com/rlynjb/dotskills/tree/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light). The [CI workflow](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/.github/workflows/validate.yml#L17-L28) checks other repository components, not Light's behavior. |
-| **Q-10 Lifecycle & portability** | **Needs verification: cross-platform behavior** | [Claude Code setup](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/adapters/claude/README.md#L1-L15) and [Codex/OpenAI setup](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/adapters/openai/README.md#L1-L14) are documented; equivalent runtime behavior was not observed. |
+| **Q-01 Purpose & boundaries** | **Documented (not tested)** | Job and no-write boundaries are explained. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L8-L12); [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L71-L76). |
+| **Q-02 Activation & discovery** | **Documented; activation not tested** | Name, description, and an invocation example exist; host selection has not been observed. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L1-L4); [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L78-L87). |
+| **Q-03 Inputs & dependencies** | **Documented; access not verified** | Ticket/code/standards requirements are described; real Jira, code, and credential access is unknown. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L14-L31). |
+| **Q-04 Workflow & decisions** | **Documented (not tested)** | Four ordered SDI steps and reuse decisions are specified; no executed Light run was inspected. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L23-L55). |
+| **Q-05 Contracts & outputs** | **Documented; machine use not verified** | Required headings and readiness labels are specified; no downstream parser or enforced output schema was checked. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L49-L69). |
+| **Q-06 Context & trust** | **Documented; behavior not tested** | Instructions require source citations, uncertainty labels, and treating ticket text as untrusted data. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L14-L22); [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L71-L76). |
+| **Q-07 Permissions & effects** | **Needs verification: technical restrictions** | “Read-only” is a written rule; actual host/tool write permissions were not inspected. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L71-L76). |
+| **Q-08 Failure & stopping** | **Partial gap: tool failures** | Missing code and unknown patterns are covered, but explicit timeout/retry/stale-source recovery is not apparent in the inspected instructions. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L16-L20); [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L23-L76). |
+| **Q-09 Evals & observability** | **Evidence gap: no Light-specific run evidence inspected** | The [CI configuration](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/.github/workflows/validate.yml#L17-L28) describes repository validators and other tests; no Light-specific execution results or traces were supplied in the [inspected skill files](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/README.md). |
+| **Q-10 Lifecycle & portability** | **Needs verification: runtime equivalence** | [Claude setup](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/adapters/claude/README.md#L1-L34) and [Codex/OpenAI setup](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/adapters/openai/README.md#L1-L21) are documented; behavior across hosts has not been compared. |
 
-**Interpretation:** This is a quick view of the **current evidence**, not an overall pass/fail grade or a claim that the skill is production-ready. Q-08 is a documentation gap, not a proven runtime defect; Q-07, Q-09 and Q-10 call for additional evidence before stronger claims.
+**Interpretation:** The instructions provide a coherent intended workflow. This does **not** establish runtime correctness, enforced permissions, or production readiness.
 
-### Agent Skills specification — file structure only
+### Agent Skills specification — structure only
 
-This checks whether the skill follows the [Agent Skills specification](https://agentskills.io/specification) **file format**, not whether it works correctly.
+Checked against the published [Agent Skills specification](https://agentskills.io/specification). This is a **file-format review**, not a behavioral test.
 
-| Check | Result | Source or explanation |
+| Check | Result | Direct source or limit |
 | --- | --- | --- |
-| Required `SKILL.md` and name/description | **Found in source** | [Skill file](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L1-L4) |
-| Instructions written in Markdown | **Found in source** | [Skill instructions](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L6-L87) |
-| Extra folders such as `references/` or `scripts/` | **Optional** | Not having them is not a problem. |
-| Formal skill-format validator | **Not run** | This review inspected files; it did not execute a validator. |
+| Required `SKILL.md` with YAML frontmatter | **Found in source** | [Skill entry point](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L1-L6). |
+| Required `name` and `description`; folder/name match | **Found in source** | [Frontmatter](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L1-L4); folder is `refine-requirements-light`. |
+| Markdown instructions after frontmatter | **Found in source** | [Skill body](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L6-L76). |
+| `scripts/`, `references/`, `assets/` | **Optional under specification** | These are not mandatory for this skill; no optional-directory requirement is claimed. |
+| Reference format-validator execution | **NOT RUN** | Inspection only; no `skills-ref validate` invocation or result. |
 
 ### Cross-platform compatibility
 
-The repository includes setup instructions for [Claude Code](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/adapters/claude/README.md#L1-L15) and [Codex/OpenAI](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/adapters/openai/README.md#L1-L14). That is **documentation**, not proof that this skill runs the same way in both.
-
 | Question | Claude Code | Codex / OpenAI |
 | --- | --- | --- |
-| Are setup instructions available? | **Yes, documented** | **Yes, documented** |
-| Was skill activation and Jira/code access checked? | **Not checked** | **Not checked** |
-| Were actual read-only tool restrictions checked? | **Not checked** | **Not checked** |
+| Is a host adapter documented? | **Yes** — [setup instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/adapters/claude/README.md#L1-L34) | **Yes** — [setup instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/adapters/openai/README.md#L1-L21) |
+| Was this specific skill activated in a host? | **NOT VERIFIED** | **NOT VERIFIED** |
+| Was Jira/code access and context loading observed? | **NOT VERIFIED** | **NOT VERIFIED** |
+| Were read-only technical permissions checked? | **NOT VERIFIED** | **NOT VERIFIED** |
+| Is identical output/failure behavior proven? | **NOT VERIFIED** | **NOT VERIFIED** |
+
+Documentation of installation is **not** evidence that this particular skill was loaded or behaved equivalently.
 
 ### Key gaps and open questions
 
-These are the main things we **do not know yet**, based on this initial inspection:
+- **Actual usage:** Which team members use Light, on what Jira tickets, and with what code access? The [intended context](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L8-L12) is documented, but no workplace run was inspected.
+- **Permission enforcement:** The [no-write instruction](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L71-L76) exists; do the selected host and its tools actually prevent unauthorized writes?
+- **Failure handling:** The skill handles [missing code and incomplete evidence](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L16-L20), but should specific tool errors/timeouts be made explicit?
+- **Necessary platforms:** Are both [Claude](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/adapters/claude/README.md) and [Codex/OpenAI](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/adapters/openai/README.md) required, or only one? Neither was exercised in this review.
 
-- **Real use:** How does the skill handle a real Jira ticket and relevant code? Neither was available for this review.
-- **Read-only protection:** The [skill instructions](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L71-L76) forbid edits and Jira posts. Do the host's tool permissions also block them?
-- **Failure handling:** The [skill instructions](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L17-L73) address missing information, but do not clearly explain what to do when a tool times out or returns stale data.
-- **Platform support:** Which environments actually need to support this skill? [Claude Code](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/adapters/claude/README.md) and [Codex/OpenAI](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/adapters/openai/README.md) setup instructions exist, but runtime behavior was not checked.
-
-These are **open questions, not confirmed defects or proposed evaluation cases**. The detailed decisions belong in DFRDE Stages 1–3; evaluation comes later.
+These are **unknowns or possible documentation improvements**, not confirmed defects. No evaluation cases are proposed or run in this audit.
 
 ---
 
-## 1. Discover — What problem and existing reality are we working with?
+## 1. Discover — current state and problem
 
-**SDI:** Step 1 — understand requirements and scope. The problem statement below is proposed, not confirmed.
+**Stage:** REVIEW REQUIRED. **SDI lens:** Understand the problem and scope.
 
-### Draft problem statement — PROPOSED, HUMAN CONFIRMATION REQUIRED
+**Proposed problem statement — HUMAN CONFIRMATION REQUIRED:** Developers reviewing existing-application Jira work need a short, source-grounded assessment that separates confirmed requirements, verified code reuse, proposed changes, and unknowns before implementation. Light is written for that task, but actual user pain, adoption, and success criteria have not been established in this audit. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L8-L20)
 
-> Developers need a concise, trustworthy assessment of Jira work grounded in existing code, without an interview or premature implementation. This review checks whether Light meets that need and what evidence would justify any change.
+### Stage 1 questions — audit-prefilled
 
-This is inferred from the skill's purpose, **not confirmed by the team**. Review any integration with another workflow separately.
-
-### Stage 1 prefilled questions
-
-| ID | Question | Draft answer / unknown | Evidence state and source | Question status / next action |
+| ID | Question | Draft answer / unknown with source | Evidence state | Question status / next action |
 | --- | --- | --- | --- | --- |
-| **S1-Q01** | Who needs help, and what outcome? | The skill targets faster, code-grounded ticket review. Actual users and workplace impact are not confirmed. | DOCUMENTED purpose, [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L8-L12); business outcome inferred | **NEEDS CONFIRMATION** — identify users and success measures |
-| **S1-Q02** | What exists, and what was inspected? | Light contains a SKILL.md and README and describes a one-pass four-step SDI review. No internal app or runtime was inspected. | DOCUMENTED [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L22-L76), [README](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/README.md#L9-L16); reviewed source linked | **ANSWERED BY EVIDENCE** — documented package; runtime not verified |
-| **S1-Q03** | Who invokes and reviews it? | A developer or coding agent supplies a Jira ticket. The assessment is noninteractive; human decisions remain outside the skill. | DOCUMENTED [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L3-L87) | **NEEDS CONFIRMATION** — confirm roles and host |
-| **S1-Q04** | What goes in and comes out? | Inputs: ticket, acceptance criteria, company standards, relevant code if accessible. Output: ticket snapshot, four SDI sections, open questions. | DOCUMENTED [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L16-L69) | **ANSWERED BY EVIDENCE** — intended format; access not verified |
-| **S1-Q05** | Which decisions and statuses exist? | Reuse is classified as FOLLOW, ADAPT, NEW REQUIRED, scoped no-fit, or NOT VERIFIED. Readiness is READY FOR REVIEW, CONDITIONAL, or BLOCKED. | DOCUMENTED [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L19-L75) | **ANSWERED BY EVIDENCE** — written rules; confirm owner |
-| **S1-Q06** | What safeguards and tests exist? | Strong written verification and uncertainty safeguards. No Light-specific executed evals/traces supplied; repo has a [configured CI workflow](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/.github/workflows/validate.yml). | DOCUMENTED [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L16-L76); [CI workflow configuration](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/.github/workflows/validate.yml) inspected | **NOT VERIFIED** — run approved synthetic evals |
-| **S1-Q07** | What are the trust and permission limits? | The skill is written as read-only and follows Agent Skills structure. Host-enforced permissions and portability are untested. | DOCUMENTED [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L16-L76); [Agent Skills specification](https://agentskills.io/specification) / [Claude adapter](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/adapters/claude/README.md) and [OpenAI adapter](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/adapters/openai/README.md) | **NOT VERIFIED** — inspect host permissions |
-| **S1-Q08** | What requirements and success measures are agreed? | The skill explains how to extract FR/NFRs. No approved quality targets, SLOs, or team scope were found. | DOCUMENTED [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L24-L55); business thresholds UNVERIFIED | **NEEDS CONFIRMATION** — agree on acceptance criteria |
-| **S1-Q09** | Could the current skill be enough? | Possibly. Test its current behavior before adding workflow steps or schemas. | INFERRED from documented small-change rule [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L19-L54) | **OPEN DECISION** — compare in Stage 2 |
-| **S1-Q10** | What evidence is missing? | A safe ticket/code fixture, access expectations, host permissions, baseline results, owner, and supported runtimes. | NOT VERIFIED beyond public source; see **Key gaps and open questions** | **NOT VERIFIED** — assign evidence owners |
+| **S1-Q01** | Who needs help and what outcome? | Intended user is a developer/coding agent needing a code-grounded ticket review. The actual business problem and desired improvement are unconfirmed. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L8-L12) | DOCUMENTED intent; outcome PROPOSED | **NEEDS CONFIRMATION** — skill owner/users |
+| **S1-Q02** | What exists and what was inspected? | A single-pass `SKILL.md` and [README](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/README.md#L1-L15); four SDI steps, reuse labels, output rules, and host setup guides. No application runtime inspected. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L14-L76) | DOCUMENTED | **ANSWERED BY EVIDENCE** — source only |
+| **S1-Q03** | What triggers it and who participates? | Intended trigger is an assigned Jira ticket; developer or host invokes skill; human reviews the brief. Exact host and owner not identified. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L8-L12); [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L78-L87) | DOCUMENTED; host UNVERIFIED | **NEEDS CONFIRMATION** — identify host/user |
+| **S1-Q04** | Inputs, outputs, dependencies? | Ticket/acceptance criteria, company standards, relevant code. Output is Ticket Snapshot + four SDI sections + open questions/readiness. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L14-L31); [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L49-L69) | DOCUMENTED; actual access UNVERIFIED | **ANSWERED BY EVIDENCE** — intended interface |
+| **S1-Q05** | Decisions, handoffs, boundaries? | Inspect code before reuse judgment (`FOLLOW` / `ADAPT` / `NEW REQUIRED` / scoped no-match / `NOT VERIFIED`); a report goes to a human, not a downstream automated consumer established here. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L16-L20); [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L49-L76) | DOCUMENTED; consumer UNVERIFIED | **ANSWERED BY EVIDENCE** — documented decisions |
+| **S1-Q06** | Safeguards, checks, observed failures? | Rules for source provenance, uncertainty and no external effects are written. [CI](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/.github/workflows/validate.yml#L17-L28) contains repo-level checks; Light-specific behavioral traces were not reviewed. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L14-L20); [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L71-L76) | DOCUMENTED safeguards; OBSERVED RESULT unavailable | **NOT VERIFIED** — obtain existing results if any |
+| **S1-Q07** | Trust, permission, runtime limits? | Ticket/source text is untrusted; skill is read-only by instruction. Effective host permissions and platform parity are unknown. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L71-L76) | DOCUMENTED; enforcement UNVERIFIED | **NOT VERIFIED** — host owner to confirm |
+| **S1-Q08** | Agreed FR/NFR, non-goals and measures? | The skill defines how to extract ticket FR/NFRs and avoid speculative design; no team-approved success metric or release requirement was supplied. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L23-L31) | DOCUMENTED behavior; targets UNVERIFIED | **NEEDS CONFIRMATION** — agree what “good” means |
+| **S1-Q09** | Can we use what already exists? | The smallest plausible path is to retain Light's present one-pass workflow unless a real need for changes is identified. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L12-L20) | INFERRED / PROPOSED | **OPEN DECISION** — confirm actual gap |
+| **S1-Q10** | What important evidence is missing? | Intended users/owner, representative ticket and code access, host/tool restrictions, actual outputs, and supported runtime targets. See [skill limits](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L71-L76) and [adapter setup](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/adapters/claude/README.md). | NOT VERIFIED | **NOT VERIFIED** — assign source owners |
 
-### Known requirements, constraints and non-goals
+**Current-state summary:** The only confirmed current state is the **written skill contract and repository setup documentation**. No production flow, Jira ticket, real-code integration, or execution trace was examined.
 
-**Documented behavior:** one read-only pass; verify code before suggesting reuse; report requirements, relevant data flow, risks, readiness, and open questions ([source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L16-L76)).
+**Known constraints:** One noninteractive pass, existing-code verification before reuse, conditional results when access is missing, no code/Jira modifications, no automatic approval, and no copying proprietary data into public artifacts. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L12-L20); [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L71-L76)
 
-**Proposed success criteria (not approved):** no invented code evidence or unauthorized effects; all five output sections; honest conditional/blocked states; useful owner-specific questions; consistent meaning across supported runtimes. Numeric thresholds and reviewers remain open.
+**Success criteria (proposed, not approved):** The resulting brief accurately identifies inspected sources, distinguishes known facts from assumptions, uses the required sections/readiness labels, and never implies authorization it lacks. No numerical targets or acceptance thresholds are agreed.
 
-**Not in scope:** Sprint Assessment integration, application redesign, Jira actions, private-code inspection, Light edits, or executed behavioral tests.
-
-### Deliverables and review gate
-
-| Output | Current status | Next evidence |
-| --- | --- | --- |
-| Skill inventory / documented current-state flow | **DRAFT — SOURCE-BACKED** | [SKILL.md](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md) and [README](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/README.md) |
-| User problem and measurable success | **PROPOSED — REVIEW REQUIRED** | Confirm with user/skill consumer |
-| Functional/nonfunctional review criteria | **DRAFT — REVIEW REQUIRED** | Approve useful quality criteria |
-| Effective runtime, tools, ownership | **NOT VERIFIED** | Approved host configuration/owner |
-| Stage 1 approval | **HUMAN REVIEW REQUIRED — Discover** | Record reviewer and decision in internal working record |
+**Stage 1 deliverable:** Source-backed inventory and draft problem statement **PREPARED**; owner/success confirmation **OPEN**. **HUMAN REVIEW REQUIRED — Discover.**
 
 ---
 
-## 2. Design — What approach best fits the requirements?
+## 2. Design — conditional options
 
-**SDI:** Steps 2–4 — compare approaches, components, and trade-offs. The design options assume the team wants to validate Light before changing it; none is approved.
+**Stage:** CONDITIONAL / PROPOSED. Stage 1 scope and success criteria remain unconfirmed; **no design choice is approved**. The as-is workflow appears above.
 
-### Stage 2 prefilled questions
+### Stage 2 questions — audit-prefilled
 
-| ID | Question | Evidence-backed response / proposed options | Source / evidence | Question status / next action |
+| ID | Question | Draft answer / option with source | Evidence state | Question status / next action |
 | --- | --- | --- | --- | --- |
-| **S2-Q01** | What options could solve this? | A: test Light as written. B: make targeted fixes if tests find gaps. C: add a structured handoff only for a confirmed consumer. | INFERRED options from [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L16-L69) | **OPEN DECISION** — choose after confirming the problem |
-| **S2-Q02** | What existing behavior should stay? | Four SDI steps; code-first evidence; reuse labels; scoped inspection; five output sections; optional DDIA/FODE and company standards. | DOCUMENTED [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L16-L69) | **ANSWERED BY EVIDENCE** — host behavior unverified |
-| **S2-Q03** | Who owns orchestration and decisions? | Light describes one report, without subagent dispatch. No downstream automation is established. | DOCUMENTED [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L12-L76); future options PROPOSED | **OPEN DECISION** — verify any consumer |
-| **S2-Q04** | What trade-offs matter? | A makes few changes but may keep defects; B may add prompt complexity; C adds consumer coupling and versioning. Runtime cost is unknown. | INFERRED; no measurements, see **Key gaps and open questions** | **NEEDS CONFIRMATION** — use measured risks |
-| **S2-Q05** | Has anyone approved a design? | No approval was found in the inspected source. | NOT VERIFIED; [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L71-L76) (no auto-approval) | **OPEN DECISION** — human review required |
+| **S2-Q01** | Which approaches make sense? | **A:** Keep Light unchanged until a confirmed problem exists. **B:** Clarify only evidence/failure instructions if a specific gap matters. **C:** Consider machine-readable handoff only for a confirmed consumer. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L14-L20); [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L49-L69) | PROPOSED options | **OPEN DECISION** — owner validates problem |
+| **S2-Q02** | What existing design should be preserved? | Four SDI stages, inspect-before-reuse, concise brief, conditional `NOT VERIFIED` states, and no automatic approvals. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L14-L76) | DOCUMENTED | **ANSWERED BY EVIDENCE** — preserve unless justified |
+| **S2-Q03** | Who coordinates and decides? | Skill writes a report; human reviewer owns consequential design/implementation choices. No active subagent delegation is part of Light's documented contract. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L49-L76) | DOCUMENTED; real host UNVERIFIED | **NEEDS CONFIRMATION** — identify reviewer/consumer |
+| **S2-Q04** | What trade-offs matter? | A keeps complexity low but may leave real issues unaddressed; B adds instruction complexity; C adds schema/consumer coupling. Performance and runtime cost were not measured. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L49-L69) | INFERRED / PROPOSED | **NEEDS CONFIRMATION** — choose based on actual need |
+| **S2-Q05** | Which design has been approved? | None identified or authorized in inspected sources. The instruction explicitly separates recommendations from approved decisions. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L71-L76) | NOT VERIFIED | **OPEN DECISION** — accountable reviewer |
 
-### Design option comparison — all PROPOSED
+### Options — NOT APPROVED
 
-| Option | Description | Benefit | Trade-off / evidence prerequisite |
-| --- | --- | --- | --- |
-| **A. Validate existing behavior first** | Leave Light unchanged; use approved synthetic tasks and review actual outputs | Least disruption; yields a defensible baseline before edits | Needs safe harness/tool isolation and representative fixtures; may reveal problems requiring B |
-| **B. Minimal contract/instruction hardening** | If tests reveal gaps, clarify requirements preflight, source evidence fields, response stop/blocked semantics, and review criteria while preserving one-pass format | Potentially more consistent assessments without redesign | Risk of over-specification and larger prompt; must be justified and regression-tested |
-| **C. Explicit downstream interface** | If a real consumer exists, define a separately reviewed structured handoff or adapter | Could enable integration with another workflow | Consumer, schema, ownership, migration and permissions **not established**; do not introduce speculatively |
+| Option | Scope | Main trade-off |
+| --- | --- | --- |
+| **A. Keep the skill as written** | No skill or format changes; first confirm actual usage/needs. | Least complexity; cannot claim effectiveness without observed behavior. |
+| **B. Small clarification only if needed** | Explain a proven ambiguity or missing failure rule without changing the four-step workflow. | Easier to reason about; added text may not solve an operational issue. |
+| **C. Structured handoff only for a real consumer** | Define a limited interface if an actual downstream program requires it. | Supports automation; adds schema, compatibility, versioning and ownership responsibilities. |
 
-**Working recommendation (not approved):** Start with A. Consider B or C only if testing or a confirmed consumer justifies more complexity.
-
-### Existing architecture vs proposed review work
-
-```mermaid
-flowchart LR
-    CURRENT["AS-IS (documented): Light skill instructions"] --> REPORT["Human-readable one-pass assessment"]
-    REVIEW["PROPOSED: controlled review of existing behavior"] --> CASES["Synthetic ticket + code fixtures"]
-    CASES --> RESULTS["Evidence-backed evaluation results (NOT RUN)"]
-    RESULTS --> DECIDE{"Human decision"}
-    DECIDE -->|Keep| CURRENT
-    DECIDE -->|Improve if justified| CHANGE["PROPOSED scoped revision"]
-    DECIDE -->|Integration need confirmed| CONTRACT["PROPOSED downstream contract"]
-```
-
-The current path is documented; the test path is only proposed.
-
-### Deliverables and review gate
-
-| Output | Current status |
-| --- | --- |
-| As-is component/flow and source-backed assumptions | DOCUMENTED / runtime NOT VERIFIED |
-| Options and trade-offs | PROPOSED |
-| Chosen architecture, owner and rationale | **OPEN DECISION** |
-| Stage 2 approval | **HUMAN REVIEW REQUIRED — Design** |
+**Design outcome:** No new architecture or integration is established. Preserve the source-defined workflow while the use case is confirmed. **HUMAN REVIEW REQUIRED — Design.**
 
 ---
 
-## 3. Contract — What must participants and components guarantee?
+## 3. Contract — candidate guarantees
 
-**SDI:** Steps 3–4 — interfaces and trade-offs. Light has a written report format; no new schema, contract, or host security control is approved or verified.
+**Stage:** CONDITIONAL / NOT APPROVED. These are **draft expectations for discussion**, not enforced policies, an approved schema, or evaluation cases.
 
-### Stage 3 prefilled questions
+### Stage 3 questions — audit-prefilled
 
-| ID | Question | Existing evidence / candidate response | Evidence state | Question status / next action |
+| ID | Question | Current evidence / candidate answer | Evidence state | Question status / next action |
 | --- | --- | --- | --- | --- |
-| **S3-Q01** | Who produces, reads, and owns the report? | Light produces a report for a reviewer/developer. A machine consumer and named maintainer are not documented. | DOCUMENTED [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L8-L69); ownership NOT VERIFIED | **NEEDS CONFIRMATION** — identify owners |
-| **S3-Q02** | What must the output guarantee? | The written format requires a ticket snapshot, four sections, reuse classifications, readiness, and clear uncertainty. Candidate invariants follow. | DOCUMENTED [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L17-L69); candidate invariants PROPOSED | **OPEN DECISION** — choose testable guarantees |
-| **S3-Q03** | Who can act, and with which permissions? | The skill forbids edits, posts, deployments, and agent launches. Effective Jira/tool permissions were not inspected. | DOCUMENTED [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L18-L76); enforcement NOT VERIFIED | **NOT VERIFIED** — inspect enforced permissions; no live write tests |
-| **S3-Q04** | What happens when evidence or tools are missing? | The skill permits provisional reports, scoped no-fit, and blocked states. Tool timeout and retry rules are unspecified. | DOCUMENTED [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L17-L73); gaps INFERRED | **OPEN DECISION** — define only relevant failures |
-| **S3-Q05** | What would count as meeting the agreed contract? | No skill-specific runs were reviewed. Agree on clear, observable acceptance criteria first; detailed evaluation cases belong to Stage 5, not this initial audit. | NOT VERIFIED; no Light-specific runtime evidence reviewed | **OPEN DECISION** — agree on acceptance criteria |
-| **S3-Q06** | Where does the contract live? | The existing report contract is in Light's SKILL.md and README. No machine consumer or separate schema is confirmed. | DOCUMENTED [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L57-L76), [README](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/README.md#L66-L73) | **NEEDS CONFIRMATION** — keep existing location unless needed |
+| **S3-Q01** | Who produces, consumes and owns it? | Light produces a human-readable brief; a developer/reviewer consumes it. Maintainer and any machine consumer not confirmed. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L8-L12); [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L49-L69) | DOCUMENTED; ownership UNVERIFIED | **NEEDS CONFIRMATION** — name owner |
+| **S3-Q02** | What does the output promise? | Ticket Snapshot, ordered four SDI sections, open questions, evidence labels, reuse decisions and readiness labels are described. Whether all appear consistently is untested. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L16-L20); [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L49-L69) | DOCUMENTED, not tested | **ANSWERED BY EVIDENCE** — written format |
+| **S3-Q03** | Who can act or write? | The instructions forbid code edits, Jira posts, migrations, deployment and coding agents; actual tool/host safeguards unknown. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L71-L76) | DOCUMENTED; enforcement UNVERIFIED | **NOT VERIFIED** — check host permissions |
+| **S3-Q04** | How are missing data and failures handled? | Missing code yields provisional/`NOT VERIFIED` findings; no-match is bounded; detailed timeout/retry/recovery behavior is not specified in inspected instructions. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L16-L20); [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L49-L76) | DOCUMENTED partial coverage | **OPEN DECISION** — decide if clarification is needed |
+| **S3-Q05** | What would meeting the contract mean? | High-level expectation: source-grounded output, explicit uncertainty, prescribed structure, and no unauthorized effects. No Light-specific observed results supplied; detailed evaluation cases belong to later evaluation work. [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L49-L76) | PROPOSED criteria; tests NOT RUN | **OPEN DECISION** — agree criteria |
+| **S3-Q06** | Where does the contract live? | Existing report instructions are in [`SKILL.md`](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L49-L76) with explanatory [README](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/README.md#L9-L15). A separate machine schema is not justified yet. | DOCUMENTED current location | **NEEDS CONFIRMATION** — confirm owner/version policy |
 
-### Existing written contract — not newly invented
+### Existing written contract — no new interface assumed
 
-| Boundary | Documented expectation | Source and assurance status |
+| Boundary | Documented expectation | Source and assurance |
 | --- | --- | --- |
-| **Ticket → assessment** | Ticket goal, actors, FR/NFR, acceptance criteria and constraints scoped | [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L24-L30); DOCUMENTED |
-| **Application code → evidence** | Inspect relevant real paths/symbols and contracts; distinguish no inspected fit from unverified | [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L16-L38); DOCUMENTED |
-| **Assessment → human reviewer** | Ticket Snapshot + four SDI sections + open decisions; include evidence and readiness | [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L49-L69); DOCUMENTED |
-| **Side-effect boundary** | No code/Jira changes, migrations, deployments or subagent execution as part of Light | [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L71-L76); instruction-level only; enforcement NOT VERIFIED |
+| **Ticket → Light** | Scope FR/NFRs, actors, acceptance criteria, unknowns. | [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L23-L31); **documented** |
+| **Application code → recommendation** | Inspect actual paths/contracts before claiming reuse; missing access remains unverified. | [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L16-L20); [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L32-L39); **documented** |
+| **Light → human reviewer** | Ticket Snapshot, four sections, readiness and open questions. | [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L49-L69); **documented** |
+| **Tool/action boundary** | No code/Jira mutation, deployment, or agent launch during assessment. | [skill instructions](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L71-L76); **instruction only, enforcement unknown** |
 
-### Candidate minimum invariants — PROPOSED for human agreement
+**Candidate minimum invariants — PROPOSED, pending human agreement:** (1) Never call a pattern verified without inspected source evidence. (2) When code access is missing, use `NOT VERIFIED` rather than inventing a path. (3) `READY FOR REVIEW` must not be interpreted as approval to implement. These follow the [documented intent](https://github.com/rlynjb/dotskills/blob/5a758852a6dca17e97fe7fb424652bced94d00a6/skills/refine-requirements-light/SKILL.md#L16-L76), not observed compliance.
 
-- **I-01:** Never label a component or reusable pattern *verified* unless inspected source evidence identifies its path/symbol/behavior. **From documented intent [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L16-L37); behavioral compliance NOT RUN.**
-- **I-02:** Missing code access must yield `NOT VERIFIED` / provisional recommendation, never a fabricated pattern or a universal absence claim. **[source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L17-L69).**
-- **I-03:** Requirements explicitly approved by authorized sources remain separate from code observations and agent-proposed requirements. **[source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L18-L29).**
-- **I-04:** An assessment marked `READY FOR REVIEW` does not approve implementation, and the report cannot independently create external side effects. **[source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L54-L76).** Host-enforced no-write must be verified separately.
-- **I-05 (conditional consumer contract):** Only if an automated consumer is approved, each handoff should identify issue/revision, evidence, uncertainty, result state and failure reason. **PROPOSED; no present machine consumer documented.**
+**Option dependencies:** **A** retains this human-readable output. **B** may clarify ambiguous instruction or failure wording if justified. **C** would need a separately approved consumer, schema, versioning and technical authorization boundaries; none are assumed to exist.
 
-### Alternative-dependent contract direction
-
-| Option | Minimum contract scope | What is NOT approved |
-| --- | --- | --- |
-| **A. Keep as-is and validate** | The already documented Ticket Snapshot, ordered sections, uncertainty rules and readiness labels; add external eval assertions | No new mandatory schema, permissions or workflow changes |
-| **B. Harden based on failures** | Amend precise wording or field expectations *only for observed defects*, preserve human-readable contract and classifications | No extra gate inside the one-pass skill without explicit change request |
-| **C. Add a downstream consumer** | Versioned producer/consumer identity, structured evidence/status, required/optional fields, compatibility/error semantics and authorization boundary | No assumed Sprint Assessment integration, API, schema or agent runtime |
-
-**Contract owner:** not confirmed. **Gate:** HUMAN REVIEW REQUIRED — Contract. No changes or permission expansions are authorized.
+**Stage 3 deliverable:** Current written contract and candidate expectations **PREPARED**; owners, enforcement and approvals **OPEN**. **HUMAN REVIEW REQUIRED — Contract.**
 
 ---
 
-## Prioritized team discussion — ask only what the source cannot settle
+## Team discussion — remaining decisions
 
-| Priority | Question to confirm or decide | Why it matters | Suggested owner |
-| --- | --- | --- | --- |
-| **P1** | What real gap are we trying to address with Light: output quality, workflow placement, user adoption, or something else? | Source defines intended behavior, not an approved business problem or measured pain | Skill owner / users |
-| **P1** | Which users and downstream consumers rely on the brief today? Is it consumed manually or by another workflow? | Determines whether Option A/B suffices or Option C has a real consumer | Skill owner / workflow owner |
-| **P1** | Which Jira/code access and tool permissions are actually available to the intended host/users, and is no-write enforced externally? | Written read-only instructions are not a security control | Host/tool owner |
-| **P1** | Which representative synthetic ticket and mock codebase can we safely use to test whether it verifies rather than guesses? | A reproducible baseline is missing | Skill owner / QA |
-| **P2** | Which runtimes must be supported in practice, and who maintains installation/behavioral parity? | A portable format does not prove runtime compatibility | Platform owner |
-| **P2** | What defines a good assessment, including acceptable unknowns, evidence citations and readiness? | Needed for measurable acceptance checks and evaluation rubrics | Skill users / reviewer |
-| **P2** | Who approves changes to the skill and its output contract? | Prevents an inferred design from becoming an unreviewed requirement | Maintainer |
+| Priority | Question | Suggested owner |
+| --- | --- | --- |
+| **P1** | Who uses Light now, and what real problem would changing it solve? | Skill owner / developers |
+| **P1** | Which host and code/Jira access are expected, and are write restrictions technically enforced? | Host/tool owner |
+| **P1** | What counts as an acceptable engineering brief, and who approves changes? | Reviewer / maintainer |
+| **P2** | Must Claude and Codex behave equivalently, or is one deployment sufficient? | Platform owner |
+| **P2** | Is any machine-readable downstream consumer actually needed? | Workflow owner |
 
-The one-pass format, four SDI steps, and readiness labels are already documented ([source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L12-L55)). Ask for run evidence if behavior is in doubt.
+No question here asks teammates to restate facts already established by the linked source documentation.
 
-## Decision log (no decisions approved)
+## Decision log
 
-| ID | Decision / question | Owner | Status |
-| --- | --- | --- | --- |
-| **D-01** | Confirm problem, users and desired success measures | UNASSIGNED | OPEN |
-| **D-02** | Continue as-is/test first vs modify instructions vs define consumer handoff | UNASSIGNED | OPEN |
-| **D-03** | Who owns effective permission boundaries and deployment targets? | UNASSIGNED | OPEN |
-| **D-04** | Whether a downstream machine-readable contract is actually required | UNASSIGNED | OPEN |
-| **D-05** | Approved eval fixtures, pass/fail rules and review gate | UNASSIGNED | OPEN |
+| ID | Pending decision | Status / owner |
+| --- | --- | --- |
+| **D-01** | Confirm user problem, scope, success criteria | **OPEN / UNASSIGNED** |
+| **D-02** | Keep-as-is vs minimal clarification vs consumer interface | **OPEN / UNASSIGNED** |
+| **D-03** | Confirm runtime support and effective write restrictions | **OPEN / UNASSIGNED** |
+| **D-04** | Assign human reviewer and contract maintainer | **OPEN / UNASSIGNED** |
 
-## Next checkpoint and status
+## Next checkpoint
 
-**Next:** Confirm the problem and owner, choose a sanitized ticket and synthetic code fixture, then review Option A (test current behavior first). Run Evaluate Skill separately only when authorized.
+**Recommended next action:** Have the skill owner confirm who uses Light, the specific problem to solve, and whether the current concise brief already suffices. Collect approved environment/source information only as needed; no target skill was executed here.
 
-**Produced:** Static audit, documented workflow, quality/standards/compatibility checks, 10 Discover answers, 5 Design answers, 6 Contract answers, proposed options/invariants/tests, and open decisions.
+**Prepared:** Fresh static Audit Skill review, documented workflow, ten-dimension dashboard, format check, compatibility limits, **10 Stage 1 answers**, **5 Stage 2 answers**, **6 Stage 3 answers**, conditional options, written contracts and decision questions.
 
-**Not produced:** Runtime or permission evidence, test results, approved design/contract, implementation, or release.
+**Not prepared or authorized:** Behavioral evaluation cases, runtime observations, permission enforcement results, implementation changes, approved design/contract, or release.
 
-**Review gate summary:** **HUMAN REVIEW REQUIRED — Discover; HUMAN REVIEW REQUIRED — Design; HUMAN REVIEW REQUIRED — Contract.**
-
-This public-source review is a draft. Record confirmed team decisions separately after approval.
+**Review gates:** **HUMAN REVIEW REQUIRED — Discover; HUMAN REVIEW REQUIRED — Design; HUMAN REVIEW REQUIRED — Contract.**
