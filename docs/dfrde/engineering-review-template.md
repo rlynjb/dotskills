@@ -37,8 +37,8 @@
 
 - **Before a meeting:** Inspect approved sources to establish current facts. For agent skills, `audit-skill` provides **evidence-backed findings**, not questions. **Only when a DFRDE Stages 1–3 prefill is requested**, use those findings to draft answers to the eight questions defined below **and to the corresponding SDI thinking prompts**. For other domains, inspect relevant approved sources. Stages 2–3 remain **CONDITIONAL / PROPOSED** pending human review; do not invent facts to fill the template.
 - **Question ownership:** **This template is the single source of truth for eight questions: 3 Discover, 3 Design, 2 Contract.** The Audit Skill must not invent, copy, or maintain a second question list. It supplies findings to answer these questions **only for a requested prefill**. Expand answers as needed, not the mandatory question count.
-- **SDI thinking guides:** For generated Stage 1–3 review records, place the corresponding short **SDI thinking guide directly after that stage's Review status**, before its question answers. The guide maps the existing eight questions to relevant steps in Alex Xu's four-step system design approach; it is optional reasoning support, **not another checklist, an additional step, or a claim of ISO/IEEE compliance**. Keep existing question IDs and wording. Apply only relevant lenses; do not force deep system design for a small skill change. Our checklist adapts ideas from [Google design documents](https://abseil.io/resources/swe-book/html/ch10.html), [Mozilla architecture review](https://github.com/mozilla/firefox-browser-architecture/blob/master/text/0006-architecture-review-process.md), and, when cloud concerns apply, [AWS Well-Architected](https://docs.aws.amazon.com/wellarchitected/latest/userguide/waf.html). None publishes this exact eight-question list; ISO/IEC/IEEE standards remain background references, not a compliance claim.
-- **Evidence-backed SDI responses (requested prefill only):** For each applicable SDI thinking prompt in Stages 1–3, prefill the corresponding **Evidence-backed SDI reasoning** cell using the same approved source inspection or read-only Audit Skill findings as the eight core answers. Briefly separate **DOCUMENTED / IMPLEMENTED CHECK / OBSERVED RESULT** (what the linked source actually supports), **INFERRED** (reasonable interpretation, not proof), and **HUMAN REVIEW / GAP** (what needs confirmation, a decision, or future verification). Cite the exact source beside supported claims; mark unsupported items `UNVERIFIED` or `NOT RUN`. Use `NOT APPLICABLE` with a reason when a lens does not fit. Keep responses concise, refer to the corresponding core answer rather than duplicating lengthy findings, and never manufacture evidence, test outcomes, or approval. In Design and Contract, options and guarantees stay `PROPOSED` / `CONDITIONAL` until the preceding decisions receive human approval. This adds **no new questions or workflow stages**; the human review gates remain unchanged.
+- **SDI thinking guides:** In generated Stage 1–3 reviews, give **each of the eight canonical questions its own subsection directly after the stage's Review status**. Inside each subsection, put **SDI step**, **What to think through**, and **Evidence-backed SDI reasoning**, followed by the question's draft answer, direct sources/evidence state, question status, and owner/next action. Do not use a stage-level SDI table or a separate table of the same questions. The SDI guidance applies Alex Xu's four-step design approach selectively; it is optional reasoning support, **not additional questions or workflow stages**. Keep existing IDs and wording and avoid forced system design for small changes. The checklist adapts ideas from [Google design documents](https://abseil.io/resources/swe-book/html/ch10.html), [Mozilla architecture review](https://github.com/mozilla/firefox-browser-architecture/blob/master/text/0006-architecture-review-process.md), and, when cloud concerns apply, [AWS Well-Architected](https://docs.aws.amazon.com/wellarchitected/latest/userguide/waf.html). None publishes this exact eight-question list; ISO/IEC/IEEE standards remain background references, not a compliance claim.
+- **Evidence-backed SDI responses (requested prefill only):** Fill the **Evidence-backed SDI reasoning** field inside each question subsection using approved source inspection or read-only Audit Skill findings. Distinguish **DOCUMENTED / IMPLEMENTED CHECK / OBSERVED RESULT** (supported claims), **INFERRED** (interpretation), and **HUMAN REVIEW / GAP** (unresolved decisions or verification). Put direct source links next to facts; label unsupported claims `UNVERIFIED` or `NOT RUN` and irrelevant lenses `NOT APPLICABLE` with a reason. Keep the reasoning concise, distinct from the core answer, and never invent evidence, outcomes or approval. Design and Contract options remain `PROPOSED` / `CONDITIONAL` until approved.
 - **During discussion:** Confirm findings, challenge assumptions, compare options, and note what remains unresolved. You can record/transcribe with participant consent and organization-approved tools.
 - **After discussion:** Have AI draft a *proposed* update from the meeting transcript, with timestamp/source references where available. A human confirms decisions before marking them approved or saving changes to the canonical file.
 - **Maintain one canonical record per change.** Keep transcripts and sensitive source artifacts in their approved access-controlled locations; link rather than copying confidential content into a public repo.
@@ -161,15 +161,46 @@ List **only the few material unknowns** that affect understanding or the next hu
 
 **Review status:** [Source-backed draft / human review required / approved; identify owner and unresolved assumptions]
 
-### SDI thinking guide — Stage 1
+The 3 canonical Discover questions appear below as individual subsections. The SDI prompts are thinking aids, not extra questions; prefill evidence only when requested.
 
-Use these prompts to think through the **three existing questions**, not to create more questions. For an explicitly requested prefill, briefly answer each relevant prompt from audit/source evidence in the final column.
+### S1-Q01 — What problem are we solving, and who is affected?
 
-| Question | SDI step | What to think through | Evidence-backed SDI reasoning (prefill on request) |
-| --- | --- | --- | --- |
-| **S1-Q01** | **Step 1 — Understand requirements** | Whose problem is this, what is the current pain, and what outcome matters? | [DOCUMENTED: evidenced purpose/users, direct link; INFERRED: likely problem or impact; HUMAN REVIEW: confirm stakeholder pain/outcome.] |
-| **S1-Q02** | **Step 1 — Understand requirements** | Which functional/nonfunctional requirements, scope boundaries, constraints, and success criteria matter? | [DOCUMENTED: sourced requirements and constraints; INFERRED: possible gaps or success measures; HUMAN REVIEW: validate scope and priorities.] |
-| **S1-Q03** | **Steps 1–2 — Understand context; high-level design** | What components, flows, and reusable patterns already exist? Verify as-is evidence before suggesting a new design; mark N/A for greenfield. | [DOCUMENTED: as-is components/workflow and direct links; INFERRED: reuse opportunity; GAP: UNVERIFIED behavior or NOT APPLICABLE for greenfield.] |
+**SDI thinking guide**
+
+- **SDI step:** Step 1 — Understand requirements
+- **What to think through:** Whose problem is this, what is the current pain, and what outcome matters?
+- **Evidence-backed SDI reasoning (prefill on request):** [DOCUMENTED: evidenced purpose/users with direct links; INFERRED: likely problem or impact; HUMAN REVIEW: confirm stakeholder pain and desired outcome.]
+
+**Draft answer / hypothesis:** [User/stakeholder need, current pain, intended outcome; PROPOSED until confirmed]  
+**Source and evidence state:** [Direct source link with relevant lines, or UNVERIFIED]  
+**Question status:** **NEEDS CONFIRMATION**  
+**Owner / next action:** [Owner: confirm actual user problem and outcome]
+
+### S1-Q02 — What are the requirements, constraints, and success criteria?
+
+**SDI thinking guide**
+
+- **SDI step:** Step 1 — Understand requirements
+- **What to think through:** Which functional/nonfunctional requirements, scope boundaries, constraints, and success criteria matter?
+- **Evidence-backed SDI reasoning (prefill on request):** [DOCUMENTED: sourced FR/NFR, scope and constraints; INFERRED: possible gaps or measures; HUMAN REVIEW: validate scope, priority and success definition.]
+
+**Draft answer / hypothesis:** [FR/NFR, acceptance criteria, scope/non-goals, important limitations, agreed vs proposed outcomes]  
+**Source and evidence state:** [Direct source link with relevant lines, or UNVERIFIED]  
+**Question status:** **NEEDS CONFIRMATION**  
+**Owner / next action:** [Owner: review priorities and measures]
+
+### S1-Q03 — What already exists that we can reuse?
+
+**SDI thinking guide**
+
+- **SDI step:** Steps 1–2 — Understand context; high-level design
+- **What to think through:** What components, flows, and reusable patterns already exist? Verify as-is evidence before suggesting a new design; mark NOT APPLICABLE for greenfield.
+- **Evidence-backed SDI reasoning (prefill on request):** [DOCUMENTED: as-is components/workflow with direct links; INFERRED: reuse opportunity; GAP: behavior NOT VERIFIED, or NOT APPLICABLE with reason for greenfield.]
+
+**Draft answer / hypothesis:** [Inspected as-is architecture/code/process, dependencies, current behavior, reusable patterns; NOT VERIFIED if access is missing]  
+**Source and evidence state:** [Direct source link with relevant lines, or UNVERIFIED]  
+**Question status:** **NOT VERIFIED**  
+**Owner / next action:** [Evidence owner: confirm as-is and viable reuse]
 
 ### What to do
 
@@ -199,13 +230,7 @@ flowchart TD
     VERIFY --> GATE
 ```
 
-**Stage 1 questions to prefill (3 core questions)**
-
-| ID | Discovery question | Draft answer / hypothesis | Source and evidence state | Question status | Owner / next action |
-| --- | --- | --- | --- | --- | --- |
-| S1-Q01 | What problem are we solving, and who is affected? | [User/stakeholder need, current pain, intended outcome; PROPOSED until confirmed] | [Direct source link or unknown] | NEEDS CONFIRMATION | [Owner] |
-| S1-Q02 | What are the requirements, constraints, and success criteria? | [FR/NFR, acceptance criteria, scope/non-goals, important limitations, agreed vs proposed outcomes] | [Direct source link or unknown] | NEEDS CONFIRMATION | [Owner] |
-| S1-Q03 | What already exists that we can reuse? | [Inspected as-is architecture/code/process, dependencies, current behavior, reusable patterns; N/A for greenfield, NOT VERIFIED where access is missing] | [Direct source link or unknown] | NOT VERIFIED | [Evidence owner] |
+**Stage 1 question answers:** Use the three individual question subsections above. Keep this walkthrough as optional context; do not duplicate the answers in a table.
 
 Cover the essential facts inside these answers rather than introducing extra mandatory questions. Distinguish **current evidence** from assumptions and new proposals. **A source-backed answer does not approve a business goal or a design**.
 
@@ -259,15 +284,46 @@ Cover the essential facts inside these answers rather than introducing extra man
 
 **Review status:** [CONDITIONAL pending Stage 1 confirmation / human review required / approved]
 
-### SDI thinking guide — Stage 2
+The 3 canonical Design questions appear below as individual subsections. The SDI prompts are thinking aids, not extra questions; prefill evidence only when requested.
 
-Use these prompts to reason through the **three existing design questions**; keep options proposed until reviewed. For an explicitly requested prefill, use audit/source evidence to provide brief, conditional reasoning in the final column.
+### S2-Q01 — What are the possible solutions?
 
-| Question | SDI step | What to think through | Evidence-backed SDI reasoning (prefill on request) |
-| --- | --- | --- | --- |
-| **S2-Q01** | **Step 2 — High-level design** | What is the smallest viable approach, including keeping or reusing what exists? What alternatives are genuinely different? | [DOCUMENTED: existing design/reuse evidence; INFERRED: possible alternatives; HUMAN REVIEW: select approach — PROPOSED, not approved.] |
-| **S2-Q02** | **Steps 2 and 4 — Design options; trade-offs** | How do alternatives compare on simplicity, complexity, cost, maintainability, and the confirmed requirements? Why prefer one? | [DOCUMENTED: source-backed constraints or measurements; INFERRED: comparative trade-offs; HUMAN REVIEW: preferred option and rationale — CONDITIONAL.] |
-| **S2-Q03** | **Steps 3–4 — Deep dive; bottlenecks and trade-offs** | Which components or boundaries deserve closer inspection for security, failure modes, reliability, performance, and operational risks? | [DOCUMENTED: known boundaries/failure handling; INFERRED: possible risks; GAP: untested security, reliability, or performance — NOT RUN/UNVERIFIED.] |
+**SDI thinking guide**
+
+- **SDI step:** Step 2 — High-level design
+- **What to think through:** What is the smallest viable approach, including keeping or reusing what exists? What alternatives are genuinely different?
+- **Evidence-backed SDI reasoning (prefill on request):** [DOCUMENTED: existing design/reuse evidence with links; INFERRED: possible alternatives; HUMAN REVIEW: choose an approach — PROPOSED, not approved.]
+
+**Evidence-backed answer / proposed option:** [Keep as-is/reuse-first option and only meaningful alternatives; no automatic architecture decision]  
+**Source and evidence state:** [Direct source links for inspected patterns; label options PROPOSED]  
+**Question status:** **OPEN DECISION**  
+**Owner / next action:** [Reviewer: compare options and confirm direction]
+
+### S2-Q02 — What are the trade-offs, and which approach is recommended?
+
+**SDI thinking guide**
+
+- **SDI step:** Steps 2 and 4 — Design options; trade-offs
+- **What to think through:** How do alternatives compare on simplicity, complexity, cost, maintainability, and confirmed requirements? Why prefer one?
+- **Evidence-backed SDI reasoning (prefill on request):** [DOCUMENTED: source-backed constraints or measurements with links; INFERRED: comparative trade-offs; HUMAN REVIEW: preferred option and rationale remain CONDITIONAL.]
+
+**Evidence-backed answer / proposed option:** [Benefits, limits, complexity, affected components, and rationale; recommendation is not approval]  
+**Source and evidence state:** [Link measured facts and label estimates/assumptions]  
+**Question status:** **OPEN DECISION**  
+**Owner / next action:** [Decision owner: review trade-offs and recommendation]
+
+### S2-Q03 — What are the main risks, including security and reliability?
+
+**SDI thinking guide**
+
+- **SDI step:** Steps 3–4 — Deep dive; bottlenecks and trade-offs
+- **What to think through:** Which components or boundaries deserve closer inspection for security, failure modes, reliability, performance, and operational risks?
+- **Evidence-backed SDI reasoning (prefill on request):** [DOCUMENTED: known boundaries/failure handling with links; INFERRED: potential risks; GAP: untested reliability, permission, security, or performance — UNVERIFIED/NOT RUN.]
+
+**Evidence-backed answer / proposed option:** [Failure paths, trust/permissions, performance, cost, operational/maintenance risks, and candidate mitigations]  
+**Source and evidence state:** [Direct source link for documented risks; otherwise UNVERIFIED]  
+**Question status:** **NEEDS CONFIRMATION**  
+**Owner / next action:** [Risk owner: assess and accept or mitigate outstanding risks]
 
 ### What to do
 
@@ -283,13 +339,7 @@ Identify the smallest architecture that addresses the confirmed problem. Deep di
 
 **Audit-assisted prefill (for existing agent skills):** When requested, answer the **three Stage 2 questions already in this template** using documented architecture and constraints from the Audit Skill. It must not add questions, approve an option, or choose an architecture. If Stage 1 is unconfirmed, mark the design **CONDITIONAL**.
 
-### Questions for collaborators — source-prefilled where possible
-
-| ID | Question | Evidence-backed answer / proposed option | Source and evidence state | Question status | Human owner / next step |
-| --- | --- | --- | --- | --- | --- |
-| S2-Q01 | What are the possible solutions? | [Keep as-is/reuse first; other meaningful options only where warranted] | [Direct links to inspected patterns or PROPOSED] | OPEN DECISION | [Reviewer] |
-| S2-Q02 | What are the trade-offs, and which approach is recommended? | [Benefits, limitations, scope, complexity, affected components, decision rationale; recommendation is not approval] | [Link measured facts; label assumptions] | OPEN DECISION | [Decision owner] |
-| S2-Q03 | What are the main risks, including security and reliability? | [Relevant failure paths, permissions, performance, cost, operations, maintainability and mitigations; AWS pillars only when applicable] | [Direct source link or UNVERIFIED] | NEEDS CONFIRMATION | [Risk owner] |
+### Question review guidance
 
 Use **ANSWERED BY EVIDENCE**, **NEEDS CONFIRMATION**, **OPEN DECISION**, or **NOT VERIFIED** for each question, and distinguish the *as-is answer* from the *to-be proposal*. Do not repeat fully answered source facts as open-ended teammate questions. Preserve unresolved questions and assign an owner.
 
@@ -322,14 +372,33 @@ Use **ANSWERED BY EVIDENCE**, **NEEDS CONFIRMATION**, **OPEN DECISION**, or **NO
 
 **Review status:** [CONDITIONAL on Stage 2 decision / human review required / approved]
 
-### SDI thinking guide — Stage 3
+The 2 canonical Contract questions appear below as individual subsections. The SDI prompts are thinking aids, not extra questions; prefill evidence only when requested.
 
-Use these prompts to reason through the **two existing contract questions**; document guarantees as proposals until an owner approves them. For an explicitly requested prefill, distinguish written expectations from verified enforcement in the final column.
+### S3-Q01 — What must the solution guarantee, and how will we verify those guarantees?
 
-| Question | SDI step | What to think through | Evidence-backed SDI reasoning (prefill on request) |
-| --- | --- | --- | --- |
-| **S3-Q01** | **Steps 3–4 — Deep dive; bottlenecks and trade-offs** | What should each interface guarantee, including inputs/outputs, invariants, permissions, failure behavior, and observable acceptance criteria? How would we later verify it? | [DOCUMENTED: existing input/output and permission rules with links; INFERRED: candidate guarantees; GAP: enforcement or acceptance unverified — PROPOSED/CONDITIONAL.] |
-| **S3-Q02** | **Step 3 — Deep dive into responsibilities** | Who owns each component or handoff, who may authorize effects, and who must review and approve decisions? | [DOCUMENTED: stated responsibilities and approval boundaries; INFERRED: possible handoffs; HUMAN REVIEW: confirm owners, authority, and sign-off.] |
+**SDI thinking guide**
+
+- **SDI step:** Steps 3–4 — Deep dive; bottlenecks and trade-offs
+- **What to think through:** What should each interface guarantee, including inputs/outputs, invariants, permissions, failure behavior, and observable acceptance criteria? How would we later verify it?
+- **Evidence-backed SDI reasoning (prefill on request):** [DOCUMENTED: existing input/output, permission and failure rules with links; INFERRED: candidate guarantees; GAP: enforcement or acceptance NOT RUN/UNVERIFIED — PROPOSED/CONDITIONAL.]
+
+**Existing evidence / candidate answer:** [Documented vs PROPOSED contracts, invariants, authorization, failures and high-level acceptance expectations; no test outcome implied]  
+**Source and evidence state:** [Direct source link or UNVERIFIED; candidate guarantees labeled PROPOSED]  
+**Question status:** **OPEN DECISION**  
+**Owner / next action:** [Contract reviewer: confirm obligations and later verification approach]
+
+### S3-Q02 — Who owns responsibilities, decisions, and approvals?
+
+**SDI thinking guide**
+
+- **SDI step:** Step 3 — Deep dive into responsibilities
+- **What to think through:** Who owns each component or handoff, who may authorize effects, and who must review and approve decisions?
+- **Evidence-backed SDI reasoning (prefill on request):** [DOCUMENTED: stated responsibilities and approval boundaries with links; INFERRED: possible handoffs; HUMAN REVIEW: confirm actual owners, authority and sign-off.]
+
+**Existing evidence / candidate answer:** [Producer/consumer and reviewer roles, contract location/version, authorization and unresolved ownership]  
+**Source and evidence state:** [Source link for documented roles, otherwise OPEN/UNVERIFIED]  
+**Question status:** **NEEDS CONFIRMATION**  
+**Owner / next action:** [Accountable owner: assign roles and approval authority]
 
 ### What to do
 
@@ -346,12 +415,7 @@ A **contract** states what a participant promises; an **invariant** is a propert
 
 **Audit-assisted prefill (for existing agent skills):** When requested, answer the **two Stage 3 questions already in this template** using documented interfaces, limitations, permissions, and guarantees from the Audit Skill. Candidate contracts depend on **PROPOSED Stage 2 options** and remain **CONDITIONAL — NOT APPROVED** until human review.
 
-### Questions for collaborators — draft contracts, pending approval
-
-| ID | Question | Existing evidence / candidate answer | Source and evidence state | Question status | Reviewer / next action |
-| --- | --- | --- | --- | --- | --- |
-| S3-Q01 | What must the solution guarantee, and how will we verify those guarantees? | [Documented vs PROPOSED interfaces, inputs/outputs, invariants, permissions/trust boundaries, failures, and high-level acceptance expectations. Existing observed checks only; no evaluation cases are run or generated here.] | [Direct source link or UNVERIFIED] | OPEN DECISION | [Contract reviewer] |
-| S3-Q02 | Who owns responsibilities, decisions, and approvals? | [Producer/consumer and reviewer roles, contract location/version, who authorizes effects, unresolved decisions, and sign-off] | [Decision or source link, otherwise OPEN] | NEEDS CONFIRMATION | [Accountable owner] |
+### Question review guidance
 
 Use **ANSWERED BY EVIDENCE**, **NEEDS CONFIRMATION**, **OPEN DECISION**, or **NOT VERIFIED** for each question. The existence of a written rule does not establish that a runtime enforces it. Test proposals are **NOT RUN**, not passing tests.
 
