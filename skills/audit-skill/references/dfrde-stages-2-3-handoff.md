@@ -6,7 +6,7 @@ This is the **read-only output contract** for `audit-skill` when pre-populating 
 
 ## Distinguish discovered reality from proposed engineering choices
 
-- **AS-IS / DOCUMENTED:** What actually appears in inspected files, configurations and references, with path:line and source revision. A documented workflow or permission is not automatically observed runtime behavior.
+- **AS-IS / DOCUMENTED:** What actually appears in inspected files, configurations and references, with direct source links to the inspected revision and relevant lines. A documented workflow or permission is not automatically observed runtime behavior.
 - **OBSERVED RESULT:** Only a provided or separately authorized real trace/test demonstrates the behavior. An agent's assertion of success is not independent evidence.
 - **INFERRED:** Plausible interpretation with supporting evidence and uncertainty.
 - **PROPOSED OPTION / PROPOSED CONTRACT:** A suggestion derived from the current evidence; **never** describe it as accepted, implemented, enforced, tested or team-approved.
@@ -19,7 +19,7 @@ When a skill has one accessible target, consider its internal interfaces and arc
 
 ## Stage 2 — Design: questions to prefill
 
-Produce **S2-Q01–S2-Q05** with short evidence-backed answers or explicit unknowns. For each include source/version, evidence type, question status and recommended next owner action. Add a **compact options/trade-off matrix** and an **as-is diagram reference**. Create a **clearly PROPOSED to-be Mermaid diagram** only when the available evidence is sufficient to sketch plausible boundaries; do not draw unsupported implementation as-if real.
+Produce **S2-Q01–S2-Q05** with short evidence-backed answers or explicit unknowns. For each include a direct source-file link beside the claim (or `NOT VERIFIED`), evidence type, question status and recommended next owner action. Add a **compact options/trade-off matrix** and an **as-is diagram reference**. Create a **clearly PROPOSED to-be Mermaid diagram** only when the available evidence is sufficient to sketch plausible boundaries; do not draw unsupported implementation as-if real.
 
 | ID | Question | Prefill from inspection | Human boundary |
 | --- | --- | --- | --- |
@@ -49,7 +49,7 @@ Propose a **conditional contract draft** informed by the as-is interfaces and ea
 | **S3-Q02** | What are the functional/nonfunctional guarantees, valid states, pre/postconditions, and invariants? | Explicit documented rules/validators and expected outputs; assumptions clearly flagged | New required fields, success thresholds and guarantees are proposed, not existing facts |
 | **S3-Q03** | Which identities, trust boundaries, permissions, human approvals and forbidden side effects apply? | Declared tool allowlists, tool/MCP dependencies, policy references and *verified* runtime controls if available | A prompt saying read-only does **not** enforce authorization; unverified enforcement stays NOT VERIFIED |
 | **S3-Q04** | What should happen on missing evidence, failed tools, timeouts, retries, duplicated requests, conflicts, partial results and blocked status? | Documented error/stop behavior, existing checks and handoff results | Do not silently invent recovery or resolve conflicts by guessing |
-| **S3-Q05** | How will the guarantees be checked and what existing baseline/tests are available? | Present tests/CI/traces and intended outcomes; draft normal/negative/misuse cases | Proposed tests are **NOT RUN**. Quality/security thresholds need approval |
+| **S3-Q05** | What would count as meeting the guarantees, and is existing test evidence available? | Link existing tests/CI/traces; draft only high-level acceptance expectations | No new evaluation-case list in this initial audit. Quality/security thresholds require human approval |
 | **S3-Q06** | Where does the contract live and who approves changes and compatibility? | Existing `SKILL.md`, reference docs, schemas, manifests and review controls | New contract file location, versioning and sign-off **OPEN DECISION** |
 
 Use a compact **contract proposal table**:
@@ -60,7 +60,7 @@ Use a compact **contract proposal table**:
 
 For domain-specific contracts, only propose relevant schemas. **An interface contract is not a universal JSON/YAML format**, and an invariant is a rule that must hold across applicable states, including failure paths. Distinguish the **contract** from the actual implementation and enforcement.
 
-**Stage 3 output:** Candidate inputs/outputs, roles, invariants, trust/permissions and failure semantics; proposed acceptance and regression cases; outstanding agreement questions; contract selection **NOT APPROVED** until Stage 2 design and Stage 3 contract owners agree. **HUMAN REVIEW REQUIRED — Contract** remains pending.
+**Stage 3 output:** Candidate inputs/outputs, roles, invariants, trust/permissions and failure semantics; high-level acceptance expectations (not detailed evaluation cases); outstanding agreement questions; contract selection **NOT APPROVED** until Stage 2 design and Stage 3 contract owners agree. **HUMAN REVIEW REQUIRED — Contract** remains pending.
 
 ## Output format and meeting preparation
 
@@ -69,7 +69,7 @@ After **Audit Skill — At a Glance** and the Stage 1 draft, provide two concise
 ```markdown
 ## DFRDE Stage 2 — Design (audit-prefilled, PROPOSED)
 **Prerequisite:** Stage 1 problem/scope [APPROVED or UNCONFIRMED].
-**As-is evidence:** [links to audit source map/current-state diagrams].
+**As-is evidence:** [direct links to inspected source files/lines, plus current-state diagram if useful].
 | S2 question | Draft answer/option | Evidence | Status | Teammate confirmation/decision |
 | ... S2-Q01 through S2-Q05 ... |
 **Options/trade-offs:** [2+ real choices only when warranted].
@@ -81,7 +81,7 @@ After **Audit Skill — At a Glance** and the Stage 1 draft, provide two concise
 | S3 question | Candidate guarantee / unknown | Evidence | Status | Approval/verification needed |
 | ... S3-Q01 through S3-Q06 ... |
 **Contract outline:** [producer/consumer, invariants, trust, errors, versions].
-**Evaluation suggestions:** [cases expected/negative; NOT RUN].
+**Acceptance expectations:** [plain language; no evaluation cases or test plan yet].
 **Gate:** HUMAN REVIEW REQUIRED — contract NOT APPROVED.
 
 ## Team discussion shortlist
@@ -89,7 +89,7 @@ After **Audit Skill — At a Glance** and the Stage 1 draft, provide two concise
 not already resolved by source inspection. Identify owner and next step.]
 ```
 
-Use `ANSWERED BY EVIDENCE`, `NEEDS CONFIRMATION`, `OPEN DECISION`, `NOT VERIFIED` for questions, even if the **draft option or contract** is PROPOSED. Existing facts can answer a question without approving the proposed response to those facts. Link a question to an existing `F-xx` or `Q-xx` when relevant. Provide full detail on a requested deep dive rather than overwhelming the initial overview.
+Use `ANSWERED BY EVIDENCE`, `NEEDS CONFIRMATION`, `OPEN DECISION`, `NOT VERIFIED` for questions, even if the **draft option or contract** is PROPOSED. Place direct source links with each cited finding; do not create an evidence-key lookup table. Existing facts can answer a question without approving the proposed response to those facts. Link a question to an existing `F-xx` or `Q-xx` when relevant. Provide full detail on a requested deep dive rather than overwhelming the initial overview.
 
 ## Boundaries
 
