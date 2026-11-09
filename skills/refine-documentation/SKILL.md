@@ -11,6 +11,11 @@ Perform a **minimal editorial pass** on an existing document. Improve clarity an
 
 **Rule:** Reduce words, not information. Simplify explanations, not concepts.
 
+**Default presentation conventions (unless the user asks otherwise):**
+- **Write for a junior developer onboarding to the topic.** Use short, direct sentences and explain necessary technical wording briefly, using only facts already present in the source. Make distinct items easy to scan. Do not turn an editorial pass into a tutorial.
+- **Link directly to sources.** Put an existing, verifiable source link beside the claim it supports, ideally to the relevant section or lines. If the document uses an evidence-key lookup table, replace each key with its mapped direct link when available. Remove the lookup table only if no unique evidence or context is lost. If a key cannot be resolved, keep the reference and flag the limitation; never invent a link.
+- **Use meanings instead of unnecessary status legends.** In reader-facing findings, say what a status means in plain language (for example, “Written instructions were inspected; actual behavior was not tested”). Do not make readers decode a legend. Preserve exact labels, IDs, or codes where they are required for approvals, contracts, tracking, or machine processing; explain them inline rather than silently changing their formal meaning.
+
 ## Input
 
 - The document or its exact authorized file location.
@@ -21,11 +26,11 @@ Read the complete relevant document before editing. If the content is unavailabl
 ## Workflow
 
 1. **Understand the document.** Identify its topic, purpose, audience, and existing section structure.
-2. **Protect essential content.** Preserve distinct facts, requirements, constraints, decisions, open questions, action items, deliverables, evidence, statuses, links, citations, and meaningful examples.
+2. **Protect essential content.** Preserve distinct facts, requirements, constraints, decisions, open questions, action items, deliverables, evidence, the meaning of statuses, required identifiers, links, citations, and meaningful examples.
 3. **Remove bloat.** Delete filler, repeated explanations, overlapping statements, and irrelevant tangents. Consolidate repetition only when the unique details survive.
-4. **Use plain English.** Prefer direct sentences and familiar words. Keep precise domain terms when replacing them would lose meaning. Avoid vague corporate or AI-generated phrasing.
+4. **Use plain English.** Apply the default presentation conventions above. Keep precise domain terms when replacing them would lose meaning. Avoid vague corporate or AI-generated phrasing.
 5. **Keep the structure useful.** Retain headings, stages, lists, tables, order, and references unless a small adjustment clearly improves reading. Do not add sections, examples, recommendations, or conclusions.
-6. **Check semantic fidelity.** Compare the revision against the original. Confirm that no unique information, qualifying language, ownership, approval state, dates, IDs, links, or evidence disappeared or changed meaning.
+6. **Check semantic fidelity.** Compare the revision against the original. Confirm that no unique information, qualifying language, ownership, approval state, dates, required IDs, citations, source mappings, or evidence disappeared or changed meaning.
 
 ## Boundaries
 
@@ -49,6 +54,7 @@ Run refine-documentation on this document.
 Use a minimal editorial pass: remove redundancy and filler,
 explain complicated wording in plain English, and keep the topic focused.
 Preserve all unique information, requirements, decisions, open questions,
-action items, deliverables, status labels, references, and structure.
+action items, deliverables, status meanings, required identifiers, references,
+and structure. Use direct source links and explain shorthand in plain English.
 Do not add anything new or make decisions for me.
 ~~~
