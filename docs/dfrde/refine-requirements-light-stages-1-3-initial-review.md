@@ -1,10 +1,20 @@
 # DFRDE — Initial Engineering Review: Refine Requirements — Light
 
-**Scope:** Public Refine Requirements — Light skill only. No workplace Jira ticket, private application code, or runtime execution was reviewed.
+## Review summary
 
-**Reviewed:** November 8, 2026. **Status:** Stage 1 (Discover): review required; Stage 2 (Design): proposed; Stage 3 (Contract): not approved. Stages 4–6 have not started.
+- **Scope:** Public Refine Requirements — Light skill only.
+  - No workplace Jira ticket reviewed
+  - No private application code reviewed
+  - No runtime execution reviewed
+- **Reviewed on:** November 8, 2026
+- **Current status:**
+  - **Stage 1 — Discover:** Review required
+  - **Stage 2 — Design:** Proposed
+  - **Stage 3 — Contract:** Not approved
+  - **Stages 4–6:** Not started
+- **Next step:** Confirm the problem, success criteria, and review owner.
 
-**Next:** Confirm the problem, success criteria, and review owner. Links point to the inspected source revision. Documented behavior is not a tested result. Keep workplace evidence outside this public repository.
+> Links point to the inspected source revision. Documented behavior is not a tested result. Keep workplace evidence outside this public repository.
 
 ## Table of contents
 
