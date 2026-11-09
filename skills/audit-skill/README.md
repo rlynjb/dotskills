@@ -2,7 +2,7 @@
 
 **`audit-skill` is one read-only, overview-first workflow for reviewing one or more agent skills.** It automatically adjusts its scope from independent single-skill analysis to multi-skill responsibility and handoff analysis. There is **no Explore/Audit/Compare mode selection**.
 
-The first result is a compact, complete review of what each skill does, how it works, what evidence exists, what is unverified, and what the team should discuss. It also **prefills DFRDE Stages 1–3**: source-backed Discovery answers, conditional Design options, and candidate Contracts—without editing documents, selecting architectures, or approving decisions. Choose any finding or topic afterward for a deeper explanation.
+The first result is a compact, complete review of what each skill does, how it works, what evidence exists, what is unverified, and what the team should discuss. **Audit-only does not create a questionnaire or prefill DFRDE stages.** Only if you explicitly request a DFRDE review prefill does the audit supply source-backed draft answers to the **eight questions defined by the Engineering Review Template** (3 Discover, 3 Design, 2 Contract). It does not edit documents, choose architectures, or approve decisions. Choose any finding or topic afterward for a deeper explanation.
 
 ## Table of contents
 
@@ -31,7 +31,7 @@ The first result is a compact, complete review of what each skill does, how it w
        - Quality & evidence     - Handoff/integration options
        - Runtime parity                |
               \                       /
-               Findings + NOT RUN eval proposals
+               Evidence-backed findings + verification limits
                            |
                  Human selects topic/finding
                            |
@@ -43,7 +43,7 @@ The first result is a compact, complete review of what each skill does, how it w
 1. **Find and inspect** each available skill, references, agents, manifests, tests and relevant history, with source revision and line evidence.
 2. **Apply the same review criteria to every skill**, whether one or several were supplied.
 3. **Add relationships automatically** only when there are two or more accessible skills. Otherwise mark inter-skill comparison NOT APPLICABLE.
-4. **Report all criteria at a glance** with existing safeguards before risks, source limitations and proposed tests that have **not** run.
+4. **Report all criteria at a glance** with existing safeguards first, then evidence gaps, limitations and behavior that has **not** been verified. Do not generate evaluation test cases during the initial audit.
 5. **Wait for a requested deep dive.** Never silently change the skill or run a behavioral evaluation.
 
 If a named target cannot be accessed, label it NOT ASSESSED and avoid constructing a fictitious comparison.
@@ -56,14 +56,13 @@ The report begins **Audit Skill — At a Glance** (not a mode guide or a long qu
 | --- | --- |
 | **Target/source boundary** | Which skills and revisions were inspected; what was inaccessible; no tests or target skill execution |
 | **Skill profile(s)** | Purpose, activation, inputs, dependencies, steps/decisions, agents and tools, outputs, permissions, failures and handoffs |
-| **Quality dashboard** | Q-01–Q-10 verdicts for each skill, supporting paths/lines, and key unknowns |
+| **Quality dashboard** | Q-01–Q-10 plain-English findings for each skill, with direct source links and key unknowns |
 | **Agent Skills specification matrix** | Required format vs recommended/optional structure; normative claims tied to the published specification |
 | **Mermaid current-state diagram(s)** | One flowchart per target, including decisions, delegation, stop conditions and unverified edges |
 | **Relationship analysis (2+ only)** | Shared/unique responsibility matrix, conflicts, duplicate decisions, and proposed handoff/compose/merge alternatives |
 | **Cross-runtime matrix** | Explicit host-by-capability compatibility evidence and adapter needs |
-| **Evidence and risk map** | Existing safeguards first; source-backed F-xx findings, impact/confidence, and unanswered questions |
-| **Evaluation recommendations** | At least three realistic synthetic cases and pass/fail criteria, all **NOT RUN**, plus smallest next step |
-| **DFRDE Stages 1–3 handoff** | S1-Q01–S1-Q10 Discovery answers; S2-Q01–S2-Q05 conditional design options and trade-offs; S3-Q01–S3-Q06 draft contracts, permissions and NOT RUN checks; all review gates pending |
+| **Evidence and gaps** | Existing safeguards first; important source-backed findings, limitations and unanswered questions |
+| **DFRDE Stages 1–3 handoff (only when requested)** | Answers to the template's eight questions (3 Discover, 3 Design, 2 Contract), grounded in audit evidence; design and contract suggestions remain proposed and human review gates remain pending |
 
 The main report remains concise. A selected `F-xx`, `Q-xx`, `S1-Qxx`, `S2-Qxx`, `S3-Qxx`, diagram, workflow stage or contract receives an evidence-backed deep dive without switching modes. Never present a hypothetical path as a tested run.
 
@@ -82,7 +81,7 @@ A real diagram must come from the target files and label which edges are inferre
 
 ## DFRDE Stages 1–3 prefill
 
-The Audit Skill **automatically drafts all three early engineering stages** after inspecting one or more existing agent skills. Its purpose is to **answer the questions that repository evidence can answer before a team review**, propose realistic architecture alternatives, and identify candidate interface guarantees, so the meeting focuses on confirmations and actual engineering decisions.
+The Audit Skill performs a **read-only source review** and returns evidence-backed findings by default. **Only when you explicitly request a DFRDE Stages 1–3 prefill** does it use those findings to draft answers to the eight questions already defined in the engineering review template. There is no second question list in this skill. The meeting then focuses on confirmations and decisions that source evidence cannot resolve.
 
 Use [the generic DFRDE engineering review template](../../docs/dfrde/engineering-review-template.md) as the destination for an approved copy. The [Stage 1 discovery handoff](references/dfrde-stage-1-handoff.md) defines how to prefill current-state facts, while the [Stage 2–3 design/contract handoff](references/dfrde-stages-2-3-handoff.md) defines conditional proposals and approval gates.
 
@@ -93,19 +92,18 @@ Use [the generic DFRDE engineering review template](../../docs/dfrde/engineering
 | **OPEN DECISION** | Carry architecture/ownership alternatives into Stage 2 rather than letting the agent choose |
 | **NOT VERIFIED** | Identify missing source or runtime evidence and how to obtain it safely |
 
-Stage 1 includes the **PROPOSED** problem, existing architecture and evidence gaps. Stage 2 includes **PROPOSED** alternatives, current-state patterns, ownership and trade-offs; if Stage 1 isn't confirmed, these options are conditional. Stage 3 proposes interfaces, invariants, permissions, failure behavior and **NOT RUN** evaluation cases per design alternative, but doesn't choose one. **All three human review gates remain pending**; no team approval, live execution or file modification is implied.
+When a prefill is requested, Stage 1 answers summarize the problem, requirements, constraints and reusable existing patterns. Stage 2 answers outline possible solutions, trade-offs and risks. Stage 3 answers describe candidate guarantees, ways to verify them, and ownership/approval boundaries. Mark unsupported claims **NOT VERIFIED** and unperformed checks **NOT RUN**. **All three human review gates remain pending**; no approval, live execution, or file modification is implied.
 
 ### Audit-assisted invocation example
 
 ```text
 Use audit-skill on the existing skill(s). Give the full At a Glance
-review and prefill DFRDE Stage 1 (S1-Q01–S1-Q10), Stage 2
-(S2-Q01–S2-Q05), and Stage 3 (S3-Q01–S3-Q06) from actual source
-and version evidence. Keep the problem PROPOSED until confirmed,
+review, then explicitly prefill only the eight DFRDE questions in the
+Engineering Review Template (3 Discover, 3 Design, 2 Contract) from
+source and version evidence. Keep the problem PROPOSED until confirmed,
 architectural options conditional until reviewed, and contracts NOT
-APPROVED until the design and responsible owners agree. Include a
-meeting-ready shortlist; don't run tests, choose a design, edit the
-engineering record or advance stages.
+APPROVED until responsible owners agree. Don't invent questions, run
+tests, choose a design, edit the record, or advance stages.
 ```
 
 ## Quality and standards checks
@@ -125,7 +123,7 @@ The [Agent Skills specification](https://agentskills.io/specification) is the st
 | Q-09 | Evals and observability | Existing tests, CI, scenarios, execution traces, expected and observed outcomes |
 | Q-10 | Lifecycle and portability | Owners, versioning, review/rollback, compatible hosts, adapters and regressions |
 
-For each applicable item show **PASS (static)**, **GAP**, **UNVERIFIED**, or **NOT APPLICABLE**, with a reason and evidence. A written instruction to check something does not prove the check actually ran.
+For each applicable item, write a **plain-English sentence** describing what the audit found and what remains unverified, with direct links to the evidence. Avoid shorthand verdicts or a separate legend. A written instruction does not prove behavior was tested or enforced.
 
 The separate **standards compliance matrix** distinguishes required specification elements, recommendations and experimental/host-specific behavior. It should not imply full standards conformance if the published specification was not consulted or a validator was not run.
 
@@ -151,8 +149,8 @@ Use a runtime × capability matrix with **SUPPORTED (evidenced)**, **ADAPTER REQ
 ```text
 Use audit-skill on Sprint Assessment in this repository.
 Start with a complete at-a-glance report including the skill contract,
-Mermaid current-state flow, Agent Skills compliance matrix, ten quality
-requirements, cross-platform compatibility, risks and NOT RUN eval cases.
+Mermaid current-state flow, Agent Skills format check, ten quality
+areas, cross-platform compatibility and evidence gaps.
 Cite file/line evidence. Do not execute the skill or edit anything.
 ```
 
@@ -188,7 +186,7 @@ The [Stage 1 handoff](references/dfrde-stage-1-handoff.md) and [Stage 2–3 hand
 
 | Skill | Responsibility |
 | --- | --- |
-| **Audit Skill** (this skill) | Single workflow for independent and multi-skill source audits, compliance, trust, diagrams and portability, plus **DFRDE Stages 1–3 evidence-prefilled drafts**; no design approvals, execution or edits |
+| **Audit Skill** (this skill) | Single read-only workflow for independent and multi-skill source audits, trust, diagrams and portability. Only on an explicit DFRDE prefill request, draft answers to the eight template-owned questions; no design approvals, execution or edits |
 | [Evaluate Skill](../evaluate-skill/SKILL.md) | Separately authorized behavioral evaluation, diagnosis, human-approved changes and regression review; runtime safety gates still apply |
 | [Integrate Skills](../integrate-skills/SKILL.md) | Draft collaboration/architecture walkthrough for connecting independently reviewed skills; not an implementation runner |
 | [Learn Repo](../learn-repo/SKILL.md) | Guided learning of an entire codebase rather than skill-specific audit |
