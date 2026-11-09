@@ -36,7 +36,7 @@
 ### How to use this record
 
 - **Before a meeting:** Ask an authorized agent or reviewer to inspect the available sources and prefill **Stages 1–3 where evidence permits**. For agent-skill targets, `audit-skill` can draft Discovery answers, design options and candidate contracts; for other domains, use appropriate approved sources and tools. Stages 2–3 stay **CONDITIONAL / PROPOSED** until their human reviews; never invent facts to make the template look complete.
-- **Industry standards are references, not replacement questions:** The 21 Stage 1–3 questions are a practical DFRDE checklist, **not** an official ISO/IEC/IEEE questionnaire. Use relevant [standards references](#references) to inform requirements, architecture descriptions, and lifecycle decisions. Keep the questions that apply to the project; do not claim compliance merely because they were answered.
+- **Eight core questions, three stages:** Use **3 Discover + 3 Design + 2 Contract** questions as the default. Expand an answer only where project complexity warrants it; don't add a longer mandatory questionnaire. This is our lightweight adaptation of [Google design documents](https://abseil.io/resources/swe-book/html/ch10.html), [Mozilla architecture review](https://github.com/mozilla/firefox-browser-architecture/blob/master/text/0006-architecture-review-process.md), and, **when cloud concerns matter**, [AWS Well-Architected](https://docs.aws.amazon.com/wellarchitected/latest/userguide/waf.html). These companies **do not** prescribe these exact eight questions. ISO/IEC/IEEE standards remain background references, not a certification checklist.
 - **During discussion:** Confirm findings, challenge assumptions, compare options, and note what remains unresolved. You can record/transcribe with participant consent and organization-approved tools.
 - **After discussion:** Have AI draft a *proposed* update from the meeting transcript, with timestamp/source references where available. A human confirms decisions before marking them approved or saving changes to the canonical file.
 - **Maintain one canonical record per change.** Keep transcripts and sensitive source artifacts in their approved access-controlled locations; link rather than copying confidential content into a public repo.
@@ -187,20 +187,15 @@ flowchart TD
     VERIFY --> GATE
 ```
 
-**Stage 1 questions to prefill**
+**Stage 1 questions to prefill (3 core questions)**
 
 | ID | Discovery question | Draft answer / hypothesis | Source and evidence state | Question status | Owner / next action |
 | --- | --- | --- | --- | --- | --- |
-| S1-Q01 | Who is experiencing what problem? What outcome would help? | [PROPOSED unless confirmed] | [Meeting/source or UNVERIFIED] | NEEDS CONFIRMATION | [Owner] |
-| S1-Q02 | What exists today, and which relevant parts have been inspected? | [As-is summary or GREENFIELD] | [Files, lines, revision] | NOT VERIFIED | [Evidence check] |
-| S1-Q03 | What triggers the current work? Who are its users and participants? | [Prefill] | [Citation or UNVERIFIED] | NOT VERIFIED | [Owner] |
-| S1-Q04 | What inputs, outputs, dependencies, data and external integrations are involved? | [Prefill] | [Citation or UNVERIFIED] | NOT VERIFIED | [Owner] |
-| S1-Q05 | What are the major decision points, contracts, handoffs and ownership boundaries? | [Prefill; identify overlap if multiple components] | [Citation or UNVERIFIED] | NOT VERIFIED | [Owner] |
-| S1-Q06 | Which existing guards, tests, traces and observed failure paths exist? | [Do not infer a run from documentation] | [Citation / NOT RUN] | NOT VERIFIED | [Owner] |
-| S1-Q07 | What trust, authorization, privacy, runtime and portability constraints apply? | [Distinguish instructions from enforcement] | [Citation or UNVERIFIED] | NOT VERIFIED | [Owner] |
-| S1-Q08 | What functional/nonfunctional requirements, non-goals and success measures are agreed? | [Separate observed need from proposed metric] | [Approved source or UNVERIFIED] | NEEDS CONFIRMATION | [Owner] |
-| S1-Q09 | Can we reuse an existing component or simpler deterministic workflow? | [Alternative hypothesis] | [Evidence or proposed analysis] | OPEN DECISION | [For Stage 2] |
-| S1-Q10 | What are the biggest unknowns and what evidence would resolve each? | [Prioritized list] | [Evidence gap] | NOT VERIFIED | [Owner] |
+| S1-Q01 | What problem are we solving, and who is affected? | [User/stakeholder need, current pain, intended outcome; PROPOSED until confirmed] | [Direct source link or unknown] | NEEDS CONFIRMATION | [Owner] |
+| S1-Q02 | What are the requirements, constraints, and success criteria? | [FR/NFR, acceptance criteria, scope/non-goals, important limitations, agreed vs proposed outcomes] | [Direct source link or unknown] | NEEDS CONFIRMATION | [Owner] |
+| S1-Q03 | What already exists that we can reuse? | [Inspected as-is architecture/code/process, dependencies, current behavior, reusable patterns; N/A for greenfield, NOT VERIFIED where access is missing] | [Direct source link or unknown] | NOT VERIFIED | [Evidence owner] |
+
+Cover the essential facts inside these answers rather than introducing extra mandatory questions. Distinguish **current evidence** from assumptions and new proposals. **A source-backed answer does not approve a business goal or a design**.
 
 **Current-state evidence map** (omit or mark N/A for greenfield):
 
@@ -268,11 +263,9 @@ Identify the smallest architecture that addresses the confirmed problem. Deep di
 
 | ID | Question | Evidence-backed answer / proposed option | Source and evidence state | Question status | Human owner / next step |
 | --- | --- | --- | --- | --- | --- |
-| S2-Q01 | What approaches might address the confirmed *or proposed* problem, including keeping existing behavior or a simpler change? | [PROPOSED options, not a selected solution] | [Source path:line / hypothesis] | OPEN DECISION | [Owner] |
-| S2-Q02 | What existing patterns, subsystems, tools and architecture constraints should be preserved? | [Inspected as-is components] | [Source revision, path:line] | NOT VERIFIED | [Confirm missing source] |
-| S2-Q03 | Where should coordination, decision ownership and handoffs live? | [As-is ownership vs PROPOSED to-be boundaries] | [Source path:line] | OPEN DECISION | [Owner] |
-| S2-Q04 | What trade-offs, bottlenecks, failure and trust risks, costs or portability constraints matter? | [Source-backed risks vs hypothetical trade-offs] | [Sources; measured values only if observed] | NEEDS CONFIRMATION | [Owner] |
-| S2-Q05 | What design direction and rationale has the accountable reviewer approved? | [Approved decision link OR OPEN] | [Actual review evidence or UNVERIFIED] | OPEN DECISION | [Reviewer / D-ID] |
+| S2-Q01 | What are the possible solutions? | [Keep as-is/reuse first; other meaningful options only where warranted] | [Direct links to inspected patterns or PROPOSED] | OPEN DECISION | [Reviewer] |
+| S2-Q02 | What are the trade-offs, and which approach is recommended? | [Benefits, limitations, scope, complexity, affected components, decision rationale; recommendation is not approval] | [Link measured facts; label assumptions] | OPEN DECISION | [Decision owner] |
+| S2-Q03 | What are the main risks, including security and reliability? | [Relevant failure paths, permissions, performance, cost, operations, maintainability and mitigations; AWS pillars only when applicable] | [Direct source link or UNVERIFIED] | NEEDS CONFIRMATION | [Risk owner] |
 
 Use **ANSWERED BY EVIDENCE**, **NEEDS CONFIRMATION**, **OPEN DECISION**, or **NOT VERIFIED** for each question, and distinguish the *as-is answer* from the *to-be proposal*. Do not repeat fully answered source facts as open-ended teammate questions. Preserve unresolved questions and assign an owner.
 
@@ -309,7 +302,7 @@ Use **ANSWERED BY EVIDENCE**, **NEEDS CONFIRMATION**, **OPEN DECISION**, or **NO
 - [ ] Specify functional requirements, NFRs, input/output constraints, state transitions, invariants and acceptance criteria.
 - [ ] Define trust boundaries, authorization, approved effects, escalation and human override.
 - [ ] Define failures: missing data, timeouts, retries, duplicates, partial success, incompatibility and recovery.
-- [ ] Draft success, failure, misuse and regression tests **before implementation**; identify safe baseline when applicable.
+- [ ] Identify high-level observable acceptance expectations before implementation; detailed evaluation cases belong to an approved evaluation workflow. Record an existing safe baseline when available.
 - [ ] Review and approve contract scope, decision owners and quality gates.
 
 ### Guided walkthrough
@@ -322,12 +315,8 @@ A **contract** states what a participant promises; an **invariant** is a propert
 
 | ID | Question | Existing evidence / candidate answer | Source and evidence state | Question status | Reviewer / next action |
 | --- | --- | --- | --- | --- | --- |
-| S3-Q01 | Who produces and consumes information, owns each guarantee, and maintains the contract/version? | [Existing or PROPOSED responsibilities] | [Path:line / UNVERIFIED] | NEEDS CONFIRMATION | [Owner] |
-| S3-Q02 | What inputs/outputs, FR/NFR, states, acceptance criteria and invariants are required? | [Documented vs PROPOSED guarantees] | [Path:line / proposal] | OPEN DECISION | [Owner] |
-| S3-Q03 | What trust, identity, permission, approval and forbidden-effect rules apply and are truly enforced? | [Actual host/tool rules vs prompt-only] | [Enforcement evidence or NOT VERIFIED] | NOT VERIFIED | [Reviewer] |
-| S3-Q04 | What failures, missing data, timeouts, retries, duplicates, conflicts and partial results must be handled? | [Existing behavior vs PROPOSED safe defaults] | [Path:line / gap] | OPEN DECISION | [Owner] |
-| S3-Q05 | What objective evaluations, baseline and regression cases should verify the guarantees? | [Existing tests vs PROPOSED tests — NOT RUN] | [Test paths/trace if present] | OPEN DECISION | [Reviewer] |
-| S3-Q06 | Where is the contract maintained, versioned and approved, and how are incompatible changes handled? | [Existing document/manifest vs proposal] | [Source / UNVERIFIED] | NEEDS CONFIRMATION | [Owner / D-ID] |
+| S3-Q01 | What must the solution guarantee, and how will we verify those guarantees? | [Documented vs PROPOSED interfaces, inputs/outputs, invariants, permissions/trust boundaries, failures, and high-level acceptance expectations. Existing observed checks only; no evaluation cases are run or generated here.] | [Direct source link or UNVERIFIED] | OPEN DECISION | [Contract reviewer] |
+| S3-Q02 | Who owns responsibilities, decisions, and approvals? | [Producer/consumer and reviewer roles, contract location/version, who authorizes effects, unresolved decisions, and sign-off] | [Decision or source link, otherwise OPEN] | NEEDS CONFIRMATION | [Accountable owner] |
 
 Use **ANSWERED BY EVIDENCE**, **NEEDS CONFIRMATION**, **OPEN DECISION**, or **NOT VERIFIED** for each question. The existence of a written rule does not establish that a runtime enforces it. Test proposals are **NOT RUN**, not passing tests.
 
@@ -345,7 +334,7 @@ Use **ANSWERED BY EVIDENCE**, **NEEDS CONFIRMATION**, **OPEN DECISION**, or **NO
 | --- | --- |
 | Interface / ownership / handoff contracts | [PROPOSED / link] |
 | Invariants, trust and permission boundaries | [REVIEW REQUIRED / link] |
-| Failure/recovery rules and acceptance tests | [NOT RUN / link] |
+| Failure/recovery expectations and acceptance criteria | [PROPOSED / link; detailed tests not run] |
 | Approved contract baseline | [REVIEW REQUIRED / owner] |
 
 ### Review gate
@@ -502,6 +491,12 @@ Record `APPROVED` only when confirmed by an accountable reviewer; transcript inf
 | U-01 | [Unverified] | [Impact] | [Approved read-only inspection or future test] | [Owner] | OPEN |
 
 ## References
+
+**Design-first practices informing the eight-question checklist** (these are references, not a combined company or industry standard):
+
+- **Google — [Software Engineering at Google: Design Docs](https://abseil.io/resources/swe-book/html/ch10.html):** Goals, design alternatives, trade-offs, feedback and review before major implementation.
+- **Mozilla — [Architecture Review Process](https://github.com/mozilla/firefox-browser-architecture/blob/master/text/0006-architecture-review-process.md):** Shared problem definition, impacted stakeholders, alternatives, review decisions, and scaling the review to its size.
+- **AWS — [Well-Architected Framework](https://docs.aws.amazon.com/wellarchitected/latest/userguide/waf.html):** Optional quality/risk lens for cloud workloads (security, reliability, operations, performance, cost and sustainability). Its extensive framework questions are **not** replaced by our eight.
 
 **Official software engineering standards informing this template** (not a claim of ISO/IEC/IEEE compliance):
 
