@@ -21,6 +21,7 @@
 - [Lifecycle at a glance](#lifecycle-at-a-glance)
 - [Progress tracker](#progress-tracker)
 - [1. Discover](#1-discover--what-problem-and-existing-reality-are-we-working-with)
+  - [Ten-dimension review dashboard (optional for skill audits)](#ten-dimension-review-dashboard--optional-for-skill-audits)
 - [2. Design](#2-design--what-approach-best-fits-the-requirements)
 - [3. Contract](#3-contract--what-must-participants-and-components-guarantee)
 - [4. Implement](#4-implement--make-only-the-reviewed-change)
@@ -41,6 +42,7 @@
 - **Keep the table of contents current.** Every generated DFRDE review record should have a clickable TOC near the top. Include only sections in the actual document; update links when headings change or sections are removed.
 - **Separate four things:** action checkboxes = work done; reference information = evidence and proposed ideas; deliverables = artifacts produced; review gate = human approval. A completed checkbox is not an approval.
 - **Evidence states:** `DOCUMENTED` (source says so), `IMPLEMENTED CHECK` (code/test exists), `OBSERVED RESULT` (authorized run/trace demonstrates it), `INFERRED`, `UNVERIFIED`, `PROPOSED`, `NOT RUN`. Always give source links/lines when available.
+- **Audit dashboard readability:** For skill audits, include the optional ten-dimension dashboard below. Present each finding in plain language; explain jargon near the table. Do not turn `PASS (static)` into "tested" or "safe": an instruction found in a file is not observed behavior or permission enforcement. Keep source links and outstanding verification visible.
 - **Question statuses:** `ANSWERED BY EVIDENCE`, `NEEDS CONFIRMATION`, `OPEN DECISION`, `NOT VERIFIED`. A question answered from documentation can still require runtime confirmation.
 - **Stage statuses:** `NOT STARTED`, `IN PROGRESS`, `REVIEW REQUIRED`, `APPROVED`, `BLOCKED`, `COMPLETED`, `NOT APPLICABLE`. No stage automatically advances because an AI generated text.
 - **Permissions:** Documentation and read-only source analysis are not permission to run specialists, modify repositories, call live tools, test against production, or release. Seek explicit approval for the exact effects.
@@ -104,6 +106,36 @@ flowchart TD
     DEC --> GATE
     VERIFY --> GATE
 ```
+
+### Ten-dimension review dashboard — optional for skill audits
+
+**What this is:** A project-specific review rubric combining software engineering, AI reliability, security and trust, and lifecycle concerns. It is informed by established practices (e.g., NIST AI RMF, OWASP guidance and the Agent Skills specification), but **it is not itself an official industry standard, compliance test, or certification**. Use it when an `audit-skill` review is relevant; omit it when a different assessment fits the work better.
+
+**How to read it:** Report what the sources **document**, what actual runs/tests **demonstrate**, and what is **still unknown**. Write findings for a beginner, with direct links to evidence and a specific next check when needed. Do not infer actual behavior, tool access, security controls or portability from instructions alone.
+
+**Plain-language status guide (adapt to the evidence):**
+
+- **Documented (not tested):** Described in code/docs, but not exercised. If the audit says `PASS (static)`, *static* means inspecting files without running the skill.
+- **Needs verification:** Not tested or inspected in the actual runtime/environment; not a proven problem.
+- **Partial gap:** Some cases are covered in writing, but other important cases lack guidance; not necessarily a runtime failure.
+- **Evidence gap:** No relevant behavioral test results/traces found within the inspected scope; this does not prove the skill fails.
+
+**Translate common qualifiers instead of showing unexplained jargon:** *runtime unverified* = not run in the host; *environment unverified* = real tools/credentials/settings not checked; *parser compatibility unverified* = not shown that software can read output reliably; *enforcement unverified* = no technical safeguard/permission checked; *behavioral evidence gap* = no test result or trace showing actual behavior. A **written read-only rule** is different from a **technical restriction** that blocks writes.
+
+| Area | Plain-language finding | Evidence and practical meaning / next check |
+| --- | --- | --- |
+| **Q-01 Purpose & boundaries** | [Documented / Needs verification / Partial gap] | [What the skill does and must not do; source] |
+| **Q-02 Activation & discovery** | [Plain status] | [How the host discovers/activates it; what was tested] |
+| **Q-03 Inputs & dependencies** | [Plain status] | [Required inputs, code/tool access and environment evidence] |
+| **Q-04 Workflow & decisions** | [Plain status] | [Steps, decisions, observed adherence if tested] |
+| **Q-05 Contracts & outputs** | [Plain status] | [Output sections/statuses and whether downstream parsing was tested] |
+| **Q-06 Context & trust** | [Plain status] | [How trusted facts and untrusted inputs are distinguished; tested behavior] |
+| **Q-07 Permissions & effects** | [Plain status] | [Written rules versus actual host/tool permission enforcement] |
+| **Q-08 Failure & stopping** | [Plain status] | [Missing data, errors, timeouts, safe stopping and recovery] |
+| **Q-09 Evals & observability** | [Plain status] | [Skill-specific cases, observed traces/results, gaps] |
+| **Q-10 Lifecycle & portability** | [Plain status] | [Versioning, regression checks, supported hosts tested] |
+
+**Review rule:** Never treat this dashboard as a score out of 10 or claim production readiness/compliance from documentation-only checks. Preserve `NOT RUN` and `UNVERIFIED` where appropriate. Follow up in Stage 2 (proposals) and Stage 3 (candidate contracts), then verify behavior in Stage 5 (Evaluate) when authorized.
 
 **Stage 1 questions to prefill**
 
