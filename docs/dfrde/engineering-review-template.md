@@ -41,7 +41,7 @@
 - **Maintain one canonical record per change.** Keep transcripts and sensitive source artifacts in their approved access-controlled locations; link rather than copying confidential content into a public repo.
 - **Keep the table of contents current.** Every generated DFRDE review record should have a clickable TOC near the top. Include only sections in the actual document; update links when headings change or sections are removed.
 - **Separate four things:** action checkboxes = work done; reference information = evidence and proposed ideas; deliverables = artifacts produced; review gate = human approval. A completed checkbox is not an approval.
-- **Evidence states:** `DOCUMENTED` (source says so), `IMPLEMENTED CHECK` (code/test exists), `OBSERVED RESULT` (authorized run/trace demonstrates it), `INFERRED`, `UNVERIFIED`, `PROPOSED`, `NOT RUN`. Always give source links/lines when available.
+- **Evidence states:** `DOCUMENTED` (source says so), `IMPLEMENTED CHECK` (code/test exists), `OBSERVED RESULT` (authorized run/trace demonstrates it), `INFERRED`, `UNVERIFIED`, `PROPOSED`, `NOT RUN`. **Link the exact source file and relevant lines directly beside each supported claim** (prefer commit-pinned links). Do not use evidence keys or a separate evidence lookup table. If evidence is unavailable, state `UNVERIFIED` or `NOT RUN` rather than inventing a link.
 - **Skill audits:** Use the optional **Audit Skill — At a Glance** section before Stage 1. Keep the overview, workflow, ten-dimension dashboard, skill format check, compatibility, and main open questions concise. No ranked findings or proposed evaluation cases here. Written rules do not prove tested behavior or technical enforcement.
 - **Question statuses:** `ANSWERED BY EVIDENCE`, `NEEDS CONFIRMATION`, `OPEN DECISION`, `NOT VERIFIED`. A question answered from documentation can still require runtime confirmation.
 - **Stage statuses:** `NOT STARTED`, `IN PROGRESS`, `REVIEW REQUIRED`, `APPROVED`, `BLOCKED`, `COMPLETED`, `NOT APPLICABLE`. No stage automatically advances because an AI generated text.
@@ -75,7 +75,7 @@ flowchart TD
 
 ## Audit Skill — At a Glance (optional for skill reviews)
 
-Use this section when a skill is being reviewed with `audit-skill`. **Write for a developer new to agent skills:** explain what exists, link to the source, and state what remains unknown. Keep it short; do not add ranked findings or proposed evaluation cases. Delete this section for non-skill reviews.
+Use this section when a skill is being reviewed with `audit-skill`. **Write for a developer new to agent skills:** explain what exists, link to the source beside each finding, and state what remains unknown. No evidence-key table or separate source index. Keep it short; do not add ranked findings or proposed evaluation cases. Delete this section for non-skill reviews.
 
 ### Skill overview
 
@@ -93,7 +93,7 @@ Use this section when a skill is being reviewed with `audit-skill`. **Write for 
 
 **What this is:** A project-specific review rubric combining software engineering, AI reliability, security and trust, and lifecycle concerns. It is informed by established practices (e.g., NIST AI RMF, OWASP guidance and the Agent Skills specification), but **it is not itself an official industry standard, compliance test, or certification**. Use it when an `audit-skill` review is relevant; omit it when a different assessment fits the work better.
 
-**How to read it:** Report what the sources **document**, what actual runs/tests **demonstrate**, and what is **still unknown**. Write findings for a beginner, with direct links to evidence and a specific next check when needed. Do not infer actual behavior, tool access, security controls or portability from instructions alone.
+**How to read it:** Report what the sources **document**, what actual runs/tests **demonstrate**, and what is **still unknown**. Write findings for a beginner, placing a clickable source-file link (ideally to the relevant lines) **in the same row as the claim**, or clearly labeling missing evidence, plus a specific next check when needed. Do not infer actual behavior, tool access, security controls or portability from instructions alone.
 
 **Plain-language status guide (adapt to the evidence):**
 
@@ -106,7 +106,7 @@ Use this section when a skill is being reviewed with `audit-skill`. **Write for 
 
 | Area | Plain-language finding | Evidence and practical meaning / next check |
 | --- | --- | --- |
-| **Q-01 Purpose & boundaries** | [Documented / Needs verification / Partial gap] | [What the skill does and must not do; source] |
+| **Q-01 Purpose & boundaries** | [Documented / Needs verification / Partial gap] | [What the skill does and must not do; direct link to source lines] |
 | **Q-02 Activation & discovery** | [Plain status] | [How the host discovers/activates it; what was tested] |
 | **Q-03 Inputs & dependencies** | [Plain status] | [Required inputs, code/tool access and environment evidence] |
 | **Q-04 Workflow & decisions** | [Plain status] | [Steps, decisions, observed adherence if tested] |
@@ -114,8 +114,8 @@ Use this section when a skill is being reviewed with `audit-skill`. **Write for 
 | **Q-06 Context & trust** | [Plain status] | [How trusted facts and untrusted inputs are distinguished; tested behavior] |
 | **Q-07 Permissions & effects** | [Plain status] | [Written rules versus actual host/tool permission enforcement] |
 | **Q-08 Failure & stopping** | [Plain status] | [Missing data, errors, timeouts, safe stopping and recovery] |
-| **Q-09 Evals & observability** | [Plain status] | [Skill-specific cases, observed traces/results, gaps] |
-| **Q-10 Lifecycle & portability** | [Plain status] | [Versioning, regression checks, supported hosts tested] |
+| **Q-09 Evals & observability** | [Plain status] | [Skill-specific results: direct links to existing test/trace, or NOT VERIFIED / NOT RUN] |
+| **Q-10 Lifecycle & portability** | [Plain status] | [Versioning and supported hosts: direct links to setup/tests; separate documentation from observations] |
 
 **Review rule:** Never treat this dashboard as a score out of 10 or claim production readiness/compliance from documentation-only checks. Preserve `NOT RUN` and `UNVERIFIED` where appropriate. Use this to inform Stages 1–3. Do not generate evaluation cases in the initial audit; evaluate later when authorized.
 
@@ -199,7 +199,7 @@ flowchart TD
 
 **Current-state evidence map** (omit or mark N/A for greenfield):
 
-| Component / claim | Observed/documented behavior | Source revision and location | Evidence state | Consequence if uncertain |
+| Component / claim | Observed/documented behavior | Direct source link (revision and lines) | Evidence state | Consequence if uncertain |
 | --- | --- | --- | --- | --- |
 | [Item] | [What we know] | [Path:line / trace] | UNVERIFIED | [Impact] |
 
