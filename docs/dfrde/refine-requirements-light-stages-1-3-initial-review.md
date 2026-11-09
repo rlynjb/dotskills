@@ -64,20 +64,33 @@ Diagram based on [the skill instructions](https://github.com/rlynjb/dotskills/bl
 
 ### Ten-dimension review dashboard
 
-| Area | Static verdict | Source / practical implication |
-| --- | --- | --- |
-| **Q-01 Purpose & boundaries** | PASS (static) | Scope and exclusions stated, [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L8-L76) |
-| **Q-02 Activation & discovery** | PASS (static); runtime UNVERIFIED | Named skill and illustrative invocation, [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L1-L87); whether hosts activate it appropriately remains untested |
-| **Q-03 Inputs & dependencies** | PASS (static); environment UNVERIFIED | Ticket, code and standards expectations defined, [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L16-L38); effective Jira/code access unknown |
-| **Q-04 Workflow & decisions** | PASS (static) | Four SDI stages and reuse classifications, [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L22-L55); actual adherence untested |
-| **Q-05 Contracts & outputs** | PASS (written); parser compatibility UNVERIFIED | Five section contract + readiness states, [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L49-L69); no machine-enforced response schema inspected |
-| **Q-06 Context & trust** | PASS (written); behavior UNVERIFIED | Separates product authority, observed code and proposals, [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L16-L76) |
-| **Q-07 Permissions & effects** | UNVERIFIED (enforcement) | Read-only declared, [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L71-L76), but no actual host/tool permissions inspected |
-| **Q-08 Failure & stopping** | GAP (partial documented coverage) | Missing-code, no-match and absent-ticket cases addressed, [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L17-L73); tool failure/timeout and stale-context recovery not explicitly specified |
-| **Q-09 Evals & observability** | GAP (behavioral evidence) | No Light-specific eval fixture or run evidence in inspected package; repo-wide CI is not Light behavior testing |
-| **Q-10 Lifecycle & portability** | UNVERIFIED | Source tracked in Git and adapter docs exist; version-by-version Claude/Codex behavioral parity untested |
+**What this is:** A project-specific engineering review rubric that combines software engineering, AI reliability, security and trust, and lifecycle concerns. It reflects ideas found in established practices (such as NIST AI RMF, OWASP guidance, and the Agent Skills specification), but **this exact ten-dimension dashboard is not an official industry standard, a compliance assessment, or a certification**.
 
-Q-08 identifies a documentation gap, not a proven runtime defect.
+**How to read it:** Each row shows (1) what the reviewed files describe, (2) what has not yet been checked, and (3) the source or next evidence needed. **A written instruction is not proof that the skill follows it when run.** No runtime execution was observed for this initial review.
+
+**Status guide:**
+
+- **Documented (not tested):** The inspected files describe the behavior or rule. Earlier reviews called this `PASS (static)`: *static* means reading code/docs without running the skill.
+- **Needs verification:** A claim or protection has not been checked in the actual tools or operating setup. This is **unknown**, not a failure.
+- **Partial gap:** Some situations are documented, but others are not addressed in the inspected instructions. It is not necessarily a runtime defect.
+- **Evidence gap:** The inspected sources did not contain skill-specific test runs, results, or traces proving behavior. Missing evidence is not proof the behavior fails.
+
+**Jargon translated:** *Runtime* = the skill actually running in a host such as Claude Code or Codex. *Environment* = the real Jira/code access, connected tools, settings, and permissions. *Parser compatibility* = whether another program can reliably read the skill's output. *Enforcement* = a technical permission/control that prevents an action, rather than merely telling the agent not to do it. *Behavioral evidence* = test results or execution traces showing what actually happened.
+
+| Area | Finding in plain English | What this means / supporting source |
+| --- | --- | --- |
+| **Q-01 Purpose & boundaries** | **Documented (not tested)** | The skill describes its job and what it must not do. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L8-L76) |
+| **Q-02 Activation & discovery** | **Documented; activation not tested** | The skill has a name and example invocation. No test showed whether a host selects it for appropriate requests. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L1-L87) |
+| **Q-03 Inputs & dependencies** | **Documented; real access not checked** | The instructions name required ticket, code and standards inputs. Actual Jira/repository access and permissions were not examined. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L16-L38) |
+| **Q-04 Workflow & decisions** | **Documented (not tested)** | The four SDI steps and reuse decisions are explained. No run showed whether the agent follows them correctly. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L22-L55) |
+| **Q-05 Contracts & outputs** | **Documented; machine-reading not tested** | The expected sections and readiness labels are specified. It has not been shown that a downstream program could reliably parse the output; no enforced output schema was inspected. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L49-L69) |
+| **Q-06 Context & trust** | **Documented; actual behavior not tested** | The instructions distinguish confirmed source facts from proposals and uncertainty. No test checked whether the skill consistently respects that distinction. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L16-L76) |
+| **Q-07 Permissions & effects** | **Needs verification: real restrictions** | The skill says **read-only**, but the host's tool permissions were not inspected to see whether writes are technically prevented. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L71-L76) |
+| **Q-08 Failure & stopping** | **Partial gap: some failures not described** | Missing tickets/code and no-match cases are addressed, but tool failures, timeouts and stale information lack explicit recovery guidance. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L17-L73) |
+| **Q-09 Evals & observability** | **Evidence gap: no skill-specific test results found** | No Light-specific evaluation fixture, execution trace or graded run was found in the inspected package. General repository CI does not prove Light behaves correctly. |
+| **Q-10 Lifecycle & portability** | **Needs verification: cross-platform behavior** | Git versioning and adapter instructions exist, but there are no observed runs demonstrating equivalent behavior on Claude Code and Codex. |
+
+**Interpretation:** This is a quick view of the **current evidence**, not an overall pass/fail grade or a claim that the skill is production-ready. Q-08 is a documentation gap, not a proven runtime defect; Q-07, Q-09 and Q-10 call for additional evidence before stronger claims.
 
 ### Agent Skills specification — structural checks only
 
