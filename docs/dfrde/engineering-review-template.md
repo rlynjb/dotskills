@@ -36,7 +36,8 @@
 ### How to use this record
 
 - **Before a meeting:** Inspect approved sources to establish current facts. For agent skills, `audit-skill` provides **evidence-backed findings**, not questions. **Only when a DFRDE Stages 1–3 prefill is requested**, use those findings to draft answers to the eight questions defined below. For other domains, inspect relevant approved sources. Stages 2–3 remain **CONDITIONAL / PROPOSED** pending human review; do not invent facts to fill the template.
-- **Question ownership:** **This template is the single source of truth for eight questions: 3 Discover, 3 Design, 2 Contract.** The Audit Skill must not invent, copy, or maintain a second question list. It supplies findings to answer these questions **only for a requested prefill**. Expand answers as needed, not the mandatory question count. Our checklist adapts ideas from [Google design documents](https://abseil.io/resources/swe-book/html/ch10.html), [Mozilla architecture review](https://github.com/mozilla/firefox-browser-architecture/blob/master/text/0006-architecture-review-process.md), and, when cloud concerns apply, [AWS Well-Architected](https://docs.aws.amazon.com/wellarchitected/latest/userguide/waf.html). None publishes this exact eight-question list; ISO/IEC/IEEE standards remain background references, not a compliance claim.
+- **Question ownership:** **This template is the single source of truth for eight questions: 3 Discover, 3 Design, 2 Contract.** The Audit Skill must not invent, copy, or maintain a second question list. It supplies findings to answer these questions **only for a requested prefill**. Expand answers as needed, not the mandatory question count.
+- **SDI thinking guides:** For generated Stage 1–3 review records, place the corresponding short **SDI thinking guide directly after that stage's Review status**, before its question answers. The guide maps the existing eight questions to relevant steps in Alex Xu's four-step system design approach; it is optional reasoning support, **not another checklist, an additional step, or a claim of ISO/IEEE compliance**. Keep existing question IDs and wording. Apply only relevant lenses; do not force deep system design for a small skill change. Our checklist adapts ideas from [Google design documents](https://abseil.io/resources/swe-book/html/ch10.html), [Mozilla architecture review](https://github.com/mozilla/firefox-browser-architecture/blob/master/text/0006-architecture-review-process.md), and, when cloud concerns apply, [AWS Well-Architected](https://docs.aws.amazon.com/wellarchitected/latest/userguide/waf.html). None publishes this exact eight-question list; ISO/IEC/IEEE standards remain background references, not a compliance claim.
 - **During discussion:** Confirm findings, challenge assumptions, compare options, and note what remains unresolved. You can record/transcribe with participant consent and organization-approved tools.
 - **After discussion:** Have AI draft a *proposed* update from the meeting transcript, with timestamp/source references where available. A human confirms decisions before marking them approved or saving changes to the canonical file.
 - **Maintain one canonical record per change.** Keep transcripts and sensitive source artifacts in their approved access-controlled locations; link rather than copying confidential content into a public repo.
@@ -157,7 +158,17 @@ List **only the few material unknowns** that affect understanding or the next hu
 
 **Why:** Understand the task *before* choosing a solution. For existing systems, prefer evidence about present behavior; for greenfield work, document user needs and explicitly mark existing-state analysis NOT APPLICABLE.
 
-**SDI lens:** Step 1 — understand requirements, scope and constraints.
+**Review status:** [Source-backed draft / human review required / approved; identify owner and unresolved assumptions]
+
+### SDI thinking guide — Stage 1
+
+Use these prompts to think through the **three existing questions**, not to create more questions.
+
+| Question | SDI step | What to think through |
+| --- | --- | --- |
+| **S1-Q01** | **Step 1 — Understand requirements** | Whose problem is this, what is the current pain, and what outcome matters? |
+| **S1-Q02** | **Step 1 — Understand requirements** | Which functional/nonfunctional requirements, scope boundaries, constraints, and success criteria matter? |
+| **S1-Q03** | **Steps 1–2 — Understand context; high-level design** | What components, flows, and reusable patterns already exist? Verify as-is evidence before suggesting a new design; mark N/A for greenfield. |
 
 ### What to do
 
@@ -243,7 +254,19 @@ Cover the essential facts inside these answers rather than introducing extra man
 
 ## 2. Design — What approach best fits the requirements?
 
-**Why:** Compare defensible approaches, not just the first solution an agent proposes. **SDI lens:** Steps 2–4 (high-level design, critical components, bottlenecks and trade-offs).
+**Why:** Compare defensible approaches, not just the first solution an agent proposes.
+
+**Review status:** [CONDITIONAL pending Stage 1 confirmation / human review required / approved]
+
+### SDI thinking guide — Stage 2
+
+Use these prompts to reason through the **three existing design questions**; keep options proposed until reviewed.
+
+| Question | SDI step | What to think through |
+| --- | --- | --- |
+| **S2-Q01** | **Step 2 — High-level design** | What is the smallest viable approach, including keeping or reusing what exists? What alternatives are genuinely different? |
+| **S2-Q02** | **Steps 2 and 4 — Design options; trade-offs** | How do alternatives compare on simplicity, complexity, cost, maintainability, and the confirmed requirements? Why prefer one? |
+| **S2-Q03** | **Steps 3–4 — Deep dive; bottlenecks and trade-offs** | Which components or boundaries deserve closer inspection for security, failure modes, reliability, performance, and operational risks? |
 
 ### What to do
 
@@ -294,7 +317,18 @@ Use **ANSWERED BY EVIDENCE**, **NEEDS CONFIRMATION**, **OPEN DECISION**, or **NO
 
 ## 3. Contract — What must participants and components guarantee?
 
-**Why:** Turn design choices into explicit, testable expectations. **SDI lens:** Component deep dive and trade-offs (Steps 3–4); this stage formalizes agreements, not speculative internals.
+**Why:** Turn design choices into explicit, testable expectations. This DFRDE contract stage extends SDI's design reasoning into reviewable agreements; it is **not a separate SDI step**.
+
+**Review status:** [CONDITIONAL on Stage 2 decision / human review required / approved]
+
+### SDI thinking guide — Stage 3
+
+Use these prompts to reason through the **two existing contract questions**; document guarantees as proposals until an owner approves them.
+
+| Question | SDI step | What to think through |
+| --- | --- | --- |
+| **S3-Q01** | **Steps 3–4 — Deep dive; bottlenecks and trade-offs** | What should each interface guarantee, including inputs/outputs, invariants, permissions, failure behavior, and observable acceptance criteria? How would we later verify it? |
+| **S3-Q02** | **Step 3 — Deep dive into responsibilities** | Who owns each component or handoff, who may authorize effects, and who must review and approve decisions? |
 
 ### What to do
 
