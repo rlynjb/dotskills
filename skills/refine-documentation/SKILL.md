@@ -34,7 +34,7 @@ Read the complete relevant document before editing. If the content is unavailabl
 
 ## Boundaries
 
-- **Do not add facts, assumptions, explanations, design choices, sources, or research.** Do not fill gaps by guessing.
+- **Do not add new facts, assumptions, background explanations, design choices, sources, or research.** Clarify existing wording only when the document supports it; do not fill gaps by guessing.
 - **Do not turn proposals into decisions, observations into guarantees, or unrun tests into results.**
 - Keep distinctions such as **known / unknown**, **fact / proposal**, **question / decision**, and **action item / deliverable**.
 - Do not shorten aggressively when it would remove important nuance. A small edit—or no edit—is better than a misleading summary.
