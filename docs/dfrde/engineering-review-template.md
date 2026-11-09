@@ -79,11 +79,22 @@ Use this section when a skill is being reviewed with `audit-skill`. **Write for 
 
 ### Skill overview
 
-- **What it does:** [One sentence and source link]
-- **What it needs:** [Inputs and access requirements; source link]
-- **What it produces:** [Outputs and statuses; source link]
-- **What it must not do:** [Documented limits; make clear if technical restrictions were not checked]
-- **Review limit:** [What files/systems were inspected and what was not observed]
+- **Purpose:** [One sentence with direct source link]
+- **Inputs:** [Direct source link]
+  - [Input 1]
+  - [Input 2 or required code/tool access; mark missing access NOT VERIFIED]
+- **Workflow:** [Direct source link]
+  1. **Step 1:** [Action]
+  2. **Step 2:** [Action; add only real steps]
+- **Outputs:** **One [report/artifact]** containing the following items, not separate files unless documented. [Direct source link]
+  - **[Section/item 1]:** [Brief description]
+  - **[Section/item 2]:** [Brief description and any status]
+- **Boundaries:** [Direct source link]
+  - [Forbidden actions]
+  - [Documented restrictions versus technically enforced restrictions]
+- **Review limit:** [What was inspected and what was not observed]
+
+**Formatting rule:** Use separate indented bullets or numbered steps for individual inputs, workflow actions, and report sections. Do not combine distinct items into one comma-separated sentence. Clearly distinguish parts of **one report** from separate artifacts.
 
 ### Documented workflow
 
