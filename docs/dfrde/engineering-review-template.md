@@ -106,31 +106,22 @@ Use this section when a skill is being reviewed with `audit-skill`. **Write for 
 
 This is a **project-specific engineering review rubric** that brings together software engineering, AI reliability, security and trust, and lifecycle concerns. The underlying ideas also appear in practices such as NIST AI RMF, OWASP guidance, and the Agent Skills specification, but **the ten-dimension dashboard itself is not an official industry standard, compliance assessment, or certification**. Keep this explanation in generated skill-review documents; omit the dashboard for reviews where it does not apply.
 
-**How to read it:** Report what the sources **document**, what actual runs/tests **demonstrate**, and what is **still unknown**. Write findings for a beginner, placing a clickable source-file link (ideally to the relevant lines) **in the same row as the claim**, or clearly labeling missing evidence, plus a specific next check when needed. Do not infer actual behavior, tool access, security controls or portability from instructions alone.
+**How to read it:** The middle column states **what the audit found or could not check**, as a short, complete sentence—not a verdict label such as `PASS (static)`, `Documented (not tested)`, `Needs verification`, `Partial gap`, or `Evidence gap`. Examples: “Written instructions were inspected,” “Actual behavior was not tested,” and “Tool failure handling is not fully described.” The final column briefly explains the finding and links directly to relevant source lines. Never treat written instructions as proof of actual behavior or technical enforcement; do not invent links or results.
 
-**Plain-language status guide (adapt to the evidence):**
-
-- **Documented (not tested):** Described in code/docs, but not exercised. If the audit says `PASS (static)`, *static* means inspecting files without running the skill.
-- **Needs verification:** Not tested or inspected in the actual runtime/environment; not a proven problem.
-- **Partial gap:** Some cases are covered in writing, but other important cases lack guidance; not necessarily a runtime failure.
-- **Evidence gap:** No relevant behavioral test results/traces found within the inspected scope; this does not prove the skill fails.
-
-**Translate common qualifiers instead of showing unexplained jargon:** *runtime unverified* = not run in the host; *environment unverified* = real tools/credentials/settings not checked; *parser compatibility unverified* = not shown that software can read output reliably; *enforcement unverified* = no technical safeguard/permission checked; *behavioral evidence gap* = no test result or trace showing actual behavior. A **written read-only rule** is different from a **technical restriction** that blocks writes.
-
-| Area | Plain-language finding | Evidence and practical meaning / next check |
+| Area | What we found (plain sentence) | Explanation, direct source / next check |
 | --- | --- | --- |
-| **Q-01 Purpose & boundaries** | [Documented / Needs verification / Partial gap] | [What the skill does and must not do; direct link to source lines] |
-| **Q-02 Activation & discovery** | [Plain status] | [How the host discovers/activates it; what was tested] |
-| **Q-03 Inputs & dependencies** | [Plain status] | [Required inputs, code/tool access and environment evidence] |
-| **Q-04 Workflow & decisions** | [Plain status] | [Steps, decisions, observed adherence if tested] |
-| **Q-05 Contracts & outputs** | [Plain status] | [Output sections/statuses and whether downstream parsing was tested] |
-| **Q-06 Context & trust** | [Plain status] | [How trusted facts and untrusted inputs are distinguished; tested behavior] |
-| **Q-07 Permissions & effects** | [Plain status] | [Written rules versus actual host/tool permission enforcement] |
-| **Q-08 Failure & stopping** | [Plain status] | [Missing data, errors, timeouts, safe stopping and recovery] |
-| **Q-09 Evals & observability** | [Plain status] | [Skill-specific results: direct links to existing test/trace, or NOT VERIFIED / NOT RUN] |
-| **Q-10 Lifecycle & portability** | [Plain status] | [Versioning and supported hosts: direct links to setup/tests; separate documentation from observations] |
+| **Q-01 Purpose & boundaries** | [Written instructions were inspected.] | [What the skill does and must not do; direct link to source lines] |
+| **Q-02 Activation & discovery** | [The activation instructions exist; host activation was not tested.] | [How the host discovers/activates it; what was tested] |
+| **Q-03 Inputs & dependencies** | [Required inputs are described; actual access was not checked.] | [Required inputs, code/tool access and environment evidence] |
+| **Q-04 Workflow & decisions** | [Workflow steps were inspected; runtime behavior was not tested.] | [Steps, decisions, observed adherence if tested] |
+| **Q-05 Contracts & outputs** | [The expected output is described; machine-reading was not tested.] | [Output sections/statuses and whether downstream parsing was tested] |
+| **Q-06 Context & trust** | [Trust rules are documented; actual behavior was not tested.] | [How trusted facts and untrusted inputs are distinguished; tested behavior] |
+| **Q-07 Permissions & effects** | [Written permission limits were found; technical enforcement was not checked.] | [Written rules versus actual host/tool permission enforcement] |
+| **Q-08 Failure & stopping** | [Some failure paths are described; others need clarification.] | [Missing data, errors, timeouts, safe stopping and recovery] |
+| **Q-09 Evals & observability** | [No skill-specific run or test results were found in the inspected sources.] | [Skill-specific results: direct links to existing test/trace, or NOT VERIFIED / NOT RUN] |
+| **Q-10 Lifecycle & portability** | [Setup instructions exist; cross-platform behavior was not tested.] | [Versioning and supported hosts: direct links to setup/tests; separate documentation from observations] |
 
-**Review rule:** Never treat this dashboard as a score out of 10 or claim production readiness/compliance from documentation-only checks. Preserve `NOT RUN` and `UNVERIFIED` where appropriate. Use this to inform Stages 1–3. Do not generate evaluation cases in the initial audit; evaluate later when authorized.
+**Review rule:** Keep dashboard findings in plain-English sentences instead of shorthand status codes, while honestly saying what was not checked or run. This is not a score out of 10 or proof of production readiness/compliance. Use findings to inform Stages 1–3, and leave evaluation cases for later authorized work.
 
 ### Agent Skills specification — file structure only
 
