@@ -14,7 +14,7 @@ The audit can establish **what available source evidence says**. It cannot decid
 
 1. Audit each available target independently first. Capture `SKILL.md`, relevant supporting files, tool/agent manifests, revision, existing tests and other inspected evidence. When 2+ targets exist, add a grounded overlap/ownership analysis.
 2. Use evidence to prefill the generic Stage 1 questions below. For existing skills, give **as-is** answers first; do not inject unapproved to-be design as current behavior.
-3. For each answer, include **source path:line and version**, evidence type (**DOCUMENTED INSTRUCTIONS**, **IMPLEMENTED CHECK**, **OBSERVED RESULT**, **INFERRED**, or **NOT VERIFIED**) and a *separate* question-action status:
+3. For each answer, include **a direct clickable link to the source file at the inspected revision and relevant lines** (not an evidence key or lookup table), evidence type (**DOCUMENTED INSTRUCTIONS**, **IMPLEMENTED CHECK**, **OBSERVED RESULT**, **INFERRED**, or **NOT VERIFIED**) and a *separate* question-action status:
    - **ANSWERED BY EVIDENCE:** directly supported by a cited inspected source. Written instructions establish *documented intent* only, not runtime behavior. Retain an explicit runtime limitation where relevant.
    - **NEEDS CONFIRMATION:** sources suggest intent, users, owners, desired outcome or standards, but a human must confirm. Do not mark a business goal or success threshold agreed solely from the code.
    - **OPEN DECISION:** multiple reasonable approaches or responsibility assignments require an accountable human decision. Carry forward to Stage 2, not a model-selected conclusion.
@@ -45,7 +45,7 @@ When only one skill is accessible, S1-Q05 addresses its own interfaces and marks
 
 ## Stage 1 portion of the first-response handoff
 
-After **Audit Skill — At a Glance** (profiles, workflow/evidence, standards and quality, cross-runtime, findings, proposed NOT RUN cases), include:
+After **Audit Skill — At a Glance** (profiles, documented workflow, dashboard with direct source links, format/compatibility checks, key unknowns; no proposed evaluation cases), include:
 
 ```markdown
 ## DFRDE Stage 1 — Discover (audit-prefilled draft)
@@ -55,14 +55,14 @@ After **Audit Skill — At a Glance** (profiles, workflow/evidence, standards an
 **What remains unknown or inferred:** ...
 **Existing architecture:** Mermaid as-is diagrams above; runtime observations explicitly limited.
 
-| Question | Prefilled answer / unknown | Evidence (path:line + type) | Status | Ask / next action |
+| Question | Prefilled answer / unknown | Direct source link + evidence type | Status | Ask / next action |
 | --- | --- | --- | --- | --- |
 | S1-Q01 ... S1-Q10 | ... | ... | ... | ... |
 
 **Known FR/NFR, non-goals, trust and environmental constraints:** ...
 **Success criteria:** proposed unless previously approved.
 **Top questions for teammate:** confirmations and unresolved choices only.
-**Evidence backlog:** missing runtime proof, owner and safe verification method.
+**Missing evidence:** state the unknown, responsible owner and safe next check (no separate evidence-key table).
 **Stage 1 deliverables:** draft inventory, questions and problem; approval pending.
 **Stage 1 gate:** HUMAN REVIEW REQUIRED. Do not adopt a design or begin implementation; separate **conditional** Stage 2 design and Stage 3 contract drafts may appear alongside this section under [the Stage 2–3 handoff](dfrde-stages-2-3-handoff.md), without advancing any gate.
 ```
