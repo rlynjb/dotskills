@@ -14,7 +14,7 @@
   - **Stages 4–6:** Not started
 - **Next step:** Confirm the problem, success criteria, and review owner.
 
-> Links point to the inspected source revision. Documented behavior is not a tested result. Keep workplace evidence outside this public repository.
+> Source links appear directly beside the findings they support and point to the inspected revision. There is no separate evidence-key lookup table. Documented behavior is not a tested result. Keep workplace evidence outside this public repository.
 
 ## Table of contents
 
@@ -65,7 +65,7 @@ Diagram based on [the skill instructions](https://github.com/rlynjb/dotskills/bl
 
 **What this is:** A project-specific engineering review rubric that combines software engineering, AI reliability, security and trust, and lifecycle concerns. It reflects ideas found in established practices (such as NIST AI RMF, OWASP guidance, and the Agent Skills specification), but **this exact ten-dimension dashboard is not an official industry standard, a compliance assessment, or a certification**.
 
-**How to read it:** Each row shows (1) what the reviewed files describe, (2) what has not yet been checked, and (3) the source or next evidence needed. **A written instruction is not proof that the skill follows it when run.** No runtime execution was observed for this initial review.
+**How to read it:** Each row shows (1) what the reviewed files describe, (2) what has not yet been checked, and (3) a direct source link or the evidence still needed. **A written instruction is not proof that the skill follows it when run.** No runtime execution was observed for this initial review.
 
 **Status guide:**
 
@@ -86,14 +86,14 @@ Diagram based on [the skill instructions](https://github.com/rlynjb/dotskills/bl
 | **Q-06 Context & trust** | **Documented; actual behavior not tested** | The instructions distinguish confirmed source facts from proposals and uncertainty. No test checked whether the skill consistently respects that distinction. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L16-L76) |
 | **Q-07 Permissions & effects** | **Needs verification: real restrictions** | The skill says **read-only**, but the host's tool permissions were not inspected to see whether writes are technically prevented. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L71-L76) |
 | **Q-08 Failure & stopping** | **Partial gap: some failures not described** | Missing tickets/code and no-match cases are addressed, but tool failures, timeouts and stale information lack explicit recovery guidance. [source](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L17-L73) |
-| **Q-09 Evals & observability** | **Evidence gap: no skill-specific test results found** | No Light-specific evaluation fixture, execution trace or graded run was found in the inspected package. General repository CI does not prove Light behaves correctly. |
-| **Q-10 Lifecycle & portability** | **Needs verification: cross-platform behavior** | Git versioning and adapter instructions exist, but there are no observed runs demonstrating equivalent behavior on Claude Code and Codex. |
+| **Q-09 Evals & observability** | **Evidence gap: no skill-specific test results found** | No Light-specific evaluation fixture, execution trace or graded run was found among the [inspected skill files](https://github.com/rlynjb/dotskills/tree/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light). The [CI workflow](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/.github/workflows/validate.yml#L17-L28) checks other repository components, not Light's behavior. |
+| **Q-10 Lifecycle & portability** | **Needs verification: cross-platform behavior** | [Claude Code setup](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/adapters/claude/README.md#L1-L15) and [Codex/OpenAI setup](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/adapters/openai/README.md#L1-L14) are documented; equivalent runtime behavior was not observed. |
 
 **Interpretation:** This is a quick view of the **current evidence**, not an overall pass/fail grade or a claim that the skill is production-ready. Q-08 is a documentation gap, not a proven runtime defect; Q-07, Q-09 and Q-10 call for additional evidence before stronger claims.
 
 ### Agent Skills specification — file structure only
 
-This checks whether the skill is **organized in the expected format**, not whether it works correctly.
+This checks whether the skill follows the [Agent Skills specification](https://agentskills.io/specification) **file format**, not whether it works correctly.
 
 | Check | Result | Source or explanation |
 | --- | --- | --- |
@@ -104,7 +104,7 @@ This checks whether the skill is **organized in the expected format**, not wheth
 
 ### Cross-platform compatibility
 
-The repository includes setup instructions for [Claude Code](../../adapters/claude/README.md) and [Codex/OpenAI](../../adapters/openai/README.md). That is **documentation**, not proof that this skill runs the same way in both.
+The repository includes setup instructions for [Claude Code](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/adapters/claude/README.md#L1-L15) and [Codex/OpenAI](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/adapters/openai/README.md#L1-L14). That is **documentation**, not proof that this skill runs the same way in both.
 
 | Question | Claude Code | Codex / OpenAI |
 | --- | --- | --- |
@@ -117,9 +117,9 @@ The repository includes setup instructions for [Claude Code](../../adapters/clau
 These are the main things we **do not know yet**, based on this initial inspection:
 
 - **Real use:** How does the skill handle a real Jira ticket and relevant code? Neither was available for this review.
-- **Read-only protection:** The instructions forbid edits and Jira posts. Do the host's tool permissions also block them?
-- **Failure handling:** The skill addresses missing information, but does not clearly explain what to do when a tool times out or returns stale data.
-- **Platform support:** Which environments actually need to support this skill? Setup instructions exist, but runtime behavior was not checked.
+- **Read-only protection:** The [skill instructions](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L71-L76) forbid edits and Jira posts. Do the host's tool permissions also block them?
+- **Failure handling:** The [skill instructions](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/skills/refine-requirements-light/SKILL.md#L17-L73) address missing information, but do not clearly explain what to do when a tool times out or returns stale data.
+- **Platform support:** Which environments actually need to support this skill? [Claude Code](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/adapters/claude/README.md) and [Codex/OpenAI](https://github.com/rlynjb/dotskills/blob/11da8e5f64c033eaf4b2e87cdf5c770f662ada3c/adapters/openai/README.md) setup instructions exist, but runtime behavior was not checked.
 
 These are **open questions, not confirmed defects or proposed evaluation cases**. The detailed decisions belong in DFRDE Stages 1–3; evaluation comes later.
 
