@@ -36,6 +36,7 @@
 ### How to use this record
 
 - **Before a meeting:** Ask an authorized agent or reviewer to inspect the available sources and prefill **Stages 1–3 where evidence permits**. For agent-skill targets, `audit-skill` can draft Discovery answers, design options and candidate contracts; for other domains, use appropriate approved sources and tools. Stages 2–3 stay **CONDITIONAL / PROPOSED** until their human reviews; never invent facts to make the template look complete.
+- **Industry standards are references, not replacement questions:** The 21 Stage 1–3 questions are a practical DFRDE checklist, **not** an official ISO/IEC/IEEE questionnaire. Use relevant [standards references](#references) to inform requirements, architecture descriptions, and lifecycle decisions. Keep the questions that apply to the project; do not claim compliance merely because they were answered.
 - **During discussion:** Confirm findings, challenge assumptions, compare options, and note what remains unresolved. You can record/transcribe with participant consent and organization-approved tools.
 - **After discussion:** Have AI draft a *proposed* update from the meeting transcript, with timestamp/source references where available. A human confirms decisions before marking them approved or saving changes to the canonical file.
 - **Maintain one canonical record per change.** Keep transcripts and sensitive source artifacts in their approved access-controlled locations; link rather than copying confidential content into a public repo.
@@ -501,6 +502,14 @@ Record `APPROVED` only when confirmed by an accountable reviewer; transcript inf
 | U-01 | [Unverified] | [Impact] | [Approved read-only inspection or future test] | [Owner] | OPEN |
 
 ## References
+
+**Official software engineering standards informing this template** (not a claim of ISO/IEC/IEEE compliance):
+
+- **Stages 1 and 3 — Requirements, constraints and acceptance expectations:** [ISO/IEC/IEEE 29148:2018 — Requirements engineering](https://www.iso.org/standard/72089.html). Covers engineering and documenting requirements. The 2018 edition remains published; a revision is in development.
+- **Stage 2 — Architecture documentation:** [ISO/IEC/IEEE 42010:2022 — Architecture description](https://www.iso.org/standard/74393.html). Covers stakeholder concerns and how architecture is described; it does **not** prescribe a design-review method or questions.
+- **Overall software lifecycle — Process context for DFRDE:** [ISO/IEC/IEEE 12207:2026 — Software life cycle processes](https://www.iso.org/standard/90219.html). Covers software lifecycle activities; it does **not** require DFRDE's six stages.
+
+The linked ISO pages provide official descriptions/previews; the complete standards may require purchase or institutional access.
 
 - Engineering methodology: [Apply DFRDE](../../skills/apply-dfrde/SKILL.md)
 - Detailed stage guidance: [Lifecycle reference](../../skills/apply-dfrde/references/lifecycle.md)
