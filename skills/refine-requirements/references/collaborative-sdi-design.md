@@ -43,9 +43,24 @@ Use Alex Xu's four-step SDI framing, adapted to a real feature. Show **Step X of
 
 Inspect feature goals and existing patterns. Recommend the smallest useful scope, FR priorities, relevant NFRs, key failure/permission cases, and uncertainties. Explain alternatives (e.g. reuse vs adapt vs new behavior) and where product approval is needed. Refine FR/NFR/acceptance register with the user. Surface unresolved product questions by owner; a coding/design agent cannot decide product policy. **Output:** requirements baseline, acceptance, constraints, pattern map, candidate D-IDs and scope decisions.
 
-### Step 2 — Propose high-level design and obtain review
+### Step 2 — Verify existing patterns, explain why they work, and propose a high-level design for review
 
-Ground the proposal in verified requirements and codebase constraints. Present **two or three viable options when meaningful**, each with architecture/components, external interfaces, data flow, fit with existing code, complexity, benefit/cost, and principal risk. Clearly identify **recommended option + why + what evidence would change it**. Offer a small diagram (Mermaid or clear textual sketch) with labeled hypothetical/unverified components; trace the normal request/data path. Invite exploration and changes, then develop a proposed high-level architecture for review. **Output:** architecture sketch, component responsibilities, main contracts/data movement, D-IDs with tentative direction. "Obtain review" is technical alignment, not permission to implement.
+Use the Step 1 requirements baseline and the already-inspected pattern map as a starting point. Investigate relevant code, callers, interfaces, tests, company conventions and decision records as needed; **verify before recommending reuse**. For each material pattern/area:
+
+1. **Existing pattern and evidence:** identify the verified path/symbol/test, the component's responsibility, its callers, contracts, and what it **OBSERVABLY** does today. Note fit with linked FRs/NFRs and use **FOLLOW / ADAPT / NEW REQUIRED / NO SUITABLE PATTERN FOUND IN INSPECTED SCOPE / NOT VERIFIED** as an explicit, explained verdict; never call a bounded unsuccessful search proof of absence.
+2. **Purpose and reasoning:** explain in plain English *what problem this pattern addresses*, *why the separation of responsibilities and data/request flow is useful here*, and the relevant benefits/costs or constraints. Distinguish **CONFIRMED documented design rationale** (supported by ADRs, docs or authoritative decisions) from **OBSERVED code behavior** and **ASSUMED architectural interpretation**. Code proves how it currently works, **not why its original authors made that choice**. When historical intent is unknown say **NOT VERIFIED** rather than inventing it. Support material claims with actual file/symbol/test/docs links.
+3. **Fit with this ticket:** explain *why* to follow/adapt this pattern, *why not* when it conflicts with the ticket, or *which evidence is missing*; don't leave the verdict unexplained. Prefer the smallest coherent reuse-first extension that respects verified ownership and contracts.
+
+Then present the high-level design in the following approachable order, with detail proportional to the ticket:
+
+- **OBSERVED CURRENT FLOW — ASCII diagram:** for a multi-component or boundary-crossing feature, draw a compact, labeled ASCII box/arrow diagram of the relevant verified path (for example, `[UI] --request--> [API] --> [Service]`). Use actual verified component names from the code; label unknown nodes/links `[NOT VERIFIED]`. **Explain the arrows:** what happens at each handoff today, each component's responsibility and why that boundary matters to this feature.
+- **PROPOSED FLOW — ASCII diagram:** show the same journey after the proposed change, labeling every new/changed step `[PROPOSED]` and retaining verified existing paths. Do **not** silently introduce a service, queue, database, dependency or subsystem without a ticket need and evidence. **Explain the arrows:** what changes, what remains, which component owns the change, why it belongs there, and how it achieves the expected outcome.
+- **Design rationale and options:** present **two or three viable options only when meaningful** (including following existing behavior where appropriate). For each, explain the pattern fit, architecture/components, contracts or integration boundaries, benefit, cost/complexity and main risk; clearly state the **recommended option + why + what evidence or changed constraint would alter it**. Explain why a new component is needed rather than invented, and make unverified proposals conditional.
+- **Interactive review:** link proposals to stable D-IDs; invite the developer to inspect, challenge, compare and revise both the diagram and its explanation before any explicit technical-decision approval. Selection or curiosity does not imply approval.
+
+**Proportionate output:** a single-component change with no meaningful architecture change can use a short ASCII before/after trace or **Flow unchanged** with an explanation; do not manufacture a distributed flow. Keep this step focused on architectural intent and ownership—defer detailed failure/transaction/code-path mechanics to Step 3.
+
+**Output:** explained existing-pattern/reuse map; **OBSERVED CURRENT FLOW** and **PROPOSED FLOW** diagrams with short plain-English walkthroughs when warranted; grounded rationale for what exists and what changes; high-level components, responsibilities, contracts/data movement, options, recommended direction and tentative D-IDs. "Obtain review" means technical alignment, **not** permission to implement.
 
 ### Step 3 — Design deep dive
 
@@ -103,8 +118,8 @@ Maintain **two distinct gates**:
 **Engineering Design & Implementation Handoff** includes:
 1. Feature goal, actors, scope, exclusions, sources, inspected revision and evidence limits.
 2. Approved/remaining provisional FRs and NFRs, owners, quality targets, Given/When/Then acceptance and open product decisions.
-3. Existing-pattern map and compatibility/integration constraints.
-4. Proposed/approved architecture diagram, components, request/data paths, interfaces/data contracts, ownership/state and security boundaries as applicable.
+3. Existing-pattern map with key pattern purpose, reuse verdict, **evidence-backed rationale** (documented intent versus inferred reasoning) and compatibility/integration constraints.
+4. **OBSERVED CURRENT FLOW** and **PROPOSED FLOW** as labeled ASCII diagrams with brief explained handoffs when relevant, plus proposed/approved architecture, components, request/data paths, interfaces/data contracts, ownership/state and security boundaries as applicable.
 5. Decision register with D-ID, selected option, alternatives, rationale, costs, assumptions, status and explicit approval evidence.
 6. Critical deep dives, edge/concurrency/retry/failure behavior, observability, migration/backfill and capacity concerns where applicable.
 7. Verification and test plan mapped to FRs/NFRs/decisions; distinguish inspected tests, actually run checks and proposed tests.
