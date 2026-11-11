@@ -34,15 +34,15 @@ Start by inspecting the feature ticket and relevant existing code, tests, interf
 
 The user should see the **bigger picture first** and choose what to review. Do bounded evidence gathering, draft the full set of **material initial** functional and non-functional findings, then **stop before any in-depth guided/practice question**. Keep the overview concise; full acceptance details and individual trade-offs belong to the later item interview.
 
-Present these sections **in order**, with stakeholder questions always last. **The layout is fixed for all terminal widths:** one labeled item at a time, plain non-bulleted field lines, and a `---` divider between items; **never output tables, grids or pipe-delimited columns**. The reference tables elsewhere in this document define fields or learning prompts, not user-facing output structure:
+Present these sections **in order**, with stakeholder questions always last. **The layout is fixed for all terminal widths:** one labeled item at a time and plain non-bulleted field lines; **never output tables, grids or pipe-delimited columns**. Use `---` horizontal rules **only for successive Step 2 entries**, not for Step 1, Step 3, Step 4, the Findings Overview, handoff or stakeholder questions; separate those with blank lines. The reference tables elsewhere in this document define fields or learning prompts, not user-facing output structure:
 
 1. **Feature snapshot / source coverage:** goal, actors, scope, relevant ticket/spec and code revision, what was actually inspected, and whether findings are verified or provisional.
-2. **Evidence & pattern map:** even when nothing can be verified, include separate screenshot-style entries headed **Area: [name]**, followed by **Where it lives:** path/symbol/test evidence, **What it does today:** observed behavior, **Fit:** relevant difference, and **Verdict:** FOLLOW / ADAPT / NO SUITABLE PATTERN FOUND / NOT VERIFIED; separate entries with `---`, not a table. Describe which reuse claims are evidence-backed, not necessarily approved policy; note search limits.
-3. **Functional Requirements (FRs) — all material initial findings:** one **FR-xx — title** block per item, with plain **Requirement:**, **Priority:**, **Status:**, **Source/evidence:**, and **Open question:** labeled lines when relevant; separate entries with `---`. Include both known and candidate behavior, not just the first FR. Do not exhaustively narrate acceptance in the overview.
-4. **Non-Functional Requirements (NFRs) — all material initial findings:** one **NFR-xx — title** block per item, with plain **Quality:**, **Linked FR:**, **Target:**, **Status:**, and **Source/evidence:** or **Open question:** lines when relevant; separate entries with `---`. Include only applicable quality attributes, not a boilerplate checklist.
+2. **Evidence & pattern map:** even when nothing can be verified, include separate screenshot-style entries headed **Area: [name]**, followed by **Where it lives:** path/symbol/test evidence, **What it does today:** observed behavior, **Fit:** relevant difference, and **Verdict:** FOLLOW / ADAPT / NO SUITABLE PATTERN FOUND / NOT VERIFIED; separate entries in the Findings Overview with blank lines (not `---`); reserve dividers for the Step 2 deep dive, and do not use a table. Describe which reuse claims are evidence-backed, not necessarily approved policy; note search limits.
+3. **Functional Requirements (FRs) — all material initial findings:** one **FR-xx — title** block per item, with plain **Requirement:**, **Priority:**, **Status:**, **Source/evidence:**, and **Open question:** labeled lines when relevant; separate entries with blank lines, never `---`. Include both known and candidate behavior, not just the first FR. Do not exhaustively narrate acceptance in the overview.
+4. **Non-Functional Requirements (NFRs) — all material initial findings:** one **NFR-xx — title** block per item, with plain **Quality:**, **Linked FR:**, **Target:**, **Status:**, and **Source/evidence:** or **Open question:** lines when relevant; separate entries with blank lines, never `---`. Include only applicable quality attributes, not a boilerplate checklist.
 5. **Other findings / design inputs:** brief, categorized summary of relevant edge/failure/retry/permission cases, dependencies, compatibility and contract gaps, entity/state/data ownership, workload/scale, reliability/security, and assumptions/trade-offs. Mark unverified items.
 6. **Review navigation, SDI roadmap, and provisional readiness:** show READY / CONDITIONAL / BLOCKED if supportable, otherwise NOT YET ASSESSED; name blockers. For the default collaborative track, show **Step 1–4 of SDI** and short, source-grounded **options + a conditional recommendation** for each material `D-xx` design opportunity. Invite selection of `FR-01`, `NFR-02`, `D-01`, a step, or a gap. **Do not begin Problem question 1 automatically or infer approval from an option selection.**
-7. **Post-interview — Questions to ask stakeholders:** a **short deduplicated queue at the very bottom**. Group product owners first, developers/history only if material; use one **Q-xx — short title** block with plain **Owner:**, **Question:**, **Linked FR/NFR:**, **Priority:**, and **Blocks handoff?:** labeled lines; separate successive items with `---`. A single short why-it-matters phrase is enough; expand only when asked. If none: **No unresolved stakeholder questions for this topic.**
+7. **Post-interview — Questions to ask stakeholders:** a **short deduplicated queue at the very bottom**. Group product owners first, developers/history only if material; use one **Q-xx — short title** block with plain **Owner:**, **Question:**, **Linked FR/NFR:**, **Priority:**, and **Blocks handoff?:** labeled lines; separate successive items with blank lines, never `---`. A single short why-it-matters phrase is enough; expand only when asked. If none: **No unresolved stakeholder questions for this topic.**
 
 **FR/NFR labeling is mandatory and consistent:** use explicit **Functional Requirements (FRs)** and **Non-Functional Requirements (NFRs)** section titles; give every material requirement a stable `FR-xx` or `NFR-xx` label on first mention and retain that label in every Step 1 summary, selection/deep dive, acceptance example, review update, and later handoff. Do not switch to unlabeled requirement bullets or renumber IDs after a revision. If one category has no evidenced items, write **None identified from supplied evidence**; do not create filler NFRs. Distinguish scope exclusions, assumptions, quality targets requiring confirmation, and open questions from approved FRs/NFRs.
 
@@ -203,8 +203,8 @@ On completion of requirements-only mode, or as the requirements portion of the S
 
 1. Feature goal, actor, scope/exclusions, codebase revision and evidence limits.
 2. Existing-pattern map (FOLLOW / ADAPT / NO SUITABLE PATTERN FOUND / NOT VERIFIED), and ticket-to-current-behavior alignment.
-3. Prioritized FR-xx **vertical entries separated by `---`**, with source/status and Given/When/Then acceptance criteria; no table.
-4. Prioritized NFR-xx **vertical entries separated by `---`**, with confirmed targets or "target requires confirmation", verification methods, and owners; no table.
+3. Prioritized FR-xx **vertical entries separated by blank lines, not `---`**, with source/status and Given/When/Then acceptance criteria; no table.
+4. Prioritized NFR-xx **vertical entries separated by blank lines, not `---`**, with confirmed targets or "target requires confirmation", verification methods, and owners; no table.
 5. Key user flows, meaningful edge/failure scenarios, dependencies, business invariants, and permissions.
 6. **System-design readiness:** domain concepts, required interfaces/data contracts, source-of-truth and consistency expectations, sizing inputs, integrations, trust boundaries, operational expectations, and explicitly deferred technical choices.
 7. Coverage: reviewed / not applicable with reason / unverified, and tests inspected vs actually executed.
@@ -225,8 +225,6 @@ Requirement: Signed-in users can save their preferences
 Status: PROPOSED
 Source: Hypothetical feature request
 
----
-
 Non-Functional Requirements (NFRs)
 
 NFR-01 — Cross-device freshness
@@ -236,7 +234,7 @@ Target: Requires confirmation
 Status: UNKNOWN
 ```
 
-**The remainder of the illustration demonstrates reasoning; output it with the same standalone item format and dividers, not a table.**
+**The remainder of the illustration demonstrates reasoning; output it with the same standalone item format and blank-line separation, not a table or per-item dividers.**
 - **Evidence & pattern map:** NOT VERIFIED; no repository or analogous settings code was supplied. Do not claim there is an existing implementation.
 - **FR-01 — PROPOSED:** signed-in users save and later read notification preferences (acceptance details to refine).
 - **NFR-01 — UNKNOWN:** cross-device freshness; linked FR-01; **target requires confirmation**.
