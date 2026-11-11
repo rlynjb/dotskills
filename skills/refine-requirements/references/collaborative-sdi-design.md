@@ -61,14 +61,58 @@ Use the Step 1 requirements baseline and the already-inspected pattern map as a 
 
 Then present the high-level design in the following approachable order, with detail proportional to the ticket:
 
-- **OBSERVED CURRENT FLOW — ASCII diagram:** for a multi-component or boundary-crossing feature, draw a compact, labeled ASCII box/arrow diagram of the relevant verified path (for example, `[UI] --request--> [API] --> [Service]`). Use actual verified component names from the code; label unknown nodes/links `[NOT VERIFIED]`. **Explain the arrows:** what happens at each handoff today, each component's responsibility and why that boundary matters to this feature.
-- **PROPOSED FLOW — ASCII diagram:** show the same journey after the proposed change, labeling every new/changed step `[PROPOSED]` and retaining verified existing paths. Do **not** silently introduce a service, queue, database, dependency or subsystem without a ticket need and evidence. **Explain the arrows:** what changes, what remains, which component owns the change, why it belongs there, and how it achieves the expected outcome.
+- **OBSERVED CURRENT FLOW — boxed ASCII diagram:** for a multi-component or boundary-crossing feature, draw a **visually readable, labeled box-and-arrow diagram**, not a single-line list of bracketed component names. Draw meaningful verified components as boxed nodes with `+---+` borders, arranged vertically or in clearly grouped branches. Connect them with `|`, `v`, and occasional horizontal arrows for real side effects/branches; label important handoffs (e.g., request, transform, save, audit event). Use the **actual verified component names** and ownership/boundaries; label unknown links/nodes `[NOT VERIFIED]`. **Explain the arrows in plain English:** what happens at each handoff today, what each box owns and why its boundary matters to the feature. Distinguish documented architectural intent from an inferred engineering explanation.
+- **PROPOSED FLOW — boxed ASCII diagram:** show the same user journey at a **comparable visual level of detail** so the change is easy to spot. Keep existing verified paths recognizable; label every new/modified step `[PROPOSED]` and unverified connection `[NOT VERIFIED]`. Explain **what changes, what remains, where the new responsibility belongs, why it belongs there, and how the change achieves the ticket outcome**. Do **not** introduce a service, queue, database, snapshot, dependency or subsystem solely to make the diagram look complete.
+- **Readable diagram conventions:** prefer stacked boxes and concise arrow labels over long, wrapping inline chains like `[A] --> [B] --> [C] --> [D]`. Split read and write flows if a single diagram would be misleading. Keep diagram width manageable in monospaced Markdown code fences; adapt the topology to real verified branches rather than forcing a linear architecture. Diagrams show the high-level design, **not** executable implementation or approved decisions.
+- **Illustrative formatting only — not evidence of real code:**
+
+  ```text
+  OBSERVED CURRENT FLOW
+
+  +---------------------------+
+  | Existing UI               |
+  +---------------------------+
+               |
+               | GET /resource
+               v
+  +---------------------------+
+  | Existing API handler      |
+  +---------------------------+
+               |
+               | reads through
+               v
+  +---------------------------+
+  | Existing service / store  |
+  +---------------------------+
+
+  PROPOSED FLOW (CONDITIONAL)
+
+  +---------------------------+
+  | Existing UI + new action  |
+  | [PROPOSED change]         |
+  +---------------------------+
+               |
+               | save request
+               v
+  +---------------------------+
+  | Existing API handler      |
+  +---------------------------+
+               |
+               | validate changes
+               v
+  +---------------------------+
+  | Existing service / store  |
+  | [PROPOSED extension]      |
+  +---------------------------+
+  ```
+
+  Replace every illustrative name and arrow with the inspected code's real flow. Add a branch only when evidence supports it; don't assume all systems are linear.
 - **Design rationale and options:** present **two or three viable options only when meaningful** (including following existing behavior where appropriate). For each, explain the pattern fit, architecture/components, contracts or integration boundaries, benefit, cost/complexity and main risk; clearly state the **recommended option + why + what evidence or changed constraint would alter it**. Explain why a new component is needed rather than invented, and make unverified proposals conditional.
 - **Interactive review:** link proposals to stable D-IDs; invite the developer to inspect, challenge, compare and revise both the diagram and its explanation before any explicit technical-decision approval. Selection or curiosity does not imply approval.
 
 **Proportionate output:** a single-component change with no meaningful architecture change can use a short ASCII before/after trace or **Flow unchanged** with an explanation; do not manufacture a distributed flow. Keep this step focused on architectural intent and ownership—defer detailed failure/transaction/code-path mechanics to Step 3.
 
-**Output:** explained existing-pattern/reuse map; **OBSERVED CURRENT FLOW** and **PROPOSED FLOW** diagrams with short plain-English walkthroughs when warranted; grounded rationale for what exists and what changes; high-level components, responsibilities, contracts/data movement, options, recommended direction and tentative D-IDs. "Obtain review" means technical alignment, **not** permission to implement.
+**Output:** explained existing-pattern/reuse map; visually readable **boxed ASCII OBSERVED CURRENT FLOW and PROPOSED FLOW** diagrams, with short plain-English walkthroughs when warranted; grounded rationale for what exists and what changes; high-level components, responsibilities, contracts/data movement, options, recommended direction and tentative D-IDs. "Obtain review" means technical alignment, **not** permission to implement.
 
 ### Step 3 — Design deep dive
 
@@ -127,7 +171,7 @@ Maintain **two distinct gates**:
 1. Feature goal, actors, scope, exclusions, sources, inspected revision and evidence limits.
 2. Approved/remaining provisional FRs and NFRs, owners, quality targets, Given/When/Then acceptance and open product decisions.
 3. Existing-pattern map with key pattern purpose, reuse verdict, **evidence-backed rationale** (documented intent versus inferred reasoning) and compatibility/integration constraints.
-4. **OBSERVED CURRENT FLOW** and **PROPOSED FLOW** as labeled ASCII diagrams with brief explained handoffs when relevant, plus proposed/approved architecture, components, request/data paths, interfaces/data contracts, ownership/state and security boundaries as applicable.
+4. **OBSERVED CURRENT FLOW** and **PROPOSED FLOW** as readable boxed ASCII architecture diagrams with brief explained handoffs when relevant, plus proposed/approved architecture, components, request/data paths, interfaces/data contracts, ownership/state and security boundaries as applicable.
 5. Decision register with D-ID, selected option, alternatives, rationale, costs, assumptions, status and explicit approval evidence.
 6. Critical deep dives, edge/concurrency/retry/failure behavior, observability, migration/backfill and capacity concerns where applicable.
 7. Verification and test plan mapped to FRs/NFRs/decisions; distinguish inspected tests, actually run checks and proposed tests.
