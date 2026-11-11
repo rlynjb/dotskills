@@ -20,13 +20,49 @@ Guide a developer through a **design-first, reviewable engineering workflow** us
 - **If the codebase is unavailable:** still start from the supplied story/ACs/notes and give conditional requirements findings and design directions, but label application patterns, proposed integration points and assumptions **NOT VERIFIED / PROVISIONAL**. Do not claim verified reuse or finalized architecture without evidence.
 - **Approval before implementation:** individual D-ID approvals and the later overall design sign-off are distinct. Neither invokes Superpowers, Codex, Claude Code, or another coding agent; actual code work requires a separate explicit request and proper permissions. Preserve the requirements-only Guided/Practice paths when requested.
 
+## Output format invariant — vertical labeled items, never tables
+
+**Strictly render user-facing outputs as vertically stacked, labeled entries, regardless of terminal/CLI width.** Never switch to Markdown tables, grid tables, column layouts, or pipe-delimited pseudo-tables when the terminal is wide. This applies to the Findings Overview, Step 1 FR/NFR lists, evidence/pattern maps, Step 2 options, Step 3 notes, Step 4 decisions, stakeholder questions, and requirements/design handoffs. A source-locked reference may describe table *fields*; preserve the content and IDs, but **render those fields in labeled blocks**, not a table.
+
+**One item at a time:** use a bold ID and short title, then 2–5 short labeled field lines as needed (`Requirement`, `Status`, `Priority`, `Source`, `Linked FR`, `Target`, `Question`, `Reason`, etc.). Separate successive items with a standalone Markdown horizontal rule `---`. Keep each block concise for reasoning and scanning; don't bury multiple requirements in one paragraph. Use the same format in wide and narrow terminals. Omit fields that don't apply; do not fabricate information. Keep higher-level section headings and the source-evidence distinction.
+
+**Illustrative Step 1 output format (not real project requirements):**
+
+```md
+### Functional Requirements (FRs)
+
+**FR-01 — Save preferences**
+- **Requirement:** Users can save their preference selection.
+- **Status:** PROPOSED
+- **Source:** Pasted user story
+- **Open question:** Q-01 — Which choices are supported?
+
+---
+
+**FR-02 — View preferences**
+- **Requirement:** Users can see the currently saved selection.
+- **Status:** PROPOSED
+- **Source:** Pasted user story
+
+### Non-Functional Requirements (NFRs)
+
+**NFR-01 — Read freshness**
+- **Quality:** How soon another device reflects a saved preference
+- **Linked FR:** FR-01, FR-02
+- **Target:** Requires confirmation
+- **Status:** UNKNOWN
+- **Open question:** Q-02 — What delay is acceptable?
+```
+
+For a single item, no divider is needed. The first response still covers **all material initial findings**; the vertical layout makes each one independently reviewable, rather than hiding items or forcing the user through an interview.
+
 ## Step 1 labeling invariant — every requirement is FR or NFR
 
 **Always use consistent, visible requirement labels in Step 1**, not just sometimes or only in the initial overview. For each material requirement extracted from the user's Jira ticket, pasted story, ACs or notes:
 
 - **Functional Requirement (FR):** a behavior or capability the system must provide. Label it `FR-01`, `FR-02`, etc. and state the observable behavior.
 - **Non-Functional Requirement (NFR):** a relevant quality attribute or constraint (e.g., performance, reliability, security, accessibility, compatibility). Label it `NFR-01`, `NFR-02`, etc. and connect it to the affected FR or user journey when possible. Never manufacture a numeric NFR target; write **target requires confirmation** when unspecified.
-- **Required Step 1 presentation:** keep separate, explicitly titled **Functional Requirements (FRs)** and **Non-Functional Requirements (NFRs)** sections/tables. Show `ID | Requirement | Status | Source/evidence | Gap/question` (plus linked FR and quality target for NFRs, as useful). Use these **same IDs** in prose explanations, acceptance criteria, scenario examples, stakeholder questions, Step 2 design decisions, Step 3 traces, Step 4 trade-offs, and the final handoff. Do not leave a requirement as an unlabeled bullet buried under “scope” or “findings.”
+- **Required Step 1 presentation:** keep separate, explicitly titled **Functional Requirements (FRs)** and **Non-Functional Requirements (NFRs)** sections. Show **one labeled vertical entry per requirement**, with its `FR-xx` or `NFR-xx` ID as a bold heading and short `Requirement`, `Status`, `Source/evidence`, and `Gap/question` field lines (plus linked FR and quality target for NFRs as useful). Separate consecutive requirement entries with a standalone `---`; **never render a table based on terminal width**. Use these **same IDs** in prose explanations, acceptance criteria, scenario examples, stakeholder questions, Step 2 design decisions, Step 3 traces, Step 4 trade-offs, and the final handoff. Do not leave a requirement as an unlabeled bullet buried under “scope” or “findings.”
 - **Classification and traceability:** distinguish `CONFIRMED`, `PROPOSED`, `ASSUMED`, and `UNKNOWN` rather than treating inferred requirements as approved. Keep IDs stable as findings are revised or reordered; do not silently renumber them. If a requirement combines behavior and a quality constraint, split into linked FR/NFR only where they are meaningfully distinct; avoid duplication.
 - **No forced requirements:** keep out-of-scope items, assumptions, design ideas and unresolved questions in their own clearly titled sections rather than pretending they are FR/NFR commitments. If no relevant NFR (or FR) is supported by the input/evidence, still show its section and say **None identified from supplied evidence** instead of inventing one.
 
@@ -54,9 +90,9 @@ Run the master requirements checks during **Step 1**, without substituting guess
 **Do not open with “Problem question 1.”** After focused codebase reconnaissance, synthesize all *material initial findings* before inviting any item-by-item discussion. Deliver a skimmable first-pass **Findings Overview**, even in Guided or Practice mode, with the following order:
 
 1. **Feature snapshot:** one-sentence problem/outcome, actors and boundaries, evidence revision/coverage, and a clear PROVISIONAL/CONFIRMED distinction.
-2. **Evidence & pattern map:** compact table with comparable feature, file/symbol/test source, verified observable behavior or NOT VERIFIED, key fit/difference, and FOLLOW / ADAPT / NO SUITABLE PATTERN FOUND / NOT VERIFIED. Always include this map; do not replace it with a generic assertion of reuse.
-3. **Functional Requirements (FRs) — overview:** **all material candidate FR-IDs**, visibly labeled `FR-01`, `FR-02`, etc., in one concise table (behavior, priority, confirmed/proposed/assumed/unknown, evidence or pattern linkage, gap/linked Q-ID). Show a brief acceptance headline only when useful; defer detailed Given/When/Then traces until an item is selected.
-4. **Non-Functional Requirements (NFRs) — overview:** **all material candidate NFR-IDs**, visibly labeled `NFR-01`, `NFR-02`, etc., in one concise table (linked FR/journey, quality and target or **target requires confirmation**, status, evidence/owner or linked Q-ID). Do not expand every quality category when irrelevant.
+2. **Evidence & pattern map:** concise stacked, labeled entries (not a table) for comparable feature, file/symbol/test source, verified observable behavior or NOT VERIFIED, key fit/difference, and FOLLOW / ADAPT / NO SUITABLE PATTERN FOUND / NOT VERIFIED. Always include this map; do not replace it with a generic assertion of reuse.
+3. **Functional Requirements (FRs) — overview:** **all material candidate FR-IDs**, visibly labeled `FR-01`, `FR-02`, etc., as short **vertical requirement entries separated by `---`** (behavior, priority, confirmed/proposed/assumed/unknown, evidence or pattern linkage, gap/linked Q-ID). Show a brief acceptance headline only when useful; defer detailed Given/When/Then traces until an item is selected.
+4. **Non-Functional Requirements (NFRs) — overview:** **all material candidate NFR-IDs**, visibly labeled `NFR-01`, `NFR-02`, etc., as short **vertical requirement entries separated by `---`** (linked FR/journey, quality and target or **target requires confirmation**, status, evidence/owner or linked Q-ID). Do not expand every quality category when irrelevant.
 5. **Bigger-picture gaps:** short summaries of meaningful edge/failure cases, dependencies, compatibility, permission/data boundaries, and system-design inputs (entities, contracts, ownership, read/write patterns, scale, reliability, security, trade-offs), with evidence and unknowns distinguished.
 6. **Readiness, design-first SDI roadmap and recommended options:** show provisional requirements readiness (READY / CONDITIONAL / BLOCKED, or NOT YET ASSESSED), blockers, **Step 1–4 SDI progress**, and a short recommendation-first design-opportunity menu (stable D-IDs, plausible options, conditional recommendation and evidence limits). Make clear that the next path is collaborative design and review, not immediate coding. Invite a selection of FR-01, NFR-01, D-01, a step or a gap. **Do not auto-start** the first deep dive, present a decision as approved, or assume a technical design can override unresolved product scope.
 7. **Post-interview — Questions to ask stakeholders:** the **final section**, a short deduplicated question queue with Q-ID, decision owner, ready-to-ask wording, linked FR/NFR, priority and **BLOCKS HANDOFF? YES/NO**. Keep reasons to a few words unless requested; don't interview each stakeholder question individually.
@@ -125,8 +161,8 @@ For **requirements-only completion**, or as the **requirements section** of the 
 
 1. Goal, actor, scope/out of scope, ticket evidence and code revision/verification limits.
 2. Existing-pattern map and ticket-to-code alignment: ALREADY PRESENT, PARTIAL, MISSING only when verified, CONFLICT, NOT VERIFIED, or NOT APPLICABLE.
-3. **FR table** with ID, actor/trigger, behavior, priority and classification, ticket/code source, related question, and Given/When/Then acceptance for material journeys.
-4. **NFR table** with ID, linked FR/journey, quality, confirmed measurable target or **target requires confirmation**, proposed verification, priority/classification, and owner.
+3. **Functional Requirements (FRs) as separated, labeled vertical blocks**, with ID, actor/trigger, behavior, priority and classification, ticket/code source, related question, and Given/When/Then acceptance for material journeys; no table.
+4. **Non-Functional Requirements (NFRs) as separated, labeled vertical blocks**, with ID, linked FR/journey, quality, confirmed measurable target or **target requires confirmation**, proposed verification, priority/classification, and owner; no table.
 5. Key normal/edge/failure journeys, business rules/invariants, access boundaries, dependencies, and compatibility constraints.
 6. **System-design preparation notes**: domain entities and states, interface/data-contract requirements, data ownership and freshness, workload/scale inputs, integrations, recovery expectations, reliability/security/accessibility needs, trade-off questions, and the technical choices explicitly deferred.
 7. What was inspected, what was actually executed (if anything), coverage statuses, and remaining evidence gaps.
