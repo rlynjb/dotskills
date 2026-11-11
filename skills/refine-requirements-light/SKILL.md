@@ -19,12 +19,68 @@ This is the **workplace-oriented, noninteractive sibling** of Refine Requirement
 4. **Prefer the smallest coherent verified extension.** After investigating candidate patterns, choose **FOLLOW** (verified fit), **ADAPT** (verified partial fit), **NEW REQUIRED** (justify with inspected evidence and constraints), **NO SUITABLE PATTERN FOUND IN INSPECTED SCOPE**, or **NOT VERIFIED**. Avoid duplicate logic, parallel services, needless interfaces/wrappers, unnecessary dependencies, new stores and speculative abstractions. Never force reuse if it violates a requirement or confuses module ownership.
 5. **Do the work in one pass.** If information is missing, make a clearly conditional recommendation and list the minimum decision/evidence needed; **do not stop to interview the user**. One-pass does not mean fabricate missing facts.
 
+## Strict output format — vertical labeled items, never tables
+
+**Use the same vertical, screenshot-style presentation at every terminal/CLI width.** Never render a Markdown table, ASCII grid/table, side-by-side columns, or a pipe-delimited pseudo-table, even if the terminal is wide. This applies to the Ticket Snapshot, Step 1 requirements, Step 2 reuse/evidence map and options, Step 3 code/data-flow findings, Step 4 risks/readiness, and the final open-question list. The **boxed ASCII architecture flow diagrams** required in Step 2 are a purposeful visual exception; keep them.
+
+- **One item at a time:** give each finding a short heading with a stable ID or name, such as `**FR-01 — Save layout**`, `**NFR-01 — Access control**`, `**Area: Pan and zoom**`, `**Risk: Concurrent edits**`, or `**Q-01 — Save behavior**`.
+- **Plain labeled lines, not a table or bullet grid:** put compact label/value lines directly beneath that heading, such as `Requirement:`, `Where it lives:`, `What it does today:`, `Verdict:`, `Why:`, `Status:`, `Source:`, `Linked FR:`, or `Open question:`. Prefer one short line per field, with a second line only when an explanation needs it. **Do not prefix these lines with hyphen bullets or column separators** in user-facing output.
+- **Horizontal divider between successive items:** put a standalone Markdown horizontal rule `---` between each item within a section. No divider is required after a section's last item or when there is only one. Keep the separate Step headings; a section heading does not replace item separators.
+- **Consistent requirement labeling:** show separate **Functional Requirements (FRs)** and **Non-Functional Requirements (NFRs)** subsections in Step 1. Give each material requirement a stable `FR-01`/`NFR-01` style ID, source/status, and linked question or acceptance detail where relevant. Reference those same IDs in Steps 2–4. If none is evidenced in a category, say **None identified from supplied evidence**, not an invented requirement.
+- **Concise but complete:** include all material findings without merging them into a dense paragraph; omit irrelevant fields rather than inventing data. The one-pass, read-only behavior remains unchanged: present all four SDI steps in a single assessment, without approval gates or user interviews.
+
+**Illustrative presentation only (not project evidence):**
+
+```text
+Step 1 — Requirements & scope
+
+Functional Requirements (FRs)
+
+FR-01 — Edit layout
+Requirement: Authorized users can modify a layout.
+Status: PROPOSED
+Source: Example user story
+
+---
+
+FR-02 — Save layout
+Requirement: Users can save their edits.
+Status: PROPOSED
+Open question: Q-01 — Is saving atomic?
+
+Non-Functional Requirements (NFRs)
+
+NFR-01 — Access control
+Quality: Editing is limited to permitted roles.
+Linked FR: FR-01, FR-02
+Status: PROPOSED
+Source: Example acceptance criterion
+
+Step 2 — Existing patterns
+
+Area: Sector map rendering
+Where it lives: [verified path/symbol]
+What it does today: Read-only rendering
+Verdict: ADAPT
+Why: Existing renderer may be extended, subject to contract verification.
+
+---
+
+Area: Pan and zoom
+Where it lives: [verified path/symbol]
+What it does today: Viewport navigation
+Verdict: FOLLOW
+Why: Reuse verified navigation behavior.
+```
+
+Use the example's **layout only**, never its requirements, verdicts, components, or unverified claims as real findings.
+
 ## Workflow — four SDI steps, one report
 
 ### Step 1 — Understand the problem and establish design scope
 
 - State the ticket's user/system goal, actors, trigger, expected observable outcome, in-scope and out-of-scope behavior.
-- Extract the **material** functional requirements (FRs), non-functional requirements (NFRs), business rules, compatibility constraints, and acceptance criteria. Separate confirmed facts from proposed wording and unanswered product choices.
+- Extract the **material** functional requirements (FRs), non-functional requirements (NFRs), business rules, compatibility constraints, and acceptance criteria. Separate confirmed facts from proposed wording and unanswered product choices. Render FRs and NFRs as **separate vertical subsections, one labeled FR-xx/NFR-xx entry at a time, with `---` dividers**; use stable IDs and never replace them with a table.
 - Identify candidate affected areas as hypotheses; do not presume the location of a subsystem or prescribe an architecture before verifying relevant application code and its current behavior.
 - Note meaningful edge cases, permissions, dependencies, assumptions, and missing decisions. Link consequential FR/NFR gaps to a suggested ticket clarification.
 - For a small ticket, keep requirements short; don't invent an enterprise-scale design exercise.
@@ -33,7 +89,7 @@ This is the **workplace-oriented, noninteractive sibling** of Refine Requirement
 
 1. **Locate:** from the ticket and application entry points, identify candidate pages/routes, API handlers, services, subsystems, models, integrations, shared utilities and tests. These are **candidates**, not assumed components.
 2. **Verify:** inspect the actual code and relevant callers/contracts to establish which candidates exist, their responsibilities, current request/data paths, relevant company conventions and whether they fit the ticket. Ground every material mapping in paths/symbols/tests; mark uncertain links **NOT VERIFIED**.
-3. **Assess reuse:** provide a compact evidence map with **candidate area | verified path/symbol | observed behavior | ticket fit | FOLLOW / ADAPT / NEW REQUIRED / NO SUITABLE PATTERN FOUND IN INSPECTED SCOPE / NOT VERIFIED**. A pattern is reusable only if its contracts and behavior fit. An inaccessible or unsuccessful bounded search is not proof of absence.
+3. **Assess reuse:** provide a compact evidence map as **separate vertical blocks, never a table**. For each **Area: [name]**, show plain labeled lines **Where it lives:** (verified path/symbol), **What it does today:** (observed behavior), **Fit to ticket:** (relevant requirement/constraint), and **Verdict:** FOLLOW / ADAPT / NEW REQUIRED / NO SUITABLE PATTERN FOUND IN INSPECTED SCOPE / NOT VERIFIED, with **Why:** when helpful. Separate successive areas with `---`. A pattern is reusable only if its contracts and behavior fit. An inaccessible or unsuccessful bounded search is not proof of absence.
 4. **Explain the relevant existing patterns, not just their locations:** after the map, give a brief plain-English explanation of each pattern that materially affects the ticket:
    - **Purpose and ownership:** what problem the pattern solves today, which component owns each responsibility, who calls it, and the relevant inputs/outputs or boundary.
    - **Architectural reasoning:** why its separation, reuse, contract or data flow makes sense *given verified behavior and constraints*; note concrete benefits and costs where relevant. Cite code, tests, conventions or ADRs that support the explanation.
@@ -116,13 +172,13 @@ Start with a **Ticket Snapshot**: goal, repository/branch or inspected revision,
 
 Then use these headings in order:
 
-1. **Step 1 — Requirements & scope**: key FRs/NFRs and acceptance, bounds, unknowns.
-2. **Step 2 — Verify patterns & recommend high-level design**: concise evidence-backed reuse map; **Existing pattern purpose & rationale** (verified responsibilities, documented reasons versus hypotheses, and why it fits or does not fit the ticket); **OBSERVED CURRENT FLOW** and **PROPOSED FLOW** as visually readable ASCII **boxed, labeled, arrow-connected** architecture diagrams (not long inline bracket/arrow traces) with plain-English walkthroughs when multiple components/boundaries are involved; **Design rationale** (what changes, what is reused, why this placement, meaningful alternative/trade-off); explicitly flag unverified areas before recommending an approach.
+1. **Step 1 — Requirements & scope**: separate **Functional Requirements (FRs)** and **Non-Functional Requirements (NFRs)** subsections; each requirement gets its own stable ID and vertical label/value lines, separated from the next by `---`. Include key acceptance, bounds and unknowns; never use a table.
+2. **Step 2 — Verify patterns & recommend high-level design**: concise evidence-backed reuse map with **one Area entry at a time, plain labeled fields and `---` separators, never a table**; **Existing pattern purpose & rationale** (verified responsibilities, documented reasons versus hypotheses, and why it fits or does not fit the ticket); **OBSERVED CURRENT FLOW** and **PROPOSED FLOW** as visually readable ASCII **boxed, labeled, arrow-connected** architecture diagrams (not long inline bracket/arrow traces) with plain-English walkthroughs when multiple components/boundaries are involved; **Design rationale** (what changes, what is reused, why this placement, meaningful alternative/trade-off); explicitly flag unverified areas before recommending an approach.
 3. **Step 3 — Deep dive & data flow**: relevant request/read/write trace and critical code/test touchpoints; include relevant data, consistency and integration considerations only when warranted.
 4. **Step 4 — Trade-offs, risks & readiness**: preferred minimal change, realistic alternatives, material risks, verification plan and readiness.
 5. **Open decisions / questions for the ticket**: concise owner-specific blockers; write **None identified from inspected evidence** when appropriate.
 
-**Scale detail to the ticket**: ordinarily a skimmable engineering brief, not a tutorial. Prefer short tables and explicit file/symbol pointers over repeated narrative. If the ticket has no relevant data path, say **Data-flow deep dive: not applicable** rather than inventing one. If code is not accessible, mark reuse and design **PROVISIONAL / NOT VERIFIED** and provide a ticket-only assessment.
+**Scale detail to the ticket**: ordinarily a skimmable engineering brief, not a tutorial. Prefer short, individually labeled vertical entries with `---` separators and explicit file/symbol pointers over tables or repeated narrative. Apply this same presentation to code touchpoints, trade-offs, risks, readiness items, and open questions in Steps 3–4. If the ticket has no relevant data path, say **Data-flow deep dive: not applicable** rather than inventing one. If code is not accessible, mark reuse and design **PROVISIONAL / NOT VERIFIED** and provide a ticket-only assessment.
 
 ## Interaction and execution boundary
 
