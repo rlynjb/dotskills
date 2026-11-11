@@ -41,9 +41,9 @@ This is the **workplace-oriented, noninteractive sibling** of Refine Requirement
    - **Fit to this ticket:** explain *why* to FOLLOW or ADAPT the pattern, *why not* if it is unsuitable, or what remains unverified. Connect the verdict to the ticket's FRs/NFRs and actual contracts; do not merely restate the verdict.
 5. **Recommend and justify:** **only after verification**, propose the smallest suitable high-level change, reusing/extending confirmed patterns first where appropriate. Explain **what changes, what stays unchanged, where each responsibility belongs, and why**. If a new component or approach is justified, identify the verified constraint/gap, the minimal footprint, and the most relevant alternative rejected. If evidence is insufficient, give a **conditional proposal** and the next verification step—do not pretend a subsystem exists.
 6. **Diagram and explain the flows visually:** show **OBSERVED CURRENT FLOW** and **PROPOSED FLOW** as **two readable ASCII box-and-arrow diagrams** when the feature touches multiple components or crosses a request/data/integration boundary. These are high-level architecture sketches, **not** merely long inline lists of bracketed names.
-   - **Prefer real boxes and a clear layout:** draw meaningful components as stacked or grouped boxes using \`+---+\` borders with labels inside. Connect them with vertical \`|\`, \`v\`, and occasional horizontal branches for a second destination/side effect. Use short labels beside arrows (request, transform, save, audit event) when they clarify the boundary. Avoid long, wrapping one-line arrow chains such as \`[A] --> [B] --> [C] --> [D]\`.
+   - **Prefer real boxes and a clear layout:** draw meaningful components as stacked or grouped boxes using `+---+` borders with labels inside. Connect them with vertical `|`, `v`, and occasional horizontal branches for a second destination/side effect. Use short labels beside arrows (request, transform, save, audit event) when they clarify the boundary. Avoid long, wrapping one-line arrow chains such as `[A] --> [B] --> [C] --> [D]`.
    - **Make change visible:** keep the current and proposed diagrams at similar levels of detail so the reader can compare them easily. Include ownership or boundary labels where useful, and separate read versus write paths if combining them would be misleading. Use the actual relevant component names discovered from the code, not generic names in a real report.
-   - **Stay evidence-backed:** draw only verified current nodes/links; mark any unresolved connection \`[NOT VERIFIED]\`. Mark newly introduced or changed proposed steps \`[PROPOSED]\`; proposed steps are not approved architecture. Do not invent services, databases, queues, snapshots, dependencies or contracts just to complete a picture.
+   - **Stay evidence-backed:** draw only verified current nodes/links; mark any unresolved connection `[NOT VERIFIED]`. Mark newly introduced or changed proposed steps `[PROPOSED]`; proposed steps are not approved architecture. Do not invent services, databases, queues, snapshots, dependencies or contracts just to complete a picture.
    - **Current flow explanation:** walk through the main arrows in plain English, describe what each existing box owns/does, and explain why its boundary matters to this ticket. Separate documented architectural rationale from plausible inference.
    - **Proposed flow explanation:** explain the changed arrows, what stays unchanged, why a change belongs at that layer, how it achieves the ticket outcome, and what evidence or approval could change the proposal.
    - **Reasoning and impact:** summarize the recommendation, one material trade-off when relevant, and any important unknowns. Leave line-by-line implementation, transaction behavior and failure mechanics for Step 3.
@@ -51,7 +51,7 @@ This is the **workplace-oriented, noninteractive sibling** of Refine Requirement
 
    **Formatting reference — illustrative only, never treat these boxes as verified code:**
 
-   \`\`\`text
+   ```text
    OBSERVED CURRENT FLOW
 
    +---------------------------+
@@ -89,7 +89,7 @@ This is the **workplace-oriented, noninteractive sibling** of Refine Requirement
    | Existing service / store  |
    | [PROPOSED extension]      |
    +---------------------------+
-   \`\`\`
+   ```
 
    The example shows **presentation style only**. Substitute verified component names and an accurate topology from the inspected code; adapt the layout to real branches and integration boundaries rather than forcing a linear flow.
 
