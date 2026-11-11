@@ -33,15 +33,6 @@
       "reference_count": 0
     },
     {
-      "name": "integrate-skills",
-      "category": "methodology",
-      "purpose": "Draft read-only learning guide for collaboratively designing, connecting, evaluating, and releasing cohesive workflows across agent skills; no automation or edits.",
-      "source": "dotskills",
-      "path": "skills/integrate-skills",
-      "reference_count": 0,
-      "exposed": false
-    },
-    {
       "name": "context-engineering",
       "category": "methodology",
       "purpose": "Diagnose and improve how a target skill selects, verifies, expands, and stops using context.",
