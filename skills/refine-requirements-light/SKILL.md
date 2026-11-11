@@ -40,11 +40,58 @@ This is the **workplace-oriented, noninteractive sibling** of Refine Requirement
    - **What is known versus inferred:** source code proves **OBSERVED** structure/behavior, not the original developers' intent. Call a historical design reason **CONFIRMED** only when a decision record or other authoritative source documents it. Mark plausible but undocumented explanations **ASSUMED** and say what would verify them; use **NOT VERIFIED** when the reason is unknown. Do not invent motivations or trade-offs.
    - **Fit to this ticket:** explain *why* to FOLLOW or ADAPT the pattern, *why not* if it is unsuitable, or what remains unverified. Connect the verdict to the ticket's FRs/NFRs and actual contracts; do not merely restate the verdict.
 5. **Recommend and justify:** **only after verification**, propose the smallest suitable high-level change, reusing/extending confirmed patterns first where appropriate. Explain **what changes, what stays unchanged, where each responsibility belongs, and why**. If a new component or approach is justified, identify the verified constraint/gap, the minimal footprint, and the most relevant alternative rejected. If evidence is insufficient, give a **conditional proposal** and the next verification step—do not pretend a subsystem exists.
-6. **Diagram and explain the flows:** show **OBSERVED CURRENT FLOW** and **PROPOSED FLOW** as **two small, labeled ASCII diagrams** when the feature touches multiple components or crosses a request/data/integration boundary. Use boxes or bracketed component names and directional, optionally labeled arrows (e.g., `[Verified UI] --request--> [Verified handler]`). Draw only relevant, verified current components; label gaps `[NOT VERIFIED]`. Mark any newly proposed component/step `[PROPOSED]` and keep it conditional where needed. Never silently replace uncertain connections with invented services, databases, queues or frameworks.
-   - **Current flow explanation:** walk through the important arrows in plain English, what each component does today, and why the existing ownership/boundaries matter to this ticket.
-   - **Proposed flow explanation:** walk through the changed arrows, explain why the change belongs at that point, what is reused versus added, and how the new path achieves the ticket outcome.
-   - **Reasoning and impact:** state the design rationale, one material trade-off (if any), and any unverified connection that could change the proposal. Keep this architectural; leave line-by-line code, failure handling and data-consistency mechanics for Step 3.
-   - For a truly single-component change with no meaningful flow difference, a short ASCII before/after trace or an explicit **Flow unchanged** explanation is sufficient; do not manufacture a multi-layer diagram.
+6. **Diagram and explain the flows visually:** show **OBSERVED CURRENT FLOW** and **PROPOSED FLOW** as **two readable ASCII box-and-arrow diagrams** when the feature touches multiple components or crosses a request/data/integration boundary. These are high-level architecture sketches, **not** merely long inline lists of bracketed names.
+   - **Prefer real boxes and a clear layout:** draw meaningful components as stacked or grouped boxes using \`+---+\` borders with labels inside. Connect them with vertical \`|\`, \`v\`, and occasional horizontal branches for a second destination/side effect. Use short labels beside arrows (request, transform, save, audit event) when they clarify the boundary. Avoid long, wrapping one-line arrow chains such as \`[A] --> [B] --> [C] --> [D]\`.
+   - **Make change visible:** keep the current and proposed diagrams at similar levels of detail so the reader can compare them easily. Include ownership or boundary labels where useful, and separate read versus write paths if combining them would be misleading. Use the actual relevant component names discovered from the code, not generic names in a real report.
+   - **Stay evidence-backed:** draw only verified current nodes/links; mark any unresolved connection \`[NOT VERIFIED]\`. Mark newly introduced or changed proposed steps \`[PROPOSED]\`; proposed steps are not approved architecture. Do not invent services, databases, queues, snapshots, dependencies or contracts just to complete a picture.
+   - **Current flow explanation:** walk through the main arrows in plain English, describe what each existing box owns/does, and explain why its boundary matters to this ticket. Separate documented architectural rationale from plausible inference.
+   - **Proposed flow explanation:** explain the changed arrows, what stays unchanged, why a change belongs at that layer, how it achieves the ticket outcome, and what evidence or approval could change the proposal.
+   - **Reasoning and impact:** summarize the recommendation, one material trade-off when relevant, and any important unknowns. Leave line-by-line implementation, transaction behavior and failure mechanics for Step 3.
+   - **Small-ticket exception:** for a truly single-component change with no meaningful flow difference, use a tiny before/after sketch or explicitly explain **Flow unchanged** instead of manufacturing architecture.
+
+   **Formatting reference — illustrative only, never treat these boxes as verified code:**
+
+   \`\`\`text
+   OBSERVED CURRENT FLOW
+
+   +---------------------------+
+   | Existing UI               |
+   +---------------------------+
+                |
+                | GET /resource
+                v
+   +---------------------------+
+   | Existing API handler      |
+   +---------------------------+
+                |
+                | reads through
+                v
+   +---------------------------+
+   | Existing service / store  |
+   +---------------------------+
+
+   PROPOSED FLOW (CONDITIONAL)
+
+   +---------------------------+
+   | Existing UI + new action  |
+   | [PROPOSED change]         |
+   +---------------------------+
+                |
+                | save request
+                v
+   +---------------------------+
+   | Existing API handler      |
+   +---------------------------+
+                |
+                | validate changes
+                v
+   +---------------------------+
+   | Existing service / store  |
+   | [PROPOSED extension]      |
+   +---------------------------+
+   \`\`\`
+
+   The example shows **presentation style only**. Substitute verified component names and an accurate topology from the inspected code; adapt the layout to real branches and integration boundaries rather than forcing a linear flow.
 
 ### Step 3 — Targeted deep dive: key code paths and data flow
 
@@ -70,7 +117,7 @@ Start with a **Ticket Snapshot**: goal, repository/branch or inspected revision,
 Then use these headings in order:
 
 1. **Step 1 — Requirements & scope**: key FRs/NFRs and acceptance, bounds, unknowns.
-2. **Step 2 — Verify patterns & recommend high-level design**: concise evidence-backed reuse map; **Existing pattern purpose & rationale** (verified responsibilities, documented reasons versus hypotheses, and why it fits or does not fit the ticket); **OBSERVED CURRENT FLOW** and **PROPOSED FLOW** as labeled ASCII diagrams with plain-English walkthroughs when multiple components/boundaries are involved; **Design rationale** (what changes, what is reused, why this placement, meaningful alternative/trade-off); explicitly flag unverified areas before recommending an approach.
+2. **Step 2 — Verify patterns & recommend high-level design**: concise evidence-backed reuse map; **Existing pattern purpose & rationale** (verified responsibilities, documented reasons versus hypotheses, and why it fits or does not fit the ticket); **OBSERVED CURRENT FLOW** and **PROPOSED FLOW** as visually readable ASCII **boxed, labeled, arrow-connected** architecture diagrams (not long inline bracket/arrow traces) with plain-English walkthroughs when multiple components/boundaries are involved; **Design rationale** (what changes, what is reused, why this placement, meaningful alternative/trade-off); explicitly flag unverified areas before recommending an approach.
 3. **Step 3 — Deep dive & data flow**: relevant request/read/write trace and critical code/test touchpoints; include relevant data, consistency and integration considerations only when warranted.
 4. **Step 4 — Trade-offs, risks & readiness**: preferred minimal change, realistic alternatives, material risks, verification plan and readiness.
 5. **Open decisions / questions for the ticket**: concise owner-specific blockers; write **None identified from inspected evidence** when appropriate.
