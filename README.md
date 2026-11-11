@@ -37,6 +37,7 @@ Skills are grouped by use.
 | [study-mcpa](skills/study-mcpa/SKILL.md) | Study for Linux Foundation MCPA with a selectable topic menu, guided practice, mock questions, and optional hands-on DotSkills MCP Server labs. | MCP fundamentals, protocol security, integrations, and hands-on server concepts. |
 | [track-working-groups](skills/track-working-groups/SKILL.md) | Track public working-group updates, manage group metadata and private checkpoints, and prepare source-backed meeting briefings. | Technical governance, working-group processes, and source-backed research. |
 | [learn-implementation](skills/learn-implementation/SKILL.md) | Learn an implementation through an evidence-backed question and design-decision menu, then Alex Xu's four-step guided deep dives into code, trade-offs, and failure modes. | SDI (Alex Xu's four steps) for features and subsystems: requirements, design decisions, code/data flows, failure modes, and trade-offs. |
+| [review-implementation](skills/review-implementation/SKILL.md) | Guided post-implementation self-review: Inspect → Understand → Challenge → Verify, then report evidence-backed reliability and readiness gaps before a merge request. | Understanding AI-generated changes, SDI reasoning, failure-mode analysis, hands-on verification, and engineering ownership. |
 
 ### Decision support
 
