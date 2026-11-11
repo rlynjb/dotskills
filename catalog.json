@@ -91,6 +91,14 @@
       "exposed": false
     },
     {
+      "name": "review-implementation",
+      "category": "engineering",
+      "purpose": "Guided post-implementation self-review of AI-generated or human-authored changes: inspect diff and requirements, understand flows, challenge failure modes through SDI, verify actual test evidence, and report pre-merge readiness gaps.",
+      "source": "dotskills",
+      "path": "skills/review-implementation",
+      "reference_count": 0
+    },
+    {
       "name": "refine-requirements",
       "category": "engineering",
       "purpose": "Codebase-first, recommendation-first collaborative engineering design: four SDI steps, refined FR/NFRs, architecture options, explicit technical decision and overall design approvals, and an implementation-ready handoff only after user sign-off.",
