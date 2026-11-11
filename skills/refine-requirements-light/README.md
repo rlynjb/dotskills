@@ -29,13 +29,16 @@ For each finding, record **where it was found** (path, symbol, contract or test)
 
 **Prefer the smallest coherent extension to verified application patterns** over parallel abstractions, duplicate logic, or a wholesale redesign. Respect actual team conventions and application constraints; do not force reuse if the contracts or behavior do not fit.
 
-## Engineering lenses
+## Engineering considerations
 
-**System Design Interview (Alex Xu)** supplies the four-step structure for every ticket.
+The four-step **SDI framework** organizes the analysis. Within each step, examine only the engineering concerns that matter to the ticket and verified implementation:
 
-Use **Designing Data-Intensive Applications, 2nd Edition (DDIA)** and **Fundamentals of Data Engineering (FODE)** selectively when a full-stack or data-related task needs analysis of data models, storage, transactions, consistency, source of truth, ingestion, transformation, serving, and read/write paths.
+- **Data behavior:** models, queries, transactions, consistency, freshness, concurrency, indexing, caching and recovery.
+- **Data movement:** origin, validation, transformations, source of truth, read/write paths, consumers, contracts and data quality.
+- **Code structure:** module responsibilities, interfaces, coupling, duplication, maintainability and compatibility.
+- **Correctness and reliability:** edge cases, computational cost, authorization, dependency failures, observability and focused verification.
 
-**A Philosophy of Software Design** and **Algorithmic Thinking** are optional lenses only when a real module-boundary, correctness, or algorithmic trade-off matters. These books help reason about the company's code; they do not override its existing standards.
+These are **situational engineering checks**, not a required checklist or a reason to override company conventions. Explain applicable trade-offs in plain engineering terms and support claims with code or ticket evidence.
 
 ## Example of an output (hypothetical)
 
@@ -57,7 +60,7 @@ patterns, contracts, tests and documented team conventions.
 Then give me one concise four-step SDI overview:
 1. Requirements and scope
 2. Verified existing patterns and high-level design recommendation
-3. Relevant implementation/data flow (DDIA/FODE if applicable)
+3. Relevant implementation/data flow (when applicable)
 4. Trade-offs, risks, validation and readiness
 Prefer the smallest compatible change. Label unverified findings.
 No interview, learning menu, source edits, Jira updates or implementation.
