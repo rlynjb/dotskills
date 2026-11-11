@@ -1,15 +1,24 @@
 ---
 name: refine-requirements
-description: "Codebase-first recommendation-led collaborative system design for real feature work. Start with a complete FR/NFR Findings Overview, then guide the developer through Alex Xu’s four SDI steps, options, architecture sketches, design deep dives, explicit technical-decision approvals, and a separately signed-off Superpowers/coding-agent handoff. Preserve requirements-only Guided/Practice modes. Do not implement code."
+description: "Design-first, codebase-grounded collaborative engineering from a Jira ticket, pasted user story, acceptance criteria, feature brief, or notes. Use Alex Xu’s four SDI steps to reason from problem/scope through existing patterns, architecture, deep dives, and trade-offs, with explicit design approval before a separately authorized coding-agent handoff. Preserve requirements-only Guided/Practice modes; do not implement code."
 ---
 
 # Refine Requirements
 
 ## Objective
 
-Guide a developer through a **real, reviewable engineering design** using the four System Design Interview (SDI) steps. The skill is both a technical design partner and a learning coach: recommendations, architecture sketches, explanations, practical trade-offs, revisions, and approval happen as part of one engineering workflow. **Recommendation first, never an unprompted interview question first.** The user explores options, proposes an approach, challenges it, and approves decisions individually before reviewing and signing off the overall design for a later coding-agent handoff.
+Guide a developer through a **design-first, reviewable engineering workflow** using the four System Design Interview (SDI) steps. The default is **not merely a requirements audit**: understand the problem, examine existing code, reason about a suitable architecture, review technical decisions, and obtain design approval **before** an implementation handoff. The skill is both a technical design partner and a learning coach: recommendations, architecture sketches, explanations, practical trade-offs, revisions, and approval happen as part of one engineering workflow. **Recommendation first, never an unprompted interview question first.** The user explores options, proposes an approach, challenges it, and approves decisions individually before reviewing and signing off the overall design for a later coding-agent handoff.
 
 **Overview first, choices on demand:** inspect relevant code, tickets and tests, then show a compact evidence/pattern map, all material FRs/NFRs, design gaps, the SDI roadmap, and recommended opportunities. Stop for a selection. Keep **Post-interview — Questions to ask stakeholders** as the brief **last** section of the initial overview and completed handoff.
+
+## Accepted inputs and design-first contract (default)
+
+- **Any usable feature input can start the skill:** a Jira ticket, another issue tracker item, a pasted user story, acceptance criteria (ACs), a requirements excerpt, a feature brief, bug/behavior description, or informal notes. The user may paste the text directly, attach it, or supply an accessible link. **Never require a Jira key, a Jira integration, or a specific template.**
+- **Assess evidence and authority, not format:** distinguish approved source requirements from drafts, informal notes, inferred behavior, and unanswered questions. Pasted ACs alone are enough to begin, but may leave the goal, actors, scope or product decisions **UNKNOWN**. Preserve the exact stated intent, flag gaps and seek approval from the actual owner rather than treating a paste as automatically approved.
+- **Design first, not code first:** by default use **SDI Step 1 (understand the problem and scope) → Step 2 (verify current patterns and propose a high-level design) → Step 3 (deep dive into critical components, interfaces and data flows) → Step 4 (evaluate bottlenecks, alternatives, risks and trade-offs)**. Produce a reviewed design candidate and explicit decisions before any implementation planning/handoff. Do **not** rush from requirements to a technology or code solution, or stop at a passive ticket review unless the user explicitly selects requirements-only mode.
+- **Teach reasoning while designing:** at each step explain **what is known, what needs verification, what decision is being considered, why the preferred approach fits the actual requirements/code, what trade-off it makes, and what could change the recommendation**. In Step 2 include explained current/proposed ASCII flow diagrams when useful, under the Collaborative SDI reference.
+- **If the codebase is unavailable:** still start from the supplied story/ACs/notes and give conditional requirements findings and design directions, but label application patterns, proposed integration points and assumptions **NOT VERIFIED / PROVISIONAL**. Do not claim verified reuse or finalized architecture without evidence.
+- **Approval before implementation:** individual D-ID approvals and the later overall design sign-off are distinct. Neither invokes Superpowers, Codex, Claude Code, or another coding agent; actual code work requires a separate explicit request and proper permissions. Preserve the requirements-only Guided/Practice paths when requested.
 
 ## Read these three references
 
@@ -21,10 +30,10 @@ Run the master requirements checks during **Step 1**, without substituting guess
 
 ## Before the interview: establish evidence first
 
-1. Read the assigned ticket, approved specs, known decisions, and provided constraints to locate the feature, actors, and expected outcome. Do not assume the ticket is complete.
+1. Read whatever feature input the user supplied (Jira/other ticket, pasted story, ACs, requirements, feature brief, bug report or notes), plus any approved specs, known decisions and constraints available, to identify the goal, actors and expected outcome. Do not assume the input is complete or approved.
 2. **Inspect relevant existing code before proposing FRs, NFRs, or outreach questions**, when authorized code is available. Look for similar features, screens, business rules, permissions, contracts, tests, integrations, and observable behavior. Stop when the comparison is sufficiently grounded; do not map unrelated subsystems.
 3. Open with a compact **evidence and pattern map**: comparable feature / path-symbol-test evidence / current observable behavior / relevant differences / FOLLOW, ADAPT, NO SUITABLE PATTERN FOUND, or NOT VERIFIED. A proven code pattern is a possible reuse baseline, **not** proof of approved product intent. Note revision and search coverage.
-4. If code is missing or access is restricted, mark alignment **NOT VERIFIED**, explain the limit, and continue with ticket-grounded **provisional** interview questions. Do not invent inspected code or block all progress.
+4. If code is missing or access is restricted, mark alignment **NOT VERIFIED**, explain the limit, and continue with input-grounded **provisional** findings, SDI reasoning and design options. Do not invent inspected code or block all progress.
 5. Keep distinctions explicit throughout: **CONFIRMED REQUIREMENT** (approved evidence), **OBSERVED BEHAVIOR** (code/tests), **PROPOSED**, **ASSUMED**, and **UNKNOWN**. Mark source and confidence for important statements; never invent approvals, numbers, compliance obligations, or stakeholder history.
 6. Record the inspected revision/branch, ticket/spec version or date if known, and search coverage. When the user supplies revised ticket facts, new code, changed decisions, or requests a refresh, **recheck affected evidence and update the pattern map and findings index first**; mark what changed and what is still NOT VERIFIED. Do not pretend previous evidence was freshly checked.
 
@@ -37,7 +46,7 @@ Run the master requirements checks during **Step 1**, without substituting guess
 3. **Functional requirements — overview:** **all material candidate FR-IDs** in one concise table (behavior, priority, confirmed/proposed/assumed/unknown, evidence or pattern linkage, gap/linked Q-ID). Show a brief acceptance headline only when useful; defer detailed Given/When/Then traces until an item is selected.
 4. **Non-functional requirements — overview:** **all material candidate NFR-IDs** in one concise table (linked FR/journey, quality and target or **target requires confirmation**, status, evidence/owner or linked Q-ID). Do not expand every quality category when irrelevant.
 5. **Bigger-picture gaps:** short summaries of meaningful edge/failure cases, dependencies, compatibility, permission/data boundaries, and system-design inputs (entities, contracts, ownership, read/write patterns, scale, reliability, security, trade-offs), with evidence and unknowns distinguished.
-6. **Readiness, SDI roadmap and recommended options:** show provisional requirements readiness (READY / CONDITIONAL / BLOCKED, or NOT YET ASSESSED), blockers, **Step 1–4 SDI progress**, and a short recommendation-first design-opportunity menu (stable D-IDs, plausible options, conditional recommendation and evidence limits). Invite a selection of FR-01, NFR-01, D-01, a step or a gap. **Do not auto-start** the first deep dive, present a decision as approved, or assume a technical design can override unresolved product scope.
+6. **Readiness, design-first SDI roadmap and recommended options:** show provisional requirements readiness (READY / CONDITIONAL / BLOCKED, or NOT YET ASSESSED), blockers, **Step 1–4 SDI progress**, and a short recommendation-first design-opportunity menu (stable D-IDs, plausible options, conditional recommendation and evidence limits). Make clear that the next path is collaborative design and review, not immediate coding. Invite a selection of FR-01, NFR-01, D-01, a step or a gap. **Do not auto-start** the first deep dive, present a decision as approved, or assume a technical design can override unresolved product scope.
 7. **Post-interview — Questions to ask stakeholders:** the **final section**, a short deduplicated question queue with Q-ID, decision owner, ready-to-ask wording, linked FR/NFR, priority and **BLOCKS HANDOFF? YES/NO**. Keep reasons to a few words unless requested; don't interview each stakeholder question individually.
 
 The overview is a **working index**, not stakeholder approval, final architecture approval, or the full engineering handoff. Options can be explored even when evidence is incomplete, but recommendations must be conditional and may not resolve product-authority blockers. If source access is unavailable, mark the evidence/pattern map **NOT VERIFIED** and design options **PROVISIONAL**; do not force a Problem question or repeat detailed acceptance scenarios. The stakeholder queue remains the **last** section.
@@ -125,6 +134,27 @@ For each useful question include **Q-ID / owner**, **priority**, **BLOCKS HANDOF
 Optionally provide one compact ready-to-send stakeholder message and one developer message in a final report when helpful. Never fabricate a stakeholder answer or imply outreach happened. If none is justified, say **"No unresolved stakeholder questions for this topic."**
 
 Questions remain drafts in the response. Do not post them to Jira, GitHub/GitLab, Slack, email, or another external system without explicit authorization.
+
+## Example invocation — no Jira required
+
+A user can invoke this skill with a pasted user story, acceptance criteria, or informal feature description. Example:
+
+```text
+Use refine-requirements with the feature request below.
+Take a design-first approach and use SDI Steps 1–4 for engineering reasoning.
+Start with the Findings Overview, verify relevant existing code patterns
+when available, then guide me through architecture options and decisions
+before any implementation handoff. Explain why each design makes sense.
+Do not write code or start a coding agent.
+
+Feature / user story:
+[paste text here]
+
+Acceptance criteria or notes:
+[paste text here, if available]
+```
+
+If the user invokes the skill without explicitly saying "design first," **the full collaborative design-first SDI track is still the default**. Do not demand the example's format; work with whatever usable feature input was supplied.
 
 ## Trust, evidence, and execution boundaries
 
