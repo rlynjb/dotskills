@@ -24,7 +24,7 @@ Guide a developer through a **design-first, reviewable engineering workflow** us
 
 **Strictly render user-facing outputs as vertically stacked, labeled entries, regardless of terminal/CLI width.** Never switch to Markdown tables, grid tables, column layouts, or pipe-delimited pseudo-tables when the terminal is wide. This applies to the Findings Overview, Step 1 FR/NFR lists, evidence/pattern maps, Step 2 options, Step 3 notes, Step 4 decisions, stakeholder questions, and requirements/design handoffs. A source-locked reference may describe table *fields*; preserve the content and IDs, but **render those fields in labeled blocks**, not a table.
 
-**One item at a time:** use a bold ID and short title, then 2–5 short labeled field lines as needed (`Requirement`, `Status`, `Priority`, `Source`, `Linked FR`, `Target`, `Question`, `Reason`, etc.). Separate successive items with a standalone Markdown horizontal rule `---`. Keep each block concise for reasoning and scanning; don't bury multiple requirements in one paragraph. Use the same format in wide and narrow terminals. Omit fields that don't apply; do not fabricate information. Keep higher-level section headings and the source-evidence distinction.
+**One item at a time, exactly like the terminal reuse-map format:** start with a bold item identifier/title such as `**Area: Sector map rendering**` or `**FR-01 — Save preferences**`. Under it use **plain labeled lines without list bullets**, e.g. `Where it lives:`, `What it does today:`, `Verdict:`, `Requirement:`, `Status:`, `Source:` or `Reason:`. Then add a simple horizontal divider. Keep 2–5 short labeled field lines as needed (`Requirement`, `Status`, `Priority`, `Source`, `Linked FR`, `Target`, `Question`, `Reason`, etc.). Separate successive items with a standalone Markdown horizontal rule `---`. Keep each block concise for reasoning and scanning; don't bury multiple requirements in one paragraph. Use the same format in wide and narrow terminals. Omit fields that don't apply; do not fabricate information. Keep higher-level section headings and the source-evidence distinction.
 
 **Illustrative Step 1 output format (not real project requirements):**
 
@@ -32,26 +32,46 @@ Guide a developer through a **design-first, reviewable engineering workflow** us
 ### Functional Requirements (FRs)
 
 **FR-01 — Save preferences**
-- **Requirement:** Users can save their preference selection.
-- **Status:** PROPOSED
-- **Source:** Pasted user story
-- **Open question:** Q-01 — Which choices are supported?
+Requirement: Users can save their preference selection.
+Status: PROPOSED
+Source: Pasted user story
+Open question: Q-01 — Which choices are supported?
 
 ---
 
 **FR-02 — View preferences**
-- **Requirement:** Users can see the currently saved selection.
-- **Status:** PROPOSED
-- **Source:** Pasted user story
+Requirement: Users can see the currently saved selection.
+Status: PROPOSED
+Source: Pasted user story
 
 ### Non-Functional Requirements (NFRs)
 
 **NFR-01 — Read freshness**
-- **Quality:** How soon another device reflects a saved preference
-- **Linked FR:** FR-01, FR-02
-- **Target:** Requires confirmation
-- **Status:** UNKNOWN
-- **Open question:** Q-02 — What delay is acceptable?
+Quality: How soon another device reflects a saved preference
+Linked FR: FR-01, FR-02
+Target: Requires confirmation
+Status: UNKNOWN
+Open question: Q-02 — What delay is acceptable?
+```
+
+**Illustrative Step 2 reuse-map entry (screenshot-style, not a verified code finding):**
+
+```md
+### Step 2 — Existing patterns
+
+**Area: Sector map rendering**
+Where it lives: apps/facility/src/... (illustrative path)
+What it does today: Renders a read-only layout
+Verdict: ADAPT
+Reason: Existing renderer could be extended if its contracts support editing.
+
+---
+
+**Area: Pan and zoom**
+Where it lives: shared/PanZoomContainer.tsx (illustrative path)
+What it does today: Handles viewport pan/zoom
+Verdict: FOLLOW
+Reason: Reusing the existing interaction avoids duplicating navigation logic.
 ```
 
 For a single item, no divider is needed. The first response still covers **all material initial findings**; the vertical layout makes each one independently reviewable, rather than hiding items or forcing the user through an interview.
@@ -62,7 +82,7 @@ For a single item, no divider is needed. The first response still covers **all m
 
 - **Functional Requirement (FR):** a behavior or capability the system must provide. Label it `FR-01`, `FR-02`, etc. and state the observable behavior.
 - **Non-Functional Requirement (NFR):** a relevant quality attribute or constraint (e.g., performance, reliability, security, accessibility, compatibility). Label it `NFR-01`, `NFR-02`, etc. and connect it to the affected FR or user journey when possible. Never manufacture a numeric NFR target; write **target requires confirmation** when unspecified.
-- **Required Step 1 presentation:** keep separate, explicitly titled **Functional Requirements (FRs)** and **Non-Functional Requirements (NFRs)** sections. Show **one labeled vertical entry per requirement**, with its `FR-xx` or `NFR-xx` ID as a bold heading and short `Requirement`, `Status`, `Source/evidence`, and `Gap/question` field lines (plus linked FR and quality target for NFRs as useful). Separate consecutive requirement entries with a standalone `---`; **never render a table based on terminal width**. Use these **same IDs** in prose explanations, acceptance criteria, scenario examples, stakeholder questions, Step 2 design decisions, Step 3 traces, Step 4 trade-offs, and the final handoff. Do not leave a requirement as an unlabeled bullet buried under “scope” or “findings.”
+- **Required Step 1 presentation:** keep separate, explicitly titled **Functional Requirements (FRs)** and **Non-Functional Requirements (NFRs)** sections. Show **one labeled vertical entry per requirement**, with its `FR-xx` or `NFR-xx` ID as a bold heading and short **plain, non-bulleted** `Requirement:`, `Status:`, `Source/evidence:`, and `Gap/question:` field lines (plus linked FR and quality target for NFRs as useful). Separate consecutive requirement entries with a standalone `---`; **never render a table based on terminal width**. Use these **same IDs** in prose explanations, acceptance criteria, scenario examples, stakeholder questions, Step 2 design decisions, Step 3 traces, Step 4 trade-offs, and the final handoff. Do not leave a requirement as an unlabeled bullet buried under “scope” or “findings.”
 - **Classification and traceability:** distinguish `CONFIRMED`, `PROPOSED`, `ASSUMED`, and `UNKNOWN` rather than treating inferred requirements as approved. Keep IDs stable as findings are revised or reordered; do not silently renumber them. If a requirement combines behavior and a quality constraint, split into linked FR/NFR only where they are meaningfully distinct; avoid duplication.
 - **No forced requirements:** keep out-of-scope items, assumptions, design ideas and unresolved questions in their own clearly titled sections rather than pretending they are FR/NFR commitments. If no relevant NFR (or FR) is supported by the input/evidence, still show its section and say **None identified from supplied evidence** instead of inventing one.
 
