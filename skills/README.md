@@ -67,3 +67,5 @@ Task skills perform the user's actual work, for example code review, investigati
 requirements refinement, learning, and decision support. They are targets that the
 methodology skills can evaluate and improve; they are not children of the methodology
 packages in the filesystem.
+
+`review-implementation` is a developer-led self-review after code generation or manual implementation. Its four steps—Inspect, Understand, Challenge, Verify—help reconstruct what changed, apply SDI reasoning to reliability risks, and ground verification in real test results. It complements the deeper learning path in `learn-implementation` and the book-lens `code-review` skill; it does not replace the team's merge-request reviewer or approve merges.
