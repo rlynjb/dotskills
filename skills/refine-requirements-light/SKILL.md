@@ -1,6 +1,6 @@
 ---
 name: refine-requirements-light
-description: "One-pass, read-only SDI analysis of assigned Jira tickets against the company application codebase. Verify current components, subsystems, patterns, contracts and standards before proposing a reuse-first high-level design, then trace relevant full-stack data flow and report trade-offs/risks. DDIA 2nd edition and FODE are selective lenses; no interviews or code changes."
+description: "One-pass, read-only SDI analysis of assigned Jira tickets against the existing application codebase. Verify actual components, patterns, contracts and standards before proposing a reuse-first design; trace relevant request/data flows and assess correctness, integration and reliability risks. No interviews or code changes."
 ---
 
 # Refine Requirements Light
@@ -13,7 +13,7 @@ This is the **workplace-oriented, noninteractive sibling** of Refine Requirement
 
 ## Priorities and evidence
 
-1. **Verify actual application code and standards first.** Inspect accessible repository instructions and applicable company/team conventions alongside real entry points, modules, contracts, tests and ADRs. Respect **verified** conventions and boundaries; do **not assume** that a relevant subsystem, reusable pattern, or documented architecture exists for the ticket. Books supply reasoning lenses, **not mandates to replace company code**.
+1. **Verify actual application code and standards first.** Inspect accessible repository instructions and applicable company/team conventions alongside real entry points, modules, contracts, tests and ADRs. Respect **verified** conventions and boundaries; do **not assume** that a relevant subsystem, reusable pattern, or documented architecture exists for the ticket. Engineering principles inform trade-offs but do **not** override verified company conventions, requirements or observed behavior.
 2. **Codebase-first, verify-before-recommend.** Scope the ticket, locate candidate feature paths/subsystems, inspect their real callers, responsibilities, contracts, services, models, tests and config, then decide whether they fit. Cite paths/symbols for each verified finding. If no matching pattern is found within the inspected scope, say **NO SUITABLE PATTERN FOUND IN INSPECTED SCOPE**; if inspection is incomplete or access is missing, say **NOT VERIFIED**. Neither outcome proves that no pattern exists anywhere. Do not map the entire repository by default.
 3. **Distinguish authority and evidence.** Approved tickets/specs/stakeholder decisions establish product requirements. Code establishes **observed behavior**, not necessarily approved intent. Label essential claims **CONFIRMED**, **OBSERVED**, **PROPOSED**, **ASSUMED**, or **NOT VERIFIED**; cite concrete repository paths/symbols/test names, ticket sections, or source links when possible. Do not invent approval, throughput, SLA targets, data guarantees, or implementation history.
 4. **Prefer the smallest coherent verified extension.** After investigating candidate patterns, choose **FOLLOW** (verified fit), **ADAPT** (verified partial fit), **NEW REQUIRED** (justify with inspected evidence and constraints), **NO SUITABLE PATTERN FOUND IN INSPECTED SCOPE**, or **NOT VERIFIED**. Avoid duplicate logic, parallel services, needless interfaces/wrappers, unnecessary dependencies, new stores and speculative abstractions. Never force reuse if it violates a requirement or confuses module ownership.
@@ -35,15 +35,15 @@ This is the **workplace-oriented, noninteractive sibling** of Refine Requirement
 2. **Verify:** inspect the actual code and relevant callers/contracts to establish which candidates exist, their responsibilities, current request/data paths, relevant company conventions and whether they fit the ticket. Ground every material mapping in paths/symbols/tests; mark uncertain links **NOT VERIFIED**.
 3. **Assess reuse:** provide an evidence map with **candidate area | verified path/symbol | observed behavior | ticket fit | FOLLOW / ADAPT / NEW REQUIRED / NO SUITABLE PATTERN FOUND IN INSPECTED SCOPE / NOT VERIFIED**. A pattern is reusable only if its contracts and behavior fit. An inaccessible or unsuccessful bounded search is not proof of absence.
 4. **Recommend:** **only after that verification**, propose the smallest suitable high-level change, reusing/extending confirmed patterns first where appropriate. If a new component or approach is justified, explain the documented constraint/gap and minimal footprint. If evidence is insufficient, provide a **conditional proposal** and the next verification step—do not pretend a subsystem exists.
-5. **Sketch:** distinguish **OBSERVED CURRENT FLOW** from **PROPOSED FLOW**, and briefly show affected components/ownership, integration boundaries and API/data movement. Prefer a compact text trace; add a small diagram only when it clarifies actual flow. Never invent a new service, framework, database, queue or abstraction just because a textbook features it.
+5. **Sketch:** distinguish **OBSERVED CURRENT FLOW** from **PROPOSED FLOW**, and briefly show affected components/ownership, integration boundaries and API/data movement. Prefer a compact text trace; add a small diagram only when it clarifies actual flow. Never invent a new service, framework, database, queue or abstraction without evidence of need.
 
 ### Step 3 — Targeted deep dive: key code paths and data flow
 
 - Explore only the **critical** implementation areas needed to understand feasibility and impact: responsibility/ownership, input/output contracts, validation, authorization, read and write behavior, side effects, errors, retries/concurrency, backwards compatibility and test seams.
 - **For full-stack or data-changing tickets**, explicitly trace a representative flow **from source/actor → UI/client → API boundary → service/transformation → source of truth/storage → response/downstream consumer**. Mark any layer not present or unverified; distinguish **read path** from **write path**.
-- Use **DDIA, 2nd edition** selectively where a real decision involves data modeling, query/access patterns, transactions, isolation, consistency/freshness, indexes, caching, concurrency, migrations or resilience. State what the existing mechanism **does and does not guarantee**; use tests or measurements when available rather than guessing.
-- Use **Fundamentals of Data Engineering (FODE)** selectively where data is generated, ingested, transformed, stored, served, synchronized or passed to consumers. Locate ownership, validation, data quality, schema/contract changes and operational implications.
-- Use **A Philosophy of Software Design (APOSD)** only if module boundaries, information hiding, duplication or complexity materially affect the proposed change. Use **Algorithmic Thinking** only for genuine algorithmic/correctness/complexity issues. No mandatory five-book checklist and no invented quotations.
+- **When data behavior matters**, examine data models, access/query patterns, transaction boundaries, isolation, consistency/freshness, indexes, caching, concurrency, migrations and recovery. State what the current implementation **does and does not guarantee** based on inspected code, tests or measurements rather than assumptions.
+- **When data moves between components or systems**, trace its source, validation, ingestion, transformation, storage, synchronization and downstream consumption where applicable. Check ownership, schema/API contracts, data quality, error handling and operational responsibilities.
+- **When code structure or computation matters**, assess module boundaries, coupling, duplication, information hiding, algorithmic correctness and performance only where they affect the ticket. Do not introduce speculative abstractions or a mandatory technical checklist.
 - Identify key files/tests likely to change versus **tests inspected**, **checks actually run**, and **tests proposed**. Do not imply analysis executed a test.
 
 ### Step 4 — Wrap up: bottlenecks, trade-offs, risks and readiness
@@ -62,7 +62,7 @@ Then use these headings in order:
 
 1. **Step 1 — Requirements & scope**: key FRs/NFRs and acceptance, bounds, unknowns.
 2. **Step 2 — Verify patterns & recommend high-level design**: evidence-backed candidate path/subsystem/reuse map; **observed current** → **proposed** flow; explicitly flag unverified areas before recommending an approach.
-3. **Step 3 — Deep dive & data flow**: relevant request/read/write trace and critical code/test touchpoints; apply DDIA/FODE only if warranted.
+3. **Step 3 — Deep dive & data flow**: relevant request/read/write trace and critical code/test touchpoints; include relevant data, consistency and integration considerations only when warranted.
 4. **Step 4 — Trade-offs, risks & readiness**: preferred minimal change, realistic alternatives, material risks, verification plan and readiness.
 5. **Open decisions / questions for the ticket**: concise owner-specific blockers; write **None identified from inspected evidence** when appropriate.
 
@@ -82,6 +82,6 @@ Then use these headings in order:
     candidate subsystems, patterns, contracts and standards first.
     Give me one concise assessment following the four SDI steps:
     requirements/scope, reuse-first high-level design, targeted full-stack
-    read/write data flow (DDIA/FODE if relevant), and trade-offs/risks.
+    read/write data flow (when applicable), and trade-offs/risks.
     Highlight the smallest safe change, acceptance checks and blockers.
     No interview, no learning menu, no implementation, and no Jira edits.
