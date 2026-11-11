@@ -1,6 +1,6 @@
 # Study MCPA — learner progress template
 
-Copy this to a **private learner-owned location** only when requested, such as `notes/study-mcpa-progress.md`. Do not place personal study history in the public DotSkills skill package or under `evals/`. The tutor may track in the active conversation without writing a file, but future-chat availability is not guaranteed.
+This is a **human-readable reference/export**, retained for learners who do not use the JSON helper. When [persistent progress](persistence.md) is enabled, the private `progress.json` is the authoritative machine-readable state. Copy this template to a **private learner-owned location** only when requested, such as `notes/study-mcpa-progress.md`. Do not place personal study history in the public DotSkills skill package or under `evals/`. The tutor may track in the active conversation without writing a file, but future-chat availability is not guaranteed.
 
 ## Study status
 
