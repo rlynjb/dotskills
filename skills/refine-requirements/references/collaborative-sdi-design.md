@@ -10,6 +10,14 @@ The agent is a **researcher, recommending design partner, and optional interview
 
 **Read-only execution boundary:** Inspect available code, contracts, tests, docs and tickets only with authorization. Diagrams, interface sketches, pseudocode, and design text are **proposals**, not code changes. Do not edit source, create tickets, contact stakeholders, run migrations, deploy, invoke Superpowers, or instruct an agent to begin coding without a separate, explicit user instruction and capable host authorization. Save design files only when the user separately authorizes writing them.
 
+## Input flexibility and design-first reasoning
+
+This is a **design-first development method**, not just a ticket-review report. Begin with **whatever feature context the user supplied**: a Jira or other issue, pasted user story, acceptance criteria, requirements text, behavior report, feature brief, or informal notes. The input may be pasted directly; a Jira key, special format and tracker integration are **not prerequisites**. Mark draft/uncorroborated statements and missing product decisions as provisional rather than upgrading them to approved requirements.
+
+**Order matters:** SDI Step 1 establishes the problem, desired observable behavior and scope **before solution selection**. Step 2 investigates real architecture/patterns and explains current versus proposed flow; Step 3 reasons through the critical interfaces, data paths and implementation constraints; Step 4 defends the design against risks and trade-offs. Use each step as a reasoning discipline: **evidence → interpretation → options → recommendation → challenge/review → explicit decision**. Do not jump to Step 2/3 technical solutions while essential Step 1 requirements are still unresolved, or mistake the Findings Overview for completed design work.
+
+**Output target:** work toward an **evidence-grounded, explained engineering design** (or a clearly marked provisional design when code/scope is missing), with current/proposed ASCII flow sketches when relevant, ownership/contracts, why existing patterns fit, alternatives, trade-offs and approval status. A design-first workflow happens **before implementation**: it never authorizes code edits, a coding agent or a deploy on its own. The separate approvals/handoff rules below remain mandatory.
+
 ## Entry: findings first, recommendation first
 
 1. Inspect the relevant existing feature and available evidence before recommending architectures. Record revision, known boundaries, code paths, contracts and uncertainty. If inaccessible, mark **NOT VERIFIED**; do not invent an existing implementation.
@@ -41,7 +49,7 @@ Use Alex Xu's four-step SDI framing, adapted to a real feature. Show **Step X of
 
 ### Step 1 — Understand the problem and establish design scope
 
-Inspect feature goals and existing patterns. Recommend the smallest useful scope, FR priorities, relevant NFRs, key failure/permission cases, and uncertainties. Explain alternatives (e.g. reuse vs adapt vs new behavior) and where product approval is needed. Refine FR/NFR/acceptance register with the user. Surface unresolved product questions by owner; a coding/design agent cannot decide product policy. **Output:** requirements baseline, acceptance, constraints, pattern map, candidate D-IDs and scope decisions.
+Inspect the supplied feature input—ticket, user story, ACs, brief or notes—and relevant existing patterns. **Stay with problem framing before choosing technical solutions:** establish actor, trigger, expected observable behavior, scope/out-of-scope, FR priorities, relevant NFRs, key failure/permission cases and unknown product decisions. Recommend the smallest useful scope and explain which clarifications materially change the design. Treat early reuse/adapt/new observations as **candidates**, not approved architecture. Refine the FR/NFR/acceptance register with the user. Surface unresolved product questions by owner; a coding/design agent cannot decide product policy. **Output:** requirements baseline, acceptance, constraints, pattern map, candidate D-IDs and scope decisions.
 
 ### Step 2 — Verify existing patterns, explain why they work, and propose a high-level design for review
 
