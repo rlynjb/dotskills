@@ -124,7 +124,7 @@
     {
       "name": "learn-implementation",
       "category": "learning",
-      "purpose": "Overview-first implementation learning with a design-decision index, Alex Xu four-step Guided/Practice deep dives, and selective five-book technical lenses.",
+      "purpose": "Read-only, implementation-first learning: a skimmable four-step SDI overview of observed code/flows with boxed ASCII architecture, evidence-backed trade-offs, conditional performance recommendations, verified chapter pointers from five books, and optional Guided/Practice deep dives.",
       "source": "dotfiles",
       "path": "skills/learn-implementation",
       "reference_count": 0
