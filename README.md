@@ -6,17 +6,6 @@
 
 Skills are grouped by use.
 
-### Engineering methodologies & frameworks
-
-| Framework / skill | Purpose | What you'll learn |
-| --- | --- | --- |
-| [apply-dfrde](skills/apply-dfrde/SKILL.md) — Design-First, Review-Driven Engineering | Guide the engineering lifecycle from discovery and design to contracts, implementation, evaluation, and release, with human review gates. | Engineering lifecycle, design and contract decisions, evidence-based validation, and release readiness. |
-| [SDI](skills/apply-dfrde/README.md#relationship-to-the-system-design-interview-sdi-framework) — System Design Interview framework *(not a standalone skill)* | Structure architectural reasoning: clarify requirements, propose a high-level design, dive into components, and examine trade-offs. Used in engineering and learning workflows. | Requirements analysis, system architecture, component behavior, bottlenecks, and technical trade-offs. |
-
-**How they fit together:** SDI helps reason through a design; DFRDE guides the broader engineering process through implementation, verification, and release. Use SDI within DFRDE when architectural complexity warrants it.
-
-**Reusable engineering record:** Start new reviews from [the DFRDE Engineering Review Template](docs/dfrde/engineering-review-template.md). For existing agent skills, `audit-skill` can prefill DFRDE **Stages 1–3**: evidence-backed Discovery answers, proposed Design options, and conditional Contract drafts, all pending human review. The [Sprint Assessment integration review](docs/dfrde/sprint-assessment-refine-requirements-integration-review.md) remains project-specific.
-
 ### Skill development and assessment
 
 | Skill | Purpose | What you'll learn |
