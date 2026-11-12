@@ -114,7 +114,7 @@ Then present the high-level design in the following approachable order, with det
 
   Replace every illustrative name and arrow with the inspected code's real flow. Add a branch only when evidence supports it; don't assume all systems are linear.
 - **Design rationale and options:** present **two or three viable options only when meaningful** (including following existing behavior where appropriate). For each, explain the pattern fit, architecture/components, contracts or integration boundaries, benefit, cost/complexity and main risk; clearly state the **recommended option + why + what evidence or changed constraint would alter it**. Explain why a new component is needed rather than invented, and make unverified proposals conditional.
-- **Interactive review:** link proposals to stable D-IDs; invite the developer to inspect, challenge, compare and revise both the diagram and its explanation before any explicit technical-decision approval. Selection or curiosity does not imply approval.
+- **Interactive review and decision capture:** link **only material choices** to stable D-IDs; record proposed choice, rationale with direct evidence, alternatives/trade-offs, affected FR/NFR, **contract impact**, owner/status and **Revisit if**. Invite the developer to inspect, challenge, compare and revise the diagram and record before any explicit technical-decision approval. Selection or curiosity does not imply approval; this is the start of the evolving Engineering Decision Record, not a second report.
 
 **Proportionate output:** a single-component change with no meaningful architecture change can use a short ASCII before/after trace or **Flow unchanged** with an explanation; do not manufacture a distributed flow. Keep this step focused on architectural intent and ownership—defer detailed failure/transaction/code-path mechanics to Step 3.
 
@@ -122,11 +122,11 @@ Then present the high-level design in the following approachable order, with det
 
 ### Step 3 — Design deep dive
 
-Prioritize the components or decisions that materially drive correctness, scale, or complexity. For each D-ID present options and a recommendation **first**, then drill into the user's choice: read/write paths, key APIs and data models, state transitions, retries/idempotency, concurrent actions, failures/recovery, auth/trust boundaries, migration/compatibility, observability, performance and verification **only where relevant**. Explain relevant DDIA (2nd edition), APOSD, FODE, Algorithmic Thinking, or SDI principles in plain language when they help the choice. Contrast observed code guarantees with hypothetical ones. **Output:** implementation-level design decisions (not implementation code), representative traces, test/validation ideas, known unknowns.
+Prioritize the components or decisions that materially drive correctness, scale, or complexity. For each D-ID present options and a recommendation **first**, then drill into the user's choice: read/write paths, key APIs and data models, state transitions, retries/idempotency, concurrent actions, failures/recovery, auth/trust boundaries, migration/compatibility, observability, performance and verification **only where relevant**. Explain relevant DDIA (2nd edition), APOSD, FODE, Algorithmic Thinking, or SDI principles in plain language when they help the choice. Contrast observed code guarantees with hypothetical ones. Include a small **Contract considerations / agreement** section for affected D-IDs: verified current contracts vs proposed interfaces/inputs/outputs, ownership, invariants, auth/errors/compatibility and unsettled guarantees. Capture who must approve each disputed contract rather than inventing acceptance. **Output:** implementation-level design decisions (not implementation code), linked contract implications, representative traces, test/validation ideas, known unknowns.
 
 ### Step 4 — Wrap up: bottlenecks, trade-offs, and review
 
-Challenge the proposal against the important NFRs, failure cases, bottlenecks, costs, operational burdens and changed constraints. Recommend improvements and alternatives, summarize all D-IDs and open blockers, then present the **Engineering Design & Implementation Handoff** for the user's review. Verify internal consistency: FR/NFR -> architecture -> decisions -> acceptance/verification. Invite explicit revisions or a **separate design sign-off**. **Output:** reviewed design candidate and readiness result. Do not imply implementation has started.
+Challenge the proposal against the important NFRs, failure cases, bottlenecks, costs, operational burdens and changed constraints. Recommend improvements and alternatives, summarize all D-IDs and open blockers, then present the **Engineering Design & Implementation Handoff** for the user's review. Verify internal consistency: FR/NFR -> architecture -> decisions -> acceptance/verification. Invite explicit revisions or a **separate design sign-off**. Consolidate the existing D-IDs into **one versioned Engineering Decision Record** (what/why/evidence, alternatives, linked FR/NFR, contract impact, approval evidence, revisit condition, canonical record location). Do not automatically declare it stored or approved. **Output:** reviewed design candidate, EDR and readiness result. Do not imply implementation has started.
 
 ## Recommendation-first decision loop (repeat for each meaningful D-ID)
 
@@ -152,10 +152,28 @@ Keep an in-session decision register with stable IDs. The field-definition table
 | Benefits and costs | Correctness, complexity, reliability, performance, delivery, operability |
 | Evidence | OBSERVED, CONFIRMED, PROPOSED, ASSUMED, or NOT VERIFIED with source |
 | Unknowns | Blocking product decision, measurement, contract, or validation needed |
+| Contract impact | Existing vs proposed API/behavior/guarantees, owner and approvals needed |
+| Revisit if | A condition or verified implementation finding that would change the choice |
+| Canonical location | Existing linked ticket/PR/doc/ADR URL, or NOT SAVED — canonical location to confirm |
 | Status | OPTIONS PRESENTED -> EXPLORING -> PROPOSED -> REVIEWING -> APPROVED (or BLOCKED / REJECTED / SUPERSEDED) |
 | Approval | Explicit user approval text and approved revision within the accessible session; otherwise NONE |
 
-Do not auto-advance status based on elapsed discussion, a proposed option, a draft diagram, or "continue". Revisiting an **APPROVED** decision after material requirement/evidence change moves its revision back to **REVIEWING** and asks for reapproval; retain the prior decision and note the change. Never label user technical approval as stakeholder approval.
+Do not create D-IDs for trivial choices or duplicate decision records across steps. Keep one evolving set of material decisions, with stable IDs and revisions. Do not auto-advance status based on elapsed discussion, a proposed option, a draft diagram, or "continue". Revisiting an **APPROVED** decision after material requirement/evidence change moves its revision back to **REVIEWING** and asks for reapproval; retain the prior decision and note the change. Never label user technical approval as stakeholder approval.
+
+### Persistence and implementation deviation handoff
+
+**The EDR is not durable merely because it appeared in chat.** Recommend a single concise canonical engineering record linked from the originating ticket and eventual pull request, or an ADR for consequential cross-cutting decisions. Include source/revision, owner and approval evidence when known. A file or ticket must be created/updated only after a separate explicit authorization; never pretend the current output was saved. Preserve the existing decision's ID/version when updating a record.
+
+If the user provides later implementation evidence, assess changes against the approved design, not just against the initial ticket. For each **verified material deviation**, draft a compact **DEV-xx — Design Deviation** with:
+- **Original:** linked D-ID and approved design revision.
+- **Changed behavior:** what the diff demonstrates (path/symbol/test evidence).
+- **Reason:** actual documented reason or **NOT VERIFIED**, never invented intent.
+- **Impact:** linked FR/NFR, interface/contract, risk and focused validation or test updates.
+- **Review:** proposed remedy or revised decision, owner and `REVIEW REQUIRED` status.
+
+If there is no implementation evidence, say **Implementation deviations: NOT ASSESSED** rather than inventing any. If a material change supersedes an approved D-ID, put the revised D-ID back into `REVIEWING` and require explicit reapproval; a changed overall design requires renewed sign-off before an approved handoff. A later `review-implementation` run **may use the EDR as supplied input**, but neither that skill nor a coding agent is auto-invoked here.
+
+Keep the review output **vertical and table-free**, with blank lines separating items in Steps 1, 3 and 4; `---` dividers remain reserved for Step 2 entries.
 
 ### Interactive modes and navigation
 
@@ -178,10 +196,10 @@ Maintain **two distinct gates**:
 2. Approved/remaining provisional FRs and NFRs, owners, quality targets, Given/When/Then acceptance and open product decisions.
 3. Existing-pattern map with key pattern purpose, reuse verdict, **evidence-backed rationale** (documented intent versus inferred reasoning) and compatibility/integration constraints.
 4. **OBSERVED CURRENT FLOW** and **PROPOSED FLOW** as readable boxed ASCII architecture diagrams with brief explained handoffs when relevant, plus proposed/approved architecture, components, request/data paths, interfaces/data contracts, ownership/state and security boundaries as applicable.
-5. Decision register with D-ID, selected option, alternatives, rationale, costs, assumptions, status and explicit approval evidence.
+5. Versioned **Engineering Decision Record** with material D-ID, selected option, alternatives, rationale and direct evidence, linked FR/NFR, contract impact, status/approval evidence, `Revisit if`, owner and canonical record location (or `NOT SAVED`). Include grounded DEV-xx records only for actual supplied implementation evidence.
 6. Critical deep dives, edge/concurrency/retry/failure behavior, observability, migration/backfill and capacity concerns where applicable.
 7. Verification and test plan mapped to FRs/NFRs/decisions; distinguish inspected tests, actually run checks and proposed tests.
-8. Risks, unknowns, blockers, rejected options and scope/verification gaps.
+8. Risks, unknowns, blockers, rejected options and scope/verification gaps; **Implementation deviations: NOT ASSESSED** when no implemented diff has been examined.
 9. **Two separate readiness labels:** requirements READY / CONDITIONAL / BLOCKED, and design DRAFT / REVIEW NEEDED / APPROVED FOR HANDOFF. Only label **APPROVED FOR HANDOFF** with explicit overall sign-off, all material design choices approved, and no unaccepted blocking product/technical decisions. An approved hypothetical design cannot bypass unresolved real product authority.
 10. **Post-interview — Questions to ask stakeholders** last: concise deduplicated pending owner decisions with BLOCKS HANDOFF status.
 
