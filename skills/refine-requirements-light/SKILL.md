@@ -73,6 +73,29 @@ Why: Reuse verified navigation behavior.
 
 Use the example's **layout only**, never its requirements, verdicts, components, or unverified claims as real findings.
 
+## Engineering decision traceability — proposed, never auto-approved
+
+Preserve the **few material design choices** that future developers would otherwise need to reconstruct. This is a lightweight decision record **inside the existing Step 4 report**, not a fifth SDI step or a separate mandatory document. Link findings to the supplied ticket/story and inspected revision when known.
+
+- In **Step 2**, assign stable `D-01`, `D-02`, etc. IDs only to consequential recommendations (reuse/adapt/new architecture, ownership, integration behavior). Record **what is proposed, why the verified evidence supports it, relevant alternatives/trade-offs, links to FR/NFR, and what would change the choice**. Don't generate a D-ID for every file or trivial implementation detail.
+- In **Step 3**, add **Contract considerations** for affected interfaces, responsibilities, invariants, input/output behavior, authorization, error/compatibility expectations or data guarantees **only where relevant**. Identify current verified contracts separately from proposed changes and unknown guarantees. Link to applicable D-IDs and FR/NFR IDs; **do not claim contract approval**.
+- In **Step 4**, provide **Proposed Engineering Decision Record** as concise vertical entries using the same stable D-IDs, with **Decision**, **Why/evidence**, **Alternative**, **Contract impact**, **Linked requirements**, **Status**, and **Revisit if** when relevant. Status is `PROPOSED`, `CONDITIONAL`, or `NOT VERIFIED`—**never APPROVED** in this noninteractive skill. If no material design decision was identified, say `No material decision record proposed from inspected evidence` rather than fabricating one.
+- **Implementation-deviation watchpoints:** name only realistic assumptions or decisions that a later implementation review should compare against code (e.g. contract change, new dependency, different owner). **Do not claim a deviation occurred without an actual implementation diff or other verified evidence.** For a provided diff, record an observed deviation only after checking the relevant evidence, and mark it `REVIEW REQUIRED`.
+- **Durability / ownership:** suggest **one canonical engineering record linked to the ticket and later PR**, or a repo design document/ADR when a decision is cross-cutting. Include source links/revision and decision owner/reviewer where known. Output in chat is **not saved documentation**; do not create or update tickets, files, PRs, ADRs or approvals without a separate explicit user request and authorization. A subsequent **Review Implementation** run can be supplied this record to compare actual behavior; do not invoke it automatically.
+
+**Example record layout (illustrative, not a verified design):**
+
+```text
+D-01 — Layout save ownership
+Decision: Extend the existing layout service (proposed)
+Why/evidence: Reuses currently observed write ownership; verify its update contract
+Alternative: New editing service (additional operational boundary)
+Contract impact: Save/update behavior and authorization need confirmation
+Linked requirements: FR-02, NFR-01
+Status: CONDITIONAL — review needed
+Revisit if: Existing service cannot meet agreed update guarantees
+```
+
 ## Workflow — four SDI steps, one report
 
 ### Step 1 — Understand the problem and establish design scope
@@ -93,7 +116,7 @@ Use the example's **layout only**, never its requirements, verdicts, components,
    - **Architectural reasoning:** why its separation, reuse, contract or data flow makes sense *given verified behavior and constraints*; note concrete benefits and costs where relevant. Cite code, tests, conventions or ADRs that support the explanation.
    - **What is known versus inferred:** source code proves **OBSERVED** structure/behavior, not the original developers' intent. Call a historical design reason **CONFIRMED** only when a decision record or other authoritative source documents it. Mark plausible but undocumented explanations **ASSUMED** and say what would verify them; use **NOT VERIFIED** when the reason is unknown. Do not invent motivations or trade-offs.
    - **Fit to this ticket:** explain *why* to FOLLOW or ADAPT the pattern, *why not* if it is unsuitable, or what remains unverified. Connect the verdict to the ticket's FRs/NFRs and actual contracts; do not merely restate the verdict.
-5. **Recommend and justify:** **only after verification**, propose the smallest suitable high-level change, reusing/extending confirmed patterns first where appropriate. Explain **what changes, what stays unchanged, where each responsibility belongs, and why**. If a new component or approach is justified, identify the verified constraint/gap, the minimal footprint, and the most relevant alternative rejected. If evidence is insufficient, give a **conditional proposal** and the next verification step—do not pretend a subsystem exists.
+5. **Recommend and justify:** **only after verification**, propose the smallest suitable high-level change, reusing/extending confirmed patterns first where appropriate. Explain **what changes, what stays unchanged, where each responsibility belongs, and why**. Assign stable D-IDs to material recommendations for the proposed decision record, without presenting them as approved. If a new component or approach is justified, identify the verified constraint/gap, the minimal footprint, and the most relevant alternative rejected. If evidence is insufficient, give a **conditional proposal** and the next verification step—do not pretend a subsystem exists.
 6. **Diagram and explain the flows visually:** show **OBSERVED CURRENT FLOW** and **PROPOSED FLOW** as **two readable ASCII box-and-arrow diagrams** when the feature touches multiple components or crosses a request/data/integration boundary. These are high-level architecture sketches, **not** merely long inline lists of bracketed names.
    - **Prefer real boxes and a clear layout:** draw meaningful components as stacked or grouped boxes using `+---+` borders with labels inside. Connect them with vertical `|`, `v`, and occasional horizontal branches for a second destination/side effect. Use short labels beside arrows (request, transform, save, audit event) when they clarify the boundary. Avoid long, wrapping one-line arrow chains such as `[A] --> [B] --> [C] --> [D]`.
    - **Make change visible:** keep the current and proposed diagrams at similar levels of detail so the reader can compare them easily. Include ownership or boundary labels where useful, and separate read versus write paths if combining them would be misleading. Use the actual relevant component names discovered from the code, not generic names in a real report.
@@ -155,6 +178,7 @@ Use the example's **layout only**, never its requirements, verdicts, components,
 - **When data moves between components or systems**, trace its source, validation, ingestion, transformation, storage, synchronization and downstream consumption where applicable. Check ownership, schema/API contracts, data quality, error handling and operational responsibilities.
 - **When code structure or computation matters**, assess module boundaries, coupling, duplication, information hiding, algorithmic correctness and performance only where they affect the ticket. Do not introduce speculative abstractions or a mandatory technical checklist.
 - Identify key files/tests likely to change versus **tests inspected**, **checks actually run**, and **tests proposed**. Do not imply analysis executed a test.
+- Add **Contract considerations** where relevant: verified current interface/owner/guarantees, proposed changes, invariants, compatibility and unresolved decisions; link material points to `D-xx` and `FR-xx`/`NFR-xx`. Distinguish contract proposals from approved guarantees. Do not create a separate design stage.
 
 ### Step 4 — Wrap up: bottlenecks, trade-offs, risks and readiness
 
@@ -162,6 +186,7 @@ Use the example's **layout only**, never its requirements, verdicts, components,
 - Highlight the **top consequential** risks: logic duplication, bloated abstractions, contract breakage, authorization/security, data loss/staleness, retry/concurrency, performance, operability, migration/cutover, and testing gaps—but only those relevant to this ticket.
 - Give a **minimal implementation footprint** (affected modules, key changes, compatibility work and focused validation), not a giant project plan or invented file diffs.
 - State readiness: **READY FOR REVIEW**, **CONDITIONAL** (nonblocking assumptions and owners), or **BLOCKED** (essential information/decision missing). A ready assessment is **not** sign-off to implement.
+- Include the **Proposed Engineering Decision Record** for consequential D-IDs plus the minimum contract/implementation-deviation watchpoints; label all pending human review and preserve source/revision links. Do not invent a completed implementation, reviewer sign-off, or document persistence.
 - End with a compact list of **unresolved questions by owner**, phrased for a Jira comment if necessary; do not ask them interactively or send them without explicit authorization.
 
 ## Output contract — concise and complete
@@ -172,8 +197,8 @@ Then use these headings in order:
 
 1. **Step 1 — Requirements & scope**: separate **Functional Requirements (FRs)** and **Non-Functional Requirements (NFRs)** subsections; each requirement gets its own stable ID and vertical label/value lines, separated from the next by a blank line, **not `---`**. Include key acceptance, bounds and unknowns; never use a table.
 2. **Step 2 — Verify patterns & recommend high-level design**: concise evidence-backed reuse map with **one Area entry at a time, plain labeled fields and `---` separators, never a table**; **Existing pattern purpose & rationale** (verified responsibilities, documented reasons versus hypotheses, and why it fits or does not fit the ticket); **OBSERVED CURRENT FLOW** and **PROPOSED FLOW** as visually readable ASCII **boxed, labeled, arrow-connected** architecture diagrams (not long inline bracket/arrow traces) with plain-English walkthroughs when multiple components/boundaries are involved; **Design rationale** (what changes, what is reused, why this placement, meaningful alternative/trade-off); explicitly flag unverified areas before recommending an approach.
-3. **Step 3 — Deep dive & data flow**: relevant request/read/write trace and critical code/test touchpoints; include relevant data, consistency and integration considerations only when warranted.
-4. **Step 4 — Trade-offs, risks & readiness**: preferred minimal change, realistic alternatives, material risks, verification plan and readiness.
+3. **Step 3 — Deep dive & data flow**: relevant request/read/write trace, critical code/test touchpoints, and targeted **Contract considerations** (current vs proposed, owner/guarantees/unknowns) linked to D-IDs/FR/NFR; include relevant data, consistency and integration considerations only when warranted.
+4. **Step 4 — Trade-offs, risks & readiness**: preferred minimal change, realistic alternatives, material risks, verification plan and readiness; end this step with **Proposed Engineering Decision Record** entries and relevant implementation-deviation watchpoints. No approvals or claims of saved records.
 5. **Open decisions / questions for the ticket**: concise owner-specific blockers; write **None identified from inspected evidence** when appropriate.
 
 **Scale detail to the ticket**: ordinarily a skimmable engineering brief, not a tutorial. Prefer short, individually labeled vertical entries with explicit file/symbol pointers over tables or repeated narrative. Use `---` **only for Step 2 items**; separate findings in Steps 1, 3 and 4 and open questions with blank lines, **without per-item dividers**. If the ticket has no relevant data path, say **Data-flow deep dive: not applicable** rather than inventing one. If code is not accessible, mark reuse and design **PROVISIONAL / NOT VERIFIED** and provide a ticket-only assessment.
