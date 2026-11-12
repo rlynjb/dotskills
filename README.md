@@ -18,7 +18,19 @@ Skills are grouped by use.
 
 ---
 
-### Everyday workflows
+### Workflows
+
+- **Skill:** [refine-requirements-light](skills/refine-requirements-light/SKILL.md)  
+  **Purpose:** Review assigned tickets against verified application code, reuse existing patterns where appropriate, and deliver a noninteractive four-step SDI engineering assessment.  
+  **What you'll learn:** Applied SDI for ticket analysis: scope, verified patterns, high-level design, relevant request/data flows, and technical risks.
+
+- **Skill:** [review-implementation](skills/review-implementation/SKILL.md)  
+  **Purpose:** Use **after [refine-requirements-light](skills/refine-requirements-light/SKILL.md) and after implementation**, before a merge request. Inspect → Understand → Challenge → Verify the actual changes against requirements, contracts, and risks. A prior Light assessment helps but is not required.  
+  **What you'll learn:** Taking ownership of AI-generated or human-written changes, checking design/contract alignment, investigating failure modes, verifying tests, and assessing readiness for human review.
+
+---
+
+### Study
 
 - **Skill:** [refine-documentation](skills/refine-documentation/SKILL.md)  
   **Purpose:** Clean up existing documents with a minimal editorial pass: remove repetition and jargon without adding facts or losing decisions.  
@@ -27,10 +39,6 @@ Skills are grouped by use.
 - **Skill:** [code-review](skills/code-review/SKILL.md)  
   **Purpose:** Review code through a software-engineering book lens, explaining evidence-backed findings, trade-offs, and suggested review comments.  
   **What you'll learn:** Software design (APOSD), algorithms, DDIA, data engineering, and SDI.
-
-- **Skill:** [refine-requirements-light](skills/refine-requirements-light/SKILL.md)  
-  **Purpose:** Review assigned tickets against verified application code, reuse existing patterns where appropriate, and deliver a noninteractive four-step SDI engineering assessment.  
-  **What you'll learn:** Applied SDI for ticket analysis: scope, verified patterns, high-level design, relevant request/data flows, and technical risks.
 
 - **Skill:** [learn-repo](skills/learn-repo/SKILL.md)  
   **Purpose:** Learn an unfamiliar codebase through a selectable question menu, code-backed deep dives, and recent-change analysis.  
@@ -47,10 +55,6 @@ Skills are grouped by use.
 - **Skill:** [learn-implementation](skills/learn-implementation/SKILL.md)  
   **Purpose:** Understand **how existing code works and why** through a skimmable four-step SDI overview, boxed ASCII flows, relevant engineering book chapters, and optional Guided/Practice deep dives. This is for **learning**, not determining merge readiness.  
   **What you'll learn:** Component responsibilities, code/data flows, design decisions, trade-offs, and evidence-backed improvement ideas, including performance and maintainability.
-
-- **Skill:** [review-implementation](skills/review-implementation/SKILL.md)  
-  **Purpose:** Use **after [refine-requirements-light](skills/refine-requirements-light/SKILL.md) and after implementation**, before a merge request. Inspect → Understand → Challenge → Verify the actual changes against requirements, contracts, and risks. A prior Light assessment helps but is not required.  
-  **What you'll learn:** Taking ownership of AI-generated or human-written changes, checking design/contract alignment, investigating failure modes, verifying tests, and assessing readiness for human review.
 
 **The difference:** **Learn Implementation** explains existing code so you can understand and learn from it. **Review Implementation** evaluates *completed changes* for correctness, reliability, and readiness before a merge request.
 
