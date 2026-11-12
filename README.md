@@ -45,12 +45,14 @@ Skills are grouped by use.
   **What you'll learn:** Technical governance, working-group processes, and source-backed research.
 
 - **Skill:** [learn-implementation](skills/learn-implementation/SKILL.md)  
-  **Purpose:** Learn how existing code works through a skimmable four-step SDI overview, boxed ASCII implementation flow, code-backed trade-offs, relevant book chapters, and optional Guided/Practice deep dives.  
-  **What you'll learn:** Retrospective SDI reasoning for existing features: behavior, component ownership, code/data flows, design decisions, performance and maintainability trade-offs, and selective reading from five engineering books.
+  **Purpose:** Understand **how existing code works and why** through a skimmable four-step SDI overview, boxed ASCII flows, relevant engineering book chapters, and optional Guided/Practice deep dives. This is for **learning**, not determining merge readiness.  
+  **What you'll learn:** Component responsibilities, code/data flows, design decisions, trade-offs, and evidence-backed improvement ideas, including performance and maintainability.
 
 - **Skill:** [review-implementation](skills/review-implementation/SKILL.md)  
-  **Purpose:** Guided post-implementation self-review: Inspect → Understand → Challenge → Verify, then report evidence-backed reliability and readiness gaps before a merge request.  
-  **What you'll learn:** Understanding AI-generated changes, SDI reasoning, failure-mode analysis, hands-on verification, and engineering ownership.
+  **Purpose:** Use **after [refine-requirements-light](skills/refine-requirements-light/SKILL.md) and after implementation**, before a merge request. Inspect → Understand → Challenge → Verify the actual changes against requirements, contracts, and risks. A prior Light assessment helps but is not required.  
+  **What you'll learn:** Taking ownership of AI-generated or human-written changes, checking design/contract alignment, investigating failure modes, verifying tests, and assessing readiness for human review.
+
+**The difference:** **Learn Implementation** explains existing code so you can understand and learn from it. **Review Implementation** evaluates *completed changes* for correctness, reliability, and readiness before a merge request.
 
 ---
 
