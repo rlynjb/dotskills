@@ -86,6 +86,33 @@ For a single Step 2 item, no divider is needed. Steps 1, 3 and 4 never use per-i
 
 This is an **output consistency rule**, not a requirement to exhaustively expand small tickets. Maintain the four-step design-first flow and separate approval gates.
 
+## Engineering decision traceability — preserve reasoning, not every step
+
+The full collaborative skill maintains **one lightweight Engineering Decision Record (EDR)** across design review; it is **not an extra SDI stage**, daily activity log, duplicate DFRDE report, or automatic ADR. Capture only choices whose rationale/contract consequences a future developer or reviewer needs.
+
+- **Step 1 — Discovery:** identify `FR-xx` / `NFR-xx`, scope, unknowns and evidence links. Do not mistake candidate technical solutions for approved choices.
+- **Step 2 — Design:** for each **material** design option or proposed architecture decision, maintain stable `D-xx` and its **proposed choice, rationale with source/verified path, alternatives and trade-off, affected FR/NFR, decision owner, status, and revisit condition**. Existing patterns are evidence of observed behavior; historical intent requires documentation.
+- **Step 3 — Contract:** connect D-IDs to reviewed/proposed **component responsibility, API/input-output behavior, data invariants, authorization, errors, compatibility and other relevant guarantees**. Record what the existing contract actually guarantees, what is proposed, and what needs owner approval. Do not label hypothetical guarantees as agreed.
+- **Step 4 — Review and handoff:** consolidate **only material D-IDs** into a versioned, vertical **Engineering Decision Record**, retaining alternatives, why, evidence, contract implications, linked requirements, explicit technical approval (if any), and `Revisit if`. Include the known canonical record location/URL or `NOT SAVED — canonical location to confirm`. Preserve the distinct per-D-ID approval and overall design sign-off rules.
+- **Implementation deviations:** if an implementation diff or changed code/evidence is later supplied, compare against the relevant approved D-ID and contract before claiming divergence. For a **material** difference, draft `DEV-01`, etc. with **Original D-ID/revision**, **What changed**, **Why and evidence**, **FR/NFR + contract/test impact**, **Reviewer/owner**, and **Status: REVIEW REQUIRED**. Reopen impacted approved D-IDs as `REVIEWING`; require reapproval of changed decisions and overall design where material. Do not infer deviations from speculation, and do not invoke a review tool automatically.
+- **One durable source:** recommend a concise canonical engineering record linked to the ticket and pull request; significant cross-cutting decisions may warrant a repository ADR. The **chat output is not persistence**. Writing/updating Jira, a design file, ADR or PR (or launching **Review Implementation**) requires a separate explicit request and authorized access. A later Review Implementation run can consume the EDR and compare it with the diff; this skill does not claim that review has happened.
+
+**Decision record example (illustrative only, not approved or sourced):**
+
+```text
+D-01 — Layout saving strategy
+Decision: Extend current layout service
+Why/evidence: Existing ownership may avoid duplicate rules; verify its contract
+Alternative: Dedicated editing service
+Contract impact: Save semantics and permission checks require agreement
+Linked requirements: FR-02, NFR-01
+Status: PROPOSED — explicit review pending
+Revisit if: Existing service cannot meet agreed update behavior
+Record location: NOT SAVED — canonical location to confirm
+```
+
+Keep labeled vertical entries and **no horizontal divider outside Step 2**.
+
 ## Read these three references
 
 1. Read [Master feature requirements reference](references/refine-requirements.md) in full for the codebase-first requirements checklist and requirements handoff. **Do not edit this source-locked file.** Its rule against producing architectures and design alternatives governs **requirements analysis and requirements-only mode**; the later design stage is governed by the separate SDI contract.
@@ -123,9 +150,11 @@ Use the [Collaborative SDI Design Track](references/collaborative-sdi-design.md)
 
 **Step 2 — architecture explanation requirement:** Once the user selects Step 2 or a high-level-design D-ID, go beyond the evidence/pattern map. Explain each relevant existing pattern's **purpose, component ownership, observed request/data flow, and why it fits or does not fit the ticket**, citing paths, tests or design records. Distinguish **documented original rationale** from **inferred architectural benefit**; never invent developer intent. For multi-component features show **two readable, boxed ASCII architecture diagrams**—**OBSERVED CURRENT FLOW** and **PROPOSED FLOW**—using labeled component boxes (`+---+`), vertically arranged or grouped arrows (`|`, `v`) and short arrow labels; use branches when the actual flow branches. **Do not substitute long inline bracket-and-arrow chains**. Keep the diagrams visually comparable, distinguish read/write paths when necessary, and follow each with a plain-English walkthrough of the handoffs, changes, reuse, placement and reasons. Mark any unverified connection **NOT VERIFIED** and any new step **PROPOSED**. For a trivial unchanged flow, a short trace or explicit “Flow unchanged” explanation is enough. Compare meaningful alternatives, make a recommendation with trade-offs and evidence limits, and keep D-ID approval interactive. Follow the complete format in `references/collaborative-sdi-design.md`; do not dump full Step 2 explanations into the initial Findings Overview or treat a sketch as approval.
 
+**Decision capture:** During Step 2, update the material `D-xx` proposal with evidence, alternatives, contract impact, linked FR/NFR and `Revisit if`; during Step 3 confirm or flag unresolved contract expectations; during Step 4 consolidate the versioned EDR. Treat this as one evolving record, not three duplicate reports. Use the decision lifecycle in the Collaborative SDI reference.
+
 **Critical approval invariant:** Never finalize a technical decision just because the agent recommends it, the user selects it for exploration, or the user says "continue". Keep stable D-IDs and their progress (OPTIONS PRESENTED → EXPLORING → PROPOSED → REVIEWING → APPROVED, with BLOCKED/REJECTED/SUPERSEDED as needed). Only explicit approval of the identified decision and version makes it APPROVED. Revisions after approval require renewed review. A distinct, explicit **overall design sign-off** is required before labeling a handoff APPROVED FOR HANDOFF. **Neither approval automatically starts Superpowers or any coding agent.**
 
-**Default output of the full SDI track:** the Engineering Design & Implementation Handoff: refined requirements and acceptance, verified reuse/pattern references with purpose and evidence-backed rationale, explained current/proposed **boxed ASCII flow diagrams** when relevant, components/contracts, D-ID option/decision rationale and trade-offs, critical deep dives, tests/risks/open blockers, requirements readiness, design sign-off, and stakeholder questions last. Without sign-off, label the package **DRAFT — NOT AUTHORIZED FOR IMPLEMENTATION**.
+**Default output of the full SDI track:** the Engineering Design & Implementation Handoff: refined requirements and acceptance, verified reuse/pattern references with purpose and evidence-backed rationale, explained current/proposed **boxed ASCII flow diagrams** when relevant, components/contracts, **a versioned EDR with D-ID, evidence, alternatives, contract impact, approval state and revisit condition**, any grounded implementation-deviation records, critical deep dives, tests/risks/open blockers, requirements readiness, design sign-off, canonical record location or NOT SAVED, and stakeholder questions last. Without sign-off, label the package **DRAFT — NOT AUTHORIZED FOR IMPLEMENTATION**.
 
 ## Requirements-phase interview procedure (Step 1 or requirements-only mode)
 
@@ -182,7 +211,7 @@ For **requirements-only completion**, or as the **requirements section** of the 
 3. **Functional Requirements (FRs) as separated, labeled vertical blocks**, with ID, actor/trigger, behavior, priority and classification, ticket/code source, related question, and Given/When/Then acceptance for material journeys; no table.
 4. **Non-Functional Requirements (NFRs) as separated, labeled vertical blocks**, with ID, linked FR/journey, quality, confirmed measurable target or **target requires confirmation**, proposed verification, priority/classification, and owner; no table.
 5. Key normal/edge/failure journeys, business rules/invariants, access boundaries, dependencies, and compatibility constraints.
-6. **System-design preparation notes**: domain entities and states, interface/data-contract requirements, data ownership and freshness, workload/scale inputs, integrations, recovery expectations, reliability/security/accessibility needs, trade-off questions, and the technical choices explicitly deferred.
+6. **System-design preparation notes**: domain entities and states, interface/data-contract requirements, data ownership and freshness, workload/scale inputs, integrations, recovery expectations, reliability/security/accessibility needs, trade-off questions, and the technical choices explicitly deferred. In **requirements-only mode**, list potential D-ID design decisions as deferred questions, not approved EDR choices.
 7. What was inspected, what was actually executed (if anything), coverage statuses, and remaining evidence gaps.
 8. **READY**, **CONDITIONAL**, or **BLOCKED**, with the reason and minimum outstanding decisions. A blocked ticket still receives a provisional brief; do not call it approved or implementation-ready.
 9. **Post-interview — Questions to ask stakeholders** as the **last** section.
