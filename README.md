@@ -56,8 +56,6 @@ Skills are grouped by use.
   **Purpose:** Understand **how existing code works and why** through a skimmable four-step SDI overview, boxed ASCII flows, relevant engineering book chapters, and optional Guided/Practice deep dives. This is for **learning**, not determining merge readiness.  
   **What you'll learn:** Component responsibilities, code/data flows, design decisions, trade-offs, and evidence-backed improvement ideas, including performance and maintainability.
 
-**The difference:** **Learn Implementation** explains existing code so you can understand and learn from it. **Review Implementation** evaluates *completed changes* for correctness, reliability, and readiness before a merge request.
-
 ---
 
 ### Decision support
