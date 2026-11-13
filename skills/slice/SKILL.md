@@ -88,7 +88,7 @@ Use generic **Parent / Story / Task / Subtask / Spike** labels. Map to Jira, Git
 
 ### 4. Draft the items
 
-Assign stable proposed IDs (`ST-01`, `SUB-01`, `EP-01`, `SP-01`) for the plan; these are **not live tracker IDs**. **Number each story's acceptance criteria `AC-01`, `AC-02`, `AC-03`, ... in their displayed order.** Restart at `AC-01` for each new story or other ticket with acceptance criteria; an AC ID is unique **within its parent ticket**, not globally across the report. For unambiguous cross-ticket references use `ST-01/AC-01` or the matching `<ticket-id>/AC-01`. These are draft criterion IDs, not native tracker IDs or replacements for verified source criterion identifiers. For each story provide:
+Assign stable proposed IDs (`ST-01` story, `TK-01` standalone Task, `SUB-01` Subtask, `EP-01` parent and `SP-01` spike) for the plan; these are **not live tracker IDs**. **Number each story's acceptance criteria `AC-01`, `AC-02`, `AC-03`, ... in their displayed order.** Restart at `AC-01` for each new story or other ticket with acceptance criteria; an AC ID is unique **within its parent ticket**, not globally across the report. For unambiguous cross-ticket references use `ST-01/AC-01`, `TK-01/AC-01`, or the matching `<ticket-id>/AC-01`. These are draft criterion IDs, not native tracker IDs or replacements for verified source criterion identifiers. For each story provide:
 
 - **Type and title:** action/outcome in plain language; avoid vague technical-only titles.
 - **Outcome / user or system value:** what changes when complete.
@@ -122,7 +122,7 @@ If material gaps remain, show **PROVISIONAL** items and a prioritized owner-spec
 Present **one report**, not several disconnected files. Prefer the individually labeled style of REAZN; **no Markdown tables or pseudo-tables**.
 
 1. **Delivery Snapshot** — source/revision, scope, evidence limits, recommended hierarchy, confidence and why.
-2. **Proposed Ticket Tree** — short indented list of `EP/ST/SUB/SP` IDs, type and titles; clearly not real tracker identifiers.
+2. **Proposed Ticket Tree** — short indented list of `EP/ST/TK/SUB/SP` IDs, type and titles; clearly not real tracker identifiers.
 3. **Ticket Drafts** — one compact vertical block per parent/story/task/subtask, using relevant fields above. Include `_Slicing rationale:_` for each Story and independently proposed Task, explaining the story boundary or standalone technical deliverable in one or two sentences. For each ticket with acceptance criteria, replace every repeated `Acceptance:` line with sequential `AC-01:`, `AC-02:`, ... labels (italicize the label if other labels are italic). Keep numbered criteria adjacent in the same ticket block, with no blank lines inside the block; reset numbering for each ticket. Do not repeat the whole architecture explanation.
 4. **Requirement & Contract Coverage** — each material `FR/NFR/D` ID → proposed ticket and locally keyed `AC` (e.g. `ST-01/AC-02`) or `OPEN/BLOCKED`, with source/status.
 5. **Open Decisions and Readiness** — minimum questions by decision owner, dependency concerns, and next human review action; say "No material blockers identified from supplied evidence" only when justified.
