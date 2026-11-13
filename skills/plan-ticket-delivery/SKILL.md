@@ -86,13 +86,13 @@ Use generic **Parent / Story / Subtask / Spike** labels. Map to Jira, GitHub Iss
 
 ### 4. Draft the items
 
-Assign stable proposed IDs (`ST-01`, `SUB-01`, `EP-01`, `SP-01`) for the plan; these are **not live tracker IDs**. For each story provide:
+Assign stable proposed IDs (`ST-01`, `SUB-01`, `EP-01`, `SP-01`) for the plan; these are **not live tracker IDs**. **Number each story's acceptance criteria `AC-01`, `AC-02`, `AC-03`, ... in their displayed order.** Restart at `AC-01` for each new story or other ticket with acceptance criteria; an AC ID is unique **within its parent ticket**, not globally across the report. For unambiguous cross-ticket references use `ST-01/AC-01` or the matching `<ticket-id>/AC-01`. These are draft criterion IDs, not native tracker IDs or replacements for verified source criterion identifiers. For each story provide:
 
 - **Type and title:** action/outcome in plain language; avoid vague technical-only titles.
 - **Outcome / user or system value:** what changes when complete.
 - **Source and traceability:** original requirement/`FR/NFR`, relevant `D`, contract/invariant, and code/decision links where evidenced. Mark missing links.
 - **In scope / out of scope:** short and only where a boundary may be misunderstood.
-- **Acceptance criteria:** **observable and testable**, including meaningful negative/failure cases supported by requirements or an explicit technical contract; optional Given/When/Then when it improves precision. Avoid acceptance criteria that merely say "build API" or "write tests".
+- **Acceptance criteria:** **observable and testable**, including meaningful negative/failure cases supported by requirements or an explicit technical contract; optional Given/When/Then when it improves precision. **Render each as its own consecutive labeled field `AC-01: <criterion>`, `AC-02: <criterion>`, etc., never repeated `Acceptance:` lines.** Match the other ticket-field styling (e.g. `_AC-01:_` for italic Markdown labels), keep criterion values regular weight, and avoid extra empty lines within the ticket. Avoid criteria that merely say "build API" or "write tests".
 - **Implementation notes:** existing patterns, likely touchpoints and technical subtasks, clearly **PROPOSED** unless verified.
 - **Dependencies / sequencing:** only real prerequisites, with reason; distinguish "can work in parallel" from "must happen first".
 - **Readiness / uncertainty:** `READY FOR TEAM REVIEW`, `PROVISIONAL`, or `BLOCKED` with reason. Team review readiness is **not** implementation approval.
@@ -104,7 +104,7 @@ For each subtask, state **parent story, task, completion evidence and owner/area
 Before finalizing, check and revise the draft:
 
 - **Coverage:** every supported in-scope `FR-xx` and material `NFR-xx` appears in at least one story/criterion, or is explicitly blocked/deferred with the right authority. No invented new `FR`.
-- **Traceability:** source → requirement → story → acceptance check → relevant design/contract; links retain status and revision.
+- **Traceability:** source → requirement → story → keyed acceptance check (`ST-01/AC-01`) → relevant design/contract; links retain status and revision. Verify no skipped/duplicated AC numbers within a ticket; reuse a local `AC-01` in another ticket only with that ticket's prefix when cross-referencing.
 - **Distinctness:** no duplicate behavior split across multiple stories or frontend/backend/database tickets that cannot be accepted independently.
 - **Completeness:** important contract constraints, failure behavior, integration and regression tests are included where justified; no fabricated tests/results.
 - **Dependencies:** no circular or false "must precede" relationships; independent work can run in parallel.
@@ -119,8 +119,8 @@ Present **one report**, not several disconnected files. Prefer the individually 
 
 1. **Delivery Snapshot** — source/revision, scope, evidence limits, recommended hierarchy, confidence and why.
 2. **Proposed Ticket Tree** — short indented list of `EP/ST/SUB/SP` IDs, type and titles; clearly not real tracker identifiers.
-3. **Ticket Drafts** — one compact vertical block per parent/story/subtask, using relevant fields above; do not repeat the whole architecture explanation.
-4. **Requirement & Contract Coverage** — each material `FR/NFR/D` ID → proposed ticket(s)/acceptance or `OPEN/BLOCKED`, with source/status.
+3. **Ticket Drafts** — one compact vertical block per parent/story/subtask, using relevant fields above. For each ticket with acceptance criteria, replace every repeated `Acceptance:` line with sequential `AC-01:`, `AC-02:`, ... labels (italicize the label if other labels are italic). Keep numbered criteria adjacent in the same ticket block, with no blank lines inside the block; reset numbering for each ticket. Do not repeat the whole architecture explanation.
+4. **Requirement & Contract Coverage** — each material `FR/NFR/D` ID → proposed ticket and locally keyed `AC` (e.g. `ST-01/AC-02`) or `OPEN/BLOCKED`, with source/status.
 5. **Open Decisions and Readiness** — minimum questions by decision owner, dependency concerns, and next human review action; say "No material blockers identified from supplied evidence" only when justified.
 
 For a small change, the report may fit on one screen. For a large feature, include every material story but avoid redundant implementation details. Do not present a made-up single-point "estimated size" as a fact.
@@ -130,6 +130,19 @@ For a small change, the report may fit on one screen. For a large feature, inclu
 **Source:** "Users can export assessment results as CSV" (one product outcome).
 
 **Recommended plan:** `ST-01 — Export assessment results as CSV`, with optional implementation subtasks for verified API/UI/export integration and tests. **Not:** separate frontend, backend and database stories by default. No epic is required merely for this one outcome.
+
+**Illustrative Ticket Draft — acceptance IDs are local to this story:**
+
+```markdown
+**ST-01 — Export assessment results as CSV**  
+_Type:_ Story  
+_Outcome:_ Users can export assessment results as CSV.  
+_AC-01:_ Exported assessment results are delivered in CSV format.  
+_AC-02:_ The CSV contains the results specified by the source request.  
+_Readiness:_ PROVISIONAL — confirm the expected fields with the request owner.
+```
+
+When another story has its own criteria, restart at `AC-01` under that story. Reference `ST-01/AC-01` versus `ST-02/AC-01` when tracing across tickets. Do not emit repeated `Acceptance:` fields; keep the same compact labels and spacing as the other ticket fields.
 
 If the **actual approved scope also separately includes** viewing prior exports and scheduled exports, those may justify **separate `ST` stories under an optional parent**. Do not infer those capabilities from the CSV requirement.
 
