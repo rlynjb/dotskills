@@ -100,7 +100,7 @@
     {
       "name": "refine-requirements-light",
       "category": "engineering",
-      "purpose": "One-pass, read-only, input-agnostic four-step SDI assessment of problems and changes, grounded in relevant source evidence. Optional learn: on adds in-context book/chapter study references from five engineering books; default off.",
+      "purpose": "One-pass, read-only, input-agnostic four-step SDI assessment of problems and changes, grounded in relevant source evidence. Optional learn: on adds in-context book/chapter study references from six engineering books (including AI Agents in Action, 2nd ed.); default off.",
       "source": "dotskills",
       "path": "skills/refine-requirements-light",
       "reference_count": 1
@@ -132,7 +132,7 @@
     {
       "name": "learn-implementation",
       "category": "learning",
-      "purpose": "Read-only, implementation-first learning: a skimmable four-step SDI overview of observed code/flows with boxed ASCII architecture, evidence-backed trade-offs, conditional performance recommendations, verified chapter pointers from five books, and optional Guided/Practice deep dives.",
+      "purpose": "Read-only, implementation-first learning: a skimmable four-step SDI overview of observed code/flows with boxed ASCII architecture, evidence-backed trade-offs, conditional performance recommendations, verified chapter pointers from six books (including AI Agents in Action, 2nd ed.), and optional Guided/Practice deep dives.",
       "source": "dotfiles",
       "path": "skills/learn-implementation",
       "reference_count": 0
