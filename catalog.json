@@ -106,6 +106,14 @@
       "reference_count": 0
     },
     {
+      "name": "plan-ticket-delivery",
+      "category": "engineering",
+      "purpose": "Read-only, tracker-agnostic decomposition of approved feature requirements or SDI handoffs into the minimum independently verifiable stories, subtasks and optional parent, with acceptance criteria, evidence traceability, dependencies and explicit unresolved decisions.",
+      "source": "dotskills",
+      "path": "skills/plan-ticket-delivery",
+      "reference_count": 0
+    },
+    {
       "name": "refine-documentation",
       "category": "documentation",
       "purpose": "Minimal editorial cleanup for existing documents: remove repetition and filler, use plain English, and preserve unique information, structure, status, decisions, and links without generating new content.",

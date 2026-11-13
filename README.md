@@ -24,6 +24,10 @@ Skills are grouped by use.
   **Purpose:** Review assigned tickets against verified application code, reuse existing patterns where appropriate, and deliver a noninteractive four-step SDI engineering assessment.  
   **What you'll learn:** Applied SDI for ticket analysis: scope, verified patterns, high-level design, relevant request/data flows, and technical risks.
 
+- **Skill:** [plan-ticket-delivery](skills/plan-ticket-delivery/SKILL.md)  
+  **Purpose:** Turn reviewed feature requirements or a four-step SDI assessment into the minimum useful, tracker-agnostic stories, subtasks and optional parent, with traceable acceptance criteria and unresolved design questions.  
+  **What you'll learn:** Outcome-based story slicing, delivery dependencies, requirement-to-acceptance traceability, and the distinction between design decisions and delivery planning.
+
 - **Skill:** [review-implementation](skills/review-implementation/SKILL.md)  
   **Purpose:** Use **after [refine-requirements-light](skills/refine-requirements-light/SKILL.md) and after implementation**, before a merge request. Inspect → Understand → Challenge → Verify the actual changes against requirements, contracts, and risks. A prior Light assessment helps but is not required.  
   **What you'll learn:** Taking ownership of AI-generated or human-written changes, checking design/contract alignment, investigating failure modes, verifying tests, and assessing readiness for human review.
