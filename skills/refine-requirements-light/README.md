@@ -40,7 +40,7 @@ Further reading: A Philosophy of Software Design, 2nd ed. — Chapter 5, Informa
 Study focus: How interface boundaries reduce coupling.
 ```
 
-Chapter suggestions come **only from these five books**: Alex Xu's *System Design Interview — An Insider's Guide*, *Designing Data-Intensive Applications* (2nd ed.), *Fundamentals of Data Engineering*, *Algorithmic Thinking* (2nd ed.), and *A Philosophy of Software Design* (2nd ed.). The [optional chapter guide](references/learning-chapters.md) lists edition-checked chapter pointers. Only include a genuinely relevant, verified chapter; don't force every book, repeat the same reference needlessly, or turn the report into a tutorial. Actual evidence lives in **`Source:` / `Evidence:`**, not in a book citation.
+Chapter suggestions come **only from these six books**: Alex Xu's *System Design Interview — An Insider's Guide*, *Designing Data-Intensive Applications* (2nd ed.), *Fundamentals of Data Engineering*, *Algorithmic Thinking* (2nd ed.), *A Philosophy of Software Design* (2nd ed.), and **Micheal Lanham's *AI Agents in Action*, Second Edition (Manning, 2026)**. The [optional chapter guide](references/learning-chapters.md) lists edition-checked chapter pointers. Only include a genuinely relevant, verified chapter; don't force every book, repeat the same reference needlessly, or turn the report into a tutorial. Actual evidence lives in **`Source:` / `Evidence:`**, not in a book citation.
 
 ## Invocation examples
 
@@ -60,7 +60,7 @@ Run refine-requirements-light on this [feature / agent skill / workflow].
 learn: on
 Give the usual one-pass four-step SDI assessment.
 For applicable findings, add a Further reading and Study focus line
-with a verified book and chapter from the five supported books.
+with a verified book and chapter from the six supported books.
 Keep chapter pointers separate from source evidence; no lessons or quiz.
 ```
 
