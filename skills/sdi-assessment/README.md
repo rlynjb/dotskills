@@ -13,7 +13,7 @@ It complements [Refine Requirements](../refine-requirements/README.md), which pr
 3. **Step 3 — Deep dive into mechanisms and contracts:** Focus on interfaces, guarantees, responsibilities, permissions, process handoffs, data flow, error behavior or other domain-relevant mechanics. **Do not invent APIs, databases or services** for nontechnical inputs.
 4. **Step 4 — Trade-offs, risks and readiness:** Explain meaningful alternatives, evidence gaps, verification needs, minimal change footprint and proposed engineering decisions (D-IDs) without claiming approval.
 
-The **Input/Ticket Snapshot** includes `Purpose:` and `Core capabilities:` for the scoped subject, followed by compact evidence-labeled `Capability 01:` fields where applicable. These explain what the subject already does (or proposes to do), **not** the requirements for the requested change. The report uses **vertical, individually labeled findings** with source evidence. It keeps FR/NFR/D IDs when meaningful, boxed ASCII diagrams for relevant multi-component Step 2 flows, and `---` separators **only between distinct Step 2 pattern/design entries**. No Markdown tables in skill output.
+The **Input/Ticket Snapshot** groups purpose and numbered, evidence-labeled core capabilities into four clearly titled subsections. These explain what the subject already does (or proposes to do), **not** the requirements for the requested change. The report uses **vertical, individually labeled findings** with source evidence. It keeps FR/NFR/D IDs when meaningful, boxed ASCII diagrams for relevant multi-component Step 2 flows, and `---` separators **only between distinct Step 2 pattern/design entries**. No Markdown tables in skill output.
 
 ## Strict item spacing and structure
 
@@ -37,9 +37,62 @@ Source: [inspected packaging evidence]
 ```
 
 
-## Purpose and core capabilities in the Input Snapshot
+## Grouped Input Snapshot — CLI-first presentation
 
-For every identifiable system, subsystem, agent skill or process, the snapshot states **why it exists** (`Purpose:`) and **what it does** (`Core capabilities:` plus 2–5 relevant `Capability 01:` fields). Mark each as **OBSERVED**, **DOCUMENTED**, **PROPOSED**, or **NOT VERIFIED** and cite relevant evidence. Keep all fields contiguous with no blank lines inside the snapshot. If the input isn't a system/process, use **NOT APPLICABLE** rather than inventing features. Don't mistake proposed behavior for an existing capability or duplicate Step 1 FR/NFRs.
+The first screen of an SDI Assessment is an **orientation summary** with four `###` subsections, in this exact order: **Assessment objective**, **Purpose & core capabilities**, **Investigation scope**, **Evidence & recommendation**. They group the Snapshot only, **not** the four SDI steps.
+
+- **Assessment objective:** Input source/type and the requested goal.
+- **Purpose & core capabilities:** The subject's purpose and **2–5** relevant capabilities when evidenced. Number them `01 —`, `02 —` and give each compact `What:`, `Status:`, and `Source:` fields. Distinguish `OBSERVED`, `DOCUMENTED`, `PROPOSED` and `NOT VERIFIED`; a new feature is not an existing capability.
+- **Investigation scope:** Requested/resolved scope, basis, target, revision, comparison, included/excluded areas.
+- **Evidence & recommendation:** Relevant dependencies and evidence limits, with a short recommendation **at the bottom**.
+
+Use **one blank line between groups and complete capability items**, **no blank lines inside an item's fields**, and Markdown hard breaks (two trailing spaces) so labels remain distinct in iTerm2/Codex. Do **not** use tables or horizontal rules in the Snapshot. Use short clickable `file:line` source labels when the destination is verified; otherwise state `NOT VERIFIED` without inventing a link. Detailed FR/NFR/Area/Contract/Risk/D/Q items keep their existing compact formatting in Steps 1–4.
+
+**CLI preview (illustrative content, not verified project findings):**
+
+```markdown
+## Input Snapshot — Reporting service
+
+### Assessment objective
+
+Input: Feature brief + inspected repository  
+Goal: Assess proposed CSV export
+
+### Purpose & core capabilities
+
+Purpose: Generate authorized reports  
+Status: DOCUMENTED  
+Source: [verified specification reference]
+
+Core capabilities: 2 relevant behaviors
+
+**01 — View reports**  
+What: Display report results.  
+Status: OBSERVED  
+Source: [verified file:line]
+
+**02 — Filter reports**  
+What: Filter report results.  
+Status: OBSERVED  
+Source: [verified file:line]
+
+### Investigation scope
+
+Requested scope: subsystem  
+Resolved scope: subsystem  
+Basis: Explicit request  
+Target: Reporting  
+Revision: NOT VERIFIED  
+Comparison: NOT PROVIDED  
+Included: Reporting UI and relevant API contracts  
+Excluded: Unrelated subsystems
+
+### Evidence & recommendation
+
+Dependencies: Reporting API  
+Evidence limits: Runtime tests NOT RUN  
+Recommendation: CONDITIONAL — verify export contracts before proposing changes.
+```
 
 ## Scope resolution — optional invocation selectors
 
@@ -52,7 +105,7 @@ Set **`scope`** to define the breadth of the SDI assessment and optionally suppl
 
 **Resolution rules:** Explicit `scope` wins. With `auto`, choose and **disclose** the narrowest supported boundary; read across it only to inspect relevant contracts and dependencies. When a target, revision or comparison is unavailable, label it **NOT VERIFIED** and provide a conditional four-step assessment. The Input/Ticket Snapshot records **requested vs. resolved scope, target, actual revision, comparison, included/excluded areas and cross-boundary dependencies**.
 
-This doesn't turn Light into [Learn Repo](../learn-repo/SKILL.md) (whole-codebase onboarding), [Learn Implementation](../learn-implementation/SKILL.md) (understanding existing code), or [Review Implementation](../review-implementation/SKILL.md) (post-implementation verification). Even `scope: system` needs an **identifiable problem or proposed change**.
+This doesn't turn SDI Assessment into [Learn Repo](../learn-repo/SKILL.md) (whole-codebase onboarding), [Learn Implementation](../learn-implementation/SKILL.md) (understanding existing code), or [Review Implementation](../review-implementation/SKILL.md) (post-implementation verification). Even `scope: system` needs an **identifiable problem or proposed change**.
 
 **Example — focused branch assessment:**
 
