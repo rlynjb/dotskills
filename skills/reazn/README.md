@@ -17,23 +17,24 @@ The **Input/Ticket Snapshot** groups purpose and numbered, evidence-labeled core
 
 ## Strict item spacing and structure
 
-- **One item = one block:** A bold `FR-xx`, `NFR-xx`, `Area:`, `Contract:`, `Risk:`, `D-xx`, or `Q-xx` heading is followed immediately by its consecutive `Label: value` fields. **No blank line between heading and fields or between fields within an item.**
+- **One item = one block:** A bold `FR-xx`, `NFR-xx`, `Area:`, `Contract:`, `Risk:`, `D-xx`, or `Q-xx` heading is followed immediately by its consecutive Markdown `**Label:** value` fields (label bold, value regular). **No blank line between heading and fields or between fields within an item.**
 - **Between items:** Exactly **one blank line**. Only Step 2 may separate full existing-pattern or design-option items with a standalone `---` and one blank line on either side. No dividers for FRs, NFRs, risks, contracts, decisions, or open questions.
+- **Bold field labels:** In Markdown, use `**Requirement:** value`, `**Status:** value`, `**Source:** value` and the same pattern for every field in the Snapshot and four SDI steps. Bold only the label and colon; leave the value and citation/link in regular weight. In plain text use `Label: value` without Markdown markers.
 - **Visible line breaks:** In Markdown, end the heading and nonfinal field lines with **two trailing spaces** so each label remains on its own line. No bullet prefixes, label indentation, padded blank paragraphs or Markdown tables.
-- **Optional study fields:** With `learn: on`, the literal `*Further reading:` and `*Study focus:` fields follow the same finding's evidence/reasoning **without any blank line**. All factual labels stay unprefixed.
+- **Optional study fields:** With `learn: on`, the bold literal-asterisk labels `**\*Further reading:**` and `**\*Study focus:**` follow the same finding's evidence/reasoning **without any blank line**. All factual labels stay unprefixed.
 
 **Illustrative NFR blocks (not real project findings):**
 
 ```markdown
 **NFR-02 — Provenance and uncertainty**  
-Quality: Distinguish facts, observations, and assumptions.  
-Status: DOCUMENTED  
-Source: [verified reference]
+**Quality:** Distinguish facts, observations, and assumptions.  
+**Status:** DOCUMENTED  
+**Source:** [verified reference]
 
 **NFR-03 — Portable packaging**  
-Quality: Support independent skill installation.  
-Status: NOT VERIFIED  
-Source: [inspected packaging evidence]
+**Quality:** Support independent skill installation.  
+**Status:** NOT VERIFIED  
+**Source:** [inspected packaging evidence]
 ```
 
 
@@ -46,7 +47,7 @@ The first screen of a REAZN report is an **orientation summary** with four `###`
 - **Investigation scope:** Requested/resolved scope, basis, target, revision, comparison, included/excluded areas.
 - **Evidence & recommendation:** Relevant dependencies and evidence limits, with a short recommendation **at the bottom**.
 
-Use **one blank line between groups and complete capability items**, **no blank lines inside an item's fields**, and Markdown hard breaks (two trailing spaces) so labels remain distinct in iTerm2/Codex. Do **not** use tables or horizontal rules in the Snapshot. Use short clickable `file:line` source labels when the destination is verified; otherwise state `NOT VERIFIED` without inventing a link. Detailed FR/NFR/Area/Contract/Risk/D/Q items keep their existing compact formatting in Steps 1–4.
+Use bold Markdown labels (`**Label:** value`) and **one blank line between groups and complete capability items**, **no blank lines inside an item's fields**, and Markdown hard breaks (two trailing spaces) so labels remain distinct in iTerm2/Codex. Do **not** use tables or horizontal rules in the Snapshot. Use short clickable `file:line` source labels when the destination is verified; otherwise state `NOT VERIFIED` without inventing a link. Detailed FR/NFR/Area/Contract/Risk/D/Q items keep their existing compact formatting in Steps 1–4.
 
 **CLI preview (illustrative content, not verified project findings):**
 
@@ -55,43 +56,43 @@ Use **one blank line between groups and complete capability items**, **no blank 
 
 ### Assessment objective
 
-Input: Feature brief + inspected repository  
-Goal: Assess proposed CSV export
+**Input:** Feature brief + inspected repository  
+**Goal:** Assess proposed CSV export
 
 ### Purpose & core capabilities
 
-Purpose: Generate authorized reports  
-Status: DOCUMENTED  
-Source: [verified specification reference]
+**Purpose:** Generate authorized reports  
+**Status:** DOCUMENTED  
+**Source:** [verified specification reference]
 
-Core capabilities: 2 relevant behaviors
+**Core capabilities:** 2 relevant behaviors
 
 **01 — View reports**  
-What: Display report results.  
-Status: OBSERVED  
-Source: [verified file:line]
+**What:** Display report results.  
+**Status:** OBSERVED  
+**Source:** [verified file:line]
 
 **02 — Filter reports**  
-What: Filter report results.  
-Status: OBSERVED  
-Source: [verified file:line]
+**What:** Filter report results.  
+**Status:** OBSERVED  
+**Source:** [verified file:line]
 
 ### Investigation scope
 
-Requested scope: subsystem  
-Resolved scope: subsystem  
-Basis: Explicit request  
-Target: Reporting  
-Revision: NOT VERIFIED  
-Comparison: NOT PROVIDED  
-Included: Reporting UI and relevant API contracts  
-Excluded: Unrelated subsystems
+**Requested scope:** subsystem  
+**Resolved scope:** subsystem  
+**Basis:** Explicit request  
+**Target:** Reporting  
+**Revision:** NOT VERIFIED  
+**Comparison:** NOT PROVIDED  
+**Included:** Reporting UI and relevant API contracts  
+**Excluded:** Unrelated subsystems
 
 ### Evidence & recommendation
 
-Dependencies: Reporting API  
-Evidence limits: Runtime tests NOT RUN  
-Recommendation: CONDITIONAL — verify export contracts before proposing changes.
+**Dependencies:** Reporting API  
+**Evidence limits:** Runtime tests NOT RUN  
+**Recommendation:** CONDITIONAL — verify export contracts before proposing changes.
 ```
 
 ## Scope resolution — optional invocation selectors
@@ -134,18 +135,18 @@ Existing software, an agent skill or a business workflow may contain reusable be
 This is an **optional invocation setting**, not an extra SDI step:
 
 - **`learn: off` (default):** The assessment stays focused on evidence and engineering decisions. No learning references or empty reading placeholders appear.
-- **`learn: on`:** For each **material finding with a strong topic match**, the skill adds **`*Further reading:`** (book, edition, chapter number/title) and **`*Study focus:`** (the concept worth exploring) **under that finding**. These labels carry a **literal leading asterisk** (escape it as `\*` in Markdown output), unlike factual fields such as `Evidence:` and `Verdict:`. References supplement the usual output and do not change source evidence, factual claims or approval status.
+- **`learn: on`:** For each **material finding with a strong topic match**, the skill adds **`*Further reading:`** (book, edition, chapter number/title) and **`*Study focus:`** (the concept worth exploring) **under that finding**. These labels carry a **literal leading asterisk** (use `**\*Further reading:**` and `**\*Study focus:**` in Markdown output), unlike factual fields such as `Evidence:` and `Verdict:`. References supplement the usual output and do not change source evidence, factual claims or approval status.
 
 **Example of a learning reference (illustrative, not verified project evidence):**
 
-```text
-Area: Module ownership
-What exists today: [description grounded in inspected code]
-Evidence: [actual file/symbol]
-Verdict: FOLLOW
-Why: [source-backed explanation]
-*Further reading: A Philosophy of Software Design, 2nd ed. — Chapter 5, Information Hiding (and Leakage).
-*Study focus: How interface boundaries reduce coupling.
+```markdown
+**Area: Module ownership**  
+**What exists today:** [description grounded in inspected code]  
+**Evidence:** [actual file/symbol]  
+**Verdict:** FOLLOW  
+**Why:** [source-backed explanation]  
+**\*Further reading:** A Philosophy of Software Design, 2nd ed. — Chapter 5, Information Hiding (and Leakage).  
+**\*Study focus:** How interface boundaries reduce coupling.
 ```
 
 Chapter suggestions come **only from these six books**: Alex Xu's *System Design Interview — An Insider's Guide* (Volumes 1 and 2; Volume 2 with Sahn Lam), *Designing Data-Intensive Applications* (2nd ed.), *Fundamentals of Data Engineering*, *Algorithmic Thinking* (2nd ed.), *A Philosophy of Software Design* (2nd ed.), and **Micheal Lanham's *AI Agents in Action*, Second Edition (Manning, 2026)**. The [optional chapter guide](references/learning-chapters.md) lists edition-checked chapter pointers. Only include a genuinely relevant, verified chapter; don't force every book, repeat the same reference needlessly, or turn the report into a tutorial. Actual evidence lives in **`Source:` / `Evidence:`**, not in a book citation.
