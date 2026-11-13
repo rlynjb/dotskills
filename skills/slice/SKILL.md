@@ -59,6 +59,8 @@ Label consequential facts and proposed work as **CONFIRMED**, **OBSERVED**, **PR
 7. **Cross-cutting NFRs and contracts:** attach relevant authorization, reliability, consistency, accessibility, compatibility, observability and security criteria to the stories they constrain. Create a separate story only for a truly distinct scoped outcome. Do not create product capabilities to fill out a hierarchy.
 8. **Scope and uncertainty:** do not add export history, scheduling, new services, new databases, SLAs or new roles unless the product source or approved design supports them. Surface design alternatives as questions, not committed tickets.
 
+**Story / standalone task / subtask classification:** Prefer a **Story** for a separately demonstrable, stakeholder-relevant user or system outcome; prefer an independent **Task** only for bounded technical, operational or enabling work with its **own completion evidence and justified tracking/ownership**, rather than a step of an existing story; prefer a **Subtask** for an implementation step whose completion primarily contributes to a parent. A meaningful technical prerequisite may need its own Task even without a user-visible feature, but do not promote every API, UI or database step into a separate Task. Local tracker conventions and human review decide the final work-item type; neither Scrum nor SLICE prescribes a universally mandatory Jira mapping.
+
 No numeric formula equates repository size or service count to story count. Do **not** invent story points, hours, owner assignments, sprint commitments, delivery dates, dependency completion or production measurements. If the user asks for a relative sizing opinion, give **qualitative complexity and confidence with reasons**, and defer team-specific estimates to the responsible team.
 
 ## Workflow — one-pass delivery planning
@@ -80,9 +82,9 @@ If outcomes overlap or cannot be tested separately, merge or redraw the slices. 
 
 ### 3. Choose the smallest useful hierarchy
 
-Recommend **single story**, **single story with subtasks**, **multiple stories**, or **parent/epic with stories (and optional subtasks)**. Explain *why* in one to three sentences, including verified cross-component complexity, team ownership or dependencies when relevant. Mark the hierarchy **PROPOSED** until a team accepts it.
+Recommend **single story**, **single story with subtasks**, **multiple stories**, or **parent/epic with stories (and optional subtasks)**, plus any genuinely independent enabling Task candidate justified by evidence. Explain *why* in one to three sentences, including verified cross-component complexity, team ownership or dependencies when relevant. Mark the hierarchy **PROPOSED** until a team accepts it. Do not make a standalone Task solely to separate frontend from backend.
 
-Use generic **Parent / Story / Subtask / Spike** labels. Map to Jira, GitHub Issues, Linear, Azure DevOps or another system **only when the user specifies the destination and its actual conventions are known**; not every tracker has native epics or subtasks.
+Use generic **Parent / Story / Task / Subtask / Spike** labels. Map to Jira, GitHub Issues, Linear, Azure DevOps or another system **only when the user specifies the destination and its actual conventions are known**; not every tracker has native epics, tasks or subtasks.
 
 ### 4. Draft the items
 
@@ -90,6 +92,7 @@ Assign stable proposed IDs (`ST-01`, `SUB-01`, `EP-01`, `SP-01`) for the plan; t
 
 - **Type and title:** action/outcome in plain language; avoid vague technical-only titles.
 - **Outcome / user or system value:** what changes when complete.
+- **Slicing rationale:** add one concise `_Slicing rationale:_` field to each proposed **Story** describing (a) the observable outcome/value, (b) why this is one story rather than multiple stories or separate technical-layer tickets, and (c) any source-backed dependency or uncertainty affecting the split. For any standalone **Task**, explain what makes its technical/operational result independently verifiable and why it should be tracked separately rather than as a Subtask. Use the available requirement/contract evidence; do **not** invent team approval, owners or release dependencies. If no split is needed, say why one story suffices.
 - **Source and traceability:** original requirement/`FR/NFR`, relevant `D`, contract/invariant, and code/decision links where evidenced. Mark missing links.
 - **In scope / out of scope:** short and only where a boundary may be misunderstood.
 - **Acceptance criteria:** **observable and testable**, including meaningful negative/failure cases supported by requirements or an explicit technical contract; optional Given/When/Then when it improves precision. **Render each as its own consecutive labeled field `AC-01: <criterion>`, `AC-02: <criterion>`, etc., never repeated `Acceptance:` lines.** Match the other ticket-field styling (e.g. `_AC-01:_` for italic Markdown labels), keep criterion values regular weight, and avoid extra empty lines within the ticket. Avoid criteria that merely say "build API" or "write tests".
@@ -110,6 +113,7 @@ Before finalizing, check and revise the draft:
 - **Dependencies:** no circular or false "must precede" relationships; independent work can run in parallel.
 - **Feasibility:** proposed architecture doesn't silently contradict known codebase evidence or pending `D` decisions.
 - **Minimum useful breakdown:** simplify if ticket count adds coordination without separately testable outcomes.
+- **Slicing rationale:** every proposed Story has a brief defensible reason for its boundary; standalone Tasks (if any) justify independent completion evidence and tracking instead of being arbitrary component work. Flag missing evidence as PROVISIONAL rather than manufacturing rationale.
 
 If material gaps remain, show **PROVISIONAL** items and a prioritized owner-specific question list. Never manufacture missing answers to make the plan look ready.
 
@@ -119,7 +123,7 @@ Present **one report**, not several disconnected files. Prefer the individually 
 
 1. **Delivery Snapshot** — source/revision, scope, evidence limits, recommended hierarchy, confidence and why.
 2. **Proposed Ticket Tree** — short indented list of `EP/ST/SUB/SP` IDs, type and titles; clearly not real tracker identifiers.
-3. **Ticket Drafts** — one compact vertical block per parent/story/subtask, using relevant fields above. For each ticket with acceptance criteria, replace every repeated `Acceptance:` line with sequential `AC-01:`, `AC-02:`, ... labels (italicize the label if other labels are italic). Keep numbered criteria adjacent in the same ticket block, with no blank lines inside the block; reset numbering for each ticket. Do not repeat the whole architecture explanation.
+3. **Ticket Drafts** — one compact vertical block per parent/story/task/subtask, using relevant fields above. Include `_Slicing rationale:_` for each Story and independently proposed Task, explaining the story boundary or standalone technical deliverable in one or two sentences. For each ticket with acceptance criteria, replace every repeated `Acceptance:` line with sequential `AC-01:`, `AC-02:`, ... labels (italicize the label if other labels are italic). Keep numbered criteria adjacent in the same ticket block, with no blank lines inside the block; reset numbering for each ticket. Do not repeat the whole architecture explanation.
 4. **Requirement & Contract Coverage** — each material `FR/NFR/D` ID → proposed ticket and locally keyed `AC` (e.g. `ST-01/AC-02`) or `OPEN/BLOCKED`, with source/status.
 5. **Open Decisions and Readiness** — minimum questions by decision owner, dependency concerns, and next human review action; say "No material blockers identified from supplied evidence" only when justified.
 
@@ -137,6 +141,7 @@ For a small change, the report may fit on one screen. For a large feature, inclu
 **ST-01 — Export assessment results as CSV**  
 _Type:_ Story  
 _Outcome:_ Users can export assessment results as CSV.  
+_Slicing rationale:_ One observable export outcome; UI and API work together to satisfy it and do not require separate stories.  
 _AC-01:_ Exported assessment results are delivered in CSV format.  
 _AC-02:_ The CSV contains the results specified by the source request.  
 _Readiness:_ PROVISIONAL — confirm the expected fields with the request owner.
