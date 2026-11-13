@@ -6,18 +6,6 @@
 
 Skills are grouped by use.
 
-### Skill development and assessment
-
-- **Skill:** [evaluate-skill](skills/evaluate-skill/SKILL.md)  
-  **Purpose:** Evaluate and improve agent skills through guided tests, evidence-based diagnosis, and approved changes.  
-  **What you'll learn:** LLM evals, test cases, assertions, grading, and regression analysis.
-
-- **Skill:** [audit-skill](skills/audit-skill/SKILL.md)  
-  **Purpose:** Review one or more skills automatically with at-a-glance profiles, standards and quality checks, Mermaid workflows, cross-platform compatibility, risks, and handoffs; read-only.  
-  **What you'll learn:** Skill contracts, Agent Skills compliance, evidence quality, trust, portability, responsibility boundaries, and proposed eval cases.
-
----
-
 ### Workflows
 
 - **Skill:** [sdi-assessment](skills/sdi-assessment/SKILL.md)  
@@ -48,6 +36,18 @@ Skills are grouped by use.
 - **Skill:** [track-working-groups](skills/track-working-groups/SKILL.md)  
   **Purpose:** Track public working-group updates, manage group metadata and private checkpoints, and prepare source-backed meeting briefings.  
   **What you'll learn:** Technical governance, working-group processes, and source-backed research.
+
+---
+
+### Skill development and assessment
+
+- **Skill:** [evaluate-skill](skills/evaluate-skill/SKILL.md)  
+  **Purpose:** Evaluate and improve agent skills through guided tests, evidence-based diagnosis, and approved changes.  
+  **What you'll learn:** LLM evals, test cases, assertions, grading, and regression analysis.
+
+- **Skill:** [audit-skill](skills/audit-skill/SKILL.md)  
+  **Purpose:** Review one or more skills automatically with at-a-glance profiles, standards and quality checks, Mermaid workflows, cross-platform compatibility, risks, and handoffs; read-only.  
+  **What you'll learn:** Skill contracts, Agent Skills compliance, evidence quality, trust, portability, responsibility boundaries, and proposed eval cases.
 
 ---
 
