@@ -100,10 +100,10 @@
     {
       "name": "refine-requirements-light",
       "category": "engineering",
-      "purpose": "Read-only, noninteractive four-step SDI assessment of workplace Jira tickets. Verify relevant existing application code and candidate patterns before recommending a minimal high-level change, with focused request/data-flow, correctness and reliability analysis and evidence-backed risks.",
+      "purpose": "One-pass, read-only, input-agnostic four-step SDI assessment of problems and changes, grounded in relevant source evidence. Optional learn: on adds in-context book/chapter study references from five engineering books; default off.",
       "source": "dotskills",
       "path": "skills/refine-requirements-light",
-      "reference_count": 0
+      "reference_count": 1
     },
     {
       "name": "plan-ticket-delivery",
