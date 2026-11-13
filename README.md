@@ -21,8 +21,8 @@ Skills are grouped by use.
 ### Workflows
 
 - **Skill:** [refine-requirements-light](skills/refine-requirements-light/SKILL.md)  
-  **Purpose:** Review assigned tickets against verified application code, reuse existing patterns where appropriate, and deliver a noninteractive four-step SDI engineering assessment.  
-  **What you'll learn:** Applied SDI for ticket analysis: scope, verified patterns, high-level design, relevant request/data flows, and technical risks.
+  **Purpose:** Analyze identifiable problems and proposed changes from tickets, documents, code, agent skills or workflows using one evidence-based four-step SDI assessment. Optional `learn: on` adds relevant book/chapter study references; off by default.  
+  **What you'll learn:** Problem framing, verified patterns, high-level design, interfaces/contracts, trade-offs and risks—plus optional deeper reading from five engineering books.
 
 - **Skill:** [plan-ticket-delivery](skills/plan-ticket-delivery/SKILL.md)  
   **Purpose:** Turn reviewed feature requirements or a four-step SDI assessment into the minimum useful, tracker-agnostic stories, subtasks and optional parent, with traceable acceptance criteria and unresolved design questions.  
