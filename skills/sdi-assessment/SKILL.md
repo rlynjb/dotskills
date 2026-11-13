@@ -73,13 +73,15 @@ Why: Preserves the observed ownership boundary.
 
 **Use the same vertical, screenshot-style presentation at every terminal/CLI width.** Never render a Markdown table, ASCII grid/table, side-by-side columns, or a pipe-delimited pseudo-table, even if the terminal is wide. This applies to the Input Snapshot (Ticket Snapshot for tickets), Step 1 requirements, Step 2 reuse/evidence map and options, Step 3 relevant mechanisms/data-flow findings, Step 4 risks/readiness, and the final open-question list. The **boxed ASCII architecture flow diagrams** required in Step 2 are a purposeful visual exception; keep them.
 
-- **Each finding is one compact block:** start each material `FR-xx`, `NFR-xx`, `Area:`, `Contract:`, `Risk:`, `D-xx` or `Q-xx` item with a **bold heading**, then its relevant `Label: value` fields immediately underneath. The heading and every field belong to the **same item**. Apply this to the Input/Ticket Snapshot, all four SDI steps, proposed decisions, and open questions. Keep fields simple (`Requirement:`, `Quality:`, `Status:`, `Source:`, `Evidence:`, `Verdict:`, `Why:`, etc.), with **no bullets, no table columns and no indentation**.
+- **Each finding is one compact block:** start each material `FR-xx`, `NFR-xx`, `Area:`, `Contract:`, `Risk:`, `D-xx` or `Q-xx` item with a **bold heading**, then its relevant `Label: value` fields immediately underneath. The heading and every field belong to the **same item**. Apply this to the fields and numbered capabilities inside the grouped Input/Ticket Snapshot, all four SDI steps, proposed decisions, and open questions. The Snapshot uses four subsection headings as a presentation exception; do not turn the headings into additional SDI stages. Keep fields simple (`Requirement:`, `Quality:`, `Status:`, `Source:`, `Evidence:`, `Verdict:`, `Why:`, etc.), with **no bullets, no table columns and no indentation**.
 - **Zero blank lines within an item:** put **no empty line after the item heading, between any of its labeled fields, or before its optional `*Further reading:` / `*Study focus:` fields**. Put exactly **one blank line between complete neighboring items** (including successive FRs, NFRs, risks, contracts, decisions and questions). Do not add multiple blank lines, extra spacing, placeholder fields, nested sub-bullets or decorative separators between fields.
 - **Render each field on its own line:** in Markdown outputs, end a heading and each nonfinal field line with **two trailing spaces** (Markdown hard break), while keeping **no empty line** inside the item. Write exactly `Label: value` (one space after the colon, no leading spaces). Let the terminal naturally wrap a long value; don't intentionally create a blank paragraph or repeat the label on a wrapped line. In plain-text outputs, use consecutive newline-separated fields. This prevents separate paragraphs **and** prevents fields collapsing into one line in Markdown renderers.
 - **Optional learning fields stay inside the same block:** only when `learn: on`, append the literal-asterisk `*Further reading:` and `*Study focus:` as consecutive fields **directly after** factual evidence/reasoning, with **no empty lines**. Keep them visually distinct from unprefixed evidence labels and never treat a book chapter as project evidence.
 - **Dividers only in Step 2:** use a standalone `---` horizontal rule **only between complete Step 2 existing-pattern or design-option blocks**; use one blank line before and after that divider and **none inside either item**. All other sections—including Steps 1, 3 and 4, the Input/Ticket Snapshot and open questions—use **one blank line between items**, with **no horizontal rules**. Do not turn `---` into a divider for each FR/NFR/risk/decision. Enforce this at every terminal width.
+- **Mandatory CLI-friendly Snapshot groups:** Show the Input/Ticket Snapshot using exactly four Markdown `###` subheadings, in order: **Assessment objective**, **Purpose & core capabilities**, **Investigation scope**, and **Evidence & recommendation**. Use plain `Label: value` lines under each; core capabilities alone receive numbered, bold `01 — Name` headings with compact `What:`, `Status:`, and `Source:` fields. Put one blank line **between groups and between complete capability items**, but **none inside** a label block. Do not use tables, cards, horizontal rules, long inline source URLs, decorative badges, or a separate fifth SDI step. This grouping applies **only to the Snapshot**; FR/NFR and other Step 1–4 item formatting remains unchanged.
+- **Compact source links:** In the Snapshot, use a short readable `file:line` or `document:section` link label pointing to verified evidence when the renderer supports clickable Markdown. In plain-text CLIs show a compact path/reference; supply a full URL only if necessary for access. Never invent a source link or truncate the actual target URL so it breaks.
 - **Consistent requirement labeling:** show separate **Functional Requirements (FRs)** (behavior/outcomes) and **Non-Functional Requirements (NFRs)** (quality/constraints) subsections in Step 1 when the distinction fits the domain. Give each material requirement a stable `FR-01`/`NFR-01` style ID, source/status, and linked question or acceptance detail where relevant. Reference those same IDs in Steps 2–4. If none is evidenced in a category, say **None identified from supplied evidence**, not an invented requirement.
-- **Strict self-check before responding:** verify every material entry has a recognizable heading; its labels are consecutive lines with no internal empty lines; adjacent entries are separated by **exactly one blank line** (or Step 2's single `---`); every Markdown field is on its own rendered line; and optional learning labels appear only with `learn: on`. Fix formatting before outputting the report. Never sacrifice source citations, accuracy, scope labels, FR/NFR/D traceability or needed detail to satisfy spacing.
+- **Strict self-check before responding:** verify the Snapshot has the **four required subsections in order**; capabilities are numbered and have source/evidence status where available; purpose, scope and recommendation are not blended together; all material entry labels are consecutive lines with no internal empty lines; adjacent entries are separated by **exactly one blank line** (or Step 2's single `---`); every Markdown field is on its own rendered line; and optional learning labels appear only with `learn: on`. Fix formatting before outputting the report. Never sacrifice source citations, accuracy, scope labels, FR/NFR/D traceability or needed detail to satisfy spacing.
 - **Concise but complete:** include all material findings without merging them into a dense paragraph; omit irrelevant fields rather than inventing data. The one-pass, read-only behavior remains unchanged: present all four SDI steps in a single assessment, without approval gates or user interviews.
 
 **Illustrative presentation only (not project evidence):** This Markdown example shows bold item headings, **no empty lines within an item**, **one blank line between items**, and two trailing spaces for rendered line breaks. The Step 2 divider is the sole special separator.
@@ -248,32 +250,63 @@ Revisit if: Existing service cannot meet agreed update guarantees
 
 ## Output contract — concise and complete
 
-Start with an **Input Snapshot** (**Ticket Snapshot** when the source is a ticket): input type/domain, **Goal / requested change**, **Purpose**, **Core capabilities**, **requested scope**, **resolved scope and basis**, **target**, **requested/inspected revision**, **comparison status** (if applicable), **included/excluded areas**, relevant **cross-boundary dependencies**, current-state/evidence limitations, and **one-sentence recommendation**. Show concise vertical label/value fields, marking unavailable values NOT VERIFIED rather than guessing. Do not invent a repo, branch or ticket ID for other inputs.
+Start the report with `## Input Snapshot — <subject>` (or `## Ticket Snapshot — <subject>` for tickets). This is an **orientation summary of the scoped subject**, not an additional reasoning stage. Use **exactly four CLI-friendly Markdown `###` subsection headings** in the following order. Keep their labels together, let long values wrap naturally, and use **no tables, cards or horizontal rules** in the Snapshot.
 
-**Purpose and core capabilities are required snapshot fields, not additional SDI steps.** `Purpose:` describes **why the subject system, subsystem, agent skill, process or proposed solution exists or is intended to exist**, separate from `Goal:` (the user's requested change). `Core capabilities:` summarizes only the most relevant existing or intended behaviors. Follow it with up to **five consecutive labeled fields** (`Capability 01:`, `Capability 02:`, etc.) with **evidence state and source** for each. Use `OBSERVED` for behavior actually supported by inspected code or authorized observations; `DOCUMENTED` for written but unexecuted claims; `PROPOSED` for features not yet implemented; and `NOT VERIFIED` for gaps. If no system/process is identifiable, mark the summary **NOT APPLICABLE**; if the target is identifiable but evidence is absent, say **NOT PROVIDED / NOT VERIFIED** instead of inventing capabilities. At `scope: system`, prefer **2–5 major relevant capabilities**; at `scope: subsystem`, include only the capabilities that matter to the requested change. Keep the whole snapshot compact, with **no blank lines between fields**.
+1. **`### Assessment objective`** — `Input:` (type and relevant sources) and `Goal:` (the user's specific objective or proposed change). State the requested outcome before implying a technical solution.
+2. **`### Purpose & core capabilities`** — `Purpose:` (why the scoped system, skill, component or process exists), followed by a compact `Status:` and `Source:` where supported. `Core capabilities:` reports the number of **relevant** supported behaviors. Give each its own **bold numbered heading** (`**01 — Capability name**`, `**02 — ...**`) with **`What:`**, **`Status:`** and **`Source:`** fields immediately below it. Use `OBSERVED` for implementation/authorized observations, `DOCUMENTED` for written claims without execution proof, `PROPOSED` for not-yet-implemented behavior and `NOT VERIFIED` for uncertainty. Prefer **2–5 major relevant capabilities** at system scope and only those materially relevant to the change for a subsystem; do not fill quota by inventing behaviors. If the subject does not have a meaningful purpose/capability concept, write `NOT APPLICABLE`; where evidence is missing, `NOT PROVIDED` / `NOT VERIFIED`.
+3. **`### Investigation scope`** — `Requested scope:`, `Resolved scope:`, `Basis:`, `Target:`, `Revision:`, `Comparison:`, `Included:` and `Excluded:` as applicable. Show requested versus actually inspected revisions distinctly when necessary. If an option was omitted, use the documented default or `NOT PROVIDED` rather than fabricating a branch, commit, area or comparison.
+4. **`### Evidence & recommendation`** — `Dependencies:` (cross-boundary dependencies that materially affect the request), `Evidence limits:` (uninspected or unexecuted claims), then `Recommendation:` with a short verdict such as `ADAPT` / `FOLLOW` / `CONDITIONAL` and a compact supporting reason. The recommendation belongs **at the bottom** of the Snapshot, never mixed with capability descriptions.
 
-**Separate current capabilities from requirements.** The snapshot briefly describes the subject, while **Step 1** specifies requirements/constraints for the requested change. Never treat a newly requested feature as an **existing** capability, use a textbook as proof, or repeat the full capability list in every later step.
+**Formatting discipline:** Group headings are separated by one blank line; inside an objective, purpose, scope or evidence label block, fields stay on **consecutive lines** with Markdown hard breaks (two trailing spaces on nonfinal lines). Put exactly **one blank line between complete numbered capability blocks**, with no blank lines between a numbered heading and its `What:`, `Status:`, `Source:` lines. A brief blank line between the purpose summary and the capabilities list is acceptable because those are distinct items. **No Step 2 `---` dividers in the Snapshot.** This grouped layout is an exception to the flat item presentation rule **only for the Snapshot**; the strict existing Step 1–4 FR/NFR/Area/Contract/Risk/D/Q block formatting remains unchanged.
 
-**Illustrative Input Snapshot (format only, not project evidence):**
+**Evidence and learning distinction:** `Purpose:` and current capabilities describe what the subject **does** or is **documented/proposed to do**; Step 1's FRs/NFRs describe what the **requested change must accomplish**. Never treat a new requirement as an existing capability, infer tests from documentation, or replace project sources with learning-book references. Use **short, clickable source labels** like `[SKILL.md:22](verified-actual-URL)` in Markdown when grounded, or `SKILL.md:22` in a plain-text terminal. Preserve the real link target; never invent line numbers. `learn: on` still controls optional `*Further reading:` / `*Study focus:` fields within relevant findings, not a new summary section.
+
+**Illustrative CLI-oriented Input Snapshot (format only; fictitious evidence and revision labels):**
 
 ```markdown
-**Input Snapshot — Example reporting service**  
-Input type: Feature brief + inspected repository  
-Goal: Assess a proposed CSV export  
-Purpose: Produce authorized reports (DOCUMENTED — example specification)  
-Core capabilities: 2 relevant behaviors found in the inspected scope  
-Capability 01: View results (OBSERVED — [verified path])  
-Capability 02: Filter results (OBSERVED — [verified path])  
+## Input Snapshot — Reporting service
+
+### Assessment objective
+
+Input: Feature brief + inspected repository  
+Goal: Assess proposed CSV export
+
+### Purpose & core capabilities
+
+Purpose: Generate authorized reports  
+Status: DOCUMENTED  
+Source: [verified specification reference]
+
+Core capabilities: 2 relevant behaviors
+
+**01 — View reports**  
+What: Display report results for authorized users.  
+Status: OBSERVED  
+Source: [verified file:line]
+
+**02 — Filter reports**  
+What: Filter result sets before presentation.  
+Status: OBSERVED  
+Source: [verified file:line]
+
+### Investigation scope
+
 Requested scope: subsystem  
-Resolved scope and basis: subsystem (explicit)  
+Resolved scope: subsystem  
+Basis: Explicit request  
 Target: Reporting  
 Revision: NOT VERIFIED  
 Comparison: NOT PROVIDED  
-Included areas: Reporting interface and associated API contract  
-Excluded areas: Unrelated application subsystems  
-Cross-boundary dependencies: Reporting API  
-Evidence limits: Runtime outcome NOT VERIFIED  
-Recommendation: Verify the current export contract before proposing changes
+Included: Report UI and relevant API contracts  
+Excluded: Unrelated application subsystems
+
+### Evidence & recommendation
+
+Dependencies: Reporting API  
+Evidence limits: Runtime operation NOT VERIFIED; tests NOT RUN  
+Recommendation: CONDITIONAL — verify existing export contracts before designing an additional path.
+
+## Step 1 — Requirements & scope
 ```
 
 Then use these headings in order:
