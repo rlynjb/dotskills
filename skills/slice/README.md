@@ -25,13 +25,15 @@ This is a **delivery handoff**, not a fifth SDI step. REAZN's proposed design do
 - **Standalone technical Task:** use only when the prerequisite or operational work has independent completion evidence and a justified reason to track it separately; otherwise it's a subtask or implementation note. The final Jira type depends on team conventions.
 - **Uncertain design or missing source:** show provisional tickets and the questions to resolve, not fabricated architecture or capabilities.
 
+**Decision order:** **vertical slicing** defines outcome boundaries → **Story/Task/Subtask** classification follows independent completion evidence → **INVEST** checks whether each proposed Story is well formed → **Slicing rationale** explains why that boundary was chosen. INVEST means Independent, Negotiable, Valuable, Estimable, Small, Testable; it is a qualitative guideline, not an official Jira mandate or a scoring formula. Mark weak or unverified dimensions instead of inventing clarity.
+
 System size and dependencies affect **complexity, sequencing and confidence**, not the story count by themselves.
 
 ## What you get
 
 1. Delivery Snapshot with recommended structure and rationale.
 2. Proposed Ticket Tree with stable draft identifiers (`ST-xx` stories, `TK-xx` standalone tasks, `SUB-xx` subtasks, etc.), not real tracker IDs.
-3. Jira/Linear/GitHub-issue-friendly drafts including each Story's **Slicing rationale**, outcome, **keyed acceptance criteria (`AC-01`, `AC-02`, ... per ticket)**, technical notes, dependencies and readiness.
+3. Jira/Linear/GitHub-issue-friendly drafts including each Story's **Slicing rationale** and compact **INVEST quality check**, outcome, **keyed acceptance criteria (`AC-01`, `AC-02`, ... per ticket)**, technical notes, dependencies and readiness.
 4. Source-to-ticket traceability using `FR/NFR/D` and contract identifiers from the supplied design assessment, with unambiguous ticket/criterion references such as `ST-01/AC-01`.
 5. Open decisions or blockers for a team to resolve.
 
@@ -40,6 +42,12 @@ System size and dependencies affect **complexity, sequencing and confidence**, n
 If the source says **"Export assessment results as CSV"**, the default is **one export story** (plus implementation subtasks if useful), even when UI and backend both change.
 
 Only add separate stories such as export history or export scheduling if those are **explicitly supported additional requirements**. A large system doesn't authorize adding features.
+
+## Story-quality review — INVEST
+
+Check all six letters for each proposed **Story**: **I**ndependent, **N**egotiable, **V**aluable, **E**stimable, **S**mall and **T**estable. A Story can span UI, API and storage while remaining one outcome. If the story boundary is wrong, revise it; if requirements are missing, preserve the uncertainty and mark the item provisional.
+
+Output only **one concise** `_INVEST:_` field per Story: `ALIGNED` with a grounded reason, `NEEDS REFINEMENT` naming the weak letter(s), or `NOT VERIFIED` explaining what cannot be judged. This complements `_Slicing rationale:_`, which explains the boundary. Neither INVEST nor the rationale automatically approves a Jira item. For standalone technical Tasks, justify independent completion/tracking rather than forcing user-story INVEST criteria.
 
 ## Acceptance criterion labels
 
@@ -50,6 +58,7 @@ Within each Ticket Draft, output each acceptance check as `AC-01:`, `AC-02:`, et
 _Type:_ Story  
 _Outcome:_ Users can export assessment results as CSV.  
 _Slicing rationale:_ One end-to-end user outcome; UI and API pieces are implementation steps of the same story.  
+_INVEST:_ NEEDS REFINEMENT — T: the required CSV fields need confirmation.  
 _AC-01:_ The export produces a CSV file.  
 _AC-02:_ The CSV contains the requested assessment results.  
 _Readiness:_ PROVISIONAL
@@ -61,6 +70,8 @@ _Readiness:_ PROVISIONAL
 Run slice using my feature requirements and
 reazn report. Create a tracker-agnostic
 draft plan with stories, subtasks and an epic only if justified.
+Use vertical slicing for ticket boundaries; give each Story a
+slicing rationale and a concise INVEST quality result.
 Key acceptance criteria as AC-01, AC-02, etc. per ticket; trace them to source FR/NFR and design/contract decisions.
 Mark anything unverified or awaiting approval.
 Do not publish or modify actual tickets.
