@@ -6,13 +6,13 @@
 
 - Add a short **`Further reading:`** line **inside each materially relevant finding**, after its source/evidence, verdict or reasoning lines. Include **book title, edition/volume, chapter number and title**, plus a short **`Study focus:`** line explaining which *specific concept in this finding* the chapter helps explore.
 - The study reference is **educational context only**. It is **not** a citation proving the finding or a justification for an unverified design. Keep actual source evidence in the existing `Evidence:` / `Source:` field, and explain any assumptions normally.
-- Suggest a chapter only when the finding genuinely concerns its topic, choosing **at most one strong matching chapter per item** by default. Skip irrelevant items, avoid repeating the same chapter without a distinct reason, and avoid flooding the report with a generic list of five books. Do not add a standalone learning section, additional SDI step, quiz, exercise, checkpoint, or interactive mode.
+- Suggest a chapter only when the finding genuinely concerns its topic, choosing **at most one strong matching chapter per item** by default. Skip irrelevant items, avoid repeating the same chapter without a distinct reason, and avoid flooding the report with a generic list of all six books. Do not add a standalone learning section, additional SDI step, quiz, exercise, checkpoint, or interactive mode.
 - Never invent chapter names/numbers, page references, quotations, links, measured behavior or causal findings. Confirm edition-specific chapters using these documented tables of contents or another authoritative edition-matched source. If the exact chapter cannot be confirmed, omit the numbered recommendation rather than guessing.
 - If `learn: off` or unspecified, **do not output any `Further reading:` or `Study focus:` fields, optional-learning placeholders, chapter suggestions or references to this guide**.
 
-## Five-book chapter lookup
+## Six-book chapter lookup
 
-Choose from these five books already used by [Learn Implementation](../../learn-implementation/references/master-implementation-learning.md). The chapter guide there is the internal provenance for these pointers; edition and chapter mapping is duplicated here only so Refine Requirements Light can package its own optional reference independently.
+Choose from the six books also supported by [Learn Implementation](../../learn-implementation/references/master-implementation-learning.md). The existing five-book chapter references follow that guide; chapter numbers for the sixth book are verified against [Manning's second-edition chapter-by-chapter contents](https://livebook.manning.com/learn/ai-agents-in-action-second-edition). The mapping is duplicated here so Refine Requirements Light packages its optional reference independently.
 
 ### 1. Alex Xu — *System Design Interview — An Insider's Guide*, Volume 1
 
@@ -58,13 +58,28 @@ Choose from these five books already used by [Learn Implementation](../../learn-
 - **Chapter 20 — Designing for Performance:** performance trade-offs guided by real needs and measurements.
 - Reference: [Author's second-edition notes](https://web.stanford.edu/~ouster/cgi-bin/book.php).
 
+### 6. Micheal Lanham — *AI Agents in Action*, Second Edition (Manning, June 2026)
+
+- **Chapter 1 — The rise of AI agents:** distinguish assistants from agents, five functional agent layers, tool-using behavior, and multi-agent models.
+- **Chapter 2 — Core components: Large language models, prompting, and agents:** prompting, agent inputs/typed outputs, tool integration and traces.
+- **Chapter 3 — Actions with Model Context Protocol for AI agents:** MCP clients/servers, tools/resources/prompts, local/remote integration and protocol boundaries.
+- **Chapter 4 — Architecting and building multi-agent systems:** single-agent vs. multi-agent trade-offs, orchestration, handoffs and guardrails.
+- **Chapter 5 — Agent reasoning and planning:** decomposition, planning, ReAct and alternate reasoning patterns when actually relevant.
+- **Chapter 6 — Working with memory and knowledge RAG for agents:** retrieval, hybrid search, indexed knowledge and agent memory, including context freshness.
+- **Chapter 7 — Building robust agents with evaluation and feedback:** regression/evaluation design, rubrics, grounding, human feedback and observability.
+- **Chapter 8 — Deploying agents and agentic systems:** deployment, identity, tool safety, timeouts, versioning, reliability and production boundaries.
+- **Chapter 9 — Understanding the agentic loop:** inner/task/meta loops, stop conditions, long-running task state and orchestration.
+- **Chapter 10 — Exploring the cognitive agent that thinks, monitors, and adapts:** metacognitive checks, confidence gates and stagnation detection; only for genuinely relevant adaptive-agent designs.
+- Chapter numbers and names are from [Manning's second-edition chapter-by-chapter contents](https://livebook.manning.com/learn/ai-agents-in-action-second-edition). [Publisher book page](https://www.manning.com/books/ai-agents-in-action-second-edition). **Manning is the publisher; Micheal Lanham is the author.** The second-edition numbering must not be inferred from the first edition.
+
 ## How to choose
 
 - **Requirements, scope, estimation:** Alex Xu, Volume 1, Chapter 3 (or Chapter 2 when estimating); DDIA 2e Chapter 2 for **real NFRs**.
 - **Service/module contracts, boundaries, data ownership:** Ousterhout Chapters 4–6 or DDIA 2e Chapter 1; choose the one directly relevant to the finding.
 - **Actual queries, storage, transactions, event streams:** relevant DDIA 2e chapters; FODE for data pipelines and ingestion/serving.
 - **Concrete algorithms, complex traversals, search patterns:** matching Zingaro chapter only when that data structure or algorithm is present or a plausible material alternative.
-- **Non-code process/agent-skill work:** do **not** force database, algorithms or software-module readings onto a workflow. Use Alex Xu Chapter 3 if it genuinely helps system-level problem framing; otherwise **omit** a chapter for that finding.
+- **AI-agent / agent-skill design:** use Lanham, 2nd ed., Chapter 1 or 2 for agent scope and tools, Chapter 3 for real MCP boundaries, Chapter 4 for multi-agent handoffs, Chapter 5 for planning, Chapter 6 for RAG/memory, Chapter 7 for evals/feedback, Chapter 8 for deployment/security, or Chapter 9 for looping/stop conditions. Pick the **one** closest to the specific finding, not all of them.
+- **Non-code business process:** do **not** force AI-agent, database, algorithm or software-module readings onto a workflow. Use Alex Xu Chapter 3 if it genuinely helps structured problem framing; otherwise **omit** a chapter for that finding.
 
 **Illustrative formatting; not evidence for a real project:**
 
