@@ -77,7 +77,7 @@ In Guided mode cover one selected item across all four steps; in Practice mode a
 
 ## Book chapter / recommendation contract
 
-Use only these **six books**: *System Design Interview* (Alex Xu), *Designing Data-Intensive Applications, 2nd ed.*, *Fundamentals of Data Engineering*, *Algorithmic Thinking, 2nd ed.*, *A Philosophy of Software Design*, and *AI Agents in Action, Second Edition* (Micheal Lanham; Manning, 2026). The sixth book applies specifically to real agent/AI-workflow mechanisms, not unrelated code. The master contains **edition-checked chapter pointers and source TOCs**.
+Use only these **six book families** (seven physical volumes, counting Alex Xu's two SDI volumes separately): *System Design Interview — An Insider's Guide*, Volumes 1 and 2 (Alex Xu; Volume 2 with Sahn Lam), *Designing Data-Intensive Applications, 2nd ed.*, *Fundamentals of Data Engineering*, *Algorithmic Thinking, 2nd ed.*, *A Philosophy of Software Design*, and *AI Agents in Action, Second Edition* (Micheal Lanham; Manning, 2026). The sixth book applies specifically to real agent/AI-workflow mechanisms, not unrelated code. The master contains **edition-/volume-checked chapter pointers and source TOCs**. Always name **Volume 1 or Volume 2** when citing a System Design Interview chapter; the chapter numbering restarts in each volume.
 
 For each relevant chapter show:
 
