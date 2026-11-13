@@ -1,6 +1,6 @@
-# SDI Assessment
+# REAZN
 
-**A noninteractive, read-only, evidence-first assessment using the same four SDI reasoning steps across input types.**
+**REAZN is a noninteractive, read-only, evidence-first skill using the same four SDI reasoning steps across input types.**
 
 Give this skill an identifiable problem or proposed change: a Jira/other tracker item, pasted feature brief, acceptance criteria, architecture document, source code, agent-skill definition, Audit Skill findings, workflow description, PDF, screenshot, or another source the active host can actually inspect. It produces **one** concise assessment, not an interview or a new methodology. A Jira integration or codebase is not required for non-software problems.
 
@@ -39,7 +39,7 @@ Source: [inspected packaging evidence]
 
 ## Grouped Input Snapshot — CLI-first presentation
 
-The first screen of an SDI Assessment is an **orientation summary** with four `###` subsections, in this exact order: **Assessment objective**, **Purpose & core capabilities**, **Investigation scope**, **Evidence & recommendation**. They group the Snapshot only, **not** the four SDI steps.
+The first screen of a REAZN report is an **orientation summary** with four `###` subsections, in this exact order: **Assessment objective**, **Purpose & core capabilities**, **Investigation scope**, **Evidence & recommendation**. They group the Snapshot only, **not** the four SDI steps.
 
 - **Assessment objective:** Input source/type and the requested goal.
 - **Purpose & core capabilities:** The subject's purpose and **2–5** relevant capabilities when evidenced. Number them `01 —`, `02 —` and give each compact `What:`, `Status:`, and `Source:` fields. Distinguish `OBSERVED`, `DOCUMENTED`, `PROPOSED` and `NOT VERIFIED`; a new feature is not an existing capability.
@@ -105,12 +105,12 @@ Set **`scope`** to define the breadth of the SDI assessment and optionally suppl
 
 **Resolution rules:** Explicit `scope` wins. With `auto`, choose and **disclose** the narrowest supported boundary; read across it only to inspect relevant contracts and dependencies. When a target, revision or comparison is unavailable, label it **NOT VERIFIED** and provide a conditional four-step assessment. The Input/Ticket Snapshot records **requested vs. resolved scope, target, actual revision, comparison, included/excluded areas and cross-boundary dependencies**.
 
-This doesn't turn SDI Assessment into [Learn Repo](../learn-repo/SKILL.md) (whole-codebase onboarding), [Learn Implementation](../learn-implementation/SKILL.md) (understanding existing code), or [Review Implementation](../review-implementation/SKILL.md) (post-implementation verification). Even `scope: system` needs an **identifiable problem or proposed change**.
+This doesn't turn REAZN into [Learn Repo](../learn-repo/SKILL.md) (whole-codebase onboarding), [Learn Implementation](../learn-implementation/SKILL.md) (understanding existing code), or [Review Implementation](../review-implementation/SKILL.md) (post-implementation verification). Even `scope: system` needs an **identifiable problem or proposed change**.
 
 **Example — focused branch assessment:**
 
 ```text
-Run sdi-assessment to assess a proposed Facility Map change.
+Run reazn to assess a proposed Facility Map change.
 scope: subsystem
 target: Facility Map
 revision: feature/facility-map
@@ -155,7 +155,7 @@ Chapter suggestions come **only from these six books**: Alex Xu's *System Design
 **Normal assessment (no learning references):**
 
 ```text
-Run sdi-assessment on this ticket or feature brief.
+Run reazn on this ticket or feature brief.
 Verify applicable existing patterns and give one concise four-step SDI
 assessment with evidence, contracts, trade-offs and open decisions.
 No interview, implementation or source edits.
@@ -164,7 +164,7 @@ No interview, implementation or source edits.
 **Assessment with study references:**
 
 ```text
-Run sdi-assessment on this [feature / agent skill / workflow].
+Run reazn on this [feature / agent skill / workflow].
 learn: on
 Give the usual one-pass four-step SDI assessment.
 For applicable findings, add a Further reading and Study focus line

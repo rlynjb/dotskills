@@ -1,6 +1,6 @@
-# Optional learning references — SDI Assessment
+# Optional learning references — REAZN
 
-**Use this reference only when the invoking user enables `learn: on`.** The normal SDI Assessment assessment uses SDI and evidence-backed reasoning without book suggestions. This is a **topic-to-chapter lookup**, not a second framework, a list of compulsory reading, or a substitute for inspecting the actual system/process.
+**Use this reference only when the invoking user enables `learn: on`.** A standard REAZN assessment uses SDI and evidence-backed reasoning without book suggestions. This is a **topic-to-chapter lookup**, not a second framework, a list of compulsory reading, or a substitute for inspecting the actual system/process.
 
 ## Output contract
 
@@ -14,7 +14,7 @@
 
 ## Six-book chapter lookup
 
-Choose from the six books also supported by [Learn Implementation](../../learn-implementation/references/master-implementation-learning.md). The existing five-book chapter references follow that guide; chapter numbers for the sixth book are verified against [Manning's second-edition chapter-by-chapter contents](https://livebook.manning.com/learn/ai-agents-in-action-second-edition). The mapping is duplicated here so SDI Assessment packages its optional reference independently.
+Choose from the six books also supported by [Learn Implementation](../../learn-implementation/references/master-implementation-learning.md). The existing five-book chapter references follow that guide; chapter numbers for the sixth book are verified against [Manning's second-edition chapter-by-chapter contents](https://livebook.manning.com/learn/ai-agents-in-action-second-edition). The mapping is duplicated here so REAZN packages its optional reference independently.
 
 ### 1. *System Design Interview — An Insider's Guide*, Volumes 1 and 2
 

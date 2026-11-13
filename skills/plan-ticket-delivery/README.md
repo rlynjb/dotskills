@@ -2,13 +2,13 @@
 
 **Tracker-agnostic delivery planning after requirements and design reasoning.**
 
-Use this skill to turn a feature brief or a [SDI Assessment](../sdi-assessment/SKILL.md) assessment into a reviewable plan of **stories, subtasks, and an optional epic/parent**. It doesn't need Jira, an API connection, or a particular ticketing system.
+Use this skill to turn a feature brief or a [REAZN](../reazn/SKILL.md) assessment into a reviewable plan of **stories, subtasks, and an optional epic/parent**. It doesn't need Jira, an API connection, or a particular ticketing system.
 
 ## Where it fits
 
 ```text
 Feature request
-  → SDI Assessment (SDI: requirements, verified design and contracts)
+  → REAZN (SDI: requirements, verified design and contracts)
   → Plan Ticket Delivery (outcome-based work decomposition)
   → Team reviews and accepts plan
   → Separate tracker publishing / implementation
@@ -44,7 +44,7 @@ Only add separate stories such as export history or export scheduling if those a
 
 ```text
 Run plan-ticket-delivery using my feature requirements and
-sdi-assessment report. Create a tracker-agnostic
+reazn report. Create a tracker-agnostic
 draft plan with stories, subtasks and an epic only if justified.
 Trace acceptance criteria to source FR/NFR and design/contract decisions.
 Mark anything unverified or awaiting approval.

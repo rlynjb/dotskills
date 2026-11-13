@@ -1,6 +1,6 @@
 # Audit Skill — At a Glance
 
-> Historical report on the former `refine-requirements-light` skill. The current successor is [SDI Assessment](../skills/sdi-assessment/SKILL.md). Earlier source links below are pinned to their historical inspected revision.
+> Historical report on the former `refine-requirements-light` skill. The current successor is [REAZN](../skills/reazn/SKILL.md). Earlier source links below are pinned to their historical inspected revision.
 
 ## Target and inspection boundary
 
