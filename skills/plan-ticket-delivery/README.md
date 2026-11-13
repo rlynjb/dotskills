@@ -30,8 +30,8 @@ System size and dependencies affect **complexity, sequencing and confidence**, n
 
 1. Delivery Snapshot with recommended structure and rationale.
 2. Proposed Ticket Tree with stable draft identifiers, not real tracker IDs.
-3. Jira/Linear/GitHub-issue-friendly story drafts including outcome, acceptance criteria, technical notes, dependencies and readiness.
-4. Source-to-ticket traceability using `FR/NFR/D` and contract identifiers from the supplied design assessment.
+3. Jira/Linear/GitHub-issue-friendly story drafts including outcome, **keyed acceptance criteria (`AC-01`, `AC-02`, ... per ticket)**, technical notes, dependencies and readiness.
+4. Source-to-ticket traceability using `FR/NFR/D` and contract identifiers from the supplied design assessment, with unambiguous ticket/criterion references such as `ST-01/AC-01`.
 5. Open decisions or blockers for a team to resolve.
 
 ## Example
@@ -40,13 +40,26 @@ If the source says **"Export assessment results as CSV"**, the default is **one 
 
 Only add separate stories such as export history or export scheduling if those are **explicitly supported additional requirements**. A large system doesn't authorize adding features.
 
+## Acceptance criterion labels
+
+Within each Ticket Draft, output each acceptance check as `AC-01:`, `AC-02:`, etc. instead of repeating `Acceptance:`. Number sequentially from `AC-01` **inside each story**, restarting for the next ticket. Use `ST-01/AC-01` when cross-referencing a particular criterion. Keep the same compact, consecutive field layout and match other labels' Markdown styling (for example, `_AC-01:_` when labels are italic). Do not replace existing source criteria identifiers or claim these draft IDs are live tracker IDs.
+
+```markdown
+**ST-01 — Export assessment results as CSV**  
+_Type:_ Story  
+_Outcome:_ Users can export assessment results as CSV.  
+_AC-01:_ The export produces a CSV file.  
+_AC-02:_ The CSV contains the requested assessment results.  
+_Readiness:_ PROVISIONAL
+```
+
 ## Invocation
 
 ```text
 Run plan-ticket-delivery using my feature requirements and
 reazn report. Create a tracker-agnostic
 draft plan with stories, subtasks and an epic only if justified.
-Trace acceptance criteria to source FR/NFR and design/contract decisions.
+Key acceptance criteria as AC-01, AC-02, etc. per ticket; trace them to source FR/NFR and design/contract decisions.
 Mark anything unverified or awaiting approval.
 Do not publish or modify actual tickets.
 ```
