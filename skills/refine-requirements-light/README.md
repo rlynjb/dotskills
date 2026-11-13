@@ -1,76 +1,74 @@
 # Refine Requirements Light
 
-**A noninteractive, verification-first SDI assessment for workplace Jira tickets in an existing application codebase.**
+**A noninteractive, read-only, evidence-first assessment using the same four SDI reasoning steps across input types.**
 
-This skill investigates the relevant **actual code** before recommending how a feature should fit. It produces one concise engineering overview: requirements, existing pattern or subsystem evidence, a minimal high-level proposal, relevant full-stack data flow, and practical trade-offs.
+Give this skill an identifiable problem or proposed change: a Jira/other tracker item, pasted feature brief, acceptance criteria, architecture document, source code, agent-skill definition, Audit Skill findings, workflow description, PDF, screenshot, or another source the active host can actually inspect. It produces **one** concise assessment, not an interview or a new methodology. A Jira integration or codebase is not required for non-software problems.
 
-It complements [Refine Requirements](../refine-requirements/README.md), which guides you through a longer collaborative design process with interactive exploration and explicit decision approvals.
+It complements [Refine Requirements](../refine-requirements/README.md), which provides longer collaborative design exploration and explicit decision approvals.
 
-## How it works
+## How it works — one SDI framework
 
-| SDI step | What it does | Result |
-| --- | --- | --- |
-| **1. Understand the problem and scope** | Read the assigned ticket, FRs/NFRs, acceptance criteria, constraints and unknowns | Short ticket and scope summary |
-| **2. Verify existing code, then propose high-level design** | Find possible components/subsystems in the application, inspect their real behavior, identify compatible patterns, and only then recommend reuse, adaptation or a justified addition | Evidence-backed reuse map and current → proposed flow |
-| **3. Targeted deep dive** | Check relevant code paths, contracts, data ownership and, when applicable, full-stack read/write flows | Focused implementation/data-flow assessment |
-| **4. Wrap up** | Compare worthwhile options, assess risks, validation needs and implementation footprint | Recommendation, trade-offs, blockers and readiness |
+1. **Step 1 — Understand the problem and scope:** Clarify the objective, actors, expected behavior/outcomes, constraints, functional requirements (FRs) and nonfunctional requirements (NFRs) where applicable, acceptance and unresolved assumptions.
+2. **Step 2 — Verify existing patterns and recommend high-level design:** Inspect relevant code, agent skill, documented process or other current-state evidence. Explain what exists, who owns it, whether to FOLLOW/ADAPT or justify NEW REQUIRED, and compare the current/proposed flow when meaningful.
+3. **Step 3 — Deep dive into mechanisms and contracts:** Focus on interfaces, guarantees, responsibilities, permissions, process handoffs, data flow, error behavior or other domain-relevant mechanics. **Do not invent APIs, databases or services** for nontechnical inputs.
+4. **Step 4 — Trade-offs, risks and readiness:** Explain meaningful alternatives, evidence gaps, verification needs, minimal change footprint and proposed engineering decisions (D-IDs) without claiming approval.
+
+The report uses **vertical, individually labeled findings** with source evidence. It keeps FR/NFR/D IDs when meaningful, boxed ASCII diagrams for relevant multi-component Step 2 flows, and `---` separators **only between distinct Step 2 pattern/design entries**. No Markdown tables in skill output.
 
 ### Verify before recommending
 
-An existing application may already contain a reusable feature, subsystem, API or pattern—but that is a **hypothesis until inspected**. Step 2 must distinguish:
+Existing software, an agent skill or a business workflow may contain reusable behavior, but it must be inspected rather than assumed. Use **FOLLOW** for verified fit, **ADAPT** for verified partial fit, and **NEW REQUIRED** when evidence justifies a new approach. A bounded search may yield **NO SUITABLE PATTERN FOUND IN INSPECTED SCOPE**; incomplete access is **NOT VERIFIED**; no known current baseline is **CURRENT STATE NOT PROVIDED**. None of these means an absent component has been proven impossible.
 
-- **FOLLOW:** verified pattern already fits.
-- **ADAPT:** verified pattern fits with a scoped change.
-- **NEW REQUIRED:** inspection and requirements justify adding something new.
-- **NO SUITABLE PATTERN FOUND IN INSPECTED SCOPE:** relevant search was performed, but absence across the entire application is **not proven**.
-- **NOT VERIFIED:** code access or evidence is insufficient.
+**Domain-aware analysis:** For a codebase, inspect code, contracts, tests and conventions. For agent skills, inspect instructions, references, dependencies and relevant audit findings (which are not proof of runtime execution). For business workflows, inspect participants, decisions, handoffs and documents. Mark irrelevant software checks **NOT APPLICABLE** with a reason.
 
-For each finding, record **where it was found** (path, symbol, contract or test), **what it currently does**, **how it relates to the ticket**, and any unresolved uncertainty. The recommendation follows the evidence, not an assumed architecture.
+## Optional book references — `learn`
 
-**Prefer the smallest coherent extension to verified application patterns** over parallel abstractions, duplicate logic, or a wholesale redesign. Respect actual team conventions and application constraints; do not force reuse if the contracts or behavior do not fit.
+This is an **optional invocation setting**, not an extra SDI step:
 
-## Engineering considerations
+- **`learn: off` (default):** The assessment stays focused on evidence and engineering decisions. No learning references or empty reading placeholders appear.
+- **`learn: on`:** For each **material finding with a strong topic match**, the skill adds **`Further reading:`** (book, edition, chapter number/title) and **`Study focus:`** (the concept worth exploring) **under that finding**. References supplement the usual output and do not change source evidence, factual claims or approval status.
 
-The four-step **SDI framework** organizes the analysis. Within each step, examine only the engineering concerns that matter to the ticket and verified implementation:
-
-- **Data behavior:** models, queries, transactions, consistency, freshness, concurrency, indexing, caching and recovery.
-- **Data movement:** origin, validation, transformations, source of truth, read/write paths, consumers, contracts and data quality.
-- **Code structure:** module responsibilities, interfaces, coupling, duplication, maintainability and compatibility.
-- **Correctness and reliability:** edge cases, computational cost, authorization, dependency failures, observability and focused verification.
-
-These are **situational engineering checks**, not a required checklist or a reason to override company conventions. Explain applicable trade-offs in plain engineering terms and support claims with code or ticket evidence.
-
-## Example of an output (hypothetical)
-
-For an audit-records filtering ticket, the report would:
-
-1. Clarify which users can filter, supported fields and acceptance cases.
-2. **Search for and verify** the actual audit UI, endpoint, service and query mechanism. If a shared filter pattern exists and fits, recommend adapting it with code evidence; if it is unverified, say so.
-3. Trace the confirmed and proposed **UI → API → service → data store → response** paths, separating read/write behavior and identifying any data consistency/query issues.
-4. Summarize the minimum expected code changes, risks, tests and ticket questions.
-
-It does **not** claim these specific components exist without examining the repository.
-
-## Invocation
+**Example of a learning reference (illustrative, not verified project evidence):**
 
 ```text
-Run refine-requirements-light for Jira ticket <KEY> in this application.
-First inspect and verify relevant existing code paths, subsystems,
-patterns, contracts, tests and documented team conventions.
-Then give me one concise four-step SDI overview:
-1. Requirements and scope
-2. Verified existing patterns and high-level design recommendation
-3. Relevant implementation/data flow (when applicable)
-4. Trade-offs, risks, validation and readiness
-Prefer the smallest compatible change. Label unverified findings.
-No interview, learning menu, source edits, Jira updates or implementation.
+Area: Module ownership
+What exists today: [description grounded in inspected code]
+Evidence: [actual file/symbol]
+Verdict: FOLLOW
+Why: [source-backed explanation]
+Further reading: A Philosophy of Software Design, 2nd ed. — Chapter 5, Information Hiding (and Leakage).
+Study focus: How interface boundaries reduce coupling.
+```
+
+Chapter suggestions come **only from these five books**: Alex Xu's *System Design Interview — An Insider's Guide*, *Designing Data-Intensive Applications* (2nd ed.), *Fundamentals of Data Engineering*, *Algorithmic Thinking* (2nd ed.), and *A Philosophy of Software Design* (2nd ed.). The [optional chapter guide](references/learning-chapters.md) lists edition-checked chapter pointers. Only include a genuinely relevant, verified chapter; don't force every book, repeat the same reference needlessly, or turn the report into a tutorial. Actual evidence lives in **`Source:` / `Evidence:`**, not in a book citation.
+
+## Invocation examples
+
+**Normal assessment (no learning references):**
+
+```text
+Run refine-requirements-light on this ticket or feature brief.
+Verify applicable existing patterns and give one concise four-step SDI
+assessment with evidence, contracts, trade-offs and open decisions.
+No interview, implementation or source edits.
+```
+
+**Assessment with study references:**
+
+```text
+Run refine-requirements-light on this [feature / agent skill / workflow].
+learn: on
+Give the usual one-pass four-step SDI assessment.
+For applicable findings, add a Further reading and Study focus line
+with a verified book and chapter from the five supported books.
+Keep chapter pointers separate from source evidence; no lessons or quiz.
 ```
 
 ## Boundaries
 
-- **One-pass output:** No interactive questions, lessons, checkpoints or decision-approval flow. Unknowns become a short questions/blockers section at the end.
-- **Read-only analysis:** No code modification, Jira mutation, deployment, or invoking a coding agent. The report is a proposal, **not implementation authorization**.
-- **Evidence over assumptions:** Existing code proves observed behavior, not approved product intent. Missing access, unverified design paths, measurements and tests must be clearly labeled.
-- **Workplace data:** Respect access controls and do not move proprietary content into public sources.
+- **One pass, read-only:** No interactive gates, automatic implementation, ticket writes, deployments, evaluations or coding agents. Unknowns become explicit questions/limitations in the report.
+- **No fabricated current state or approval:** Documentation is not proof of execution; proposed decisions are not signed off; an inaccessible source is not magically inspected.
+- **Chapter accuracy:** When `learn: on`, omit an irrelevant or unverified chapter rather than guessing its edition or number. Default output never includes book fields.
+- **Respect source permissions:** Do not copy confidential workplace material into public files or external systems.
 
-The operational contract is [`SKILL.md`](SKILL.md). The full skill's interactive procedures are **not inherited**.
+The operational contract is [`SKILL.md`](SKILL.md); the interactive sibling's approval steps are **not inherited**.
