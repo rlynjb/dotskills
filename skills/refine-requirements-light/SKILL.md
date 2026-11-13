@@ -1,6 +1,6 @@
 ---
 name: refine-requirements-light
-description: "Read-only, noninteractive four-step SDI assessment of problems and proposed changes from tickets, briefs, code, documents, agent skills or workflows. Verify domain-specific evidence and assess design, contracts and trade-offs. Optional learn: on adds per-finding book/chapter references from five engineering books; default off. No edits or approvals."
+description: "Read-only, noninteractive four-step SDI assessment of problems and proposed changes from tickets, briefs, code, documents, agent skills or workflows. Verify domain-specific evidence and assess design, contracts and trade-offs. Optional learn: on adds per-finding book/chapter references from six engineering books; default off. No edits or approvals."
 ---
 
 # Refine Requirements Light
@@ -26,7 +26,7 @@ This is the **noninteractive, one-pass sibling** of [Refine Requirements](../ref
 - **When disabled:** Produce the **same evidence-based assessment** as before. Do not emit `Further reading:`, `Study focus:`, book/chapter suggestions, learning placeholders, a learning summary or interactive lessons.
 - **When enabled:** Read [Optional learning chapters](references/learning-chapters.md) **on demand**; the reference must accompany the packaged skill if this option is supported. After fully analyzing each material finding, add an **inline `Further reading:`** field with a genuinely relevant **book + edition/volume + exact chapter number/title**, followed by a short **`Study focus:`** field explaining which underlying principle the finding illustrates and what to pay attention to while reading. Put these **after the existing factual evidence/source and explanation** within the item's vertical block. This applies to relevant `FR-xx`/`NFR-xx`, Step 2 area/option, Step 3 contract/mechanism, and Step 4 risk/decision items—not indiscriminately to every item.
 - **Keep evidence distinct from education:** `Source:` / `Evidence:` citations are the evidence for the **specific system, requirement, process or code behavior**. `Further reading:` is merely a **conceptual study pointer**, never proof that a design is correct, a system runs, or a requirement is approved. Do not replace code/document citations with book citations or extrapolate an implementation claim from a textbook.
-- **Be selective, accurate and brief:** Choose from exactly the five verified books in the local guide, **normally at most one chapter per applicable item**. Do **not** force all five books, duplicate the same chapter needlessly, recommend an irrelevant algorithm/data-system chapter for a business process, or invent chapter numbers/titles/page numbers. If no chapter genuinely fits or its edition/chapter cannot be verified, omit the learning fields for that item. If the guide is unavailable, do not guess: say the optional references could not be verified (only when `learn: on`), and still complete all four SDI steps.
+- **Be selective, accurate and brief:** Choose from only the six edition-verified books in the local guide, **normally at most one chapter per applicable item**. Do **not** force all six books, duplicate the same chapter needlessly, recommend an irrelevant algorithm/data-system chapter for a business process, or invent chapter numbers/titles/page numbers. If no chapter genuinely fits or its edition/chapter cannot be verified, omit the learning fields for that item. If the guide is unavailable, do not guess: say the optional references could not be verified (only when `learn: on`), and still complete all four SDI steps.
 - **Preserve all existing output invariants:** Same one-pass SDI sequence, concise vertical labeled blocks, FR/NFR/D traceability, scoped verification, no per-item divider outside Step 2, no tables, no learning quiz, no separate learning section and no automatic delegation to `learn-implementation`.
 
 **Illustrative item only; not real source evidence (visible only when `learn: on`):**
@@ -252,7 +252,7 @@ Then use these headings in order:
     Run refine-requirements-light on this change request. learn: on
     Give the usual four-step evidence-backed assessment.
     For relevant findings, add Further reading and Study focus lines
-    using verified chapters from the five supported engineering books.
+    using verified chapters from the six supported engineering books.
     Keep book references separate from evidence. No lessons or interviews.
 
 **Software ticket:**
