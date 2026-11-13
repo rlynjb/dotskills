@@ -4,10 +4,11 @@
     {
       "id": 1,
       "prompt": "Use slice for an approved requirement: 'Users can download assessment results as CSV.' The current export API and UI already exist and were verified by a supplied SDI report. The scope contains only this outcome. Draft the structure; no tracker writes.",
-      "expected_output": "One story with optional implementation subtasks. Acceptance criteria check CSV download. Do not introduce scheduling, history, an unnecessary epic or independently untestable frontend/backend stories.",
+      "expected_output": "One story with optional implementation subtasks. Acceptance criteria check CSV download. Do not introduce scheduling, history, an unnecessary epic or independently untestable frontend/backend stories. Include a brief slicing rationale explaining why this is one story rather than separate UI/API stories.",
       "assertions": [
         "One in-scope user outcome maps to one story.",
-        "No unrequested feature or tracker write is introduced."
+        "No unrequested feature or tracker write is introduced.",
+        "Story includes a source-consistent slicing rationale for its boundary."
       ]
     },
     {
@@ -24,7 +25,8 @@
       "prompt": "A ticket asks for one outcome: change a user's display name. The verified design touches a React page, Node API and a database table. Use slice.",
       "expected_output": "Keep one coherent user-facing story, optionally with UI/API/database/test subtasks. Explain why component count alone does not imply multiple stories.",
       "assertions": [
-        "No automatic story split by frontend/backend/database."
+        "No automatic story split by frontend/backend/database.",
+        "The slicing rationale explains why multiple architectural layers do not imply separate stories."
       ]
     },
     {
