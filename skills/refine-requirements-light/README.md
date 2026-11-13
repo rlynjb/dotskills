@@ -15,6 +15,28 @@ It complements [Refine Requirements](../refine-requirements/README.md), which pr
 
 The report uses **vertical, individually labeled findings** with source evidence. It keeps FR/NFR/D IDs when meaningful, boxed ASCII diagrams for relevant multi-component Step 2 flows, and `---` separators **only between distinct Step 2 pattern/design entries**. No Markdown tables in skill output.
 
+## Strict item spacing and structure
+
+- **One item = one block:** A bold `FR-xx`, `NFR-xx`, `Area:`, `Contract:`, `Risk:`, `D-xx`, or `Q-xx` heading is followed immediately by its consecutive `Label: value` fields. **No blank line between heading and fields or between fields within an item.**
+- **Between items:** Exactly **one blank line**. Only Step 2 may separate full existing-pattern or design-option items with a standalone `---` and one blank line on either side. No dividers for FRs, NFRs, risks, contracts, decisions, or open questions.
+- **Visible line breaks:** In Markdown, end the heading and nonfinal field lines with **two trailing spaces** so each label remains on its own line. No bullet prefixes, label indentation, padded blank paragraphs or Markdown tables.
+- **Optional study fields:** With `learn: on`, the literal `*Further reading:` and `*Study focus:` fields follow the same finding's evidence/reasoning **without any blank line**. All factual labels stay unprefixed.
+
+**Illustrative NFR blocks (not real project findings):**
+
+```markdown
+**NFR-02 — Provenance and uncertainty**  
+Quality: Distinguish facts, observations, and assumptions.  
+Status: DOCUMENTED  
+Source: [verified reference]
+
+**NFR-03 — Portable packaging**  
+Quality: Support independent skill installation.  
+Status: NOT VERIFIED  
+Source: [inspected packaging evidence]
+```
+
+
 ## Scope resolution — optional invocation selectors
 
 Set **`scope`** to define the breadth of the SDI assessment and optionally supply **`target`**, **`revision`**, and **`compare`** to make its evidence boundaries explicit. These are **prompt-level settings**, not guaranteed typed API parameters or additional SDI steps.
