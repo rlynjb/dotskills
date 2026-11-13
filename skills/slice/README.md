@@ -18,10 +18,11 @@ This is a **delivery handoff**, not a fifth SDI step. REAZN's proposed design do
 
 ## How decisions are made
 
-- **One independently testable outcome:** normally one story. Add subtasks only when helpful.
+- **One independently testable outcome:** normally one story. Add subtasks only when helpful; explain the boundary in a short **Slicing rationale**.
 - **Several independently testable outcomes:** multiple stories.
 - **Broader initiative or release grouping:** consider a parent/epic if team conventions support it.
 - **Cross-component implementation:** often subtasks inside one story, not separate frontend/backend/database stories.
+- **Standalone technical Task:** use only when the prerequisite or operational work has independent completion evidence and a justified reason to track it separately; otherwise it's a subtask or implementation note. The final Jira type depends on team conventions.
 - **Uncertain design or missing source:** show provisional tickets and the questions to resolve, not fabricated architecture or capabilities.
 
 System size and dependencies affect **complexity, sequencing and confidence**, not the story count by themselves.
@@ -30,7 +31,7 @@ System size and dependencies affect **complexity, sequencing and confidence**, n
 
 1. Delivery Snapshot with recommended structure and rationale.
 2. Proposed Ticket Tree with stable draft identifiers, not real tracker IDs.
-3. Jira/Linear/GitHub-issue-friendly story drafts including outcome, **keyed acceptance criteria (`AC-01`, `AC-02`, ... per ticket)**, technical notes, dependencies and readiness.
+3. Jira/Linear/GitHub-issue-friendly drafts including each Story's **Slicing rationale**, outcome, **keyed acceptance criteria (`AC-01`, `AC-02`, ... per ticket)**, technical notes, dependencies and readiness.
 4. Source-to-ticket traceability using `FR/NFR/D` and contract identifiers from the supplied design assessment, with unambiguous ticket/criterion references such as `ST-01/AC-01`.
 5. Open decisions or blockers for a team to resolve.
 
@@ -48,6 +49,7 @@ Within each Ticket Draft, output each acceptance check as `AC-01:`, `AC-02:`, et
 **ST-01 — Export assessment results as CSV**  
 _Type:_ Story  
 _Outcome:_ Users can export assessment results as CSV.  
+_Slicing rationale:_ One end-to-end user outcome; UI and API pieces are implementation steps of the same story.  
 _AC-01:_ The export produces a CSV file.  
 _AC-02:_ The CSV contains the requested assessment results.  
 _Readiness:_ PROVISIONAL
