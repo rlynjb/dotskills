@@ -15,8 +15,8 @@ Skills are grouped by use.
 
 - **Skill:** [slice](skills/slice/SKILL.md)  
   **Purpose:** Turn feature requirements or a REAZN assessment into the smallest set of independently testable, vertically sliced delivery outcomes. Draft tracker-agnostic stories with keyed acceptance criteria, optional subtasks or a parent, and explicit dependencies and unresolved decisions—without publishing tickets.  
-  **Core capabilities:** Outcome-based story decomposition; `ST-xx` / `AC-xx` criteria linked to `FR/NFR/D` evidence; scope and dependency tracking; proportional subtasks and parents; provisional readiness checks.  
-  **What you'll learn:** Vertical versus horizontal slicing, translating technical design into deliverable work, writing testable acceptance criteria, and maintaining traceability through delivery planning.
+  **Core capabilities:** Vertical outcome slicing; Story/Task/Subtask classification with slicing rationale; INVEST Story-quality checks; `ST-xx` / `AC-xx` criteria linked to `FR/NFR/D` evidence; proportionate subtasks, dependencies and provisional readiness.  
+  **What you'll learn:** Defining independently verifiable delivery boundaries, applying INVEST to Story quality, translating technical assessments into actionable work, and preserving acceptance traceability.
 
 - **Skill:** [review-implementation](skills/review-implementation/SKILL.md)  
   **Purpose:** Use **after [reazn](skills/reazn/SKILL.md) and after implementation**, before a merge request. Inspect → Understand → Challenge → Verify the actual changes against requirements, contracts, and risks. A prior REAZN report helps but is not required.  
