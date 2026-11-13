@@ -40,10 +40,6 @@ Skills are grouped by use.
   **Purpose:** Clean up existing documents with a minimal editorial pass: remove repetition and jargon without adding facts or losing decisions.  
   **What you'll learn:** Clear editing, information preservation, and concise technical writing.
 
-- **Skill:** [learn-repo](skills/learn-repo/SKILL.md)  
-  **Purpose:** Learn an unfamiliar codebase through a selectable question menu, code-backed deep dives, and recent-change analysis.  
-  **What you'll learn:** SDI (Alex Xu's four steps) for whole-system architecture: scope, components, data flows, bottlenecks, and trade-offs.
-
 - **Skill:** [study-mcpa](skills/study-mcpa/SKILL.md)  
   **Purpose:** Study for Linux Foundation MCPA with a selectable topic menu, guided practice, mock questions, and optional hands-on DotSkills MCP Server labs.  
   **What you'll learn:** MCP fundamentals, protocol security, integrations, and hands-on server concepts.
@@ -51,10 +47,6 @@ Skills are grouped by use.
 - **Skill:** [track-working-groups](skills/track-working-groups/SKILL.md)  
   **Purpose:** Track public working-group updates, manage group metadata and private checkpoints, and prepare source-backed meeting briefings.  
   **What you'll learn:** Technical governance, working-group processes, and source-backed research.
-
-- **Skill:** [learn-implementation](skills/learn-implementation/SKILL.md)  
-  **Purpose:** Understand **how existing code works and why** through a skimmable four-step SDI overview, boxed ASCII flows, chapters from six engineering books (including AI Agents in Action, 2nd ed.), and optional Guided/Practice deep dives. This is for **learning**, not determining merge readiness.  
-  **What you'll learn:** Component responsibilities, code/data flows, design decisions, trade-offs, and evidence-backed improvement ideas, including performance and maintainability.
 
 ---
 
