@@ -44,7 +44,7 @@ This is the **noninteractive, one-pass sibling** of [Refine Requirements](../ref
 
 - **When disabled:** Produce the **same evidence-based assessment** as before. Do not emit `*Further reading:`, `*Study focus:`, book/chapter suggestions, learning placeholders, a learning summary or interactive lessons.
 - **When enabled:** Read [Optional learning chapters](references/learning-chapters.md) **on demand**; the reference must accompany the packaged skill if this option is supported. After fully analyzing each material finding, add an **inline `*Further reading:`** field with a genuinely relevant **book + edition/volume + exact chapter number/title**, followed by a short **`*Study focus:`** field explaining which underlying principle the finding illustrates and what to pay attention to while reading. Put these **after the existing factual evidence/source and explanation** within the item's vertical block. This applies to relevant `FR-xx`/`NFR-xx`, Step 2 area/option, Step 3 contract/mechanism, and Step 4 risk/decision items—not indiscriminately to every item.
-**Literal-label rendering:** The leading `*` is a visible **asterisk marker**, not a Markdown bullet or emphasis. For Markdown output, bold the full literal label using `**\*Further reading:**` and `**\*Study focus:**` (escaped leading asterisk **inside** the bold markers). Use a regular-weight value after each; keep the single space after the bold colon. In plain text only, use `*Further reading:` and `*Study focus:` unchanged. Never insert a space after the asterisk, and do not add this prefix to factual labels such as `Source:`, `Evidence:`, `Requirement:`, `Verdict:` or `Why:`.
+**Literal-label rendering:** The leading `*` is a visible **asterisk marker**, not a Markdown bullet or emphasis. For Markdown output, italicize the full literal label using `_\*Further reading:_` and `_\*Study focus:_` (escaped leading asterisk **inside** the italic markers). Keep values regular-weight with one space after the italic colon. In plain text only, use `*Further reading:` and `*Study focus:` unchanged. Never insert a space after the asterisk, and do not add this prefix to factual labels such as `Source:`, `Evidence:`, `Requirement:`, `Verdict:` or `Why:`.
 - **Keep evidence distinct from education:** `Source:` / `Evidence:` citations are the evidence for the **specific system, requirement, process or code behavior**. `*Further reading:` is merely a **conceptual study pointer**, never proof that a design is correct, a system runs, or a requirement is approved. Do not replace code/document citations with book citations or extrapolate an implementation claim from a textbook.
 - **Be selective, accurate and brief:** Choose from only the six edition-verified books in the local guide, **normally at most one chapter per applicable item**. Do **not** force all six books, duplicate the same chapter needlessly, recommend an irrelevant algorithm/data-system chapter for a business process, or invent chapter numbers/titles/page numbers. If no chapter genuinely fits or its edition/chapter cannot be verified, omit the learning fields for that item. If the guide is unavailable, do not guess: say the optional references could not be verified (only when `learn: on`), and still complete all four SDI steps.
 - **Preserve all existing output invariants:** Same one-pass SDI sequence, concise vertical labeled blocks, FR/NFR/D traceability, scoped verification, no per-item divider outside Step 2, no tables, no learning quiz, no separate learning section and no automatic delegation to `learn-implementation`.
@@ -53,12 +53,12 @@ This is the **noninteractive, one-pass sibling** of [Refine Requirements](../ref
 
 ```markdown
 **Area: Write ownership**  
-**What exists today:** A verified service owns the write operation.  
-**Evidence:** [actual source reference]  
-**Verdict:** FOLLOW  
-**Why:** Preserves the observed ownership boundary.  
-**\*Further reading:** A Philosophy of Software Design, 2nd ed. — Chapter 5, Information Hiding (and Leakage).  
-**\*Study focus:** How a clear interface prevents coupling to the owner's internal implementation.
+_What exists today:_ A verified service owns the write operation.  
+_Evidence:_ [actual source reference]  
+_Verdict:_ FOLLOW  
+_Why:_ Preserves the observed ownership boundary.  
+_\*Further reading:_ A Philosophy of Software Design, 2nd ed. — Chapter 5, Information Hiding (and Leakage).  
+_\*Study focus:_ How a clear interface prevents coupling to the owner's internal implementation.
 ```
 
 ## Priorities and evidence
@@ -73,19 +73,19 @@ This is the **noninteractive, one-pass sibling** of [Refine Requirements](../ref
 
 **Use the same vertical, screenshot-style presentation at every terminal/CLI width.** Never render a Markdown table, ASCII grid/table, side-by-side columns, or a pipe-delimited pseudo-table, even if the terminal is wide. This applies to the Input Snapshot (Ticket Snapshot for tickets), Step 1 requirements, Step 2 reuse/evidence map and options, Step 3 relevant mechanisms/data-flow findings, Step 4 risks/readiness, and the final open-question list. The **boxed ASCII architecture flow diagrams** required in Step 2 are a purposeful visual exception; keep them.
 
-- **Each finding is one compact block:** start each material `FR-xx`, `NFR-xx`, `Area:`, `Contract:`, `Risk:`, `D-xx` or `Q-xx` item with a **bold heading**, then its relevant `**Label:** value` fields immediately underneath in Markdown (regular-weight values). The heading and every field belong to the **same item**. Apply this to the fields and numbered capabilities inside the grouped Input/Ticket Snapshot, all four SDI steps, proposed decisions, and open questions. The Snapshot uses four subsection headings as a presentation exception; do not turn the headings into additional SDI stages. Keep fields simple (`Requirement:`, `Quality:`, `Status:`, `Source:`, `Evidence:`, `Verdict:`, `Why:`, etc.), with **no bullets, no table columns and no indentation**.
+- **Each finding is one compact block:** start each material `FR-xx`, `NFR-xx`, `Area:`, `Contract:`, `Risk:`, `D-xx` or `Q-xx` item with a **bold heading**, then its relevant `_Label:_ value` fields immediately underneath in Markdown (regular-weight values). The heading and every field belong to the **same item**. Apply this to the fields and numbered capabilities inside the grouped Input/Ticket Snapshot, all four SDI steps, proposed decisions, and open questions. The Snapshot uses four subsection headings as a presentation exception; do not turn the headings into additional SDI stages. Keep fields simple (`Requirement:`, `Quality:`, `Status:`, `Source:`, `Evidence:`, `Verdict:`, `Why:`, etc.), with **no bullets, no table columns and no indentation**.
 - **Zero blank lines within an item:** put **no empty line after the item heading, between any of its labeled fields, or before its optional `*Further reading:` / `*Study focus:` fields**. Put exactly **one blank line between complete neighboring items** (including successive FRs, NFRs, risks, contracts, decisions and questions). Do not add multiple blank lines, extra spacing, placeholder fields, nested sub-bullets or decorative separators between fields.
-- **Bold labels only (Markdown):** render each factual field as `**Label:** value`, for example `**Requirement:** value`, `**Status:** DOCUMENTED`, or `**Source:** [file:line](verified-link)`. Bold **only the label and colon**, never the value or its citation/link. Apply this to the grouped Snapshot and all Steps 1–4, including contracts, risks, decisions and open questions. Preserve all existing colored headings, item grouping and field order; do not add styling, new labels, bullets, or separators. In plain-text-only output, use `Label: value` unchanged.
-- **Render each field on its own line:** in Markdown outputs, end a heading and each nonfinal field line with **two trailing spaces** (Markdown hard break), while keeping **no empty line** inside the item. Write exactly `**Label:** value` (one space after the bold colon, no leading spaces). Let the terminal naturally wrap a long value; don't intentionally create a blank paragraph or repeat the label on a wrapped line. In plain-text outputs, use consecutive newline-separated fields. This prevents separate paragraphs **and** prevents fields collapsing into one line in Markdown renderers.
-- **Optional learning fields stay inside the same block:** only when `learn: on`, append bold literal-asterisk `**\*Further reading:**` and `**\*Study focus:**` labels as consecutive Markdown fields **directly after** factual evidence/reasoning, with **no empty lines**. Keep them visually distinct from unprefixed evidence labels and never treat a book chapter as project evidence.
+- **Italic labels only (Markdown):** render each factual field as `_Label:_ value`, for example `_Requirement:_ value`, `_Status:_ DOCUMENTED`, or `_Source:_ [file:line](verified-link)`. Italicize **only the label and colon**, never the value or its citation/link. Apply this to the grouped Snapshot and all Steps 1–4, including contracts, risks, decisions and open questions. Keep the existing bold/colorful item headings, grouping, spacing and field order; do not add styling, new labels, bullets or separators. In plain-text-only output, use `Label: value` unchanged.
+- **Render each field on its own line:** in Markdown outputs, end a heading and each nonfinal field line with **two trailing spaces** (Markdown hard break), while keeping **no empty line** inside the item. Write exactly `_Label:_ value` (one space after the italic colon, no leading spaces). Let the terminal naturally wrap a long value; don't intentionally create a blank paragraph or repeat the label on a wrapped line. In plain-text outputs, use consecutive newline-separated fields. This prevents separate paragraphs **and** prevents fields collapsing into one line in Markdown renderers.
+- **Optional learning fields stay inside the same block:** only when `learn: on`, append italic literal-asterisk `_\*Further reading:_` and `_\*Study focus:_` labels as consecutive Markdown fields **directly after** factual evidence/reasoning, with **no empty lines**. Keep them visually distinct from unprefixed evidence labels and never treat a book chapter as project evidence.
 - **Dividers only in Step 2:** use a standalone `---` horizontal rule **only between complete Step 2 existing-pattern or design-option blocks**; use one blank line before and after that divider and **none inside either item**. All other sections—including Steps 1, 3 and 4, the Input/Ticket Snapshot and open questions—use **one blank line between items**, with **no horizontal rules**. Do not turn `---` into a divider for each FR/NFR/risk/decision. Enforce this at every terminal width.
-- **Mandatory CLI-friendly Snapshot groups:** Show the Input/Ticket Snapshot using exactly four Markdown `###` subheadings, in order: **Assessment objective**, **Purpose & core capabilities**, **Investigation scope**, and **Evidence & recommendation**. Use bold-label `**Label:** value` lines under each in Markdown; core capabilities alone receive numbered, bold `01 — Name` headings with compact `What:`, `Status:`, and `Source:` fields. Put one blank line **between groups and between complete capability items**, but **none inside** a label block. Do not use tables, cards, horizontal rules, long inline source URLs, decorative badges, or a separate fifth SDI step. This grouping applies **only to the Snapshot**; FR/NFR and other Step 1–4 item formatting remains unchanged.
+- **Mandatory CLI-friendly Snapshot groups:** Show the Input/Ticket Snapshot using exactly four Markdown `###` subheadings, in order: **Assessment objective**, **Purpose & core capabilities**, **Investigation scope**, and **Evidence & recommendation**. Use italic-label `_Label:_ value` lines under each in Markdown; core capabilities alone receive numbered, bold `01 — Name` headings with compact `What:`, `Status:`, and `Source:` fields. Put one blank line **between groups and between complete capability items**, but **none inside** a label block. Do not use tables, cards, horizontal rules, long inline source URLs, decorative badges, or a separate fifth SDI step. This grouping applies **only to the Snapshot**; FR/NFR and other Step 1–4 item formatting remains unchanged.
 - **Compact source links:** In the Snapshot, use a short readable `file:line` or `document:section` link label pointing to verified evidence when the renderer supports clickable Markdown. In plain-text CLIs show a compact path/reference; supply a full URL only if necessary for access. Never invent a source link or truncate the actual target URL so it breaks.
 - **Consistent requirement labeling:** show separate **Functional Requirements (FRs)** (behavior/outcomes) and **Non-Functional Requirements (NFRs)** (quality/constraints) subsections in Step 1 when the distinction fits the domain. Give each material requirement a stable `FR-01`/`NFR-01` style ID, source/status, and linked question or acceptance detail where relevant. Reference those same IDs in Steps 2–4. If none is evidenced in a category, say **None identified from supplied evidence**, not an invented requirement.
-- **Strict self-check before responding:** verify the Snapshot has the **four required subsections in order**; capabilities are numbered and have source/evidence status where available; purpose, scope and recommendation are not blended together; all material entry labels are bold in Markdown, with regular-weight values, and are consecutive lines with no internal empty lines; adjacent entries are separated by **exactly one blank line** (or Step 2's single `---`); every Markdown field is on its own rendered line; and optional learning labels appear only with `learn: on`. Fix formatting before outputting the report. Never sacrifice source citations, accuracy, scope labels, FR/NFR/D traceability or needed detail to satisfy spacing.
+- **Strict self-check before responding:** verify the Snapshot has the **four required subsections in order**; capabilities are numbered and have source/evidence status where available; purpose, scope and recommendation are not blended together; all material entry labels are italic in Markdown, with regular-weight values, and are consecutive lines with no internal empty lines; adjacent entries are separated by **exactly one blank line** (or Step 2's single `---`); every Markdown field is on its own rendered line; and optional learning labels appear only with `learn: on`. Fix formatting before outputting the report. Never sacrifice source citations, accuracy, scope labels, FR/NFR/D traceability or needed detail to satisfy spacing.
 - **Concise but complete:** include all material findings without merging them into a dense paragraph; omit irrelevant fields rather than inventing data. The one-pass, read-only behavior remains unchanged: present all four SDI steps in a single assessment, without approval gates or user interviews.
 
-**Illustrative presentation only (not project evidence):** This Markdown example shows bold item headings and bold field labels with regular-weight values, **no empty lines within an item**, **one blank line between items**, and two trailing spaces for rendered line breaks. The Step 2 divider is the sole special separator.
+**Illustrative presentation only (not project evidence):** This Markdown example shows bold item headings and italic field labels with regular-weight values, **no empty lines within an item**, **one blank line between items**, and two trailing spaces for rendered line breaks. The Step 2 divider is the sole special separator.
 
 ```markdown
 ### Step 1 — Requirements & scope
@@ -93,43 +93,43 @@ This is the **noninteractive, one-pass sibling** of [Refine Requirements](../ref
 #### Functional Requirements (FRs)
 
 **FR-01 — Edit layout**  
-**Requirement:** Authorized users can modify a layout.  
-**Status:** PROPOSED  
-**Source:** Example user story
+_Requirement:_ Authorized users can modify a layout.  
+_Status:_ PROPOSED  
+_Source:_ Example user story
 
 **FR-02 — Save layout**  
-**Requirement:** Users can save their edits.  
-**Status:** PROPOSED  
-**Open question:** Q-01 — Is saving atomic?
+_Requirement:_ Users can save their edits.  
+_Status:_ PROPOSED  
+_Open question:_ Q-01 — Is saving atomic?
 
 #### Non-Functional Requirements (NFRs)
 
 **NFR-01 — Access control**  
-**Quality:** Editing is limited to permitted roles.  
-**Linked FR:** FR-01, FR-02  
-**Status:** PROPOSED  
-**Source:** Example acceptance criterion
+_Quality:_ Editing is limited to permitted roles.  
+_Linked FR:_ FR-01, FR-02  
+_Status:_ PROPOSED  
+_Source:_ Example acceptance criterion
 
 **NFR-02 — Provenance and uncertainty**  
-**Quality:** Findings must distinguish verified facts from assumptions.  
-**Status:** PROPOSED  
-**Source:** Example quality constraint
+_Quality:_ Findings must distinguish verified facts from assumptions.  
+_Status:_ PROPOSED  
+_Source:_ Example quality constraint
 
 ### Step 2 — Verify patterns & recommend high-level design
 
 **Area: Sector map rendering**  
-**Where it lives:** [verified path/symbol]  
-**What exists today:** Read-only rendering  
-**Verdict:** ADAPT  
-**Why:** Extend only after contract verification.
+_Where it lives:_ [verified path/symbol]  
+_What exists today:_ Read-only rendering  
+_Verdict:_ ADAPT  
+_Why:_ Extend only after contract verification.
 
 ---
 
 **Area: Pan and zoom**  
-**Where it lives:** [verified path/symbol]  
-**What exists today:** Viewport navigation  
-**Verdict:** FOLLOW  
-**Why:** Reuse verified navigation behavior.
+_Where it lives:_ [verified path/symbol]  
+_What exists today:_ Viewport navigation  
+_Verdict:_ FOLLOW  
+_Why:_ Reuse verified navigation behavior.
 ```
 Use the example's **layout only**, never its requirements, verdicts, components, or unverified claims as real findings.
 
@@ -147,13 +147,13 @@ Preserve the **few material design choices** that future developers would otherw
 
 ```markdown
 **D-01 — Layout save ownership**  
-**Decision:** Extend the existing layout service (proposed)  
-**Why/evidence:** Reuses currently observed write ownership; verify its update contract  
-**Alternative:** New editing service (additional operational boundary)  
-**Contract impact:** Save/update behavior and authorization need confirmation  
-**Linked requirements:** FR-02, NFR-01  
-**Status:** CONDITIONAL — review needed  
-**Revisit if:** Existing service cannot meet agreed update guarantees
+_Decision:_ Extend the existing layout service (proposed)  
+_Why/evidence:_ Reuses currently observed write ownership; verify its update contract  
+_Alternative:_ New editing service (additional operational boundary)  
+_Contract impact:_ Save/update behavior and authorization need confirmation  
+_Linked requirements:_ FR-02, NFR-01  
+_Status:_ CONDITIONAL — review needed  
+_Revisit if:_ Existing service cannot meet agreed update guarantees
 ```
 
 ## Workflow — four SDI steps, one report
@@ -258,7 +258,7 @@ Start the report with `## Input Snapshot — <subject>` (or `## Ticket Snapshot 
 3. **`### Investigation scope`** — `Requested scope:`, `Resolved scope:`, `Basis:`, `Target:`, `Revision:`, `Comparison:`, `Included:` and `Excluded:` as applicable. Show requested versus actually inspected revisions distinctly when necessary. If an option was omitted, use the documented default or `NOT PROVIDED` rather than fabricating a branch, commit, area or comparison.
 4. **`### Evidence & recommendation`** — `Dependencies:` (cross-boundary dependencies that materially affect the request), `Evidence limits:` (uninspected or unexecuted claims), then `Recommendation:` with a short verdict such as `ADAPT` / `FOLLOW` / `CONDITIONAL` and a compact supporting reason. The recommendation belongs **at the bottom** of the Snapshot, never mixed with capability descriptions.
 
-**Formatting discipline:** Group headings are separated by one blank line; inside an objective, purpose, scope or evidence label block, bold-label fields stay on **consecutive lines** with Markdown hard breaks (two trailing spaces on nonfinal lines). Put exactly **one blank line between complete numbered capability blocks**, with no blank lines between a numbered heading and its `What:`, `Status:`, `Source:` lines. A brief blank line between the purpose summary and the capabilities list is acceptable because those are distinct items. **No Step 2 `---` dividers in the Snapshot.** This grouped layout is an exception to the flat item presentation rule **only for the Snapshot**; the strict existing Step 1–4 FR/NFR/Area/Contract/Risk/D/Q block formatting remains unchanged.
+**Formatting discipline:** Group headings are separated by one blank line; inside an objective, purpose, scope or evidence label block, italic-label fields stay on **consecutive lines** with Markdown hard breaks (two trailing spaces on nonfinal lines). Put exactly **one blank line between complete numbered capability blocks**, with no blank lines between a numbered heading and its `What:`, `Status:`, `Source:` lines. A brief blank line between the purpose summary and the capabilities list is acceptable because those are distinct items. **No Step 2 `---` dividers in the Snapshot.** This grouped layout is an exception to the flat item presentation rule **only for the Snapshot**; the strict existing Step 1–4 FR/NFR/Area/Contract/Risk/D/Q block formatting remains unchanged.
 
 **Evidence and learning distinction:** `Purpose:` and current capabilities describe what the subject **does** or is **documented/proposed to do**; Step 1's FRs/NFRs describe what the **requested change must accomplish**. Never treat a new requirement as an existing capability, infer tests from documentation, or replace project sources with learning-book references. Use **short, clickable source labels** like `[SKILL.md:22](verified-actual-URL)` in Markdown when grounded, or `SKILL.md:22` in a plain-text terminal. Preserve the real link target; never invent line numbers. `learn: on` still controls optional `*Further reading:` / `*Study focus:` fields within relevant findings, not a new summary section.
 
@@ -269,43 +269,43 @@ Start the report with `## Input Snapshot — <subject>` (or `## Ticket Snapshot 
 
 ### Assessment objective
 
-**Input:** Feature brief + inspected repository  
-**Goal:** Assess proposed CSV export
+_Input:_ Feature brief + inspected repository  
+_Goal:_ Assess proposed CSV export
 
 ### Purpose & core capabilities
 
-**Purpose:** Generate authorized reports  
-**Status:** DOCUMENTED  
-**Source:** [verified specification reference]
+_Purpose:_ Generate authorized reports  
+_Status:_ DOCUMENTED  
+_Source:_ [verified specification reference]
 
-**Core capabilities:** 2 relevant behaviors
+_Core capabilities:_ 2 relevant behaviors
 
 **01 — View reports**  
-**What:** Display report results for authorized users.  
-**Status:** OBSERVED  
-**Source:** [verified file:line]
+_What:_ Display report results for authorized users.  
+_Status:_ OBSERVED  
+_Source:_ [verified file:line]
 
 **02 — Filter reports**  
-**What:** Filter result sets before presentation.  
-**Status:** OBSERVED  
-**Source:** [verified file:line]
+_What:_ Filter result sets before presentation.  
+_Status:_ OBSERVED  
+_Source:_ [verified file:line]
 
 ### Investigation scope
 
-**Requested scope:** subsystem  
-**Resolved scope:** subsystem  
-**Basis:** Explicit request  
-**Target:** Reporting  
-**Revision:** NOT VERIFIED  
-**Comparison:** NOT PROVIDED  
-**Included:** Report UI and relevant API contracts  
-**Excluded:** Unrelated application subsystems
+_Requested scope:_ subsystem  
+_Resolved scope:_ subsystem  
+_Basis:_ Explicit request  
+_Target:_ Reporting  
+_Revision:_ NOT VERIFIED  
+_Comparison:_ NOT PROVIDED  
+_Included:_ Report UI and relevant API contracts  
+_Excluded:_ Unrelated application subsystems
 
 ### Evidence & recommendation
 
-**Dependencies:** Reporting API  
-**Evidence limits:** Runtime operation NOT VERIFIED; tests NOT RUN  
-**Recommendation:** CONDITIONAL — verify existing export contracts before designing an additional path.
+_Dependencies:_ Reporting API  
+_Evidence limits:_ Runtime operation NOT VERIFIED; tests NOT RUN  
+_Recommendation:_ CONDITIONAL — verify existing export contracts before designing an additional path.
 
 ## Step 1 — Requirements & scope
 ```

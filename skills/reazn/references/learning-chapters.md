@@ -5,9 +5,9 @@
 ## Output contract
 
 - Add a short **`*Further reading:`** line **inside each materially relevant finding**, after its source/evidence, verdict or reasoning lines. Include **book title, edition/volume, chapter number and title**, plus a short **`*Study focus:`** line explaining which *specific concept in this finding* the chapter helps explore.
-- **Markdown bold labels:** Use `**Label:** value` for every factual field while keeping its value regular weight. For the optional asterisk labels, use `**\*Further reading:** value` and `**\*Study focus:** value` in Markdown. Bold just the label and colon, not the book title or study text. Plain-text output retains `Label: value` and `*Further reading:` / `*Study focus:` without Markdown markers.
+- **Markdown italic labels:** Use `_Label:_ value` for every factual field while keeping its value regular weight. For the optional asterisk labels, use `_\*Further reading:_ value` and `_\*Study focus:_ value` in Markdown. Italicize just the label and colon, not the book title or study text. Plain-text output retains `Label: value` and `*Further reading:` / `*Study focus:` without Markdown markers.
 - **Compact spacing applies to learning fields:** no blank line between the item heading, factual labels, `*Further reading:` or `*Study focus:`. Separate complete findings by exactly **one blank line** (or the Step 2 divider). In Markdown, use two trailing spaces for nonfinal field lines so each label renders on its own line without paragraph gaps.
-- **Literal-label rendering:** The leading `*` is a visible asterisk, **not** a bullet marker. In Markdown, keep it literal **inside bold** with `**\*Further reading:**` / `**\*Study focus:**`; in plain-text-only output write `*Further reading:` / `*Study focus:`. Never add a space after `*`, and leave field values unbolded.
+- **Literal-label rendering:** The leading `*` is a visible asterisk, **not** a bullet marker. In Markdown, keep it literal **inside italics** with `_\*Further reading:_` / `_\*Study focus:_`; in plain-text-only output write `*Further reading:` / `*Study focus:`. Never add a space after `*`, and leave field values unbolded.
 - The study reference is **educational context only**. It is **not** a citation proving the finding or a justification for an unverified design. Keep actual source evidence in the existing `Evidence:` / `Source:` field, and explain any assumptions normally.
 - Suggest a chapter only when the finding genuinely concerns its topic, choosing **at most one strong matching chapter per item** by default. Skip irrelevant items, avoid repeating the same chapter without a distinct reason, and avoid flooding the report with a generic list of all six books. Do not add a standalone learning section, additional SDI step, quiz, exercise, checkpoint, or interactive mode.
 - Never invent chapter names/numbers, page references, quotations, links, measured behavior or causal findings. Confirm edition-specific chapters using these documented tables of contents or another authoritative edition-matched source. If the exact chapter cannot be confirmed, omit the numbered recommendation rather than guessing.
@@ -110,12 +110,12 @@ These are **case studies**, not replacements for the four-step SDI reasoning fra
 
 ```markdown
 **Area: API ownership**  
-**What exists today:** The inspected service owns the write operation.  
-**Evidence:** [verified path/symbol]  
-**Verdict:** FOLLOW  
-**Why:** Preserves the existing ownership boundary.  
-**\*Further reading:** A Philosophy of Software Design, 2nd ed. — Chapter 5, Information Hiding (and Leakage).  
-**\*Study focus:** Why limiting internal implementation details at a boundary reduces coupling.
+_What exists today:_ The inspected service owns the write operation.  
+_Evidence:_ [verified path/symbol]  
+_Verdict:_ FOLLOW  
+_Why:_ Preserves the existing ownership boundary.  
+_\*Further reading:_ A Philosophy of Software Design, 2nd ed. — Chapter 5, Information Hiding (and Leakage).  
+_\*Study focus:_ Why limiting internal implementation details at a boundary reduces coupling.
 ```
 
 When learning is disabled, the last two lines are absent. All other findings, IDs, decisions, evidence labels, source links, diagrams, and one-pass boundaries remain unchanged.
