@@ -15,6 +15,35 @@ It complements [Refine Requirements](../refine-requirements/README.md), which pr
 
 The report uses **vertical, individually labeled findings** with source evidence. It keeps FR/NFR/D IDs when meaningful, boxed ASCII diagrams for relevant multi-component Step 2 flows, and `---` separators **only between distinct Step 2 pattern/design entries**. No Markdown tables in skill output.
 
+## Scope resolution — optional invocation selectors
+
+Set **`scope`** to define the breadth of the SDI assessment and optionally supply **`target`**, **`revision`**, and **`compare`** to make its evidence boundaries explicit. These are **prompt-level settings**, not guaranteed typed API parameters or additional SDI steps.
+
+- **`scope: auto | system | subsystem`** — Default `auto`: infer the **smallest coherent boundary** from the objective and accessible evidence. `system`: examine major **affected** subsystems and cross-system contracts for a system-wide problem, without exhaustively mapping the repository. `subsystem`: focus on a named feature, service, skill, component or process step and necessary neighbors.
+- **`target`** — Optional repository, system, feature, module, component, agent skill or workflow to investigate. The presence of a repository root never automatically implies `scope: system`.
+- **`revision`** — Optional branch, commit, tag or document version to inspect. The skill verifies the actual version rather than assuming that `main` or a named branch exists.
+- **`compare`** — Optional base/head comparison, such as `main...feature-branch`, PR diff or document versions. A comparison scopes **change evidence**, not the system boundary or approval of the change.
+
+**Resolution rules:** Explicit `scope` wins. With `auto`, choose and **disclose** the narrowest supported boundary; read across it only to inspect relevant contracts and dependencies. When a target, revision or comparison is unavailable, label it **NOT VERIFIED** and provide a conditional four-step assessment. The Input/Ticket Snapshot records **requested vs. resolved scope, target, actual revision, comparison, included/excluded areas and cross-boundary dependencies**.
+
+This doesn't turn Light into [Learn Repo](../learn-repo/SKILL.md) (whole-codebase onboarding), [Learn Implementation](../learn-implementation/SKILL.md) (understanding existing code), or [Review Implementation](../review-implementation/SKILL.md) (post-implementation verification). Even `scope: system` needs an **identifiable problem or proposed change**.
+
+**Example — focused branch assessment:**
+
+```text
+Run refine-requirements-light to assess a proposed Facility Map change.
+scope: subsystem
+target: Facility Map
+revision: feature/facility-map
+compare: main...feature/facility-map
+learn: on
+
+Verify that the references exist, inspect the scoped changes and
+necessary shared contracts, and give one four-step SDI report.
+```
+
+The branch names are illustrative. For a system-wide problem, set `scope: system`; to let the skill infer scope, omit the field or use `scope: auto`.
+
 ### Verify before recommending
 
 Existing software, an agent skill or a business workflow may contain reusable behavior, but it must be inspected rather than assumed. Use **FOLLOW** for verified fit, **ADAPT** for verified partial fit, and **NEW REQUIRED** when evidence justifies a new approach. A bounded search may yield **NO SUITABLE PATTERN FOUND IN INSPECTED SCOPE**; incomplete access is **NOT VERIFIED**; no known current baseline is **CURRENT STATE NOT PROVIDED**. None of these means an absent component has been proven impossible.
