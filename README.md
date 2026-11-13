@@ -9,13 +9,14 @@ Skills are grouped by use.
 ### Workflows
 
 - **Skill:** [reazn](skills/reazn/SKILL.md)  
-  **Purpose:** Analyze identifiable problems and proposed changes from tickets, documents, code, agent skills or workflows using one evidence-based four-step SDI assessment. Optional `learn: on` adds relevant book/chapter study references; off by default.  
-  **Core capabilities:** Input-agnostic analysis, scope resolution, evidence-backed four-step SDI design reasoning, contract/decision traceability, and optional `learn: on` chapter references.  
-  **What you'll learn:** Problem framing, verified patterns, high-level design, interfaces/contracts, trade-offs and risks—plus optional deeper reading from six engineering books.
+  **Purpose:** Reason through an identifiable problem or proposed change using one evidence-backed, four-step SDI assessment. Verify current behavior, examine design and contract boundaries, and explain trade-offs across software, agent skills, and workflows. Read-only and one-pass; optional `learn: on` adds selective book chapters.  
+  **Core capabilities:** Input-agnostic analysis; configurable system/subsystem scope; evidence-first investigation; FR/NFR and design-decision traceability; architecture, contracts, and risk assessment; optional learning references.  
+  **What you'll learn:** Problem framing, separating evidence from assumptions, system design reasoning, interfaces and invariants, and explaining engineering decisions.
 
 - **Skill:** [slice](skills/slice/SKILL.md)  
-  **Purpose:** Turn reviewed feature requirements or a four-step SDI assessment into the minimum useful, tracker-agnostic stories, subtasks and optional parent, with traceable acceptance criteria and unresolved design questions.  
-  **What you'll learn:** Outcome-based story slicing, delivery dependencies, requirement-to-acceptance traceability, and the distinction between design decisions and delivery planning.
+  **Purpose:** Turn feature requirements or a REAZN assessment into the smallest set of independently testable, vertically sliced delivery outcomes. Draft tracker-agnostic stories with keyed acceptance criteria, optional subtasks or a parent, and explicit dependencies and unresolved decisions—without publishing tickets.  
+  **Core capabilities:** Outcome-based story decomposition; `ST-xx` / `AC-xx` criteria linked to `FR/NFR/D` evidence; scope and dependency tracking; proportional subtasks and parents; provisional readiness checks.  
+  **What you'll learn:** Vertical versus horizontal slicing, translating technical design into deliverable work, writing testable acceptance criteria, and maintaining traceability through delivery planning.
 
 - **Skill:** [review-implementation](skills/review-implementation/SKILL.md)  
   **Purpose:** Use **after [reazn](skills/reazn/SKILL.md) and after implementation**, before a merge request. Inspect → Understand → Challenge → Verify the actual changes against requirements, contracts, and risks. A prior REAZN report helps but is not required.  
