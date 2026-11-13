@@ -30,7 +30,7 @@ System size and dependencies affect **complexity, sequencing and confidence**, n
 ## What you get
 
 1. Delivery Snapshot with recommended structure and rationale.
-2. Proposed Ticket Tree with stable draft identifiers, not real tracker IDs.
+2. Proposed Ticket Tree with stable draft identifiers (`ST-xx` stories, `TK-xx` standalone tasks, `SUB-xx` subtasks, etc.), not real tracker IDs.
 3. Jira/Linear/GitHub-issue-friendly drafts including each Story's **Slicing rationale**, outcome, **keyed acceptance criteria (`AC-01`, `AC-02`, ... per ticket)**, technical notes, dependencies and readiness.
 4. Source-to-ticket traceability using `FR/NFR/D` and contract identifiers from the supplied design assessment, with unambiguous ticket/criterion references such as `ST-01/AC-01`.
 5. Open decisions or blockers for a team to resolve.
