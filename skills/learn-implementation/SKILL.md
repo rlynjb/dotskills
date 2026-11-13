@@ -9,7 +9,7 @@ description: "Read-only, implementation-first SDI learning for an existing featu
 
 Help a developer **understand what has already been implemented, how the code actually works, and why its design matters**. This is **implementation-first learning**, **not** Refine Requirements' design-first proposal workflow and **not** a code review or redesign mandate.
 
-**Default experience:** inspect a specific implementation and deliver a **complete, readable four-step SDI overview in the first response**, like Refine Requirements Light. The developer can skim the whole system story, then choose a code path, design decision, book concept, or question to **dig deeper**. Do not open with only a question menu or make the learner select a topic before seeing the four steps.
+**Default experience:** inspect a specific implementation and deliver a **complete, readable four-step SDI overview in the first response**, like SDI Assessment. The developer can skim the whole system story, then choose a code path, design decision, book concept, or question to **dig deeper**. Do not open with only a question menu or make the learner select a topic before seeing the four steps.
 
 ## Required references and evidence
 
@@ -18,7 +18,7 @@ Help a developer **understand what has already been implemented, how the code ac
 3. Distinguish `OBSERVED` code/contract/test existence, `DOCUMENTED RATIONALE` from approved source/ADR, `INFERRED` interpretation, `HYPOTHETICAL ALTERNATIVE` for learning, and `NOT VERIFIED`. Original developer intent, test results, performance bottlenecks, production metrics and approval cannot be inferred from plausible code patterns.
 4. A verified mechanism **is not automatically a problem**. Teach sensible existing decisions, trade-offs and limits; improvement suggestions are opportunities conditional on measured need, not an instruction to rewrite.
 
-## Strict output format — match Refine Requirements Light
+## Strict output format — match SDI Assessment
 
 - **At every terminal/CLI width:** output **vertical, individually labeled blocks**, never Markdown tables, ASCII tables/grids, parallel columns or pipe-delimited pseudo-tables.
 - **Short, scannable entries:** a bold ID/area title, followed by compact **plain label/value lines** such as `What it does:`, `Where:`, `Evidence:`, `Why it matters:`, `Mechanism:`, `Trade-off:`, `Suggested reading:`. No bullet-grid or giant paragraphs. Show all four **Step 1**, **Step 2**, **Step 3**, **Step 4** headings prominently in the opening overview.

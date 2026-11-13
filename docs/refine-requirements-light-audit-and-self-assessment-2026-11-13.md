@@ -1,13 +1,15 @@
 # Audit Skill — At a Glance
 
+> Historical report on the former `refine-requirements-light` skill. The current successor is [SDI Assessment](../skills/sdi-assessment/SKILL.md). Earlier source links below are pinned to their historical inspected revision.
+
 ## Target and inspection boundary
 
 Target: `refine-requirements-light` at repository HEAD `54b21c658e248888555c913714c8a4a1539554ff`; target’s latest change is `e52a59d` from November 13, 2026.
 
 Inspected:
 
-- [Operational SKILL.md](../skills/refine-requirements-light/SKILL.md)
-- [Package README](../skills/refine-requirements-light/README.md)
+- [Operational SKILL.md](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md)
+- [Package README](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/README.md)
 - [Catalog registration](../catalog.json)
 - [Linked full Refine Requirements skill](../skills/refine-requirements/SKILL.md)
 - [Claude adapter documentation](../adapters/claude/README.md)
@@ -42,19 +44,19 @@ Cross-skill overlap: not applicable—there is one target skill.
 - Output: one vertically formatted report containing an input snapshot, four SDI steps, and open decisions.
 - Side effects: none intended.
 - Stop behavior: ask one clarification only if no objective can be identified; otherwise return a conditional report.
-- Unknowns: host activation, permission enforcement, formatting adherence, cross-runtime behavior, and behavioral reliability remain unverified. [SKILL.md L10–28](../skills/refine-requirements-light/SKILL.md#L10-L28) [SKILL.md L200–219](../skills/refine-requirements-light/SKILL.md#L200-L219)
+- Unknowns: host activation, permission enforcement, formatting adherence, cross-runtime behavior, and behavioral reliability remain unverified. [SKILL.md L10–28](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L10-L28) [SKILL.md L200–219](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L200-L219)
 
 ## Coverage dashboard
 
 | Area | Evidence-backed finding | Consequence |
 |---|---|---|
-| Q-01 Purpose & boundaries | The operational contract clearly defines a broad, read-only assessment, but the README and catalog still describe a Jira/application-code workflow. [SKILL.md L10–20](../skills/refine-requirements-light/SKILL.md#L10-L20) [README L3–7](../skills/refine-requirements-light/README.md#L3-L7) [catalog L101–106](../catalog.json#L101-L106) | Users and discovery surfaces may infer different scopes. |
+| Q-01 Purpose & boundaries | The operational contract clearly defines a broad, read-only assessment, but the README and catalog still describe a Jira/application-code workflow. [SKILL.md L10–20](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L10-L20) [README L3–7](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/README.md#L3-L7) [catalog L101–106](../catalog.json#L101-L106) | Users and discovery surfaces may infer different scopes. |
 | Q-02 Activation & discovery | Valid frontmatter and catalog registration exist; live activation was not tested. | Static discovery is supported, but actual selection behavior is unknown. |
-| Q-03 Structure, inputs & dependencies | Diverse inputs and partial-access handling are documented. Tool requirements and the availability of the linked full sibling are host-dependent. [SKILL.md L14–20](../skills/refine-requirements-light/SKILL.md#L14-L20) | The skill can degrade conditionally, but an optional handoff may be unavailable after single-skill installation. |
-| Q-04 Workflow & orchestration | Four ordered SDI stages, evidence labels, and decision rules are detailed. No agent delegation is required. [SKILL.md L107–198](../skills/refine-requirements-light/SKILL.md#L107-L198) | The architecture is understandable, but adherence is model-directed and unobserved. |
-| Q-05 Contracts & outputs | A detailed five-section output contract exists, including FR/NFR and D-ID traceability. [SKILL.md L200–212](../skills/refine-requirements-light/SKILL.md#L200-L212) | Downstream structure is predictable; “concise” has no measurable acceptance threshold. |
-| Q-06 Context & trust | Instructions distinguish authority, observation, assumptions, proposals, and untrusted retrieved content. [SKILL.md L22–28](../skills/refine-requirements-light/SKILL.md#L22-L28) [SKILL.md L214–219](../skills/refine-requirements-light/SKILL.md#L214-L219) | Strong written provenance discipline exists, but it has not been behaviorally checked. |
-| Q-07 Permissions & effects | Read-only and no-auto-approval restrictions are explicit. Repository policy correctly states that prompt text is not enforcement. [SKILL.md L214–219](../skills/refine-requirements-light/SKILL.md#L214-L219) [runtime safety L120–137](skill-repository-integrity-and-runtime-safety.md#L120-L137) | Actual safety depends on host/tool permissions. |
+| Q-03 Structure, inputs & dependencies | Diverse inputs and partial-access handling are documented. Tool requirements and the availability of the linked full sibling are host-dependent. [SKILL.md L14–20](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L14-L20) | The skill can degrade conditionally, but an optional handoff may be unavailable after single-skill installation. |
+| Q-04 Workflow & orchestration | Four ordered SDI stages, evidence labels, and decision rules are detailed. No agent delegation is required. [SKILL.md L107–198](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L107-L198) | The architecture is understandable, but adherence is model-directed and unobserved. |
+| Q-05 Contracts & outputs | A detailed five-section output contract exists, including FR/NFR and D-ID traceability. [SKILL.md L200–212](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L200-L212) | Downstream structure is predictable; “concise” has no measurable acceptance threshold. |
+| Q-06 Context & trust | Instructions distinguish authority, observation, assumptions, proposals, and untrusted retrieved content. [SKILL.md L22–28](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L22-L28) [SKILL.md L214–219](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L214-L219) | Strong written provenance discipline exists, but it has not been behaviorally checked. |
+| Q-07 Permissions & effects | Read-only and no-auto-approval restrictions are explicit. Repository policy correctly states that prompt text is not enforcement. [SKILL.md L214–219](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L214-L219) [runtime safety L120–137](skill-repository-integrity-and-runtime-safety.md#L120-L137) | Actual safety depends on host/tool permissions. |
 | Q-08 Failure & stop behavior | Missing evidence, conflicting sources, absent baselines, and an unidentified objective are addressed. Detailed timeout and partial multi-source failure handling is not specified. | Conditional reporting is supported; runtime/tool recovery remains host-dependent. |
 | Q-09 Evals & observability | No target-local evals, scripts, or preserved runtime traces were found. Repository validation is structural and explicitly does not prove behavior. [validator L20–28](../scripts/validate_skill_repository_integrity.py#L20-L28) | Reliability and format adherence are not demonstrated for the current revision. |
 | Q-10 Lifecycle & portability | Git history and two packaging adapters exist, but no maintainer, supported-version policy, rollback contract, or current-revision behavioral record is declared. The prior review covers an older, materially narrower version. | Review conclusions cannot safely be inherited from the November 8 review. |
@@ -140,23 +142,23 @@ Recommendation: **ADAPT** the existing design—synchronize discovery documentat
 **FR-01 — Accept identifiable change inputs**
 Requirement: Accept accessible tickets, briefs, code, documents, agent skills, workflows, and similar bounded sources when an objective can be identified.
 Status: CONFIRMED in the operational contract.
-Source: [SKILL.md L14–20](../skills/refine-requirements-light/SKILL.md#L14-L20)
+Source: [SKILL.md L14–20](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L14-L20)
 
 **FR-02 — Produce one complete SDI assessment**
 Requirement: Return all four SDI steps in one noninteractive report.
 Status: CONFIRMED.
 Acceptance: The report contains an input snapshot, Steps 1–4, and open decisions.
-Source: [SKILL.md L107–212](../skills/refine-requirements-light/SKILL.md#L107-L212)
+Source: [SKILL.md L107–212](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L107-L212)
 
 **FR-03 — Verify before recommending**
 Requirement: Inspect relevant current-state evidence, distinguish evidence states, and keep unsupported recommendations conditional.
 Status: CONFIRMED.
-Source: [SKILL.md L22–28](../skills/refine-requirements-light/SKILL.md#L22-L28)
+Source: [SKILL.md L22–28](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L22-L28)
 
 **FR-04 — Preserve decisions without approving them**
 Requirement: Trace consequential recommendations through FR/NFR and D-IDs while keeping decisions proposed or conditional.
 Status: CONFIRMED.
-Source: [SKILL.md L84–92](../skills/refine-requirements-light/SKILL.md#L84-L92)
+Source: [SKILL.md L84–92](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L84-L92)
 
 ### Non-Functional Requirements
 
@@ -191,7 +193,7 @@ Out of scope: implementing changes, executing evals, modifying adapters, or appr
 ## Step 2 — Verify patterns & recommend high-level design
 
 **Area: Four-step operational contract**
-Where it lives: [SKILL.md L107–212](../skills/refine-requirements-light/SKILL.md#L107-L212)
+Where it lives: [SKILL.md L107–212](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L107-L212)
 What exists today: A coherent scope → design → contract → readiness workflow with traceable IDs.
 Fit to objective: Directly satisfies FR-02 through FR-04.
 Verdict: FOLLOW.
@@ -200,7 +202,7 @@ Why: The core architecture is useful and does not need replacement.
 ---
 
 **Area: Discovery documentation**
-Where it lives: [README L3–7](../skills/refine-requirements-light/README.md#L3-L7), [catalog L101–106](../catalog.json#L101-L106), [root README L23–25](../README.md#L23-L25)
+Where it lives: [README L3–7](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/README.md#L3-L7), [catalog L101–106](../catalog.json#L101-L106), [root README L23–25](../README.md#L23-L25)
 What exists today: Jira/application-code descriptions narrower than the operational contract.
 Fit to objective: Conflicts with NFR-03.
 Verdict: ADAPT.
@@ -209,7 +211,7 @@ Recommendation: **D-01** — make the operational scope canonical across all dis
 ---
 
 **Area: Full-skill escalation**
-Where it lives: [SKILL.md L12](../skills/refine-requirements-light/SKILL.md#L12), [SKILL.md L218](../skills/refine-requirements-light/SKILL.md#L218)
+Where it lives: [SKILL.md L12](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L12), [SKILL.md L218](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L218)
 What exists today: Broad redesign is referred to the full sibling, but its installation is not guaranteed.
 Fit to objective: Affects NFR-02.
 Verdict: ADAPT.
@@ -218,7 +220,7 @@ Recommendation: **D-02** — define the sibling as an optional handoff; if unava
 ---
 
 **Area: Core instruction density**
-Where it lives: [SKILL.md L30–105](../skills/refine-requirements-light/SKILL.md#L30-L105), [SKILL.md L117–179](../skills/refine-requirements-light/SKILL.md#L117-L179)
+Where it lives: [SKILL.md L30–105](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L30-L105), [SKILL.md L117–179](https://github.com/rlynjb/dotskills/blob/54b21c658e248888555c913714c8a4a1539554ff/skills/refine-requirements-light/SKILL.md#L117-L179)
 What exists today: Detailed formatting rules, examples, diagrams, and workflow obligations coexist in the activation-time file.
 Fit to objective: Supports output consistency but creates tension with NFR-04.
 Verdict: ADAPT.

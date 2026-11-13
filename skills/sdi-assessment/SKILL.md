@@ -1,9 +1,9 @@
 ---
-name: refine-requirements-light
+name: sdi-assessment
 description: "Read-only, noninteractive four-step SDI assessment of identifiable problems and changes from tickets, code, documents, agent skills or workflows. Resolve optional scope (auto/system/subsystem), target, revision and compare boundaries before evidence-based design reasoning. Optional learn: on adds relevant book chapters; default off. No edits or approvals."
 ---
 
-# Refine Requirements Light
+# SDI Assessment
 
 ## Purpose
 
@@ -34,9 +34,9 @@ This is the **noninteractive, one-pass sibling** of [Refine Requirements](../ref
 2. **Resolve `auto` conservatively.** Infer the **smallest coherent boundary** that explains the objective and meaningful affected responsibilities/contracts. Treat a named feature or change as focused unless verified evidence supports a cross-system boundary. Infer `system` only from an explicitly system-wide outcome or demonstrably cross-cutting impacts; never just because the skill was invoked in a repository root. Label the inferred scope/target and the evidence behind the choice.
 3. **Inspect necessary neighbors without silent expansion.** In `subsystem`, inspect relevant callers, shared contracts, integration touchpoints or downstream consumers where needed to assess a change, but report these as **cross-boundary dependencies**, not as an unrequested full-system review. In `system`, cover major **affected** areas and their handoffs with representative code/document evidence; do not read every file or reproduce Learn Repo's onboarding menu. If available evidence cannot establish either boundary, state the uncertainty.
 4. **Separate breadth from revision selection.** A commit, branch or diff restricts **which evidence/version** is examined, not **how broad** the system is. With `compare`, inspect the changed paths and their necessary context; distinguish **BEFORE/AFTER OBSERVED** where two versions are verified from **PROPOSED** design changes that do not yet exist. Identify tests present versus actually run. If comparison data cannot be obtained, mark **COMPARISON NOT VERIFIED**, not "no changes".
-5. **Record the resolution visibly.** In the **Input Snapshot / Ticket Snapshot**, include compact labeled fields: **Requested scope** (`auto` if omitted), **Resolved scope and basis** (explicit or inferred), **Target** (requested/resolved), **Revision** (requested/actually inspected or NOT VERIFIED), **Comparison** (verified range or NOT PROVIDED/NOT VERIFIED), **Included areas**, **Excluded/out-of-bound areas**, **Cross-boundary dependencies**, and **Evidence limits**. Omit irrelevant values rather than inventing them. Scope is an investigation boundary, **not** a product requirement, architecture decision, or proof of test coverage.
+5. **Record the resolution visibly.** In the **Input Snapshot / Ticket Snapshot**, include compact labeled fields: **Requested scope** (`auto` if omitted), **Resolved scope and basis** (explicit or inferred), **Target** (requested/resolved), **Revision** (requested/actually inspected or NOT VERIFIED), **Comparison** (verified range or NOT PROVIDED/NOT VERIFIED), **Included areas**, **Excluded/out-of-bound areas**, **Cross-boundary dependencies**, and **Evidence limits**. Include the subject's evidence-labeled **Purpose** and **Core capabilities**, even when the scope was inferred. Omit irrelevant values rather than inventing them. Scope is an investigation boundary, **not** a product requirement, architecture decision, or proof of test coverage.
 
-**Out-of-scope requests:** A whole-repository explanation with no identifiable problem/change belongs to [Learn Repo](../learn-repo/SKILL.md); an explanation of existing implementation belongs to [Learn Implementation](../learn-implementation/SKILL.md); merge-readiness verification of completed changes belongs to [Review Implementation](../review-implementation/SKILL.md). Keep Light focused on **design assessment** of a problem or proposed change, even at `scope: system`. If the goal is still identifiable, complete the normal conditional one-pass SDI report without redirecting automatically.
+**Out-of-scope requests:** A whole-repository explanation with no identifiable problem/change belongs to [Learn Repo](../learn-repo/SKILL.md); an explanation of existing implementation belongs to [Learn Implementation](../learn-implementation/SKILL.md); merge-readiness verification of completed changes belongs to [Review Implementation](../review-implementation/SKILL.md). Keep SDI Assessment focused on **design assessment** of a problem or proposed change, even at `scope: system`. If the goal is still identifiable, complete the normal conditional one-pass SDI report without redirecting automatically.
 
 ## Optional learning references — invocation option (`learn`)
 
@@ -248,7 +248,33 @@ Revisit if: Existing service cannot meet agreed update guarantees
 
 ## Output contract — concise and complete
 
-Start with an **Input Snapshot** (**Ticket Snapshot** when the source is a ticket): input type/domain, objective, **requested scope**, **resolved scope and basis**, **target**, **requested/inspected revision**, **comparison status** (if applicable), **included/excluded areas**, relevant **cross-boundary dependencies**, current-state/evidence limitations, and **one-sentence recommendation**. Show concise vertical label/value fields, marking unavailable values NOT VERIFIED rather than guessing. Do not invent a repo, branch or ticket ID for other inputs.
+Start with an **Input Snapshot** (**Ticket Snapshot** when the source is a ticket): input type/domain, **Goal / requested change**, **Purpose**, **Core capabilities**, **requested scope**, **resolved scope and basis**, **target**, **requested/inspected revision**, **comparison status** (if applicable), **included/excluded areas**, relevant **cross-boundary dependencies**, current-state/evidence limitations, and **one-sentence recommendation**. Show concise vertical label/value fields, marking unavailable values NOT VERIFIED rather than guessing. Do not invent a repo, branch or ticket ID for other inputs.
+
+**Purpose and core capabilities are required snapshot fields, not additional SDI steps.** `Purpose:` describes **why the subject system, subsystem, agent skill, process or proposed solution exists or is intended to exist**, separate from `Goal:` (the user's requested change). `Core capabilities:` summarizes only the most relevant existing or intended behaviors. Follow it with up to **five consecutive labeled fields** (`Capability 01:`, `Capability 02:`, etc.) with **evidence state and source** for each. Use `OBSERVED` for behavior actually supported by inspected code or authorized observations; `DOCUMENTED` for written but unexecuted claims; `PROPOSED` for features not yet implemented; and `NOT VERIFIED` for gaps. If no system/process is identifiable, mark the summary **NOT APPLICABLE**; if the target is identifiable but evidence is absent, say **NOT PROVIDED / NOT VERIFIED** instead of inventing capabilities. At `scope: system`, prefer **2–5 major relevant capabilities**; at `scope: subsystem`, include only the capabilities that matter to the requested change. Keep the whole snapshot compact, with **no blank lines between fields**.
+
+**Separate current capabilities from requirements.** The snapshot briefly describes the subject, while **Step 1** specifies requirements/constraints for the requested change. Never treat a newly requested feature as an **existing** capability, use a textbook as proof, or repeat the full capability list in every later step.
+
+**Illustrative Input Snapshot (format only, not project evidence):**
+
+```markdown
+**Input Snapshot — Example reporting service**  
+Input type: Feature brief + inspected repository  
+Goal: Assess a proposed CSV export  
+Purpose: Produce authorized reports (DOCUMENTED — example specification)  
+Core capabilities: 2 relevant behaviors found in the inspected scope  
+Capability 01: View results (OBSERVED — [verified path])  
+Capability 02: Filter results (OBSERVED — [verified path])  
+Requested scope: subsystem  
+Resolved scope and basis: subsystem (explicit)  
+Target: Reporting  
+Revision: NOT VERIFIED  
+Comparison: NOT PROVIDED  
+Included areas: Reporting interface and associated API contract  
+Excluded areas: Unrelated application subsystems  
+Cross-boundary dependencies: Reporting API  
+Evidence limits: Runtime outcome NOT VERIFIED  
+Recommendation: Verify the current export contract before proposing changes
+```
 
 Then use these headings in order:
 
@@ -271,7 +297,7 @@ Then use these headings in order:
 
 **System-level problem (not whole-repo onboarding):**
 
-    Run refine-requirements-light to assess the proposed authentication
+    Run sdi-assessment to assess the proposed authentication
     change across the application.
     scope: system
     target: current repository
@@ -281,7 +307,7 @@ Then use these headings in order:
 
 **Focused subsystem and branch changes:**
 
-    Run refine-requirements-light to assess a proposed editing feature.
+    Run sdi-assessment to assess a proposed editing feature.
     scope: subsystem
     target: Facility Map
     revision: feature/facility-map
@@ -293,18 +319,18 @@ Then use these headings in order:
 
 **Auto scope (default):**
 
-    Run refine-requirements-light on this feature brief.
+    Run sdi-assessment on this feature brief.
     scope: auto
     Infer and state the smallest sufficient boundary; flag unknowns.
 
 **Standard assessment (`learn: off` is implicit):**
 
-    Run refine-requirements-light on this feature brief or source document.
+    Run sdi-assessment on this feature brief or source document.
     Use the four SDI steps and cite the actual evidence. No reading suggestions.
 
 **Assessment with optional chapter pointers:**
 
-    Run refine-requirements-light on this change request. learn: on
+    Run sdi-assessment on this change request. learn: on
     Give the usual four-step evidence-backed assessment.
     For relevant findings, add Further reading and Study focus lines
     using verified chapters from the six supported engineering books.
@@ -312,14 +338,14 @@ Then use these headings in order:
 
 **Software ticket:**
 
-    Use refine-requirements-light on Jira ticket <KEY> in this repository.
+    Use sdi-assessment on Jira ticket <KEY> in this repository.
     Verify relevant existing code paths, patterns, contracts and standards.
     Give me one concise evidence-backed four-step SDI assessment.
     No interview, implementation, source edits or Jira updates.
 
 **Non-Jira / non-code input:**
 
-    Use refine-requirements-light on this feature brief or workflow document.
+    Use sdi-assessment on this feature brief or workflow document.
     Identify the intended outcome and inspect available current-state evidence.
     Apply the same four SDI steps to relevant patterns, roles, handoffs,
     interfaces and guarantees, without inventing software components.

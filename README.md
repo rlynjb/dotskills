@@ -20,8 +20,9 @@ Skills are grouped by use.
 
 ### Workflows
 
-- **Skill:** [refine-requirements-light](skills/refine-requirements-light/SKILL.md)  
+- **Skill:** [sdi-assessment](skills/sdi-assessment/SKILL.md)  
   **Purpose:** Analyze identifiable problems and proposed changes from tickets, documents, code, agent skills or workflows using one evidence-based four-step SDI assessment. Optional `learn: on` adds relevant book/chapter study references; off by default.  
+  **Core capabilities:** Input-agnostic analysis, scope resolution, evidence-backed four-step SDI design reasoning, contract/decision traceability, and optional `learn: on` chapter references.  
   **What you'll learn:** Problem framing, verified patterns, high-level design, interfaces/contracts, trade-offs and risks—plus optional deeper reading from six engineering books.
 
 - **Skill:** [plan-ticket-delivery](skills/plan-ticket-delivery/SKILL.md)  
@@ -29,7 +30,7 @@ Skills are grouped by use.
   **What you'll learn:** Outcome-based story slicing, delivery dependencies, requirement-to-acceptance traceability, and the distinction between design decisions and delivery planning.
 
 - **Skill:** [review-implementation](skills/review-implementation/SKILL.md)  
-  **Purpose:** Use **after [refine-requirements-light](skills/refine-requirements-light/SKILL.md) and after implementation**, before a merge request. Inspect → Understand → Challenge → Verify the actual changes against requirements, contracts, and risks. A prior Light assessment helps but is not required.  
+  **Purpose:** Use **after [sdi-assessment](skills/sdi-assessment/SKILL.md) and after implementation**, before a merge request. Inspect → Understand → Challenge → Verify the actual changes against requirements, contracts, and risks. A prior SDI Assessment report helps but is not required.  
   **What you'll learn:** Taking ownership of AI-generated or human-written changes, checking design/contract alignment, investigating failure modes, verifying tests, and assessing readiness for human review.
 
 ---

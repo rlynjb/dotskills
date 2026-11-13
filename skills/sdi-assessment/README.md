@@ -1,4 +1,4 @@
-# Refine Requirements Light
+# SDI Assessment
 
 **A noninteractive, read-only, evidence-first assessment using the same four SDI reasoning steps across input types.**
 
@@ -13,7 +13,7 @@ It complements [Refine Requirements](../refine-requirements/README.md), which pr
 3. **Step 3 — Deep dive into mechanisms and contracts:** Focus on interfaces, guarantees, responsibilities, permissions, process handoffs, data flow, error behavior or other domain-relevant mechanics. **Do not invent APIs, databases or services** for nontechnical inputs.
 4. **Step 4 — Trade-offs, risks and readiness:** Explain meaningful alternatives, evidence gaps, verification needs, minimal change footprint and proposed engineering decisions (D-IDs) without claiming approval.
 
-The report uses **vertical, individually labeled findings** with source evidence. It keeps FR/NFR/D IDs when meaningful, boxed ASCII diagrams for relevant multi-component Step 2 flows, and `---` separators **only between distinct Step 2 pattern/design entries**. No Markdown tables in skill output.
+The **Input/Ticket Snapshot** includes `Purpose:` and `Core capabilities:` for the scoped subject, followed by compact evidence-labeled `Capability 01:` fields where applicable. These explain what the subject already does (or proposes to do), **not** the requirements for the requested change. The report uses **vertical, individually labeled findings** with source evidence. It keeps FR/NFR/D IDs when meaningful, boxed ASCII diagrams for relevant multi-component Step 2 flows, and `---` separators **only between distinct Step 2 pattern/design entries**. No Markdown tables in skill output.
 
 ## Strict item spacing and structure
 
@@ -37,6 +37,10 @@ Source: [inspected packaging evidence]
 ```
 
 
+## Purpose and core capabilities in the Input Snapshot
+
+For every identifiable system, subsystem, agent skill or process, the snapshot states **why it exists** (`Purpose:`) and **what it does** (`Core capabilities:` plus 2–5 relevant `Capability 01:` fields). Mark each as **OBSERVED**, **DOCUMENTED**, **PROPOSED**, or **NOT VERIFIED** and cite relevant evidence. Keep all fields contiguous with no blank lines inside the snapshot. If the input isn't a system/process, use **NOT APPLICABLE** rather than inventing features. Don't mistake proposed behavior for an existing capability or duplicate Step 1 FR/NFRs.
+
 ## Scope resolution — optional invocation selectors
 
 Set **`scope`** to define the breadth of the SDI assessment and optionally supply **`target`**, **`revision`**, and **`compare`** to make its evidence boundaries explicit. These are **prompt-level settings**, not guaranteed typed API parameters or additional SDI steps.
@@ -53,7 +57,7 @@ This doesn't turn Light into [Learn Repo](../learn-repo/SKILL.md) (whole-codebas
 **Example — focused branch assessment:**
 
 ```text
-Run refine-requirements-light to assess a proposed Facility Map change.
+Run sdi-assessment to assess a proposed Facility Map change.
 scope: subsystem
 target: Facility Map
 revision: feature/facility-map
@@ -98,7 +102,7 @@ Chapter suggestions come **only from these six books**: Alex Xu's *System Design
 **Normal assessment (no learning references):**
 
 ```text
-Run refine-requirements-light on this ticket or feature brief.
+Run sdi-assessment on this ticket or feature brief.
 Verify applicable existing patterns and give one concise four-step SDI
 assessment with evidence, contracts, trade-offs and open decisions.
 No interview, implementation or source edits.
@@ -107,7 +111,7 @@ No interview, implementation or source edits.
 **Assessment with study references:**
 
 ```text
-Run refine-requirements-light on this [feature / agent skill / workflow].
+Run sdi-assessment on this [feature / agent skill / workflow].
 learn: on
 Give the usual one-pass four-step SDI assessment.
 For applicable findings, add a Further reading and Study focus line

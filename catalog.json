@@ -98,11 +98,11 @@
       "reference_count": 1
     },
     {
-      "name": "refine-requirements-light",
+      "name": "sdi-assessment",
       "category": "engineering",
       "purpose": "One-pass, read-only, input-agnostic four-step SDI assessment of problems and changes, grounded in relevant source evidence. Optional learn: on adds in-context book/chapter study references from six engineering books (including AI Agents in Action, 2nd ed.); default off.",
       "source": "dotskills",
-      "path": "skills/refine-requirements-light",
+      "path": "skills/sdi-assessment",
       "reference_count": 1
     },
     {

@@ -63,7 +63,7 @@ the implementation.
 
 The `refine-documentation` task skill performs minimal, content-preserving editorial cleanup of existing documents. It is domain-independent and does not add research or new decisions.
 
-[`plan-ticket-delivery`](plan-ticket-delivery/SKILL.md) is a read-only, tracker-agnostic delivery handoff after a feature brief or [`refine-requirements-light`](refine-requirements-light/SKILL.md). It derives a proportionate story/subtask plan from independently verifiable outcomes, retains requirement and design traceability, and never publishes tracker items or silently approves technical decisions.
+[`plan-ticket-delivery`](plan-ticket-delivery/SKILL.md) is a read-only, tracker-agnostic delivery handoff after a feature brief or [`sdi-assessment`](sdi-assessment/SKILL.md). It derives a proportionate story/subtask plan from independently verifiable outcomes, retains requirement and design traceability, and never publishes tracker items or silently approves technical decisions.
 
 Task skills perform the user's actual work, for example code review, investigation,
 requirements refinement, learning, and decision support. They are targets that the
