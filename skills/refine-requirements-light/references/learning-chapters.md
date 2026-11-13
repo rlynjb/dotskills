@@ -4,22 +4,45 @@
 
 ## Output contract
 
-- Add a short **`Further reading:`** line **inside each materially relevant finding**, after its source/evidence, verdict or reasoning lines. Include **book title, edition/volume, chapter number and title**, plus a short **`Study focus:`** line explaining which *specific concept in this finding* the chapter helps explore.
+- Add a short **`*Further reading:`** line **inside each materially relevant finding**, after its source/evidence, verdict or reasoning lines. Include **book title, edition/volume, chapter number and title**, plus a short **`*Study focus:`** line explaining which *specific concept in this finding* the chapter helps explore.
+- **Literal-label rendering:** The leading `*` is a visible asterisk, **not** a bullet marker or emphasis. In Markdown output escape it as `\*Further reading:` / `\*Study focus:` so it renders literally. In plain text or fenced examples use `*Further reading:` / `*Study focus:`. No space after `*`; factual labels such as `Source:` and `Evidence:` remain unchanged.
 - The study reference is **educational context only**. It is **not** a citation proving the finding or a justification for an unverified design. Keep actual source evidence in the existing `Evidence:` / `Source:` field, and explain any assumptions normally.
 - Suggest a chapter only when the finding genuinely concerns its topic, choosing **at most one strong matching chapter per item** by default. Skip irrelevant items, avoid repeating the same chapter without a distinct reason, and avoid flooding the report with a generic list of all six books. Do not add a standalone learning section, additional SDI step, quiz, exercise, checkpoint, or interactive mode.
 - Never invent chapter names/numbers, page references, quotations, links, measured behavior or causal findings. Confirm edition-specific chapters using these documented tables of contents or another authoritative edition-matched source. If the exact chapter cannot be confirmed, omit the numbered recommendation rather than guessing.
-- If `learn: off` or unspecified, **do not output any `Further reading:` or `Study focus:` fields, optional-learning placeholders, chapter suggestions or references to this guide**.
+- If `learn: off` or unspecified, **do not output any `*Further reading:` or `*Study focus:` fields, optional-learning placeholders, chapter suggestions or references to this guide**.
 
 ## Six-book chapter lookup
 
 Choose from the six books also supported by [Learn Implementation](../../learn-implementation/references/master-implementation-learning.md). The existing five-book chapter references follow that guide; chapter numbers for the sixth book are verified against [Manning's second-edition chapter-by-chapter contents](https://livebook.manning.com/learn/ai-agents-in-action-second-edition). The mapping is duplicated here so Refine Requirements Light packages its optional reference independently.
 
-### 1. Alex Xu — *System Design Interview — An Insider's Guide*, Volume 1
+### 1. *System Design Interview — An Insider's Guide*, Volumes 1 and 2
 
-- **Chapter 3 — A Framework for System Design Interviews:** problem framing; clarifying scope, high-level design, deep dives and trade-offs. Helpful across domains **only where the analogy is useful**.
-- **Chapter 2 — Back-of-the-envelope Estimation:** defensible capacity/sizing assumptions; only when scale/estimation actually matters.
-- **Chapter 1 — Scale From Zero To Millions Of Users:** growth, capacity and system-design scaling mechanisms; not a default for every ticket or process.
-- Edition/volume reference: [Volume 1 contents](https://www.harvard.com/book/9798664653403).
+**Volume 1 — Alex Xu (framework and fundamentals)**
+
+- **Volume 1, Chapter 3 — A Framework for System Design Interviews:** problem framing; clarifying scope, high-level design, deep dives and trade-offs. Useful across domains only where the analogy fits.
+- **Volume 1, Chapter 2 — Back-of-the-envelope Estimation:** capacity and sizing assumptions only when estimation matters.
+- **Volume 1, Chapter 1 — Scale From Zero To Millions Of Users:** growth and scaling mechanisms only when relevant.
+- Volume 1 contents: [Alex Xu's book comparison and chapter list](https://blog.bytebytego.com/p/system-design-interview-books-volume).
+
+**Volume 2 — Alex Xu and Sahn Lam (deeper case studies and trade-offs)**
+
+These are **case studies**, not replacements for the four-step SDI reasoning framework. Recommend them only when the finding actually involves the described design problem. Preserve **Volume 2** in every numbered recommendation so Chapter 4 is not confused with Volume 1.
+
+- **Volume 2, Chapter 1 — Proximity Service:** proximity search and geographic discovery design.
+- **Volume 2, Chapter 2 — Nearby Friends:** nearby-user discovery and location-update workflows.
+- **Volume 2, Chapter 3 — Google Maps:** mapping/navigation services and relevant geographic data flows.
+- **Volume 2, Chapter 4 — Distributed Message Queue:** asynchronous delivery, messaging boundaries and queue design.
+- **Volume 2, Chapter 5 — Metrics Monitoring:** metrics collection, monitoring pipelines and observability.
+- **Volume 2, Chapter 6 — Ad Click Event Aggregation:** event ingestion, aggregation and data pipelines.
+- **Volume 2, Chapter 7 — Hotel Reservation:** reservation/inventory workflows and consistency under concurrent requests.
+- **Volume 2, Chapter 8 — Distributed Email Service:** large-scale message delivery, queues and retry/failure handling.
+- **Volume 2, Chapter 9 — S3-like Object Storage:** object storage and storage/retrieval design.
+- **Volume 2, Chapter 10 — Real-time Gaming Leaderboard:** continuously updated ranking/leaderboard design.
+- **Volume 2, Chapter 11 — Payment System:** payment workflow boundaries and transaction correctness.
+- **Volume 2, Chapter 12 — Digital Wallet:** transfers, balances and ledger/data-consistency concerns.
+- **Volume 2, Chapter 13 — Stock Exchange:** trading workflow design, ordering and latency considerations.
+- Volume 2 authors/contents: [Alex Xu's ByteByteGo book comparison and full chapter list](https://blog.bytebytego.com/p/system-design-interview-books-volume) and [Google Books bibliographic entry](https://books.google.com/books/about/System_Design_Interview_An_Insider_s_Gui.html?id=1Sr7zgEACAAJ).
+
 
 ### 2. Martin Kleppmann and Chris Riccomini — *Designing Data-Intensive Applications*, 2nd edition (2026)
 
@@ -74,9 +97,9 @@ Choose from the six books also supported by [Learn Implementation](../../learn-i
 
 ## How to choose
 
-- **Requirements, scope, estimation:** Alex Xu, Volume 1, Chapter 3 (or Chapter 2 when estimating); DDIA 2e Chapter 2 for **real NFRs**.
+- **Requirements, scope, estimation:** Alex Xu, Volume 1, Chapter 3 (or Chapter 2 when estimating); DDIA 2e Chapter 2 for **real NFRs**. Volume 2 complements these with specific case studies rather than another general-purpose reasoning framework.
 - **Service/module contracts, boundaries, data ownership:** Ousterhout Chapters 4–6 or DDIA 2e Chapter 1; choose the one directly relevant to the finding.
-- **Actual queries, storage, transactions, event streams:** relevant DDIA 2e chapters; FODE for data pipelines and ingestion/serving.
+- **Actual queries, storage, transactions, event streams:** relevant DDIA 2e chapters; FODE for data pipelines and ingestion/serving. When useful, choose a matching **Alex Xu & Sahn Lam Volume 2** case study: Chapter 4 for a distributed queue, Chapter 5 for metrics, Chapter 7 for booking concurrency, Chapter 9 for object storage, or Chapters 11–12 for payments/transfers.
 - **Concrete algorithms, complex traversals, search patterns:** matching Zingaro chapter only when that data structure or algorithm is present or a plausible material alternative.
 - **AI-agent / agent-skill design:** use Lanham, 2nd ed., Chapter 1 or 2 for agent scope and tools, Chapter 3 for real MCP boundaries, Chapter 4 for multi-agent handoffs, Chapter 5 for planning, Chapter 6 for RAG/memory, Chapter 7 for evals/feedback, Chapter 8 for deployment/security, or Chapter 9 for looping/stop conditions. Pick the **one** closest to the specific finding, not all of them.
 - **Non-code business process:** do **not** force AI-agent, database, algorithm or software-module readings onto a workflow. Use Alex Xu Chapter 3 if it genuinely helps structured problem framing; otherwise **omit** a chapter for that finding.
@@ -89,8 +112,8 @@ What exists today: The inspected service owns the write operation.
 Evidence: [verified path/symbol]
 Verdict: FOLLOW
 Why: Preserves the existing ownership boundary.
-Further reading: A Philosophy of Software Design, 2nd ed. — Chapter 5, Information Hiding (and Leakage).
-Study focus: Why limiting internal implementation details at a boundary reduces coupling.
+*Further reading: A Philosophy of Software Design, 2nd ed. — Chapter 5, Information Hiding (and Leakage).
+*Study focus: Why limiting internal implementation details at a boundary reduces coupling.
 ```
 
 When learning is disabled, the last two lines are absent. All other findings, IDs, decisions, evidence labels, source links, diagrams, and one-pass boundaries remain unchanged.
