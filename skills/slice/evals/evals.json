@@ -4,11 +4,12 @@
     {
       "id": 1,
       "prompt": "Use slice for an approved requirement: 'Users can download assessment results as CSV.' The current export API and UI already exist and were verified by a supplied SDI report. The scope contains only this outcome. Draft the structure; no tracker writes.",
-      "expected_output": "One story with optional implementation subtasks. Acceptance criteria check CSV download. Do not introduce scheduling, history, an unnecessary epic or independently untestable frontend/backend stories. Include a brief slicing rationale explaining why this is one story rather than separate UI/API stories.",
+      "expected_output": "One story with optional implementation subtasks. Acceptance criteria check CSV download. Do not introduce scheduling, history, an unnecessary epic or independently untestable frontend/backend stories. Include a brief slicing rationale explaining why this is one story rather than separate UI/API stories. Give a concise INVEST story-quality result supported by the supplied evidence; do not invent sprint fit.",
       "assertions": [
         "One in-scope user outcome maps to one story.",
         "No unrequested feature or tracker write is introduced.",
-        "Story includes a source-consistent slicing rationale for its boundary."
+        "Story includes a source-consistent slicing rationale for its boundary.",
+        "One compact INVEST story-quality field complements the slicing rationale without six boilerplate grades."
       ]
     },
     {
@@ -17,7 +18,8 @@
       "expected_output": "Three non-duplicated independently verifiable stories with separate criteria, linked dependencies and an optional epic/parent only when justified. Preserve requirement IDs and approval states.",
       "assertions": [
         "Each independently scoped outcome is covered without duplicate acceptance.",
-        "No provider-specific issue hierarchy is asserted as mandatory."
+        "No provider-specific issue hierarchy is asserted as mandatory.",
+        "Each Story's vertical boundary is justified and its INVEST quality is considered independently."
       ]
     },
     {
@@ -58,10 +60,21 @@
     {
       "id": 7,
       "prompt": "Use slice on a one-line feature idea: 'Make search faster.' No defined metric, code access, source acceptance criteria, or owner is given.",
-      "expected_output": "Give a clearly provisional, minimal plan or discovery spike candidate conditional on team conventions, stating that performance goal/measurement are unresolved. Do not invent SLAs, new indexes, services or story point estimates.",
+      "expected_output": "Give a clearly provisional, minimal plan or discovery spike candidate conditional on team conventions, stating that performance goal/measurement are unresolved. Do not invent SLAs, new indexes, services or story point estimates. Mark missing acceptance metrics as an INVEST Testable/Estimable uncertainty rather than claiming a ready Story.",
       "assertions": [
         "No fabricated throughput, latency target or codebase pattern.",
-        "Provisional status and specific decision questions are explicit."
+        "Provisional status and specific decision questions are explicit.",
+        "An unresolved performance target remains an INVEST quality gap rather than a fabricated AC or estimate."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Use slice for an approved technical prerequisite: upgrade an existing shared authentication-signing library before two independently scoped features ship. The team explicitly wants the upgrade tracked separately, with its own compatibility verification and no additional user-facing capability. Recommend Story, standalone Task or Subtask, with a concise slicing rationale.",
+      "expected_output": "A separately verifiable, justified enabling Task candidate (TK-xx) rather than inventing an end-user Story or splitting by frontend/backend. Show completion evidence, the dependency relationship, and a slicing rationale. Do not force a Story-only INVEST field onto the Task.",
+      "assertions": [
+        "An independently verifiable approved technical prerequisite may be a standalone Task.",
+        "Slicing rationale explains independent tracking and completion evidence.",
+        "INVEST is a Story-quality heuristic, not mandatory grading of a standalone technical Task."
       ]
     }
   ]
