@@ -82,48 +82,52 @@ Why: Preserves the observed ownership boundary.
 - **Strict self-check before responding:** verify every material entry has a recognizable heading; its labels are consecutive lines with no internal empty lines; adjacent entries are separated by **exactly one blank line** (or Step 2's single `---`); every Markdown field is on its own rendered line; and optional learning labels appear only with `learn: on`. Fix formatting before outputting the report. Never sacrifice source citations, accuracy, scope labels, FR/NFR/D traceability or needed detail to satisfy spacing.
 - **Concise but complete:** include all material findings without merging them into a dense paragraph; omit irrelevant fields rather than inventing data. The one-pass, read-only behavior remains unchanged: present all four SDI steps in a single assessment, without approval gates or user interviews.
 
-**Illustrative presentation only (not project evidence):** The fields below are **contiguous within each item**; there is **one blank line between items**. For Markdown output, add two trailing spaces to nonfinal item lines to preserve visible field breaks.
+**Illustrative presentation only (not project evidence):** This Markdown example shows bold item headings, **no empty lines within an item**, **one blank line between items**, and two trailing spaces for rendered line breaks. The Step 2 divider is the sole special separator.
 
-```text
-Step 1 — Requirements & scope
+```markdown
+### Step 1 — Requirements & scope
 
-Functional Requirements (FRs)
+#### Functional Requirements (FRs)
 
-FR-01 — Edit layout
-Requirement: Authorized users can modify a layout.
-Status: PROPOSED
+**FR-01 — Edit layout**  
+Requirement: Authorized users can modify a layout.  
+Status: PROPOSED  
 Source: Example user story
 
-FR-02 — Save layout
-Requirement: Users can save their edits.
-Status: PROPOSED
+**FR-02 — Save layout**  
+Requirement: Users can save their edits.  
+Status: PROPOSED  
 Open question: Q-01 — Is saving atomic?
 
-Non-Functional Requirements (NFRs)
+#### Non-Functional Requirements (NFRs)
 
-NFR-01 — Access control
-Quality: Editing is limited to permitted roles.
-Linked FR: FR-01, FR-02
-Status: PROPOSED
+**NFR-01 — Access control**  
+Quality: Editing is limited to permitted roles.  
+Linked FR: FR-01, FR-02  
+Status: PROPOSED  
 Source: Example acceptance criterion
 
-Step 2 — Existing patterns
+**NFR-02 — Provenance and uncertainty**  
+Quality: Findings must distinguish verified facts from assumptions.  
+Status: PROPOSED  
+Source: Example quality constraint
 
-Area: Sector map rendering
-Where it lives: [verified path/symbol]
-What it does today: Read-only rendering
-Verdict: ADAPT
-Why: Existing renderer may be extended, subject to contract verification.
+### Step 2 — Verify patterns & recommend high-level design
+
+**Area: Sector map rendering**  
+Where it lives: [verified path/symbol]  
+What exists today: Read-only rendering  
+Verdict: ADAPT  
+Why: Extend only after contract verification.
 
 ---
 
-Area: Pan and zoom
-Where it lives: [verified path/symbol]
-What it does today: Viewport navigation
-Verdict: FOLLOW
+**Area: Pan and zoom**  
+Where it lives: [verified path/symbol]  
+What exists today: Viewport navigation  
+Verdict: FOLLOW  
 Why: Reuse verified navigation behavior.
 ```
-
 Use the example's **layout only**, never its requirements, verdicts, components, or unverified claims as real findings.
 
 ## Engineering decision traceability — proposed, never auto-approved
