@@ -18,7 +18,7 @@ This is a **delivery handoff**, not a fifth SDI step. Light's proposed design do
 
 ## How decisions are made
 
-- **One independently testable outcome:** normally one story. Add substasks only when helpful.
+- **One independently testable outcome:** normally one story. Add subtasks only when helpful.
 - **Several independently testable outcomes:** multiple stories.
 - **Broader initiative or release grouping:** consider a parent/epic if team conventions support it.
 - **Cross-component implementation:** often subtasks inside one story, not separate frontend/backend/database stories.
