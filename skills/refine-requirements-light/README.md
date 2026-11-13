@@ -26,7 +26,7 @@ Existing software, an agent skill or a business workflow may contain reusable be
 This is an **optional invocation setting**, not an extra SDI step:
 
 - **`learn: off` (default):** The assessment stays focused on evidence and engineering decisions. No learning references or empty reading placeholders appear.
-- **`learn: on`:** For each **material finding with a strong topic match**, the skill adds **`Further reading:`** (book, edition, chapter number/title) and **`Study focus:`** (the concept worth exploring) **under that finding**. References supplement the usual output and do not change source evidence, factual claims or approval status.
+- **`learn: on`:** For each **material finding with a strong topic match**, the skill adds **`*Further reading:`** (book, edition, chapter number/title) and **`*Study focus:`** (the concept worth exploring) **under that finding**. These labels carry a **literal leading asterisk** (escape it as `\*` in Markdown output), unlike factual fields such as `Evidence:` and `Verdict:`. References supplement the usual output and do not change source evidence, factual claims or approval status.
 
 **Example of a learning reference (illustrative, not verified project evidence):**
 
@@ -36,11 +36,11 @@ What exists today: [description grounded in inspected code]
 Evidence: [actual file/symbol]
 Verdict: FOLLOW
 Why: [source-backed explanation]
-Further reading: A Philosophy of Software Design, 2nd ed. — Chapter 5, Information Hiding (and Leakage).
-Study focus: How interface boundaries reduce coupling.
+*Further reading: A Philosophy of Software Design, 2nd ed. — Chapter 5, Information Hiding (and Leakage).
+*Study focus: How interface boundaries reduce coupling.
 ```
 
-Chapter suggestions come **only from these six books**: Alex Xu's *System Design Interview — An Insider's Guide*, *Designing Data-Intensive Applications* (2nd ed.), *Fundamentals of Data Engineering*, *Algorithmic Thinking* (2nd ed.), *A Philosophy of Software Design* (2nd ed.), and **Micheal Lanham's *AI Agents in Action*, Second Edition (Manning, 2026)**. The [optional chapter guide](references/learning-chapters.md) lists edition-checked chapter pointers. Only include a genuinely relevant, verified chapter; don't force every book, repeat the same reference needlessly, or turn the report into a tutorial. Actual evidence lives in **`Source:` / `Evidence:`**, not in a book citation.
+Chapter suggestions come **only from these six books**: Alex Xu's *System Design Interview — An Insider's Guide* (Volumes 1 and 2; Volume 2 with Sahn Lam), *Designing Data-Intensive Applications* (2nd ed.), *Fundamentals of Data Engineering*, *Algorithmic Thinking* (2nd ed.), *A Philosophy of Software Design* (2nd ed.), and **Micheal Lanham's *AI Agents in Action*, Second Edition (Manning, 2026)**. The [optional chapter guide](references/learning-chapters.md) lists edition-checked chapter pointers. Only include a genuinely relevant, verified chapter; don't force every book, repeat the same reference needlessly, or turn the report into a tutorial. Actual evidence lives in **`Source:` / `Evidence:`**, not in a book citation.
 
 ## Invocation examples
 
