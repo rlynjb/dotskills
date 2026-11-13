@@ -22,7 +22,7 @@ Skills are grouped by use.
 
 - **Skill:** [refine-requirements-light](skills/refine-requirements-light/SKILL.md)  
   **Purpose:** Analyze identifiable problems and proposed changes from tickets, documents, code, agent skills or workflows using one evidence-based four-step SDI assessment. Optional `learn: on` adds relevant book/chapter study references; off by default.  
-  **What you'll learn:** Problem framing, verified patterns, high-level design, interfaces/contracts, trade-offs and risks—plus optional deeper reading from five engineering books.
+  **What you'll learn:** Problem framing, verified patterns, high-level design, interfaces/contracts, trade-offs and risks—plus optional deeper reading from six engineering books.
 
 - **Skill:** [plan-ticket-delivery](skills/plan-ticket-delivery/SKILL.md)  
   **Purpose:** Turn reviewed feature requirements or a four-step SDI assessment into the minimum useful, tracker-agnostic stories, subtasks and optional parent, with traceable acceptance criteria and unresolved design questions.  
@@ -53,7 +53,7 @@ Skills are grouped by use.
   **What you'll learn:** Technical governance, working-group processes, and source-backed research.
 
 - **Skill:** [learn-implementation](skills/learn-implementation/SKILL.md)  
-  **Purpose:** Understand **how existing code works and why** through a skimmable four-step SDI overview, boxed ASCII flows, relevant engineering book chapters, and optional Guided/Practice deep dives. This is for **learning**, not determining merge readiness.  
+  **Purpose:** Understand **how existing code works and why** through a skimmable four-step SDI overview, boxed ASCII flows, chapters from six engineering books (including AI Agents in Action, 2nd ed.), and optional Guided/Practice deep dives. This is for **learning**, not determining merge readiness.  
   **What you'll learn:** Component responsibilities, code/data flows, design decisions, trade-offs, and evidence-backed improvement ideas, including performance and maintainability.
 
 ---
