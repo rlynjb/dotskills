@@ -1,6 +1,6 @@
 ---
 name: learn-implementation
-description: "Read-only, implementation-first SDI learning for an existing feature, code path, PR/diff or agent-produced change. Start with a skimmable four-step evidence-backed overview of what is already implemented, including boxed ASCII architecture, mechanism/data flow, trade-offs, grounded improvement ideas, and relevant chapters from SDI, DDIA 2e, FODE, Algorithmic Thinking 2e, and APOSD. Then offer interactive code-backed Guided or Practice deep dives. No redesign approval, code edits, or draft review comments."
+description: "Read-only, implementation-first SDI learning for an existing feature, code path, PR/diff or agent-produced change. Start with a skimmable four-step evidence-backed overview of what is already implemented, including boxed ASCII architecture, mechanism/data flow, trade-offs, grounded improvement ideas, and relevant chapters from SDI, DDIA 2e, FODE, Algorithmic Thinking 2e, APOSD, and AI Agents in Action 2e. Then offer interactive code-backed Guided or Practice deep dives. No redesign approval, code edits, or draft review comments."
 ---
 
 # Learn Implementation
@@ -13,7 +13,7 @@ Help a developer **understand what has already been implemented, how the code ac
 
 ## Required references and evidence
 
-1. Read [Context quality and requirements](references/context-quality-and-requirements.md) and [Master implementation learning](references/master-implementation-learning.md) in full. The master remains the source of truth for the eleven topics, thirteen-section technical coverage guide, five book lenses, Guided/Practice modes, and completion criteria. **This skill's default first response is the four-step overview, not the former menu-only first response.**
+1. Read [Context quality and requirements](references/context-quality-and-requirements.md) and [Master implementation learning](references/master-implementation-learning.md) in full. The master remains the source of truth for the eleven topics, thirteen-section technical coverage guide, six book lenses, Guided/Practice modes, and completion criteria. **This skill's default first response is the four-step overview, not the former menu-only first response.**
 2. Identify the **specific existing implementation**: a feature, code path/symbol, bug fix, pull request/diff, or AI-generated code. A Jira ticket is optional context, not proof of implemented behavior. Inspect actual code, entry points, callers, interfaces, models/data stores, tests, config, and ADRs within relevant scope. Record repository/revision and bounded evidence; do not tour the entire repo.
 3. Distinguish `OBSERVED` code/contract/test existence, `DOCUMENTED RATIONALE` from approved source/ADR, `INFERRED` interpretation, `HYPOTHETICAL ALTERNATIVE` for learning, and `NOT VERIFIED`. Original developer intent, test results, performance bottlenecks, production metrics and approval cannot be inferred from plausible code patterns.
 4. A verified mechanism **is not automatically a problem**. Teach sensible existing decisions, trade-offs and limits; improvement suggestions are opportunities conditional on measured need, not an instruction to rewrite.
@@ -77,7 +77,7 @@ In Guided mode cover one selected item across all four steps; in Practice mode a
 
 ## Book chapter / recommendation contract
 
-Use only the **five books already referenced in this skill**: *System Design Interview* (Alex Xu), *Designing Data-Intensive Applications, 2nd ed.*, *Fundamentals of Data Engineering*, *Algorithmic Thinking, 2nd ed.*, and *A Philosophy of Software Design*. The master contains **edition-checked chapter pointers and source TOCs**.
+Use only these **six books**: *System Design Interview* (Alex Xu), *Designing Data-Intensive Applications, 2nd ed.*, *Fundamentals of Data Engineering*, *Algorithmic Thinking, 2nd ed.*, *A Philosophy of Software Design*, and *AI Agents in Action, Second Edition* (Micheal Lanham; Manning, 2026). The sixth book applies specifically to real agent/AI-workflow mechanisms, not unrelated code. The master contains **edition-checked chapter pointers and source TOCs**.
 
 For each relevant chapter show:
 
