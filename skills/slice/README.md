@@ -1,4 +1,4 @@
-# Plan Ticket Delivery
+# SLICE
 
 **Tracker-agnostic delivery planning after requirements and design reasoning.**
 
@@ -9,12 +9,12 @@ Use this skill to turn a feature brief or a [REAZN](../reazn/SKILL.md) assessmen
 ```text
 Feature request
   → REAZN (SDI: requirements, verified design and contracts)
-  → Plan Ticket Delivery (outcome-based work decomposition)
+  → SLICE (outcome-based work decomposition)
   → Team reviews and accepts plan
   → Separate tracker publishing / implementation
 ```
 
-This is a **delivery handoff**, not a fifth SDI step. Light's proposed design does not become an approved decision by being copied into tickets.
+This is a **delivery handoff**, not a fifth SDI step. REAZN's proposed design does not become an approved decision by being copied into tickets.
 
 ## How decisions are made
 
@@ -56,7 +56,7 @@ _Readiness:_ PROVISIONAL
 ## Invocation
 
 ```text
-Run plan-ticket-delivery using my feature requirements and
+Run slice using my feature requirements and
 reazn report. Create a tracker-agnostic
 draft plan with stories, subtasks and an epic only if justified.
 Key acceptance criteria as AC-01, AC-02, etc. per ticket; trace them to source FR/NFR and design/contract decisions.

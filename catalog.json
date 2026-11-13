@@ -106,11 +106,11 @@
       "reference_count": 1
     },
     {
-      "name": "plan-ticket-delivery",
+      "name": "slice",
       "category": "engineering",
       "purpose": "Read-only, tracker-agnostic decomposition of approved feature requirements or SDI handoffs into the minimum independently verifiable stories, subtasks and optional parent, with acceptance criteria, evidence traceability, dependencies and explicit unresolved decisions.",
       "source": "dotskills",
-      "path": "skills/plan-ticket-delivery",
+      "path": "skills/slice",
       "reference_count": 0
     },
     {

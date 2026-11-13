@@ -1,13 +1,13 @@
 ---
-name: plan-ticket-delivery
+name: slice
 description: "Read-only, tracker-agnostic delivery planning. Turn a feature brief, approved requirements, or REAZN report into a proportionate, traceable plan of stories, subtasks and optional epics. Split by independently verifiable outcomes, not arbitrary component count; flag unresolved decisions, preserve scope, and never publish tickets."
 ---
 
-# Plan Ticket Delivery
+# SLICE
 
 ## Purpose and position in the workflow
 
-Translate **an existing feature or engineering assessment into proposed delivery tickets** that a team can review and implement. The deliverable is a **tracker-agnostic ticket plan**, not new product requirements, another design framework, or an implementation.
+Translate **an existing feature or engineering assessment into proposed delivery tickets**, using vertical slices of independently verifiable user or system outcomes that a team can review and implement. The deliverable is a **tracker-agnostic ticket plan**, not new product requirements, another design framework, or an implementation.
 
 Preferred sequence:
 
@@ -18,7 +18,7 @@ REAZN (four-step SDI assessment)
         |
 Reviewed design decisions, contracts, evidence and open questions
         |
-Plan Ticket Delivery (this skill)
+SLICE (this skill)
         |
 Human-reviewed story/subtask plan
         |
@@ -157,7 +157,7 @@ If the **actual approved scope also separately includes** viewing prior exports 
 ## Example invocation
 
 ```text
-Use plan-ticket-delivery on this feature and the latest
+Use slice on this feature and the latest
 reazn assessment.
 Recommend the smallest useful parent/story/subtask structure
 based on independently testable outcomes, existing code evidence,

@@ -13,7 +13,7 @@ Skills are grouped by use.
   **Core capabilities:** Input-agnostic analysis, scope resolution, evidence-backed four-step SDI design reasoning, contract/decision traceability, and optional `learn: on` chapter references.  
   **What you'll learn:** Problem framing, verified patterns, high-level design, interfaces/contracts, trade-offs and risks—plus optional deeper reading from six engineering books.
 
-- **Skill:** [plan-ticket-delivery](skills/plan-ticket-delivery/SKILL.md)  
+- **Skill:** [slice](skills/slice/SKILL.md)  
   **Purpose:** Turn reviewed feature requirements or a four-step SDI assessment into the minimum useful, tracker-agnostic stories, subtasks and optional parent, with traceable acceptance criteria and unresolved design questions.  
   **What you'll learn:** Outcome-based story slicing, delivery dependencies, requirement-to-acceptance traceability, and the distinction between design decisions and delivery planning.
 
