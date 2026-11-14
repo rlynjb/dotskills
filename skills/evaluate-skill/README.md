@@ -72,15 +72,15 @@ This tests **Audit Skill**, not REAZN's own four-step reasoning. To evaluate REA
 
 | | Synthetic input | Real-skill input |
 | --- | --- | --- |
-| **What it is** | Invented skill files or scenarios made for a test | A snapshot copy of actual skill files and references |
-| **Example** | Evaluate Skill reviews a fictional GitLab-publishing skill that contains unsafe instructions | Audit Skill inspects a pinned snapshot of REAZN's source |
+| **What it is** | Synthetic fixtures: skill files or scenarios created for an evaluation | A snapshot copy of actual skill files and references |
+| **Example** | Evaluate Skill reviews a synthetic GitLab-publishing skill that contains unsafe instructions | Audit Skill inspects a pinned snapshot of REAZN's source |
 | **Why use it** | Isolate a known edge case, failure, or trust boundary | Check behavior with realistic complexity and competing evidence |
 | **Advantage** | Easier to control inputs and define expected findings | More representative of real work |
 | **Trade-off** | May miss real-world complexity | Harder to establish and maintain the expected findings |
 
 ### What DotSkills already has
 
-- **Synthetic examples are saved:** [Evaluate Skill's six cases](evals/evals.json) include fictional `valid-sample` and `untrusted-gitlab` fixtures; the latter tests whether untrusted source instructions are treated as authority.
+- **Synthetic examples are saved:** [Evaluate Skill's six cases](evals/evals.json) include `valid-sample` and `untrusted-gitlab` synthetic fixtures; the latter tests whether untrusted source instructions are treated as authority.
 - **Real-skill inputs are supported:** [Audit Skill's cases](../audit-skill/evals/evals.json) describe realistic audits. **Audit Skill inspecting a snapshot copy of REAZN is currently a README example**, not a saved REAZN-specific, pinned fixture in those cases.
 
 These are **case definitions and inputs**, not evidence that those particular evaluations have run.
