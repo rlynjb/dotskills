@@ -64,7 +64,9 @@ def _blocked(reason: str) -> dict[str, Any]:
 
 
 def _default_prepare(values: Mapping[str, Any]) -> Mapping[str, Any]:
-    harness = {"openai": "codex", "anthropic": "claude"}[values["provider"]]
+    if values["provider"] != "openai":
+        raise EvalRunnerError("Only the OpenAI evaluation provider is supported")
+    harness = "codex"
     bundle = native_eval.prepare(
         SimpleNamespace(
             suite=values["suite"],
@@ -86,6 +88,8 @@ def _default_prepare(values: Mapping[str, Any]) -> Mapping[str, Any]:
 
 
 def _default_configure(values: Mapping[str, Any]) -> Mapping[str, Any]:
+    if values["provider"] != "openai":
+        raise EvalRunnerError("Only the OpenAI evaluation provider is supported")
     plan_value = native_eval._json_file(values["run_plan"], "run plan")
     plan = RunPlan.from_dict(plan_value)
     if plan.backend != "docker" or plan.provider != values["provider"]:
@@ -140,7 +144,7 @@ def _parser() -> argparse.ArgumentParser:
     subparsers.add_parser("inspect", help="report active backend; never runs Docker or a model")
 
     prepare = subparsers.add_parser("prepare", help="stage one provider case; no model call")
-    prepare.add_argument("--provider", choices=("openai", "anthropic"), required=True)
+    prepare.add_argument("--provider", choices=("openai",), required=True)
     prepare.add_argument("--suite", type=Path, required=True)
     prepare.add_argument("--case-id", required=True)
     prepare.add_argument("--target-skill", type=Path, required=True)
@@ -149,7 +153,7 @@ def _parser() -> argparse.ArgumentParser:
     configure = subparsers.add_parser(
         "configure", help="materialize approved provider settings; no model call"
     )
-    configure.add_argument("--provider", choices=("openai", "anthropic"), required=True)
+    configure.add_argument("--provider", choices=("openai",), required=True)
     configure.add_argument("--bundle", type=Path, required=True)
     configure.add_argument("--run-plan", type=Path, required=True)
 

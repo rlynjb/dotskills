@@ -460,20 +460,20 @@ def finalize_executed_pair(bundle, enforcement, pair):
 
 def active_harness(env=None):
     env = os.environ if env is None else env
-    claude = str(env.get('CLAUDECODE', '')).lower() not in ('', '0', 'false')
-    codex = bool(env.get('CODEX_THREAD_ID') or env.get('CODEX_SESSION_ID'))
-    if claude and codex:
-        raise Blocked('Conflicting active Claude and Codex session markers; no fallback')
-    if not (claude or codex):
-        raise Blocked('Active harness unknown: cannot choose based on installed CLIs')
-    return 'claude' if claude else 'codex'
-
+    # Refuse unsupported sessions rather than treating them as Codex.
+    if str(env.get('CLAUDECODE', '')).lower() not in ('', '0', 'false'):
+        raise Blocked('Unsupported agent session: only Codex is supported')
+    if not (env.get('CODEX_THREAD_ID') or env.get('CODEX_SESSION_ID')):
+        raise Blocked('Active Codex session unknown: cannot choose based on installed CLIs')
+    return 'codex'
 
 def choose_harness(explicit, env=None, *, for_execution=False):
+    if explicit not in (None, 'codex'):
+        raise Blocked('Only Codex harness is supported')
     try:
         discovered = active_harness(env)
     except Blocked as exc:
-        if 'Conflicting' in str(exc) or for_execution or not explicit:
+        if 'Unsupported' in str(exc) or for_execution or not explicit:
             raise
         return explicit  # Offline preparation only, not execution.
     if explicit and explicit != discovered:
@@ -834,22 +834,6 @@ def _staged_revisions(bundle, manifest):
             bundle / 'codex' / arm / 'inputs'
             for arm in ('with_skill', 'without_skill')
         ]
-    elif harness == 'claude':
-        case_root = bundle / 'plugin' / 'evals' / slug(case_id)
-        prompt_path = case_root / 'prompt.md'
-        prompt = prompt_path.read_text(encoding='utf-8')
-        parts = prompt.split('---\n', 2)
-        if len(parts) != 3 or not parts[2].strip():
-            raise Blocked('Prepared Claude eval prompt is malformed')
-        question = parts[2].strip()
-        graders = sorted((case_root / 'graders').glob('criterion-*.md'))
-        rubric_values = [path.read_text(encoding='utf-8') for path in graders]
-        if not rubric_values:
-            raise Blocked('Prepared Claude eval rubric is missing')
-        skill_roots = sorted((bundle / 'plugin' / 'skills').glob('*'))
-        if len(skill_roots) != 1:
-            raise Blocked('Prepared Claude plugin must contain exactly one skill')
-        fixture_roots = [case_root / 'fixtures']
     else:
         raise Blocked('Manifest harness invalid')
     fixture_revisions = [_tree_revision(root) for root in fixture_roots]
@@ -885,31 +869,7 @@ def prepare(args, *, env=None):
                     target_skill=str(source), suite=str(suite), native_result=None,
                     execution_backend=execution_backend,
                     note='Preparation does not verify host isolation or run a model')
-    if harness == 'claude':
-        plugin = bundle / 'plugin'
-        (plugin / '.claude-plugin').mkdir(parents=True)
-        (plugin / '.claude-plugin' / 'plugin.json').write_text(json.dumps({
-            'name': f'refine-eval-{name}', 'version': '0.0.1',
-            'description': 'Temporary synthetic evaluation target; not for publication'
-        }, indent=2), encoding='utf-8')
-        copy_skill(source, plugin / 'skills' / name)
-        case_dir = plugin / 'evals' / case_name
-        grader_dir = case_dir / 'graders'
-        grader_dir.mkdir(parents=True)
-        prompt = '---\nruns: 3\nmax_turns: 10\nallowed_tools: [Read, Glob, Grep, Skill]\n---\n' + case['prompt'].strip() + '\n'
-        (case_dir / 'prompt.md').write_text(prompt, encoding='utf-8')
-        if inputs:
-            copy_inputs(source, inputs, case_dir / 'fixtures')
-            (case_dir / 'case.yaml').write_text('schema_version: "1.1"\nname: ' + case_name + '\ncontext:\n  add_dirs: [fixtures]\n', encoding='utf-8')
-        for i, assertion in enumerate(case['assertions'], 1):
-            (grader_dir / f'criterion-{i:02}.md').write_text(
-                '---\ntype: llm\nfocus: last_message\n---\n'
-                'PASS only if the following criterion is demonstrated by the answer; '
-                'FAIL if missing, contradicted or unsupported. Cite specific evidence.\n'
-                + assertion + '\n', encoding='utf-8')
-        metadata['native_tool'] = 'claude plugin eval'
-        metadata['native_format'] = 'plugin eval: prompt.md + graders/*.md; native JSON/HTML'
-    elif harness == 'codex':
+    if harness == 'codex':
         cd = bundle / 'codex'
         (cd / 'with_skill' / '.agents' / 'skills').mkdir(parents=True)
         (cd / 'without_skill').mkdir(parents=True)
@@ -958,10 +918,6 @@ def native_command(bundle, manifest):
     model_version = manifest.get('model_version')
     if not isinstance(model_version, str) or not model_version:
         raise Blocked('Configured bundle is missing the approved model version')
-    if harness == 'claude':
-        return ['claude', 'plugin', 'eval', str(bundle / 'plugin'), '--ablation', 'with-without',
-                '--model', model_version, '--no-publish', '--json',
-                str(bundle / 'claude-results.json')]
     if harness == 'codex':
         return ['promptfoo', 'eval', '--config', str(bundle / 'codex' / 'promptfooconfig.yaml'),
                 '--no-cache', '--no-share', '--output', str(bundle / 'codex-results.json')]
@@ -996,7 +952,6 @@ def _bundle_digest(bundle):
     excluded = frozenset((
         '.execution-claim',
         'manifest.json',
-        'claude-results.json',
         'codex-results.json',
     ))
     artifacts = []
@@ -1049,8 +1004,6 @@ def _provider_config_digest(bundle, manifest):
     paths = [bundle / 'execution-config.json']
     if manifest.get('harness') == 'codex':
         paths.append(bundle / 'codex' / 'promptfooconfig.yaml')
-    elif manifest.get('harness') == 'claude':
-        paths.extend(sorted((bundle / 'plugin' / 'evals').glob('*/prompt.md')))
     else:
         raise Blocked('Manifest harness invalid')
     if len(paths) < 2:
@@ -1260,7 +1213,6 @@ def configure_prepared_bundle(bundle, plan, host_policy=None):
         raise Blocked('Prepared bundle backend does not match the approved run plan')
     expected_harness = {
         ('openai', 'promptfoo-codex-sdk'): 'codex',
-        ('anthropic', 'promptfoo-claude-agent-sdk'): 'claude',
     }.get((plan.provider, plan.adapter))
     if expected_harness != manifest.get('harness'):
         raise Blocked('Approved provider/adapter does not match prepared harness')
@@ -1353,19 +1305,6 @@ def configure_prepared_bundle(bundle, plan, host_policy=None):
         config_path.write_text(json.dumps(config, indent=2) + '\n', encoding='utf-8')
         if plan.backend == 'native':
             validate_configured_host_policy(bundle, host_policy)
-    else:
-        prompts = sorted((bundle / 'plugin' / 'evals').glob('*/prompt.md'))
-        if len(prompts) != 1:
-            raise Blocked('Prepared Claude eval prompt is missing or ambiguous')
-        prompt = prompts[0].read_text(encoding='utf-8')
-        updated, count = re.subn(
-            r'(?m)^max_turns:\s*\d+\s*$',
-            f"max_turns: {int(plan.resource_limits['max_turns'])}",
-            prompt,
-        )
-        if count != 1:
-            raise Blocked('Prepared Claude eval max_turns setting is missing or ambiguous')
-        prompts[0].write_text(updated, encoding='utf-8')
 
     manifest.update({
         'status': 'CONFIGURED_NOT_BOUND',
@@ -1387,8 +1326,6 @@ def configure_prepared_bundle(bundle, plan, host_policy=None):
 
 
 def _result_path(bundle, manifest):
-    if manifest.get('harness') == 'claude':
-        return Path(bundle) / 'claude-results.json'
     if manifest.get('harness') == 'codex':
         return Path(bundle) / 'codex-results.json'
     raise Blocked('Manifest harness invalid')
@@ -1643,12 +1580,7 @@ def execute(args, env=None):
     if not binary:
         raise Blocked(f'Native provider CLI unavailable: {cmd[0]}')
     # Never pull dependencies or run installers here.
-    if harness == 'claude':
-        env_override = dict(os.environ)
-    else:
-        env_override = dict(os.environ, PROMPTFOO_DISABLE_TELEMETRY='1',
-                            PROMPTFOO_DISABLE_UPDATE='1', PROMPTFOO_DISABLE_SHARING='1',
-                            PROMPTFOO_DISABLE_REMOTE_GENERATION='1')
+    env_override = dict(os.environ, **_PROMPTFOO_SAFE_ENV)
     # The actual isolation policy is the responsibility of the independent host.
     command = [binary, *cmd[1:]]
     manifest['status'] = 'RUNNING'
@@ -1725,7 +1657,7 @@ def main(argv=None):
     prep.add_argument('--case-id', required=True)
     prep.add_argument('--target-skill', type=Path, required=True)
     prep.add_argument('--output', type=Path, default=Path('eval-workspaces'))
-    prep.add_argument('--harness', choices=['claude', 'codex'],
+    prep.add_argument('--harness', choices=['codex'],
                       help='offline preparation only when no active harness marker exists')
     configure = sub.add_parser(
         'configure', help='materialize exact approved provider settings; never runs model'

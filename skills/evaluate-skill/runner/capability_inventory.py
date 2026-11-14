@@ -20,7 +20,7 @@ class InventoryError(ValueError):
 _STATUSES = frozenset(("verified", "unverified", "unsupported"))
 _BACKENDS = frozenset(("native", "docker"))
 _PROFILES = frozenset(("no-tool", "read-only", "disposable-write", "mock-external"))
-_TOOLS = ("promptfoo", "codex", "claude", "node")
+_TOOLS = ("promptfoo", "codex", "node")
 _VERSION_PATTERN = re.compile(r"(?<![0-9])([0-9]+\.[0-9]+\.[0-9]+)(?![0-9])")
 _DOCKER_REQUIRED_PROBES = {
     "filesystem_read": ("docker-mount-boundary", "docker-tool-broker"),
@@ -220,8 +220,8 @@ def load_inventory(path: Path) -> CapabilityInventory:
         }
 
     raw_providers = _mapping(document["providers"], "inventory.providers")
-    if not raw_providers:
-        raise InventoryError("inventory.providers must not be empty")
+    if set(raw_providers) != {"codex"}:
+        raise InventoryError("inventory.providers must contain only Codex")
     providers = {}
     claims = {}
     for provider_name, raw_provider in raw_providers.items():
@@ -240,6 +240,8 @@ def load_inventory(path: Path) -> CapabilityInventory:
             ),
             f"inventory.providers.{provider_name}",
         )
+        if raw_provider["provider_id"] != "openai" or raw_provider["adapter_id"] != "promptfoo-codex-sdk":
+            raise InventoryError("only the OpenAI Codex SDK adapter is supported")
         providers[provider_name] = ProviderDescriptor(
             provider_id=_text(
                 raw_provider["provider_id"],

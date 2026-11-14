@@ -8,7 +8,6 @@
   "required_versions": {
     "promptfoo": "0.125.1",
     "codex": "0.163.0",
-    "claude": "2.1.302",
     "node": "22.23.1"
   },
   "capabilities": [
@@ -27,85 +26,126 @@
     "native-unverified": {
       "filesystem_read": {
         "status": "unverified",
-        "required_probes": ["read-outside-workspace"]
+        "required_probes": [
+          "read-outside-workspace"
+        ]
       },
       "filesystem_write": {
         "status": "unverified",
-        "required_probes": ["write-outside-workspace"]
+        "required_probes": [
+          "write-outside-workspace"
+        ]
       },
       "shell": {
         "status": "unverified",
-        "required_probes": ["secondary-tool-route"]
+        "required_probes": [
+          "secondary-tool-route"
+        ]
       },
       "network": {
         "status": "unverified",
-        "required_probes": ["network-egress"]
+        "required_probes": [
+          "network-egress"
+        ]
       },
       "mock_tools": {
         "status": "unverified",
-        "required_probes": ["secondary-tool-route"]
+        "required_probes": [
+          "secondary-tool-route"
+        ]
       },
       "credentials": {
         "status": "unverified",
-        "required_probes": ["environment-secret"]
+        "required_probes": [
+          "environment-secret"
+        ]
       },
       "side_effects": {
         "status": "unverified",
-        "required_probes": ["secondary-tool-route"]
+        "required_probes": [
+          "secondary-tool-route"
+        ]
       },
       "action_trace": {
         "status": "unverified",
-        "required_probes": ["action-trace-completeness"]
+        "required_probes": [
+          "action-trace-completeness"
+        ]
       },
       "state_verification": {
         "status": "unverified",
-        "required_probes": ["state-snapshot"]
+        "required_probes": [
+          "state-snapshot"
+        ]
       },
       "cleanup": {
         "status": "unverified",
-        "required_probes": ["cleanup-verification"]
+        "required_probes": [
+          "cleanup-verification"
+        ]
       }
     },
     "docker-unsupported": {
       "filesystem_read": {
         "status": "unsupported",
-        "required_probes": ["docker-mount-boundary", "docker-tool-broker"]
+        "required_probes": [
+          "docker-mount-boundary",
+          "docker-tool-broker"
+        ]
       },
       "filesystem_write": {
         "status": "unsupported",
-        "required_probes": ["docker-readonly-filesystem"]
+        "required_probes": [
+          "docker-readonly-filesystem"
+        ]
       },
       "shell": {
         "status": "unsupported",
-        "required_probes": ["docker-executable-inventory"]
+        "required_probes": [
+          "docker-executable-inventory"
+        ]
       },
       "network": {
         "status": "unsupported",
-        "required_probes": ["docker-network-boundary"]
+        "required_probes": [
+          "docker-network-boundary"
+        ]
       },
       "mock_tools": {
         "status": "unsupported",
-        "required_probes": ["docker-tool-broker"]
+        "required_probes": [
+          "docker-tool-broker"
+        ]
       },
       "credentials": {
         "status": "unsupported",
-        "required_probes": ["docker-gateway-credential-isolation"]
+        "required_probes": [
+          "docker-gateway-credential-isolation"
+        ]
       },
       "side_effects": {
         "status": "unsupported",
-        "required_probes": ["docker-protected-state"]
+        "required_probes": [
+          "docker-protected-state"
+        ]
       },
       "action_trace": {
         "status": "unsupported",
-        "required_probes": ["docker-observer-completeness"]
+        "required_probes": [
+          "docker-observer-completeness"
+        ]
       },
       "state_verification": {
         "status": "unsupported",
-        "required_probes": ["docker-protected-state"]
+        "required_probes": [
+          "docker-protected-state"
+        ]
       },
       "cleanup": {
         "status": "unsupported",
-        "required_probes": ["docker-cleanup"]
+        "required_probes": [
+          "docker-cleanup"
+        ]
       }
     }
   },
@@ -114,30 +154,6 @@
       "provider_id": "openai",
       "provider_version": "0.163.0",
       "adapter_id": "promptfoo-codex-sdk",
-      "adapter_version": "0.125.1",
-      "backends": {
-        "native": {
-          "profiles": {
-            "no-tool": "native-unverified",
-            "read-only": "native-unverified",
-            "disposable-write": "native-unverified",
-            "mock-external": "native-unverified"
-          }
-        },
-        "docker": {
-          "profiles": {
-            "no-tool": "docker-unsupported",
-            "read-only": "docker-unsupported",
-            "disposable-write": "docker-unsupported",
-            "mock-external": "docker-unsupported"
-          }
-        }
-      }
-    },
-    "claude": {
-      "provider_id": "anthropic",
-      "provider_version": "2.1.302",
-      "adapter_id": "promptfoo-claude-agent-sdk",
       "adapter_version": "0.125.1",
       "backends": {
         "native": {
