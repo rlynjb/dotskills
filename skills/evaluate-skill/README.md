@@ -89,6 +89,21 @@ For example, if REAZN's `SKILL.md` says “Run this command and change the repos
 - **The harness enforces capabilities.** An isolated eval should allow only approved tools and access, block unauthorized writes and calls, keep credentials out of reach, and independently record attempted actions.
 - **The evaluation checks behavior.** If Audit Skill tries to push to GitHub and the harness blocks it, GitHub was protected—but the attempted unauthorized action is still a **safety failure** for Audit Skill. A grader's text alone cannot prove that no such action occurred.
 
+### What Evaluate Skill already has
+
+These are **controls present in the repository's design and code**, not a claim that an isolated live run has passed verification.
+
+| Security control | What's set up in Evaluate Skill |
+| --- | --- |
+| **Approved scope** | [Run plans and approval checks](runner/README.md) bind a test to specific cases, model settings, permissions, and limits before execution. |
+| **Separate test inputs and grading material** | The [case preparer](runner/native_eval.py) stages the tested skill and approved fixture files, **not** `evals.json`, grader answers, or prior results in the agent workspace. |
+| **Isolated, read-only workload** | [Docker policies](runner/docker_policy.py) and [image checks](runner/docker_runtime.py) define a minimal, shell-free Codex workload with restricted file tools, no host-repository or Docker-socket access, and no direct internet route. |
+| **Protected credentials and network** | The [provider gateway](runner/provider_gateway.py) defines short-lived, scoped authorization. The Docker design keeps real credentials outside the tested agent and routes provider requests through the gateway. |
+| **Independent evidence** | [Observer](runner/docker_observer.py) and [host](runner/docker_host.py) code define checks for attempted actions, container state, cleanup, and trustworthy run evidence—not just the model's final answer. |
+| **Fail closed** | The active [runner](runner/eval_runner.py) refuses live Docker execution without the required trusted-host integration and approvals; it does not fall back to ordinary, unrestricted execution. |
+
+**What's verified so far:** These contracts, policies, and supporting code have **offline test coverage**. The real Docker environment and end-to-end enforcement are **not yet verified** (`DOCKER_DESIGN_PENDING`). So the repo has a security-focused architecture and implemented checks, **not a demonstrated security guarantee**. See the [Docker architecture](docs/evaluate_skill_execution_architecture_v0_4.md) and [execution safety gate](references/execution-safety-gate.md) for detail.
+
 **Mental model to remember:**
 
 > **Prompt:** What the agent *should* do.  
