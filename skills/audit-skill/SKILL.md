@@ -125,6 +125,8 @@ Use the same structure for every accessible target, keeping target-specific chec
 
 ### Follow-up on a selected finding, question or diagram
 
+**Worked examples on request:** When the user asks what Q-01–Q-10 mean, consult the optional [coverage checklist examples](references/coverage-checklist-examples.md) if available. The REAZN examples teach the criteria; they are **not** evidence of a new audit or a basis for checkbox statuses. Do not append the example guide to the normal at-a-glance checklist or automatically change the six-field finding format.
+
 After the complete audit, the user may ask to discuss `Q-05`, an `F-xx` finding, a workflow stage or a specific contract. Respond with a source-backed deep dive and explain why the concern matters. If the user adds missing context, label it **USER-PROVIDED — NOT VERIFIED** until checked; on a subsequent authorized read-only review, update the finding and checkbox only when new evidence warrants it. **No forced pauses, per-question approval gates, repository edits or behavioral runs.**
 
 ## Hard boundaries and handoff

@@ -10,6 +10,7 @@ The first result is a complete, **one-pass** At a Glance checklist plus **Q-01�
 - [One-pass checklist and findings](#one-pass-checklist-and-findings)
 - [What the first report contains](#what-the-first-report-contains)
 - [Quality and standards checks](#quality-and-standards-checks)
+- [Q-01–Q-10 examples](#q-01q-10-examples)
 - [Cross-platform compatibility](#cross-platform-compatibility)
 - [How to invoke](#how-to-invoke)
 - [Evidence and safety rules](#evidence-and-safety-rules)
@@ -124,6 +125,10 @@ The [Agent Skills specification](https://agentskills.io/specification) is the st
 For each criterion, answer its canonical question using actual source evidence. Follow the same compact **Question → Check → Finding → Evidence → Status → Recommendation** layout, without inventing missing content. The detailed questions are defined in [SKILL.md](SKILL.md). A written instruction does not prove runtime enforcement; an eval definition does not prove execution.
 
 The separate **standards compliance matrix** distinguishes required specification elements, recommendations and experimental/host-specific behavior. It should not imply full standards conformance if the published specification was not consulted or a validator was not run.
+
+## Q-01–Q-10 examples
+
+For a plain-English explanation and **one REAZN example for every checklist criterion**, see [Q-01–Q-10 explained with examples](references/coverage-checklist-examples.md). It illustrates what evidence supports a checked or partial item; it does **not** change the default compact checklist, the six-field individual findings, or evidence-based checkbox decisions.
 
 ## Cross-platform compatibility
 
