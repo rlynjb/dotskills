@@ -89,6 +89,12 @@ For example, if REAZN's `SKILL.md` says “Run this command and change the repos
 - **The harness enforces capabilities.** An isolated eval should allow only approved tools and access, block unauthorized writes and calls, keep credentials out of reach, and independently record attempted actions.
 - **The evaluation checks behavior.** If Audit Skill tries to push to GitHub and the harness blocks it, GitHub was protected—but the attempted unauthorized action is still a **safety failure** for Audit Skill. A grader's text alone cannot prove that no such action occurred.
 
+**Remember — the mental model:**
+
+> **Prompt:** What the agent *should* do.  
+> **Runtime / harness:** What the agent *can* do.  
+> **Evaluation:** Whether the agent *actually behaved correctly*.
+
 ### What Evaluate Skill already has
 
 **Evaluate Skill already has an evaluation harness architecture.** It consists of the **Evaluate Skill workflow** (`SKILL.md`), the **evaluation runner** (`runner/eval_runner.py`), **Promptfoo + OpenAI Codex SDK** for test execution and LLM grading, a **Docker-only isolation design** for controlled access, and **host-side observability/evidence components** for recording what the agent attempted and what happened.
@@ -106,13 +112,24 @@ These are **controls present in the repository's design and code**, not a claim 
 
 **What's verified so far:** These contracts, policies, and supporting code have **offline test coverage**. The real Docker environment and end-to-end enforcement are **not yet verified** (`DOCKER_DESIGN_PENDING`). So the repo has a security-focused architecture and implemented checks, **not a demonstrated security guarantee**. See the [Docker architecture](docs/evaluate_skill_execution_architecture_v0_4.md) and [execution safety gate](references/execution-safety-gate.md) for detail.
 
-**Mental model to remember:**
-
-> **Prompt:** What the agent *should* do.  
-> **Runtime / harness:** What the agent *can* do.  
-> **Evaluation:** Whether the agent *actually behaved correctly*.
-
 The same principle applies to production agents: their **production runtime** must enforce permissions too, not just their evaluation harness. For the detailed controls, see the [execution safety gate](references/execution-safety-gate.md).
+
+### Other evaluation tools worth exploring
+
+These are examples of established **open-source frameworks and cloud platforms**—not a ranking of company adoption. Their roles differ: some execute evaluations, while others mainly help track results and traces.
+
+| Tool | Type | Useful for |
+| --- | --- | --- |
+| [**Inspect AI**](https://inspect.aisi.org.uk/) | Open-source harness | Agent/tool-use tests, graders, and sandbox-oriented workflows |
+| [**DeepEval**](https://deepeval.com/) | Open-source testing framework | Pytest-style LLM and agent evaluation in CI |
+| [**Braintrust**](https://www.braintrust.dev/) | Cloud evaluation platform | Datasets, experiments, scoring, and trace review |
+| [**LangSmith**](https://www.langchain.com/langsmith) | Cloud evaluation platform | Agent traces, human feedback, and comparisons |
+| [**Langfuse**](https://langfuse.com/) | Open-source / cloud platform | Self-hosted or managed traces, datasets, and evaluation results |
+| [**MLflow**](https://mlflow.org/) | Open-source platform | Experiment tracking, evaluation, and monitoring |
+
+**Why keep Promptfoo for DotSkills?** It is already part of the Codex SDK evaluation route, supports `llm-rubric` grading and *with-skill / without-skill* cases, and can work with multiple model providers. Switching now would mean replacing integration work without a clear evaluation benefit. Explore other tools for specific gaps—especially dashboards or different harness designs—rather than replacing Promptfoo by default.
+
+**Important:** A cloud eval platform or grader is **not automatically a secure execution sandbox**. The evaluated agent still needs independently enforced permissions and isolation.
 
 ## 6. How to run your first evaluation
 
