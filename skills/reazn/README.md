@@ -92,9 +92,11 @@ One evidence-backed report with a consistent structure:
 1. **Input Snapshot** — four groups: **Assessment objective**, **Purpose & core capabilities**, **Investigation scope**, and **Evidence & recommendation**. Includes resolved intent, examined baseline, and evidence limits.
 2. **Step 1 — Requirements & scope** — source-supported functional requirements (FRs), non-functional requirements (NFRs), and questions **when applicable**.
 3. **Step 2 — Verify patterns & recommend high-level design** — existing responsibilities, evidence, reuse fit, conditional recommendations, and current/proposed flow diagrams **when relevant**.
-4. **Step 3 — Deep dive & data flow** — material mechanisms, interfaces, contracts, guarantees, handoffs, and unresolved behavior.
+4. **Step 3 — Deep dive & data flow** — four relevant areas: mechanisms & boundaries; data-flow traces; contract considerations; and **Output Assessment** (what the subject produces, expected vs. observed behavior, evidence and verification status). Only contracts and output assessments use fixed multi-field blocks; inapplicable areas are not invented.
 5. **Step 4 — Trade-offs, risks & readiness** — material alternatives, risks, mitigation, verification needs, and proposed decision records.
 6. **Open decisions / questions** — remaining owner-specific gaps, or a statement that none were identified.
+
+**Output Assessment fields:** `Output` → `Expected behavior` → `Observed behavior` → `Evidence` → `Verification status`. These describe the **assessed repository, skill or workflow's output**, not REAZN's report. An instruction or source-code path does not by itself prove an actual runtime result; missing tests or traces are explicitly `NOT VERIFIED`.
 
 **FRs/NFRs are not automatically work to implement.** They represent sourced expectations. REAZN distinguishes documented requirements, inspected implementation, proposed changes, and unverified gaps. In an understanding-only assessment, no new FR/NFR or design change needs to be invented.
 
