@@ -87,6 +87,22 @@
         "Absent benchmarks are NOT VERIFIED, not a confirmed performance regression.",
         "An audit suggestion is not equated with stakeholder approval or a current implementation defect."
       ]
+    },
+    {
+      "id": 8,
+      "prompt": "Use reazn on the frozen synthetic access-review SKILL.md and Audit Skill handoff. intent: understand-existing; scope: subsystem; target: synthetic-access-review; learn: off. Goal: identify and assess the documented output of this skill, but do not invoke it. The fixture contains no generated report, test execution, or runtime trace.",
+      "files": [
+        "evals/files/semantic-case/SKILL.md",
+        "evals/files/semantic-case/audit.md"
+      ],
+      "expected_output": "Step 3 contains an Output Assessment block with the exact five fields Output, Expected behavior, Observed behavior, Evidence and Verification status in that order. The expected output is a read-only access review report with Status and Source fields, DOCUMENTED by SKILL.md. Actual generated output is NOT VERIFIED; do not claim execution, approval, or a missing implementation defect.",
+      "assertions": [
+        "Step 3 has one Output Assessment block with Output → Expected behavior → Observed behavior → Evidence → Verification status, without omitted or reordered fields.",
+        "The documented read-only report and Status/Source fields are an expected output contract, not observed execution.",
+        "Observed behavior explicitly says NOT VERIFIED because no generated artifact or runtime trace exists in the frozen fixture.",
+        "Evidence references the frozen SKILL.md; Audit Skill secondary recommendations are not promoted to requirements or defects.",
+        "No new implementation task, test execution, or actual report output is invented."
+      ]
     }
   ]
 }
