@@ -107,7 +107,7 @@ explicitly tell the learner:
   *completed*, and *blocked*. Never say an agent or grader was triggered
   because a stage describes it; require observed execution evidence.
 
-Use the [harness capabilities overview](README.md#harness-capabilities-at-a-glance)
+Use the [harness capabilities overview](README.md#evaluate-skills-evaluation-harness-architecture-at-a-glance)
 for the implementation map. **Stages 0–1, 5–8, and 11**
 are guided by the invoking agent; **Stage 2** locally prepares selected
 provider artifacts without model execution; **Stages 3 and 9** are the
