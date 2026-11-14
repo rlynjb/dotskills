@@ -39,7 +39,7 @@ Example: **Audit Skill evaluates REAZN's source**. We are testing *Audit Skill's
 | Part | What it does | In DotSkills |
 | --- | --- | --- |
 | **1. Skill under evaluation** | The behavior we want to test. | [Audit Skill](../audit-skill/SKILL.md) |
-| **2. Test input** | A fixed task, source files, and pre-agreed expectations. | A case from [Audit Skill's `evals/evals.json`](../audit-skill/evals/evals.json), using a frozen copy of [REAZN](../reazn/SKILL.md) as input. Keep grading answers separate from the tested agent. |
+| **2. Test input** | A fixed task, source files, and pre-agreed expectations. | A case from [Audit Skill's `evals/evals.json`](../audit-skill/evals/evals.json), using a snapshot copy of [REAZN](../reazn/SKILL.md) as input. Keep grading answers separate from the tested agent. |
 | **3. Evaluation harness** | Supplies inputs, executes the test in a controlled environment, and records outputs and tool attempts. | [Evaluate Skill](SKILL.md), [`eval_runner.py`](runner/eval_runner.py), Promptfoo + Codex SDK, and the [Docker-only execution controls](runner/README.md). |
 | **4. Grader** | Checks observed behavior against the approved criteria. | Promptfoo `llm-rubric` with `openai:codex-sdk` as **LLM-as-a-judge**; human review checks evidence and safety-relevant traces. |
 
@@ -50,7 +50,7 @@ Example: **Audit Skill evaluates REAZN's source**. We are testing *Audit Skill's
 Suppose the question is: **Can Audit Skill accurately review REAZN without claiming it verified behavior that it only read about?**
 
 ```text
-Frozen REAZN source files (input)
+Snapshot copy of REAZN source files (input)
             ↓
       Audit Skill runs
             ↓
@@ -72,7 +72,7 @@ This tests **Audit Skill**, not REAZN's own four-step reasoning. To evaluate REA
 
 | | Synthetic input | Real-skill input |
 | --- | --- | --- |
-| **What it is** | Invented skill files or scenarios made for a test | A frozen copy of actual skill files and references |
+| **What it is** | Invented skill files or scenarios made for a test | A snapshot copy of actual skill files and references |
 | **Example** | Evaluate Skill reviews a fictional GitLab-publishing skill that contains unsafe instructions | Audit Skill inspects a pinned snapshot of REAZN's source |
 | **Why use it** | Isolate a known edge case, failure, or trust boundary | Check behavior with realistic complexity and competing evidence |
 | **Advantage** | Easier to control inputs and define expected findings | More representative of real work |
@@ -81,7 +81,7 @@ This tests **Audit Skill**, not REAZN's own four-step reasoning. To evaluate REA
 ### What DotSkills already has
 
 - **Synthetic examples are saved:** [Evaluate Skill's six cases](evals/evals.json) include fictional `valid-sample` and `untrusted-gitlab` fixtures; the latter tests whether untrusted source instructions are treated as authority.
-- **Real-skill inputs are supported:** [Audit Skill's cases](../audit-skill/evals/evals.json) describe realistic audits. **Audit Skill inspecting a frozen REAZN snapshot is currently a README example**, not a saved REAZN-specific, pinned fixture in those cases.
+- **Real-skill inputs are supported:** [Audit Skill's cases](../audit-skill/evals/evals.json) describe realistic audits. **Audit Skill inspecting a snapshot copy of REAZN is currently a README example**, not a saved REAZN-specific, pinned fixture in those cases.
 
 These are **case definitions and inputs**, not evidence that those particular evaluations have run.
 
@@ -89,7 +89,7 @@ These are **case definitions and inputs**, not evidence that those particular ev
 
 After you agree on a behavior in **Stage 1**, Evaluate Skill **proposes two or three test cases** in **Stage 2**: user prompts, expected outcomes, grading assertions, and optional synthetic fixtures. You can review, change, replace, or reject them **before they are saved**. Stage 2 supports either input type, but it does **not** automatically choose or require a synthetic-versus-real mix.
 
-**Practical approach:** Start with a synthetic case to isolate a specific behavior or security boundary; add a frozen real-skill case to see whether it holds under realistic conditions. Both use the **same approval, execution, and grading workflow**.
+**Practical approach:** Start with a synthetic case to isolate a specific behavior or security boundary; add a real-skill case using a snapshot copy to see whether it holds under realistic conditions. Both use the **same approval, execution, and grading workflow**.
 
 **Do not confuse input type with the Stage 3 comparison:** *Synthetic vs. real-skill* describes the **test input**; *with-skill vs. without-skill* describes the **two runs being compared**. Neither input type grants permissions: the harness must enforce the same approved security boundaries.
 
