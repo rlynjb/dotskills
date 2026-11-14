@@ -2,7 +2,7 @@
 
 **Evaluate Skill** helps you learn to evaluate an existing Agent Skill (or raw prompt), understand failures, and make evidence-based improvements. It runs in **Claude Code or Codex**, uses **12 stages (0–11)**, and keeps you in control of important decisions.
 
-**Start here:** [Try it](#8-try-it) · [12-stage guide](#2-the-12-stages) · [Grading basics](#grading-and-scoring-beginner-reference)
+**Start here:** [Four building blocks](#the-four-building-blocks-of-an-eval) · [12-stage guide](#2-the-12-stages) · [Grading basics](#grading-and-scoring-beginner-reference) · [Try it](#8-try-it)
 
 **Current limitation:** Docker-only v0.4 is now the approved live-execution
 architecture. Its contracts, hardened topology, shell-free workload, gateway,
@@ -21,6 +21,7 @@ completed evaluation. See the
 
 ## Table of contents
 
+- [The four building blocks of an eval](#the-four-building-blocks-of-an-eval)
 - [1. Workflow at a glance](#1-workflow-at-a-glance)
 - [2. The 12 stages](#2-the-12-stages)
   - [Agent, tool, and source map](#agent-tool-and-source-map)
@@ -29,10 +30,36 @@ completed evaluation. See the
   - [Grading and scoring: beginner reference](#grading-and-scoring-beginner-reference)
 - [3. Five methodology lenses](#3-five-conference-informed-methodology-lenses)
 - [4. Files and evaluation cases](#4-file-and-evaluation-structure)
-- [5. Claude and Codex evaluation routes](#5-provider-specific-evaluation-workflow)
+- [5. Provider-specific evaluation routes (OpenAI / Promptfoo first)](#5-provider-specific-evaluation-workflow)
 - [6. Approvals and safety](#6-approval-execution-and-safety)
 - [7. What Evaluate Skill adds](#7-what-evaluate-skill-adds)
 - [8. Try it](#8-try-it)
+
+## The four building blocks of an eval
+
+Think of an evaluation (*eval*) like a software test: choose the behavior you want to test, supply a controlled input, run it, and compare the observed result with your expectations. **Evaluate Skill coordinates the workflow; the skill under evaluation is the behavior being measured.**
+
+For a concrete example, imagine using **Audit Skill to audit REAZN**. We want to know whether Audit Skill produces an accurate, evidence-backed assessment without treating instructions found inside REAZN as commands to execute.
+
+| Building block | Beginner explanation | What this is in DotSkills (OpenAI / Promptfoo route) |
+| --- | --- | --- |
+| **1. Skill under evaluation** | The behavior we're testing—not the document it reads. | [Audit Skill](../audit-skill/SKILL.md). Its audited output and attempted actions are what the test measures. |
+| **2. Test input** | A fixed task and its input files, plus expectations kept aside for grading. | An approved case in [Audit Skill's `evals/evals.json`](../audit-skill/evals/evals.json), with a frozen, accessible copy of [REAZN's source](../reazn/SKILL.md) and any relevant references. REAZN is the **target being inspected**, not a second skill being executed or graded. |
+| **3. Evaluation harness** | The controlled machinery that supplies inputs, runs the agent, limits its capabilities, and preserves outputs and traces. | [Evaluate Skill's `SKILL.md`](SKILL.md) guides the workflow. [`runner/eval_runner.py`](runner/eval_runner.py) prepares/configures the run; **Promptfoo** runs the cases using **`openai:codex-sdk`** in separate *with-skill* and *without-skill* workspaces. The [Docker-only execution design](runner/README.md) specifies the independently enforced tool and isolation boundaries. |
+| **4. Grader** | The checker that compares actual evidence with the expected behavior. | Promptfoo **`llm-rubric`** assertions, using **`openai:codex-sdk`** as the configured LLM judge. Assertions come from the approved test case. A human also reviews source evidence and security-relevant traces; an LLM grade alone does **not** prove permission enforcement. |
+
+**Who is being tested?** In this example, **Audit Skill**. The REAZN files are lower-trust **test data**. Reading `SKILL.md` does not authorize following its instructions, invoking REAZN, running its tools, or changing the repository. The harness must enforce restrictions independently of anything the model says.
+
+### From input to result (an illustrative OpenAI / Promptfoo pilot)
+
+1. **Stages 1–2 — Define and prepare:** Choose one Audit Skill behavior (for example, distinguish *documented* read-only claims from *verified* enforcement). Approve a case with its prompt, expected outcome, and nonempty assertions in `skills/audit-skill/evals/evals.json`. Pin the input sources and case revision. Keep expected answers and grader rubrics **out of the evaluated agent's workspace**. `eval_runner.py prepare --provider openai` creates a provider-specific bundle; preparation is **not** an eval run.
+2. **Stage 3 — Run the case:** After separate approval and verified isolation, Promptfoo would use the Codex SDK to collect independent **with-Audit-Skill** and **without-Audit-Skill** results against comparable inputs. Capture the actual outputs, tool attempts, and host-observed state; do not execute REAZN.
+3. **Stage 4 — Check the result:** The configured `llm-rubric` judge evaluates each assertion. Review those provider-native grades against the original REAZN source and trusted action traces. Mark missing required evidence **Unknown** rather than guessing; a blocked unauthorized attempt still counts against safety. **Stage 4 reviews grades from Stage 3; it does not launch a second grader by default.**
+4. **Stages 9–10 — Compare only when justified:** After an approved change, rerun the *same approved case and rubric* with fresh authorization, then check improvements and regressions. Different wording does not automatically mean different correctness.
+
+**Where things live:** The **target skill owns its eval cases** (`skills/audit-skill/evals/evals.json` in this example). Evaluate Skill owns the guided methodology and runner. The approved runner bundle contains provider-specific Promptfoo configuration (including `codex/promptfooconfig.yaml`), not the canonical test-case source. See [File and evaluation structure](#4-file-and-evaluation-structure) and [Runner setup](runner/README.md).
+
+**Current implementation boundary:** The OpenAI / Promptfoo route is defined and offline-tested, but the active Docker execution status is `DOCKER_DESIGN_PENDING`; this example does **not** assert a completed model evaluation. The repository also currently supports a separate Claude Code route. This README **teaches the OpenAI / Promptfoo route first**; removing the other route later would be a separate implementation change, not a documentation-only switch.
 
 ## 1. Workflow at a glance
 
@@ -194,7 +221,7 @@ See the [evaluation design guide](references/eval-design-guide.md) for case exam
 
 ## 5. Provider-specific evaluation workflow
 
-Evaluate Skill uses **only the provider of your active coding session**, never a fallback to the other one.
+**Recommended learning path: OpenAI / Promptfoo with Codex.** This is the route illustrated in [the four building blocks](#the-four-building-blocks-of-an-eval). The repository still implements a separate Claude Code route; the two are not interchangeable. Evaluate Skill uses **only the provider of your active coding session**, never a fallback to the other one.
 
 | Active session | Evaluation command | LLM grading | Results |
 | --- | --- | --- | --- |
