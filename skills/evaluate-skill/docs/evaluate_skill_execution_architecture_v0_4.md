@@ -5,7 +5,7 @@
 **Decision date:** 2026-11-02
 
 **Decision:** A verified hardened Docker boundary is mandatory for every live
-evaluated-agent run. Provider-native macOS, Codex, and Claude sandboxes are not
+evaluated-agent run. Provider-native sandboxes are not
 execution backends and are never an automatic fallback.
 
 This decision supersedes the active execution choice in
@@ -26,7 +26,7 @@ builds the trusted control, gateway, observation, and evidence layers around a
 Docker isolation engine.
 
 Docker is chosen as the single live backend because it provides a consistent,
-inspectable boundary for both Codex and Claude routes and lets the project
+inspectable boundary for the OpenAI Codex route and lets the project
 control the complete executable inventory. The earlier native Codex host
 proved useful controls for filesystem, write, network, and credential
 isolation, but it could not prove that only approved executable routes could
@@ -39,7 +39,7 @@ macOS host (`Darwin 25.4.0`, `arm64`), a locally installed and explicitly
 approved Docker Desktop client/daemon pair, Codex, and the `read-only` profile.
 The exact Docker Desktop version and image platform become immutable inputs
 when Docker is installed and inspected. Native Linux Docker Engine, Intel
-macOS, Claude, and other profiles are separate future capability promotions;
+macOS and additional Codex profiles are separate future capability promotions;
 they do not inherit support from this target.
 
 ## 2. Goals, non-goals, and anti-goals
@@ -51,7 +51,7 @@ they do not inherit support from this target.
   results, and the Docker control socket outside the workload.
 - Give the workload only the exact fixture, skill snapshot, tools, network
   destinations, resource budget, and duration approved in the run plan.
-- Reuse the existing Promptfoo/Codex and Claude evaluation semantics where
+- Reuse the existing Promptfoo/Codex evaluation semantics where
   they can operate through the verified boundary.
 - Independently observe container configuration, process/session identity,
   gateway decisions, state effects, resource use, and cleanup.
@@ -65,7 +65,7 @@ they do not inherit support from this target.
 - No production repository, production credential, or live external write.
 - No automatic Docker installation, image download, provider call, or paid
   model run during implementation or ordinary tests.
-- No cross-provider score or silent substitution between Codex and Claude.
+- No alternate-provider fallback or invented cross-provider scoring.
 - No claim that a container alone proves safety.
 - No support for privileged containers, host networking, arbitrary bind
   mounts, Docker-in-Docker, or runtime dependency installation.
@@ -187,7 +187,7 @@ safety failure.
 
 ## 5. Provider authentication and network
 
-The workload must never receive a usable OpenAI, Anthropic, ChatGPT, cloud, or
+The workload must never receive a usable OpenAI, ChatGPT, cloud, or
 user credential. Real provider credentials remain in a trusted gateway outside
 the workload container.
 
@@ -231,11 +231,11 @@ initial shell-free profile the only expected processes are the fixed
 entrypoint, pinned provider runtime, and host-owned file-tool broker from the
 reviewed executable inventory.
 
-Codex and Claude use provider-specific images and retain their native case and
-result formats. Support is promoted one provider/profile at a time only after
-the exact image, gateway compatibility, result parser, and negative probes
-pass. The initial implementation target is Codex `read-only`; Claude and the
-other profiles remain `unsupported`, not silently approximated.
+The OpenAI Codex route uses a reviewed image and retains its Promptfoo case
+and result formats. Additional Codex profiles can be promoted only after
+image, gateway, result parser, and negative probes pass. The initial target
+is Codex `read-only`; other profiles remain `unsupported`, not silently
+approximated.
 
 The quality judge is not a safety authority. It may run through a separate
 trusted grader route with no evaluated tools and only the approved answer and
@@ -349,7 +349,7 @@ Implementation proceeds in these acceptance boundaries:
 6. Real no-model container probes after explicit install/build approval.
 7. Codex adapter compatibility and offline result parsing.
 8. Separately approved synthetic live paired proof.
-9. Claude and additional profiles only through the same gates.
+9. Additional Codex profiles only through the same gates.
 
 The detailed work is defined in
 [Docker-Only Implementation Plan v0.4](./evaluate_skill_docker_implementation_plan_v0_4.md).

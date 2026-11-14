@@ -11,12 +11,12 @@ a minimal, digest-pinned, non-root workload container on a private per-run
 network. A separate trusted gateway owns real provider credentials and enforces
 the approved provider, model, session, expiry, and budgets; a host supervisor
 owns Docker, observation, state verification, cleanup, and authenticated
-receipts. Native Codex and Claude sandboxes are historical research only and
+receipts. Native provider sandboxes are historical research only and
 never a live fallback.
 
 **Tech Stack:** Python 3.9 standard library, `unittest`, Docker Engine/Desktop,
 OCI/Dockerfiles, Linux namespaces/cgroups/capabilities/seccomp, Promptfoo
-Codex SDK adapter, Claude plugin-eval adapter.
+Codex SDK adapter.
 
 **Spec:** `skills/evaluate-skill/docs/evaluate_skill_execution_architecture_v0_4.md`
 
@@ -27,7 +27,7 @@ Codex SDK adapter, Claude plugin-eval adapter.
 - Preserve historical v0.2/v0.3 artifacts and tests, but no active command may
   dispatch through the native host.
 - Implement Codex `read-only` first on the pinned `Darwin 25.4.0` arm64 host
-  with an approved Docker Desktop client/daemon pair. Claude, native Linux,
+  with an approved Docker Desktop client/daemon pair. Other providers, native Linux,
   Intel macOS, `no-tool`, `disposable-write`, `mock-external`, connector, and
   MCP routes remain unsupported until they pass the same gates.
 - No Docker install, image pull/build, container launch, provider call, or paid
@@ -672,7 +672,7 @@ python3 -m unittest discover -s skills/evaluate-skill/runner -p 'test_*.py' -v
 python3 scripts/validate_skill_repository_integrity.py
 python3 scripts/validate_evals.py --all
 env TMPDIR=/private/tmp python3 -m unittest \
-  scripts.test_validate_evals adapters.claude.test_adapter adapters.openai.test_adapter
+  scripts.test_validate_evals adapters.openai.test_adapter
 git diff --check
 ```
 

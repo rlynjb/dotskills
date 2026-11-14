@@ -31,7 +31,7 @@ flowchart TB
   R --> M
   W1 -->|"Run-scoped inference only"| G
   W2 -->|"Run-scoped inference only"| G
-  G --> X -->|"Approved provider endpoint"| EXT["OpenAI or Anthropic"]
+  G --> X -->|"Approved provider endpoint"| EXT["OpenAI"]
   TH --> O
   G --> O
   W1 --> Q
