@@ -98,13 +98,23 @@ class EvalRunnerTests(unittest.TestCase):
             self.assertEqual(value["provider"], "openai")
             status, value = self.invoke(
                 [
-                    "configure", "--provider", "anthropic", "--bundle", str(bundle),
+                    "configure", "--provider", "openai", "--bundle", str(bundle),
                     "--run-plan", str(plan),
                 ],
                 deps,
             )
             self.assertEqual(status, 0)
-            self.assertEqual(value["provider"], "anthropic")
+            self.assertEqual(value["provider"], "openai")
+        self.assertEqual([item[0] for item in calls], ["prepare", "configure"])
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            status, value = self.invoke(
+                ["prepare", "--provider", "anthropic", "--suite", str(root),
+                 "--case-id", "case-1", "--target-skill", str(root),
+                 "--output", str(root / "out")], deps
+            )
+            self.assertEqual(status, 2)
+            self.assertEqual(value["status"], "BLOCKED_NOT_RUN")
         self.assertEqual([item[0] for item in calls], ["prepare", "configure"])
 
     def security_args(self, root, action="docker-preflight"):

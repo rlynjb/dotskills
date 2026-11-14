@@ -21,11 +21,10 @@ class CapabilityInventoryTests(unittest.TestCase):
             {
                 "promptfoo": "0.125.1",
                 "codex": "0.163.0",
-                "claude": "2.1.302",
                 "node": "22.23.1",
             },
         )
-        self.assertEqual(set(inventory.providers), {"codex", "claude"})
+        self.assertEqual(set(inventory.providers), {"codex"})
         for provider in inventory.providers:
             for backend in ("native", "docker"):
                 for profile in (
@@ -88,7 +87,6 @@ class CapabilityInventoryTests(unittest.TestCase):
         observed = {
             "promptfoo": "0.125.1",
             "codex": None,
-            "claude": "2.1.302",
             "node": "22.23.1",
         }
 
@@ -101,7 +99,6 @@ class CapabilityInventoryTests(unittest.TestCase):
         completed = {
             "promptfoo": SimpleNamespace(returncode=0, stdout="promptfoo 0.125.2\n", stderr=""),
             "codex": SimpleNamespace(returncode=0, stdout="codex-cli 0.164.0\n", stderr=""),
-            "claude": SimpleNamespace(returncode=0, stdout="2.1.302 (Claude Code)\n", stderr=""),
             "node": SimpleNamespace(returncode=0, stdout="v22.23.1\n", stderr=""),
         }
 
@@ -125,6 +122,15 @@ class CapabilityInventoryTests(unittest.TestCase):
                 "promptfoo: observed 0.125.2, required 0.125.1",
             ],
         )
+
+    def test_unsupported_provider_entry_is_rejected(self):
+        inventory = json.loads(self.inventory_path().read_text(encoding="utf-8"))
+        inventory["providers"]["unsupported"] = dict(inventory["providers"]["codex"])
+        with TemporaryDirectory() as temp:
+            path = Path(temp) / "inventory.json"
+            path.write_text(json.dumps(inventory), encoding="utf-8")
+            with self.assertRaises(ci.InventoryError):
+                ci.load_inventory(path)
 
     def test_unknown_capability_name_is_rejected(self):
         source = json.loads(self.inventory_path().read_text(encoding="utf-8"))

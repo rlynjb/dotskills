@@ -20,7 +20,6 @@ class NativeRouteTests(unittest.TestCase):
             return_value={
                 'promptfoo': '0.125.1',
                 'codex': '0.163.0',
-                'claude': '2.1.302',
                 'node': '22.23.1',
             },
         )
@@ -28,12 +27,16 @@ class NativeRouteTests(unittest.TestCase):
         self.addCleanup(self.version_patch.stop)
 
     def test_detection(self):
-        self.assertEqual(n.active_harness({'CLAUDECODE':'1'}), 'claude')
-        self.assertEqual(n.active_harness({'CODEX_THREAD_ID':'abc'}), 'codex')
-        with self.assertRaises(n.Blocked): n.active_harness({})
-        with self.assertRaises(n.Blocked): n.active_harness({'CLAUDECODE':'1','CODEX_THREAD_ID':'abc'})
-        with self.assertRaises(n.Blocked): n.choose_harness('codex', {'CLAUDECODE':'1'})
-        with self.assertRaises(n.Blocked): n.choose_harness(None, {}, for_execution=True)
+        self.assertEqual(n.active_harness({'CODEX_THREAD_ID': 'abc'}), 'codex')
+        with self.assertRaises(n.Blocked):
+            n.active_harness({})
+        with self.assertRaisesRegex(n.Blocked, 'Unsupported'):
+            n.active_harness({'CLAUDECODE': '1'})
+        with self.assertRaisesRegex(n.Blocked, 'Only Codex'):
+            n.choose_harness('claude', {})
+        self.assertEqual(n.choose_harness('codex', {}), 'codex')  # Offline prep only
+        with self.assertRaises(n.Blocked):
+            n.choose_harness(None, {}, for_execution=True)
 
     def fixtures(self, root):
         target = root/'test-skill'; target.mkdir()
@@ -398,7 +401,6 @@ class NativeRouteTests(unittest.TestCase):
                 return_value={
                     'promptfoo': '0.125.1',
                     'codex': '9.9.9',
-                    'claude': '2.1.302',
                     'node': '22.23.1',
                 },
             ):
@@ -705,34 +707,26 @@ class NativeRouteTests(unittest.TestCase):
                     bundle, plan, self.host_policy(root, bundle)
                 )
 
-    def test_claude_command_selects_approved_model_version(self):
+    def test_removed_provider_cannot_prepare_or_configure(self):
         with TemporaryDirectory() as temp:
             root = Path(temp)
             target, suite = self.fixtures(root)
-            bundle = n.prepare(
-                self.opts(target, suite, root), env={'CLAUDECODE': '1'}
-            )
-            prepared = json.loads(
-                (bundle / 'manifest.json').read_text(encoding='utf-8')
-            )
-            value = self.plan_value()
+            opts = self.opts(target, suite, root)
+            opts.harness = 'claude'
+            with self.assertRaisesRegex(n.Blocked, 'Only Codex'):
+                n.prepare(opts, env={})
+
+            opts.harness = 'codex'
+            bundle = n.prepare(opts, env={})
+            value = self.plan_value_for_bundle(bundle)
             value.update(
                 provider='anthropic',
                 provider_version='2.1.302',
                 adapter='promptfoo-claude-agent-sdk',
             )
-            for field in (
-                'case_revision', 'rubric_revision', 'skill_revision',
-                'fixture_revision',
-            ):
-                value[field] = prepared[field]
             plan = c.RunPlan.from_dict(value)
-            manifest = n.configure_prepared_bundle(bundle, plan)
-
-            command = n.native_command(bundle, manifest)
-
-            self.assertIn('--model', command)
-            self.assertEqual(command[command.index('--model') + 1], plan.model_version)
+            with self.assertRaisesRegex(n.Blocked, 'Approved provider/adapter'):
+                n.configure_prepared_bundle(bundle, plan, self.host_policy(root, bundle))
 
     def test_binding_rejects_receipt_for_different_staged_bundle(self):
         with TemporaryDirectory() as temp:
@@ -889,18 +883,14 @@ class NativeRouteTests(unittest.TestCase):
 
             self.assertEqual(provider_run.call_count, 1)
 
-    def test_existing_prepare_claude_and_codex_cases_still_pass(self):
-        for harness, env in (
-            ('claude', {'CLAUDECODE': '1'}),
-            ('codex', {'CODEX_THREAD_ID': '1'}),
-        ):
-            with self.subTest(harness=harness), TemporaryDirectory() as temp:
-                root = Path(temp)
-                target, suite = self.fixtures(root)
-                bundle = n.prepare(self.opts(target, suite, root), env=env)
-                manifest = json.loads((bundle/'manifest.json').read_text(encoding='utf-8'))
-                self.assertEqual(manifest['harness'], harness)
-                self.assertEqual(manifest['status'], 'PREPARED_NOT_RUN')
+    def test_existing_codex_case_preparation_still_passes(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            target, suite = self.fixtures(root)
+            bundle = n.prepare(self.opts(target, suite, root), env={'CODEX_THREAD_ID': '1'})
+            manifest = json.loads((bundle / 'manifest.json').read_text(encoding='utf-8'))
+            self.assertEqual(manifest['harness'], 'codex')
+            self.assertEqual(manifest['status'], 'PREPARED_NOT_RUN')
 
     def test_docker_prepare_and_configure_materialize_provider_bundle_without_host_policy(self):
         with TemporaryDirectory() as temp:

@@ -328,11 +328,11 @@ class ExecutionPolicyTests(unittest.TestCase):
     def test_provider_model_adapter_or_backend_drift_blocks(self):
         plan = c.RunPlan.from_dict(self.plan_value())
         changes = {
-            "provider": "anthropic",
+            "provider": "unsupported-provider",
             "provider_version": "changed-provider-version",
             "model": "changed-model",
             "model_version": "changed-model-version",
-            "adapter": "promptfoo-claude-agent-sdk",
+            "adapter": "unsupported-agent-adapter",
             "adapter_version": "changed-adapter-version",
             "backend": "docker",
         }
