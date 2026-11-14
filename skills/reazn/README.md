@@ -93,7 +93,7 @@ One evidence-backed report with a consistent structure:
 2. **Step 1 — Requirements & scope** — source-supported functional requirements (FRs), non-functional requirements (NFRs), and questions **when applicable**.
 3. **Step 2 — Verify patterns & recommend high-level design** — existing responsibilities, evidence, reuse fit, conditional recommendations, and current/proposed flow diagrams **when relevant**.
 4. **Step 3 — Deep dive & data flow** — four relevant areas: mechanisms & boundaries; data-flow traces; contract considerations; and **Output Assessment** (what the subject produces, expected vs. observed behavior, evidence and verification status). Only contracts and output assessments use fixed multi-field blocks; inapplicable areas are not invented.
-5. **Step 4 — Trade-offs, risks & readiness** — material alternatives, risks, mitigation, verification needs, and proposed decision records.
+5. **Step 4 — Trade-offs, risks & readiness** — material alternatives, risks, mitigation, verification needs, proposed decision records, and optional implementation watchpoints.
 6. **Open decisions / questions** — remaining owner-specific gaps, or a statement that none were identified.
 
 ## Step-by-step analysis lenses & fields
@@ -129,10 +129,9 @@ A **lens** describes what REAZN examines; a **record** has fixed field labels an
 - **Change footprint (if relevant):** `Affected areas` → `Cross-boundary impact`.
 - **Readiness (always):** `Status` → `Reason` → `Verification`. For `understand-existing`, this means **evidence readiness**, not approval to implement.
 - **Proposed decision record (when consequential):** `Decision` → `Why/evidence` → `Alternative` → `Contract impact` → `Linked requirements` → `Status` → `Revisit if`.
+- **Implementation Watchpoint (`Watchpoint: <name>`, optional fixed record):** `Expected` → `Verify` → `Evidence` → `Status`. Include **after any proposed decision records**, only for material design assumptions, contract changes or ownership/dependency decisions that merit a later implementation check. `PENDING VERIFICATION` means no comparison was performed; `REVIEW REQUIRED` needs grounded discrepancy evidence; `VERIFIED` needs an actual comparison. A watchpoint is not a confirmed bug or implementation task.
 
 After Step 4, any **open question** uses `Question` → `Why it matters` → `Decision owner` → `Linked requirements`. Optional `learn: on` references appear after applicable record fields. See [`SKILL.md`](SKILL.md) for the authoritative rules and edge cases.
-
-
 
 **FRs/NFRs are not automatically work to implement.** They represent sourced expectations. REAZN distinguishes documented requirements, inspected implementation, proposed changes, and unverified gaps. In an understanding-only assessment, no new FR/NFR or design change needs to be invented.
 
