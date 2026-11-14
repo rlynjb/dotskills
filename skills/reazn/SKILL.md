@@ -81,8 +81,8 @@ _\*Study focus:_ How a clear interface prevents coupling to the owner's internal
 - **Dividers only in Step 2:** use a standalone `---` horizontal rule **only between complete Step 2 existing-pattern or design-option blocks**; use one blank line before and after that divider and **none inside either item**. All other sections—including Steps 1, 3 and 4, the Input/Ticket Snapshot and open questions—use **one blank line between items**, with **no horizontal rules**. Do not turn `---` into a divider for each FR/NFR/risk/decision. Enforce this at every terminal width.
 - **Mandatory CLI-friendly Snapshot groups:** Show the Input/Ticket Snapshot using exactly four Markdown `###` subheadings, in order: **Assessment objective**, **Purpose & core capabilities**, **Investigation scope**, and **Evidence & recommendation**. Use italic-label `_Label:_ value` lines under each in Markdown; core capabilities alone receive numbered, bold `01 — Name` headings with compact `What:`, `Status:`, and `Source:` fields. Put one blank line **between groups and between complete capability items**, but **none inside** a label block. Do not use tables, cards, horizontal rules, long inline source URLs, decorative badges, or a separate fifth SDI step. This grouping applies **only to the Snapshot**; FR/NFR and other Step 1–4 item formatting remains unchanged.
 - **Compact source links:** In the Snapshot, use a short readable `file:line` or `document:section` link label pointing to verified evidence when the renderer supports clickable Markdown. In plain-text CLIs show a compact path/reference; supply a full URL only if necessary for access. Never invent a source link or truncate the actual target URL so it breaks.
-- **Consistent requirement labeling:** show separate **Functional Requirements (FRs)** (behavior/outcomes) and **Non-Functional Requirements (NFRs)** (quality/constraints) subsections in Step 1 when the distinction fits the domain. Give each material requirement a stable `FR-01`/`NFR-01` style ID, source/status, and linked question or acceptance detail where relevant. Reference those same IDs in Steps 2–4. If none is evidenced in a category, say **None identified from supplied evidence**, not an invented requirement.
-- **Strict self-check before responding:** verify the Snapshot has the **four required subsections in order**; capabilities are numbered and have source/evidence status where available; purpose, scope and recommendation are not blended together; all material entry labels are italic in Markdown, with regular-weight values, and are consecutive lines with no internal empty lines; adjacent entries are separated by **exactly one blank line** (or Step 2's single `---`); every Markdown field is on its own rendered line; and optional learning labels appear only with `learn: on`. Fix formatting before outputting the report. Never sacrifice source citations, accuracy, scope labels, FR/NFR/D traceability or needed detail to satisfy spacing.
+- **Consistent requirement labeling:** use the **Canonical finding-field contracts** below for exact field names and order in Steps 1–4; show separate **Functional Requirements (FRs)** (behavior/outcomes) and **Non-Functional Requirements (NFRs)** (quality/constraints) subsections in Step 1 when the distinction fits the domain. Give each material requirement a stable `FR-01`/`NFR-01` style ID, source/status, and linked question or acceptance detail where relevant. Reference those same IDs in Steps 2–4. If none is evidenced in a category, say **None identified from supplied evidence**, not an invented requirement.
+- **Strict self-check before responding:** verify every emitted FR/NFR/Area/Contract/Trade-off/Risk/Readiness/D-ID/Q-ID uses its canonical field labels and order without skipped required fields; Step 4 groups appear in their canonical order; the Snapshot has the **four required subsections in order**; capabilities are numbered and have source/evidence status where available; purpose, scope and recommendation are not blended together; all material entry labels are italic in Markdown, with regular-weight values, and are consecutive lines with no internal empty lines; adjacent entries are separated by **exactly one blank line** (or Step 2's single `---`); every Markdown field is on its own rendered line; and optional learning labels appear only with `learn: on`. Fix formatting before outputting the report. Never sacrifice source citations, accuracy, scope labels, FR/NFR/D traceability or needed detail to satisfy spacing.
 - **Concise but complete:** include all material findings without merging them into a dense paragraph; omit irrelevant fields rather than inventing data. The one-pass, read-only behavior remains unchanged: present all four SDI steps in a single assessment, without approval gates or user interviews.
 
 **Illustrative presentation only (not project evidence):** This Markdown example shows bold item headings and italic field labels with regular-weight values, **no empty lines within an item**, **one blank line between items**, and two trailing spaces for rendered line breaks. The Step 2 divider is the sole special separator.
@@ -100,15 +100,16 @@ _Source:_ Example user story
 **FR-02 — Save layout**  
 _Requirement:_ Users can save their edits.  
 _Status:_ PROPOSED  
+_Source:_ Example user story  
 _Open question:_ Q-01 — Is saving atomic?
 
 #### Non-Functional Requirements (NFRs)
 
 **NFR-01 — Access control**  
 _Quality:_ Editing is limited to permitted roles.  
-_Linked FR:_ FR-01, FR-02  
 _Status:_ PROPOSED  
-_Source:_ Example acceptance criterion
+_Source:_ Example acceptance criterion  
+_Linked FR:_ FR-01, FR-02
 
 **NFR-02 — Provenance and uncertainty**  
 _Quality:_ Findings must distinguish verified facts from assumptions.  
@@ -120,18 +121,68 @@ _Source:_ Example quality constraint
 **Area: Sector map rendering**  
 _Where it lives:_ [verified path/symbol]  
 _What exists today:_ Read-only rendering  
+_Purpose:_ Support read-only map presentation (OBSERVED function)  
+_Fit to objective:_ Partial fit for FR-01  
 _Verdict:_ ADAPT  
-_Why:_ Extend only after contract verification.
+_Why:_ Extend only after contract verification.  
+_Source:_ [verified path/symbol]
 
 ---
 
 **Area: Pan and zoom**  
 _Where it lives:_ [verified path/symbol]  
 _What exists today:_ Viewport navigation  
+_Purpose:_ Enable navigation (OBSERVED function)  
+_Fit to objective:_ Relevant to FR-01  
 _Verdict:_ FOLLOW  
-_Why:_ Reuse verified navigation behavior.
+_Why:_ Reuse verified navigation behavior.  
+_Source:_ [verified path/symbol]
 ```
 Use the example's **layout only**, never its requirements, verdicts, components, or unverified claims as real findings.
+
+## Canonical finding-field contracts — consistent labels, evidence-adaptive content
+
+**Use these exact label names and order** whenever an item of that type is present. These are stable output structures, not guaranteed facts, a fixed number of findings, or extra SDI stages. Use bold item headings and italic field labels (`_Label:_ value`), regular-weight values, Markdown hard breaks, no blank lines inside an item and exactly one blank line between items (Step 2 alone may use `---`). For unsupported values write `NOT VERIFIED`, `NOT PROVIDED`, `NOT APPLICABLE — <reason>`, or `None identified` as appropriate—not an invented answer. Omit **whole inapplicable item types**, but do not silently omit a required field **within an emitted finding**. Append optional `learn: on` fields **after** the normal fields; never treat a book as system evidence.
+
+- **Step 1 — Functional requirement (`FR-xx`):** `Requirement` → `Status` → `Source`; optional `Acceptance` → `Open question` in that order. **Non-functional requirement (`NFR-xx`):** `Quality` → `Status` → `Source`; optional `Linked FR` → `Verification` → `Open question`. If a category has no supported requirement, say `None identified from supplied evidence` rather than inventing one.
+- **Step 2 — Existing pattern / area (`Area: <name>`):** `Where it lives` → `What exists today` → `Purpose` → `Fit to objective` → `Verdict` → `Why` → `Source`. Describe the **observed function**, but mark an undocumented *historical design rationale* `NOT VERIFIED`. **Design recommendation** (one concise block when relevant): `Recommendation` → `Why` → `Alternative` → `Linked requirements` → `Status` and optional `Source` last. Keep current/proposed boxed ASCII flow diagrams outside these blocks, with their observed/documented/proposed captions unchanged.
+- **Step 3 — Contract (`Contract: <name>`):** `Current` → `Owner` → `Guarantee` → `Unknown` → `Linked requirements` → `Linked decision`, with optional `Source` last. Distinguish verified behavior from written intention or proposed guarantees. If contracts are inapplicable, show `Contract considerations: NOT APPLICABLE — <reason>` once rather than inventing them. Report relevant data movement separately as `Data-flow deep dive:`; otherwise mark it `NOT APPLICABLE — <reason>` without fabricating software layers.
+- **Step 4 — Trade-off (`Trade-off: <name>`):** `Benefit` → `Cost` → `Preferred approach` → `Linked decision`. **Risk (`Risk: <name>`):** `Impact` → `Mitigation` → `Linked decision`. **Change footprint** (when material): `Affected areas` → `Cross-boundary impact`. **Readiness** (always): `Status` → `Reason` → `Verification`. **Proposed Engineering Decision Record (`D-xx`):** `Decision` → `Why/evidence` → `Alternative` → `Contract impact` → `Linked requirements` → `Status` → `Revisit if`. Cite supporting evidence in the relevant field; optional `Source` goes **after** the standard fields. If there is no applicable D-ID, put `None proposed` in a `Linked decision` field rather than inventing a decision.
+- **Step 4 item order:** material **Trade-offs**, material **Risks**, **Change footprint** if relevant, exactly one **Readiness** block, then `### Proposed Engineering Decision Record` entries when consequential D-IDs exist. For absent trade-offs/risks/decisions, write a brief `None identified from inspected evidence` statement rather than inventing them. Readiness always appears even when evidence is limited.
+- **Open decisions / questions (`Q-xx`, when any):** `Question` → `Why it matters` → `Decision owner` → `Linked requirements`. If the owner is unknown, use `NOT VERIFIED`; if there are no material open questions, write `None identified from inspected evidence`.
+
+**Step 4 illustrative layout only (not real project findings):**
+
+```markdown
+## Step 4 — Trade-offs, risks & readiness
+
+**Trade-off: Reuse versus new component**  
+_Benefit:_ Reuses an observed interface.  
+_Cost:_ Existing limits may constrain changes.  
+_Preferred approach:_ ADAPT — conditional on contract verification.  
+_Linked decision:_ D-01
+
+**Risk: Contract regression**  
+_Impact:_ A changed interface could break consumers.  
+_Mitigation:_ Verify callers and run contract checks before approval.  
+_Linked decision:_ D-01
+
+**Readiness**  
+_Status:_ CONDITIONAL  
+_Reason:_ Required compatibility evidence is missing.  
+_Verification:_ Check callers and execute authorized tests.
+
+### Proposed Engineering Decision Record
+
+**D-01 — Reuse existing boundary**  
+_Decision:_ Extend the existing interface (PROPOSED).  
+_Why/evidence:_ The inspected interface already serves this flow.  
+_Alternative:_ Introduce a separate interface.  
+_Contract impact:_ Consumer compatibility requires verification.  
+_Linked requirements:_ FR-01  
+_Status:_ CONDITIONAL  
+_Revisit if:_ Consumers cannot accept the proposed change.
+```
 
 ## Engineering decision traceability — proposed, never auto-approved
 
@@ -139,7 +190,7 @@ Preserve the **few material design choices** that future developers would otherw
 
 - In **Step 2**, assign stable `D-01`, `D-02`, etc. IDs only to consequential recommendations (reuse/adapt/new architecture, ownership, integration behavior). Record **what is proposed, why the verified evidence supports it, relevant alternatives/trade-offs, links to FR/NFR, and what would change the choice**. Don't generate a D-ID for every file or trivial implementation detail.
 - In **Step 3**, add **Contract considerations** for affected interfaces, responsibilities, invariants, input/output behavior, authorization, error/compatibility expectations or data guarantees **only where relevant**. Identify current verified contracts separately from proposed changes and unknown guarantees. Link to applicable D-IDs and FR/NFR IDs; **do not claim contract approval**.
-- In **Step 4**, provide **Proposed Engineering Decision Record** as concise vertical entries using the same stable D-IDs, with **Decision**, **Why/evidence**, **Alternative**, **Contract impact**, **Linked requirements**, **Status**, and **Revisit if** when relevant. Status is `PROPOSED`, `CONDITIONAL`, or `NOT VERIFIED`—**never APPROVED** in this noninteractive skill. If no material design decision was identified, say `No material decision record proposed from inspected evidence` rather than fabricating one.
+- In **Step 4**, provide **Proposed Engineering Decision Record** as concise vertical entries using the same stable D-IDs, with the fixed **Decision → Why/evidence → Alternative → Contract impact → Linked requirements → Status → Revisit if** fields. Status is `PROPOSED`, `CONDITIONAL`, or `NOT VERIFIED`—**never APPROVED** in this noninteractive skill. If no material design decision was identified, say `No material decision record proposed from inspected evidence` rather than fabricating one.
 - **Implementation-deviation watchpoints:** name only realistic assumptions or decisions that a later implementation review should compare against code (e.g. contract change, new dependency, different owner). **Do not claim a deviation occurred without an actual implementation diff or other verified evidence.** For a provided diff, record an observed deviation only after checking the relevant evidence, and mark it `REVIEW REQUIRED`.
 - **Durability / ownership:** suggest **one canonical decision record linked to the source request** (a ticket/PR for code, or an approved process/design record for another domain) when persistence matters. Include source links/revision and decision owner/reviewer where known. Output in chat is **not saved documentation**; do not create or update tickets, files, PRs, ADRs or approvals without a separate explicit user request and authorization. A subsequent **Review Implementation** run can be supplied this record to compare actual behavior; do not invoke it automatically.
 
@@ -170,7 +221,7 @@ _Revisit if:_ Existing service cannot meet agreed update guarantees
 
 1. **Locate:** within the resolved `scope` and `target` (including only necessary cross-boundary dependencies), use the objective and accessible sources to identify candidate existing patterns. For software, these may be pages/routes, APIs, services, stores or tests; for agent skills, triggers, instructions, tools, adapters and outputs; for workflows, participants, handoffs, rules and records. These are **candidates**, not assumed components.
 2. **Verify:** inspect accessible code, documents, actual workflows, owner/caller relationships and applicable conventions **at the verified revision and comparison range when provided** to establish what exists and whether it fits the goal. Ground material mappings in paths/symbols/tests, document sections or observations; mark uncertain links **NOT VERIFIED**. Do not infer an executed workflow from written instructions.
-3. **Assess reuse:** provide a compact evidence map as **separate vertical blocks, never a table**. For each **Area: [name]**, show plain labeled lines **Where it lives / Source:** (path/symbol, document or observation), **What exists today:** (documented versus observed behavior), **Fit to objective:** (relevant requirement/constraint), and **Verdict:** FOLLOW / ADAPT / NEW REQUIRED / NO SUITABLE PATTERN FOUND IN INSPECTED SCOPE / NOT VERIFIED, with **Why:** when helpful. Keep every area's heading and labeled fields contiguous without blank lines, and separate complete successive areas using a standalone `---` with one blank line above and below. If no baseline exists, say **CURRENT STATE NOT PROVIDED** rather than claiming an inspection happened. A pattern is reusable only if its relevant behavior and contracts fit; an incomplete search is not proof of absence.
+3. **Assess reuse:** provide a compact evidence map as **separate vertical blocks, never a table**. For each **Area: [name]**, use the fixed labels **Where it lives → What exists today → Purpose → Fit to objective → Verdict → Why → Source**. Choose **Verdict:** FOLLOW / ADAPT / NEW REQUIRED / NO SUITABLE PATTERN FOUND IN INSPECTED SCOPE / NOT VERIFIED; explain why and cite inspected evidence. Keep every area's heading and labeled fields contiguous without blank lines, and separate complete successive areas using a standalone `---` with one blank line above and below. If no baseline exists, say **CURRENT STATE NOT PROVIDED** rather than claiming an inspection happened. A pattern is reusable only if its relevant behavior and contracts fit; an incomplete search is not proof of absence.
 4. **Explain the relevant existing patterns, not just their locations:** after the map, give a brief plain-English explanation of each pattern that materially affects the objective:
    - **Purpose and ownership:** what problem the pattern solves today, which component owns each responsibility, who calls it, and the relevant inputs/outputs or boundary.
    - **Architectural reasoning:** why its separation, reuse, contract or data flow makes sense *given verified behavior and constraints*; note concrete benefits and costs where relevant. Cite code, tests, conventions or ADRs that support the explanation.
@@ -238,14 +289,14 @@ _Revisit if:_ Existing service cannot meet agreed update guarantees
 - **When data moves between components or systems**, trace its source, validation, ingestion, transformation, storage, synchronization and downstream consumption where applicable. Check ownership, schema/API contracts, data quality, error handling and operational responsibilities.
 - **When code structure or computation matters**, assess module boundaries, coupling, duplication, information hiding, algorithmic correctness and performance only where they affect the objective. Do not introduce speculative abstractions or a mandatory technical checklist.
 - Identify key files, documents, steps, responsibilities or tests likely to change **within the resolved analysis boundary**, including necessary shared contracts. When `compare` is provided, cite verified changed paths and inspect affected interface consumers without turning the task into a full-repo audit. Distinguish **checks inspected**, **actually run/observed** and **proposed**; do not imply tests or process outcomes were observed without evidence.
-- Add **Contract considerations** where relevant: verified current interface/owner/guarantees, proposed changes, invariants, compatibility and unresolved decisions; link material points to `D-xx` and `FR-xx`/`NFR-xx`. Distinguish contract proposals from approved guarantees. Do not create a separate design stage.
+- Add **Contract considerations** where relevant using the fixed **Current → Owner → Guarantee → Unknown → Linked requirements → Linked decision** labels (optional Source last): verified current interface/owner/guarantees, proposed changes, invariants, compatibility and unresolved decisions; link material points to `D-xx` and `FR-xx`/`NFR-xx`. Distinguish contract proposals from approved guarantees. Do not create a separate design stage.
 
 ### Step 4 — Wrap up: bottlenecks, trade-offs, risks and readiness
 
 - Compare **keep/reuse/adapt** against a justified new approach **only when a material alternative exists**. Reference **verified code, documented workflow or direct observation** behind the recommendation; name evidence gaps, disadvantages and conditions that would change it.
-- Highlight the **top consequential** risks relevant to the case: software correctness, contract breakage, security, data loss, concurrency or testing gaps where applicable; and workflow ownership, handoffs, approvals, compliance, cost or operational constraints for non-code cases.
-- Give the **minimal change footprint** (affected modules, documents, process steps, people/roles, interfaces and verification as applicable), identifying any **cross-boundary impact or unverified areas** relevant to the scoped objective; do not produce a giant project plan or invented implementation tasks.
-- State readiness: **READY FOR REVIEW**, **CONDITIONAL** (nonblocking assumptions and owners), or **BLOCKED** (essential information/decision missing). A ready assessment is **not** sign-off to implement.
+- Highlight the **top consequential** risks relevant to the case: software correctness, contract breakage, security, data loss, concurrency or testing gaps where applicable; and workflow ownership, handoffs, approvals, compliance, cost or operational constraints for non-code cases. Use the fixed **Risk: Impact → Mitigation → Linked decision** fields; for material alternatives use **Trade-off: Benefit → Cost → Preferred approach → Linked decision**. Do not invent items merely to fill the schema.
+- Give the **minimal change footprint** when relevant as **Change footprint: Affected areas → Cross-boundary impact** (modules, documents, roles, interfaces or process steps), identifying unverified areas; do not produce a giant project plan or invented implementation tasks.
+- State readiness as a single **Readiness** block with **Status → Reason → Verification**. Use **READY FOR REVIEW**, **CONDITIONAL** (unresolved assumptions and review needs), or **BLOCKED** (essential information/decision missing). A ready assessment is **not** sign-off to implement.
 - Include the **Proposed Engineering Decision Record** for consequential D-IDs plus the minimum contract/implementation-deviation watchpoints; label all pending human review and preserve source/revision links. Do not invent a completed implementation, reviewer sign-off, or document persistence.
 - End with a compact list of **unresolved questions by owner**, phrased for the original request or ticket when applicable; do not ask them interactively or send them without explicit authorization.
 
@@ -312,10 +363,10 @@ _Recommendation:_ CONDITIONAL — verify existing export contracts before design
 
 Then use these headings in order:
 
-1. **Step 1 — Requirements & scope**: separate **Functional Requirements (FRs)** and **Non-Functional Requirements (NFRs)** subsections; each requirement gets a bold stable ID and **contiguous** label/value lines (no blank lines within an item), separated from the next item by **exactly one blank line**, **not `---`**. Include key acceptance, bounds and unknowns; never use a table.
+1. **Step 1 — Requirements & scope**: separate **Functional Requirements (FRs)** and **Non-Functional Requirements (NFRs)** subsections; apply the canonical FR/NFR field names and order; each requirement gets a bold stable ID and **contiguous** label/value lines (no blank lines within an item), separated from the next item by **exactly one blank line**, **not `---`**. Include key acceptance, bounds and unknowns; never use a table.
 2. **Step 2 — Verify patterns & recommend high-level design**: concise evidence-backed reuse map with **one Area entry at a time, plain labeled fields and `---` separators, never a table**; **Existing pattern purpose & rationale** (verified responsibilities, documented reasons versus hypotheses, and why it fits or does not fit the objective); **OBSERVED/DOCUMENTED CURRENT FLOW** and **PROPOSED FLOW** (or a clearly marked unavailable baseline) as visually readable ASCII **boxed, labeled, arrow-connected** architecture diagrams (not long inline bracket/arrow traces) with plain-English walkthroughs when multiple components/boundaries are involved; **Design rationale** (what changes, what is reused, why this placement, meaningful alternative/trade-off); explicitly flag unverified areas before recommending an approach.
-3. **Step 3 — Deep dive & data flow**: relevant mechanisms, handoffs or request/read/write trace and critical code/document/role touchpoints, and targeted **Contract considerations** (current vs proposed, owner/guarantees/unknowns) linked to D-IDs/FR/NFR; include technical data, consistency and integration considerations only when warranted, otherwise mark them **NOT APPLICABLE**.
-4. **Step 4 — Trade-offs, risks & readiness**: preferred minimal change, realistic alternatives, material risks, verification plan and readiness; end this step with **Proposed Engineering Decision Record** entries and relevant implementation-deviation watchpoints. No approvals or claims of saved records.
+3. **Step 3 — Deep dive & data flow**: relevant mechanisms, handoffs or request/read/write trace and critical code/document/role touchpoints, and targeted **Contract considerations** in their canonical field order (current vs proposed, owner/guarantees/unknowns) linked to D-IDs/FR/NFR; include technical data, consistency and integration considerations only when warranted, otherwise mark them **NOT APPLICABLE**.
+4. **Step 4 — Trade-offs, risks & readiness**: apply the fixed field schemas and item order for material trade-offs, risks, change footprint, readiness and decisions; preserve the minimum change, alternatives, verification and relevant implementation-deviation watchpoints. End with **Proposed Engineering Decision Record** entries where material. No approvals or claims of saved records.
 5. **Open decisions / questions for the request**: concise owner-specific blockers; write **None identified from inspected evidence** when appropriate.
 
 **Scale detail to the resolved scope and decision**: ordinarily a skimmable assessment, not a tutorial. A system-level review summarizes major **affected** boundaries; a subsystem-level review dives into the specific feature/change and necessary interfaces. Neither setting requires an exhaustive repo tour. Prefer **compact bold item heading + consecutive labeled fields + exactly one blank line between items**, with explicit source locations, over tables, spaced-out field paragraphs or repeated narrative. Use `---` **only between complete Step 2 items**; separate findings in Steps 1, 3 and 4 and open questions with exactly one blank line, **without per-item dividers**. If no data path is relevant, say **Data-flow deep dive: NOT APPLICABLE** instead of inventing one. For non-code work, don't insist on repository evidence; if a software input lacks code access, mark reuse/design **PROVISIONAL / NOT VERIFIED** and provide a source-only assessment.
