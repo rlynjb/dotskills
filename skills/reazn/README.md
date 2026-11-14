@@ -2,9 +2,19 @@
 
 **REAZN is a noninteractive, read-only, evidence-first skill using the same four SDI reasoning steps across input types.**
 
-Give this skill an identifiable problem or proposed change: a Jira/other tracker item, pasted feature brief, acceptance criteria, architecture document, source code, agent-skill definition, Audit Skill findings, workflow description, PDF, screenshot, or another source the active host can actually inspect. It produces **one** concise assessment, not an interview or a new methodology. A Jira integration or codebase is not required for non-software problems.
+Give this skill a bounded existing-system understanding goal, identifiable problem, or proposed change: a Jira/other tracker item, pasted feature brief, acceptance criteria, architecture document, source code, agent-skill definition, Audit Skill findings, workflow description, PDF, screenshot, or another source the active host can actually inspect. It produces **one** concise assessment, not an interview or a new methodology. A Jira integration or codebase is not required for non-software problems.
 
 It complements [Refine Requirements](../refine-requirements/README.md), which provides longer collaborative design exploration and explicit decision approvals.
+
+## Assessment intent and semantic consistency
+
+Choose an optional prompt-level `intent: auto | understand-existing | assess-change | design-new` (default `auto`). **Understand-existing** describes current capabilities and known requirements **without inventing a change**; **assess-change** compares expected behavior with inspected actual evidence and gaps; **design-new** uses proposed requirements when there is no implemented baseline. All three retain the same four SDI steps.
+
+REAZN classifies source claims **before** generating FR/NFR IDs: **DOCUMENTED REQUIREMENT** (source expectations, with real approval state), **OBSERVED IMPLEMENTATION** (static inspected code vs genuine runtime traces kept distinct), **PROPOSED CHANGE** (a user-requested future change or unapproved suggestion), and **UNVERIFIED GAP / CONFLICT** (source missing, inaccessible or contradictory). The codebase's current behavior is not automatically product intent. Audit Skill suggestions are **secondary evidence**, not approved requirements or tasks; inspect the original cited source where accessible. When requirements are unavailable, observed capabilities remain described in the Input Snapshot and Step 2 rather than being fabricated as FR/NFRs.
+
+For comparable runs, fix the **intent, goal, target, scope, Git/document revisions, audit report version, compare selector and `learn` setting**. The Input Snapshot now reports `Intent:`, `Input baseline:`, `Audit handoff:` and `Learn:`. Preserve source identifiers when available, and assign new FR/NFR IDs by authoritative source order rather than subjective importance. A source claim should keep its evidence category and provenance across runs; exact wording and defensible recommendations can still vary.
+
+**Repeatability evaluation:** [REAZN eval cases](evals/evals.json) and the [five-run comparison protocol](evals/README.md) provide synthetic frozen inputs, expected source classifications and a manual cross-run consistency check. These definitions are **not evidence of executed behavioral tests**.
 
 ## How it works — one SDI framework
 
@@ -42,7 +52,7 @@ _Source:_ [inspected packaging evidence]
 
 **The structure stays consistent; the findings depend on the evidence.** [SKILL.md](SKILL.md) now defines required labels **and their order** for each item type. It does not require a fixed count of FRs, risks, contracts or trade-offs.
 
-- **Step 1:** FR = Requirement → Status → Source (optional Acceptance, Open question). NFR = Quality → Status → Source (optional Linked FR, Verification, Open question).
+- **Step 1:** FR = Requirement → Status → Source (optional Acceptance, Open question); only sourced DOCUMENTED/PROPOSED requirements are FR/NFRs—not observations or unapproved audit suggestions. NFR = Quality → Status → Source (optional Linked FR, Verification, Open question).
 - **Step 2:** Area = Where it lives → What exists today → Purpose → Fit to objective → Verdict → Why → Source; preserve current/proposed ASCII diagrams.
 - **Step 3:** Contract = Current → Owner → Guarantee → Unknown → Linked requirements → Linked decision (optional Source). Data-flow reporting remains domain-sensitive.
 - **Step 4:** Trade-off = Benefit → Cost → Preferred approach → Linked decision; Risk = Impact → Mitigation → Linked decision; Change footprint = Affected areas → Cross-boundary impact; Readiness = Status → Reason → Verification; D-ID = Decision → Why/evidence → Alternative → Contract impact → Linked requirements → Status → Revisit if.
@@ -90,6 +100,7 @@ Use italic Markdown labels (`_Label:_ value`) and **one blank line between group
 ### Assessment objective
 
 _Input:_ Feature brief + inspected repository  
+_Intent:_ assess-change (explicit)  
 _Goal:_ Assess proposed CSV export
 
 ### Purpose & core capabilities
@@ -118,6 +129,9 @@ _Basis:_ Explicit request
 _Target:_ Reporting  
 _Revision:_ NOT VERIFIED  
 _Comparison:_ NOT PROVIDED  
+_Input baseline:_ UNFROZEN — revision not confirmed  
+_Audit handoff:_ NOT PROVIDED  
+_Learn:_ off  
 _Included:_ Reporting UI and relevant API contracts  
 _Excluded:_ Unrelated subsystems
 
@@ -185,6 +199,23 @@ _\*Study focus:_ How interface boundaries reduce coupling.
 Chapter suggestions come **only from these six books**: Alex Xu's *System Design Interview — An Insider's Guide* (Volumes 1 and 2; Volume 2 with Sahn Lam), *Designing Data-Intensive Applications* (2nd ed.), *Fundamentals of Data Engineering*, *Algorithmic Thinking* (2nd ed.), *A Philosophy of Software Design* (2nd ed.), and **Micheal Lanham's *AI Agents in Action*, Second Edition (Manning, 2026)**. The [optional chapter guide](references/learning-chapters.md) lists edition-checked chapter pointers. Only include a genuinely relevant, verified chapter; don't force every book, repeat the same reference needlessly, or turn the report into a tutorial. Actual evidence lives in **`Source:` / `Evidence:`**, not in a book citation.
 
 ## Invocation examples
+
+**Repeatable audit-assisted assessment (pin actual versions before invoking):**
+
+```text
+Use reazn on the specified skill package and attached Audit Skill report.
+intent: assess-change
+scope: subsystem
+target: <skill path>
+revision: <verified Git SHA or document version>
+learn: off
+Goal: Assess documented behavior and explicitly proposed improvements.
+Use the SAME pinned audit report/version and source files for each comparison.
+Classify requirements vs observed implementation vs audit suggestions;
+do not infer approval or produce implementation tickets.
+```
+
+
 
 **Normal assessment (no learning references):**
 

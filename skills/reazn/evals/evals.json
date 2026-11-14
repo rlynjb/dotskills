@@ -1,0 +1,92 @@
+{
+  "skill_name": "reazn",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Run reazn on the attached synthetic SKILL.md and synthetic Audit Skill handoff. intent: understand-existing; scope: subsystem; target: synthetic-access-review; learn: off. Goal: understand documented capabilities, source evidence and unknowns only. Treat the files as frozen fixture v1; no implementation is requested.",
+      "files": [
+        "evals/files/semantic-case/SKILL.md",
+        "evals/files/semantic-case/audit.md"
+      ],
+      "expected_output": "Four-step SDI report with resolved understand-existing intent. Written read-only instructions are DOCUMENTED, not observed enforcement; no runtime outcome was verified. No unapproved audit recommendation becomes a new FR/NFR or implementation task. Input baseline and audit version are recorded.",
+      "assertions": [
+        "The Input Snapshot records intent understand-existing and the supplied synthetic source/audit versions.",
+        "DOCUMENTED INSTRUCTIONS are distinguished from OBSERVED RESULT and unverified host enforcement.",
+        "No mandatory FR/NFR or approved D-ID is invented from the audit recommendation.",
+        "No change is forced merely to complete Step 2 or Step 4."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Run reazn using the same frozen synthetic skill and audit. intent: assess-change; scope: subsystem; learn: off. The user asks to assess the IDEA of adding a host-level write guard, without authorizing implementation or approval. Keep audit findings as secondary evidence.",
+      "files": [
+        "evals/files/semantic-case/SKILL.md",
+        "evals/files/semantic-case/audit.md"
+      ],
+      "expected_output": "The host guard is a PROPOSED user-specified change to assess, not an implemented control or approved ticket. The audit suggestion by itself is not authoritative product scope. Maintain source/approval/implementation distinctions, conditional recommendations, and canonical four-step headings.",
+      "assertions": [
+        "Explicitly user-requested future behavior is PROPOSED, not OBSERVED or APPROVED.",
+        "Audit's original unapproved recommendation does not independently establish an approved FR or NFR.",
+        "Host enforcement remains NOT VERIFIED, not an observed failure.",
+        "No code edits or issue creation occur."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Use reazn on a new proposal, intent: design-new, scope: system, learn: off. Brief: a proposed service should send appointment reminders to opted-in users. There is no repository, existing architecture, acceptance criterion for delivery latency, or observed implementation.",
+      "expected_output": "Proposed reminder behavior may be an FR; opt-in is an explicit requirement, but no invented latency/uptime NFR. CURRENT STATE NOT PROVIDED, no current production flow, invented APIs, measured reliability or approved design. All SDI steps remain present and proposals conditional.",
+      "assertions": [
+        "The resolved intent is design-new.",
+        "All FR/NFR conclusions are PROPOSED or unavailable; nothing is claimed implemented.",
+        "No latency, database, endpoint, queue, or integration is invented as existing.",
+        "No fabricated test results, SLAs or approvals."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Run reazn with intent: assess-change on these bounded text sources. Primary approved ticket: 'Export assessment results as CSV.' Inspected current implementation at revision example-r7 is documented to return PDF only for this route; no runtime test was performed. An audit summary paraphrases the feature as PDF download. Do not assume other routes were inspected.",
+      "expected_output": "FR sourced from approved CSV ticket. PDF is current inspected behavior in the specified route, not product intent. The audit's PDF paraphrase cannot override the primary ticket. Identify the bounded CSV-vs-PDF mismatch without asserting runtime behavior or absence elsewhere.",
+      "assertions": [
+        "Approved CSV expectation remains authoritative for the stated request.",
+        "PDF implementation is distinguished as static observed or documented current evidence.",
+        "Mismatch is scoped to the inspected route and evidence; uninspected routes stay NOT VERIFIED.",
+        "No invented implementation tasks, approvals or new requirements."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Run reazn with intent: understand-existing, target: a small existing code module. Evidence: repository code defines a function returning a sorted list; no ticket, specification, tests or design ADR are provided. Goal: document current implementation, not request a change. scope: subsystem; learn: off.",
+      "expected_output": "Describe sorted-list behavior as observed implementation evidence, not automatically an FR. State that authoritative requirements and runtime verification are absent. Explain current pattern and uncertainty without proposing a change or fake acceptance criteria.",
+      "assertions": [
+        "Source code alone is not promoted into an approved FR/NFR.",
+        "Current behavior is described in the Snapshot and Step 2.",
+        "No forced new design, D-ID, implementation task or test-execution claim."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Repeat case 1 FIVE times against the exact same synthetic skill and audit fixture bytes, source revision, model/harness and prompt. intent: understand-existing; scope: subsystem; learn: off. Use the repeatability protocol in evals/README.md; do not rerun Audit Skill or fetch live revisions.",
+      "files": [
+        "evals/files/semantic-case/SKILL.md",
+        "evals/files/semantic-case/audit.md"
+      ],
+      "expected_output": "Across five actual runs (when separately executed), maintain the same intent, evidence-source categories, no-autopromotion rule and stable source-derived requirement mapping; wording may vary. The evaluation definition does not itself run or certify any trials.",
+      "assertions": [
+        "All outputs have the same four SDI sections and canonical field labels.",
+        "All outputs label read-only instructions DOCUMENTED, runtime enforcement/trace NOT VERIFIED.",
+        "No run turns the audit recommendation into an approved requirement or task.",
+        "FR/NFR IDs remain tied to the same source order when present; compare any changes against recorded source evidence."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Use reazn on a skill with only an Audit Skill finding: 'The skill should be faster.' No stakeholder requirement, latency metric, code access, trace or benchmark was provided. intent: auto; learn: off. Assess the documented quality concern only.",
+      "expected_output": "Disclose inferred assessment intent and that performance goals and baseline are unverified; do not invent a measured defect, benchmark, SLA or approved NFR. Audit suggestion is secondary evidence and can be recorded as a proposed question/candidate.",
+      "assertions": [
+        "No numeric performance target or requirement is invented.",
+        "Absent benchmarks are NOT VERIFIED, not a confirmed performance regression.",
+        "An audit suggestion is not equated with stakeholder approval or a current implementation defect."
+      ]
+    }
+  ]
+}

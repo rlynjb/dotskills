@@ -9,8 +9,8 @@ Skills are grouped by use.
 ### Workflows
 
 - **Skill:** [reazn](skills/reazn/SKILL.md)  
-  **Purpose:** Reason through an identifiable problem or proposed change using one evidence-backed, four-step SDI assessment. Verify current behavior, examine design and contract boundaries, and explain trade-offs across software, agent skills, and workflows. Read-only and one-pass; optional `learn: on` adds selective book chapters.  
-  **Core capabilities:** Input-agnostic analysis; configurable system/subsystem scope; evidence-first investigation; FR/NFR and design-decision traceability; architecture, contracts, and risk assessment; optional learning references.  
+  **Purpose:** Understand an existing system, assess a requested change, or reason about a new design using the same evidence-backed four-step SDI assessment. Verify current behavior, examine design and contract boundaries, and explain trade-offs across software, agent skills, and workflows. Read-only and one-pass; optional `learn: on` adds selective book chapters.  
+  **Core capabilities:** Explicit assessment intent; input-agnostic system/subsystem scoping; source-based classification of requirements, observations, proposals and unknowns; stable FR/NFR and decision traceability; optional learning references.  
   **What you'll learn:** Problem framing, separating evidence from assumptions, system design reasoning, interfaces and invariants, and explaining engineering decisions.
 
 - **Skill:** [slice](skills/slice/SKILL.md)  

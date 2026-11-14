@@ -100,7 +100,7 @@
     {
       "name": "reazn",
       "category": "engineering",
-      "purpose": "REAZN: one-pass, read-only, input-agnostic four-step SDI assessment of problems and changes, grounded in relevant source evidence. Optional learn: on adds in-context book/chapter study references from six engineering books (including AI Agents in Action, 2nd ed.); default off.",
+      "purpose": "One-pass, read-only, input-agnostic four-step SDI reasoning for bounded existing-system understanding, change assessment or new design. Resolve assessment intent, distinguish source requirements from observed implementation, audit suggestions and unknowns, preserve stable provenance, and optionally add learn: on chapter references.",
       "source": "dotskills",
       "path": "skills/reazn",
       "reference_count": 1
