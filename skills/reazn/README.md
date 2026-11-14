@@ -96,7 +96,43 @@ One evidence-backed report with a consistent structure:
 5. **Step 4 — Trade-offs, risks & readiness** — material alternatives, risks, mitigation, verification needs, and proposed decision records.
 6. **Open decisions / questions** — remaining owner-specific gaps, or a statement that none were identified.
 
-**Output Assessment fields:** `Output` → `Expected behavior` → `Observed behavior` → `Evidence` → `Verification status`. These describe the **assessed repository, skill or workflow's output**, not REAZN's report. An instruction or source-code path does not by itself prove an actual runtime result; missing tests or traces are explicitly `NOT VERIFIED`.
+## Step-by-step analysis lenses & fields
+
+A **lens** describes what REAZN examines; a **record** has fixed field labels and order. REAZN uses only relevant lenses and records, rather than inventing findings to fill a template. Source-backed claims remain distinct from assumptions, proposals, and runtime verification.
+
+### Step 1 — Requirements & scope
+
+- **Lenses:** objective, actors, expected outcomes, functional/non-functional requirements, constraints, acceptance criteria, and unknowns.
+- **FR (functional requirement):** `Requirement` → `Status` → `Source`; optional `Acceptance` → `Open question`.
+- **NFR (non-functional requirement):** `Quality` → `Status` → `Source`; optional `Linked FR` → `Verification` → `Open question`.
+- In an existing-system assessment, observed code behavior does **not** automatically become an FR/NFR.
+
+### Step 2 — Verify patterns & high-level design
+
+- **Lenses:** existing responsibilities and patterns, evidence and reuse fit, proposed design alternatives, and current/proposed flows when meaningful.
+- **Area / existing pattern:** `Where it lives` → `What exists today` → `Purpose` → `Fit to objective` → `Verdict` → `Why` → `Source`.
+- **Design recommendation (when relevant):** `Recommendation` → `Why` → `Alternative` → `Linked requirements` → `Status`; optional `Source`.
+- **Flow diagrams:** evidence-labeled current and proposed component/handoff flows where applicable, **not** another fixed-field record.
+
+### Step 3 — Deep dive & data flow
+
+- **Mechanisms & boundaries (lens):** ownership, validation, authorization, errors, side effects, and guarantees. No mandatory multi-field record.
+- **Data-flow deep dive (lens):** source/input → transformation or handoff → destination/consumer, including read/write paths where relevant. No mandatory multi-field record.
+- **Contract (fixed record):** `Current` → `Owner` → `Guarantee` → `Unknown` → `Linked requirements` → `Linked decision`; optional `Source`.
+- **Output Assessment (fixed record):** `Output` → `Expected behavior` → `Observed behavior` → `Evidence` → `Verification status`. This evaluates what the **assessed subject** produces, not the REAZN report. Documented instructions and static code do not prove runtime execution; uninspected outputs remain `NOT VERIFIED`.
+
+### Step 4 — Trade-offs, risks & readiness
+
+- **Lenses:** material alternatives, consequences, mitigations, change impact, verification, and human decisions.
+- **Trade-off:** `Benefit` → `Cost` → `Preferred approach` → `Linked decision`.
+- **Risk:** `Impact` → `Mitigation` → `Linked decision`.
+- **Change footprint (if relevant):** `Affected areas` → `Cross-boundary impact`.
+- **Readiness (always):** `Status` → `Reason` → `Verification`. For `understand-existing`, this means **evidence readiness**, not approval to implement.
+- **Proposed decision record (when consequential):** `Decision` → `Why/evidence` → `Alternative` → `Contract impact` → `Linked requirements` → `Status` → `Revisit if`.
+
+After Step 4, any **open question** uses `Question` → `Why it matters` → `Decision owner` → `Linked requirements`. Optional `learn: on` references appear after applicable record fields. See [`SKILL.md`](SKILL.md) for the authoritative rules and edge cases.
+
+
 
 **FRs/NFRs are not automatically work to implement.** They represent sourced expectations. REAZN distinguishes documented requirements, inspected implementation, proposed changes, and unverified gaps. In an understanding-only assessment, no new FR/NFR or design change needs to be invented.
 
