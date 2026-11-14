@@ -167,7 +167,7 @@ These are examples of established **open-source frameworks and cloud platforms**
 | [**Langfuse**](https://langfuse.com/) | Open-source / cloud platform | Self-hosted or managed traces, datasets, and evaluation results |
 | [**MLflow**](https://mlflow.org/) | Open-source platform | Experiment tracking, evaluation, and monitoring |
 
-**Why keep Promptfoo for DotSkills?** It is already part of the Codex SDK evaluation route, supports `llm-rubric` grading and *with-skill / without-skill* cases, and can work with multiple model providers. Switching now would mean replacing integration work without a clear evaluation benefit. Explore other tools for specific gaps—especially dashboards or different harness designs—rather than replacing Promptfoo by default.
+**Why keep Promptfoo for DotSkills?** It is already part of the Codex SDK evaluation route, supports `llm-rubric` grading and *with-skill / without-skill* cases, and is used here **only with OpenAI Codex SDK**. Promptfoo itself can support other providers, but Evaluate Skill intentionally does not. Switching now would mean replacing integration work without a clear evaluation benefit. Explore other tools for specific gaps—especially dashboards or different harness designs—rather than replacing Promptfoo by default.
 
 **Important:** A cloud eval platform or grader is **not automatically a secure execution sandbox**. The evaluated agent still needs independently enforced permissions and isolation.
 
