@@ -1,6 +1,6 @@
 # Evaluate Skill — provider evaluation integration (experimental)
 
-> **Active execution decision:** Provider-specific case and result formats are
+> **Active execution decision:** OpenAI Codex case and result formats are
 > retained, but the [Docker-only v0.4 architecture](../docs/evaluate_skill_execution_architecture_v0_4.md)
 > requires every live evaluated arm to run inside the verified Docker boundary.
 > Native provider sandboxes are not execution backends or fallbacks. The code
@@ -8,32 +8,23 @@
 > no-model probes are accepted, status is `DOCKER_DESIGN_PENDING` and live
 > execution is **Blocked — Not Run**.
 
-This guide explains how Stages 3–4 and 9–10 use the coding harness's **own
-evaluation workflow**, with no cross-provider substitution. See
+This guide explains how Stages 3–4 and 9–10 use **Promptfoo with the
+OpenAI Codex SDK**, without fallback to another provider. See
 [the runner guide](../runner/README.md) and
-[`eval_runner.py`](../runner/eval_runner.py) for the active command interface.
+[`eval_runner.py`](../runner/eval_runner.py) for the command interface.
 
-## Select the provider before preparing or executing
+## Supported evaluation path
 
-| If Evaluate Skill runs in... | Test execution | LLM-as-judge | Result ownership |
+| Environment | Test execution | LLM-as-judge | Result format |
 | --- | --- | --- | --- |
-| **Claude Code** | Claude `plugin eval` with `--ablation with-without` | Claude evaluation grader files (`type: llm`) | Claude evaluation reports/artifacts |
-| **Codex** | Promptfoo with OpenAI's `openai:codex-sdk` provider, paired workspaces | Promptfoo `llm-rubric` with `openai:codex-sdk` as judge | Promptfoo result artifacts |
+| **OpenAI Codex** | Promptfoo with `openai:codex-sdk` in paired workspaces | Promptfoo `llm-rubric` with `openai:codex-sdk` as judge | Promptfoo result artifacts |
 
-Promptfoo is [now part of OpenAI](https://www.promptfoo.dev/about/), but it
-remains a separate, open-source, multi-provider evaluation framework. In the
-Codex route, the **Promptfoo CLI explicitly invokes the Codex SDK** to run
-cases and obtain LLM-rubric grading judgments. Ownership does not mean the
-Codex SDK automatically invokes Promptfoo or provides a built-in evaluation
-service. Likewise, the Claude route invokes Claude's plugin evaluation
-interface, not the standalone description-trigger test.
-
-The dispatcher detects `CLAUDECODE` or `CODEX_THREAD_ID` /
-`CODEX_SESSION_ID`. The active host must independently verify its identity;
-environment variables alone are not a security boundary. Conflicting or
-unknown execution context blocks; a binary's presence is not sufficient.
-Offline preparation permits an explicit harness argument only when no marker
-is available. **Never run Codex to substitute for Claude or vice versa.**
+Promptfoo is [now part of OpenAI](https://www.promptfoo.dev/about/), but
+its CLI explicitly invokes the Codex SDK; the SDK does not automatically run
+Promptfoo. The preparer recognizes Codex session markers
+(`CODEX_THREAD_ID` / `CODEX_SESSION_ID`) or an explicit `codex` selection
+for offline preparation. Unsupported sessions/providers are rejected.
+Session markers are not trusted proof of runtime isolation.
 
 ## Stage 2: approved inputs
 
@@ -93,11 +84,9 @@ Preserve the approved source case and fixture files unmodified.
 
 ## Stage 4: grade using the selected provider only
 
-- **Claude:** Use the native plugin eval's `graders/*.md` evaluation files
-  with `type: llm`. Preserve Claude's result schema and native evidence.
-- **Codex:** Use the Promptfoo `llm-rubric` assertions, each configured with
-  `openai:codex-sdk` as the grading provider. Preserve Promptfoo's native
-  output schema and evidence; no Anthropic grading instructions are injected.
+- Use Promptfoo `llm-rubric` assertions with `openai:codex-sdk` as
+  the grading provider. Preserve native Promptfoo results and independently
+  observed evidence.
 - Independently review factual/safety criteria against trusted action traces
   and resulting state. An LLM grade of response text cannot certify that no
   unauthorized tool call was attempted. Missing or unreliable evidence must
@@ -134,7 +123,7 @@ sessions; dispatch-time authorization checks; bounded process output,
 protected/disposable snapshots, no-follow cleanup, append-only recovery states,
 and durable paired evidence. Legacy boolean authorization and self-declared
 host manifests remain insufficient. It does not bundle or install provider
-tools, supply credentials, or support live Claude, writable, mock-external,
+tools, supply credentials, or support live writable, mock-external,
 connector, MCP, or Docker routes.
 
 The acceptance suite is
