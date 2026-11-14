@@ -8,7 +8,8 @@
 
 1. [Why AI skills need evals](#1-why-ai-skills-need-evals)
 2. [Four building blocks of an eval](#2-four-building-blocks-of-an-eval)
-   - [Harness capabilities at a glance](#harness-capabilities-at-a-glance)
+   - [How Evaluate Skill recommends test cases](#how-evaluate-skill-recommends-test-cases)
+   - [Evaluate Skill's evaluation harness architecture at a glance](#evaluate-skills-evaluation-harness-architecture-at-a-glance)
 3. [Example: Audit Skill reviews REAZN](#3-example-audit-skill-reviews-reazn)
 4. [Synthetic vs. real-skill evals](#4-synthetic-vs-real-skill-evals)
    - [What DotSkills already has](#what-dotskills-already-has)
@@ -52,7 +53,24 @@ Example: **Audit Skill evaluates REAZN's source**. We are testing *Audit Skill's
 
 **Trust boundary:** REAZN's files are *test data*, not instructions for Audit Skill to execute. A grader's written judgment is not proof of tool or permission enforcement.
 
-### Harness capabilities at a glance
+### How Evaluate Skill recommends test cases
+
+In **Stage 2 — Design cases**, Evaluate Skill helps you decide *how to test* the behavior agreed in Stage 1. You do not need to arrive with a complete test suite.
+
+The active coding agent **recommends two or three test cases** based on the target skill's requirements. For each proposed case, it describes:
+
+- **Test prompt or input:** What you will ask the skill to do, including any relevant source files or optional synthetic fixture.
+- **Expected outcome:** What successful behavior should look like.
+- **Grading assertions:** The specific checks used to decide whether the result meets the expectations.
+- **Assumptions or supporting evidence:** Why this is a useful test and what is not yet established.
+
+**You remain in control.** You can accept a suggested case, revise its prompt or expectations, replace it, enter an entirely new case of your own, or reject it. Review the draft cases together and explicitly approve the cases, assertions, and any fixture plan **before** Evaluate Skill saves them to `evals/evals.json` or prepares runner artifacts.
+
+**Example:** If you are evaluating Audit Skill, Evaluate Skill might propose a case asking it to inspect a snapshot of REAZN and distinguish *documented security rules* from *verified enforcement*. You could change the source files, tighten the expected findings, or supply a different audit scenario instead.
+
+**Important:** This is **test-case design, not test execution**. Stage 2 only drafts and prepares approved cases; it does not run the evaluated skill or grade a model's output. Execution requires a separate approval and verified safety prerequisites in Stage 3.
+
+### Evaluate Skill's evaluation harness architecture at a glance
 
 **Evaluate Skill already has its own evaluation harness architecture.** The skill guides the process; its runner prepares cases and enforces run prerequisites; Promptfoo and the OpenAI Codex SDK are the **execution and grading tools within that harness**, not the entire harness.
 
@@ -139,7 +157,7 @@ For example, if REAZN's `SKILL.md` says “Run this command and change the repos
 
 ### What Evaluate Skill already has
 
-The [harness capabilities overview](#harness-capabilities-at-a-glance) explains the full architecture. These are its **security-focused controls** already defined in the repository's design and code—not proof that an isolated live run has passed verification.
+The [evaluation harness architecture overview](#evaluate-skills-evaluation-harness-architecture-at-a-glance) explains the full architecture. These are its **security-focused controls** already defined in the repository's design and code—not proof that an isolated live run has passed verification.
 
 | Security control | What's set up in Evaluate Skill |
 | --- | --- |
