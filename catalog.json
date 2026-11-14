@@ -27,7 +27,7 @@
     {
       "name": "audit-skill",
       "category": "methodology",
-      "purpose": "Unified read-only evidence-backed review of one or more skills (contracts, Agent Skills compliance, quality, trust, Mermaid workflows, evaluation gaps and portability), plus DFRDE Stages 1–3 prefill: source-backed Discovery, proposed Design options and conditional Contract drafts pending human approval.",
+      "purpose": "Unified read-only evidence-backed audit of one or more agent skills covering Q-01–Q-10 engineering quality, Agent Skills conformance, contracts, trust, permissions, workflow diagrams, existing evaluation evidence, lifecycle and cross-platform compatibility.",
       "source": "dotskills",
       "path": "skills/audit-skill",
       "reference_count": 0

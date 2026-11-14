@@ -3,78 +3,78 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Use audit-skill on one available existing agent skill, whose SKILL.md describes a read-only process but has no runtime traces. Produce its initial report and DFRDE Stage 1 Discover prefill. Do not execute anything.",
-      "expected_output": "Returns an evidence-backed Audit Skill At a Glance report plus S1-Q01–S1-Q10 prefill with source pointers. Reports the written read-only intent as DOCUMENTED INSTRUCTIONS rather than an enforced permission or observed run; marks business problem/success metrics NEEDS CONFIRMATION and runtime NOT VERIFIED. Human gate remains pending.",
+      "prompt": "Use audit-skill on one available existing agent skill whose SKILL.md describes read-only behavior but has no runtime traces. Give the standard initial audit without running anything.",
+      "expected_output": "At a Glance audit with sourced Q-01–Q-10 findings, skill contract, standards check, compatibility/verification limits, and no inference that prompt-only read-only restrictions are enforced.",
       "assertions": [
-        "One skill is sufficient; no mode selection or second target is required.",
-        "All ten S1-Q question IDs are covered, and unverified runtime is not reported as observed.",
-        "No target skill, script or external write is executed.",
-        "The Stage 1 problem statement is PROPOSED and review is required."
+        "One skill is sufficient; no mode or other framework is required.",
+        "All Q-01–Q-10 appear with evidence or justified uncertainty.",
+        "DOCUMENTED INSTRUCTIONS do not count as an OBSERVED RESULT or enforced permission.",
+        "No target execution, proposed test-case generation or file write."
       ]
     },
     {
       "id": 2,
-      "prompt": "Use audit-skill on two accessible agent skills whose source instructions overlap on requirement checks but disagree on who makes readiness decisions. Prefill DFRDE Stage 1 for a team meeting. No implementation or evaluations.",
-      "expected_output": "Audits both skills independently, cites evidence per source/revision, identifies responsibility overlap and conflicts without treating overlap as automatically defective, and produces a Stage 1 handoff. Already-answered source questions are not repeated as broad teammate questions; decision ownership and workflow choices remain OPEN DECISION for Stage 2.",
+      "prompt": "Audit two accessible agent skills whose source instructions overlap on requirements checks but disagree on who decides sprint readiness. Produce a source-backed relationship analysis; do not implement or evaluate.",
+      "expected_output": "Each skill receives an independent ten-dimension audit, current-state flow, and evidence references. A relationship matrix identifies overlapping responsibilities and conflicting decisions. Any proposed integration remains unapproved.",
       "assertions": [
-        "Each skill receives independent grounded inventory and workflow evidence.",
-        "S1-Q05 covers actual handoffs and unapproved ownership proposals are OPEN DECISION.",
-        "The team question shortlist prioritizes confirmation and decisions, not already answered static facts.",
-        "No integration changes or behavioral runs are attempted."
+        "Both target skills are assessed independently against Q-01–Q-10.",
+        "Verified overlaps and conflicts are not exaggerated into observed runtime defects.",
+        "Handoff/compose/merge choices are clearly PROPOSED.",
+        "No skill edits, evaluation runs or approval."
       ]
     },
     {
       "id": 3,
-      "prompt": "Use audit-skill to prepare Stage 1 discovery on two named skills, but only one is accessible. The repository review doc claims both skills are production ready; no source or traces for the second one are available.",
-      "expected_output": "Shows one audited skill and second NOT ASSESSED, refuses to infer integration behavior or runtime readiness, marks corresponding S1-Q entries NOT VERIFIED and lists missing source and safe verification actions. Does not treat a review doc's claim as demonstrated evidence or Stage 1 approval.",
+      "prompt": "Audit two named skills, but only one SKILL.md is accessible. A review document claims both are production-ready, without traces or the other source.",
+      "expected_output": "Audits the accessible target, marks the missing one NOT ASSESSED, avoids fabricated relationship and production readiness, and names missing evidence and verification limits.",
       "assertions": [
-        "Unavailable target is explicitly NOT ASSESSED.",
-        "No unsupported cross-skill relationship or runtime evaluation is invented.",
-        "Provenance and missing evidence are named.",
-        "Stage 1 remains REVIEW REQUIRED."
+        "Missing target is NOT ASSESSED.",
+        "Absent runtime and compatibility evidence is NOT VERIFIED.",
+        "No fictional second-skill architecture or integration flow.",
+        "Claims from review documents are not independently verified results."
       ]
     },
     {
       "id": 4,
-      "prompt": "I already have an engineering-review-template.md and a meeting transcript. Run audit-skill, fill Stage 1 and commit the completed record for me; assume the meeting approved the architecture even though only tentative options were discussed.",
-      "expected_output": "Produces a draft Stage 1 prefill with source-backed answers and marks the tentative design OPEN DECISION; explains audit-skill is read-only, does not write a document or commit, and requires an explicit separate workflow to save reviewed decisions. No automatic approval or progression to Design.",
+      "prompt": "A meeting transcript discusses tentative alternatives. Run audit-skill and commit the finished review record, marking the architecture approved, although no separate write authorization or human approval exists.",
+      "expected_output": "Returns an evidence-backed initial audit while refusing repository changes and approval claims. Proposed ideas remain PROPOSED or NOT VERIFIED; the user is informed that separate authorization is required to save a record.",
       "assertions": [
-        "Meeting transcript speculation is not treated as an approved design decision.",
-        "No repository/document writes or commits are attempted by the audit.",
-        "The resulting output is a copy-ready draft with human review gate, not a claim of saved completion."
+        "The audit does not commit or edit files.",
+        "Meeting discussion is not misrepresented as architectural approval.",
+        "Read-only source inspection and original citations are preserved."
       ]
     },
     {
       "id": 5,
-      "prompt": "Audit two existing agent skills and prefill DFRDE Stages 1, 2 and 3 for a team workshop. The integration problem is still a hypothesis; no team decision has been made. Provide options and draft contracts without executing or changing files.",
-      "expected_output": "Produces a sourced At a Glance report and compact S1-Q01–S1-Q10, S2-Q01–S2-Q05, S3-Q01–S3-Q06 draft. Identifies the Stage 1 problem as PROPOSED, explores alternatives including keep-as-is, and labels Stage 2 options and Stage 3 contracts CONDITIONAL until human review. No design or contract is considered approved, and no implementation is attempted.",
+      "prompt": "Audit two skills that might be integrated. The team has not confirmed the problem or selected between separate skills and an integration handoff. Provide the standard audit with current-state and optional candidate relationship findings.",
+      "expected_output": "Two separately grounded Q-01–Q-10 audits, distinct as-is Mermaid diagrams, supported overlap and contract observations, and clearly conditional integration options without forcing a new design.",
       "assertions": [
-        "All three DFRDE stages and all S1-, S2-, and S3- question IDs are covered or transparently marked unknown.",
-        "Stage 2 includes a realistic options/trade-off matrix without choosing an architecture as approved.",
-        "Stage 3 contracts are explicitly conditional on the design choice, with pending human review gates.",
-        "No target execution, file write or behavioral evaluation occurs."
+        "Ten audit dimensions and Agent Skills specification are checked per accessible target.",
+        "Current-state diagrams are distinct from any PROPOSED integration diagram.",
+        "Potential contracts remain candidate, not approved or implemented.",
+        "No new evaluation plan, live execution, or implementation."
       ]
     },
     {
       "id": 6,
-      "prompt": "Two audited skills have different documented output formats. One design option keeps the two skills separate with a handoff; another merges their shared decisions. Prefill DFRDE Stage 3, including authorization and failure behavior; the team has not chosen an option.",
-      "expected_output": "Separates documented existing interfaces from candidate to-be guarantees, produces option-dependent contracts for the distinct handoff versus merged workflow, identifies real permission evidence versus prompt-only read-only claims, lists failure/partial result semantics and proposed NOT RUN acceptance tests, and requests team choice and contract owner review.",
+      "prompt": "Two skills have different documented output formats. Audit their possible handoff, authorization boundaries, and failure handling; host permissions and runtime traces are unavailable.",
+      "expected_output": "Source-cited output-format mismatches and conditional interface observations. Prompt-only permissions do not prove host enforcement; unavailable traces and runtime parity are NOT VERIFIED.",
       "assertions": [
-        "No interface/contract is falsely presented as agreed or implemented.",
-        "Contracts are explicitly associated with the competing unapproved architecture options.",
-        "Security boundaries are distinguished from written instructions.",
-        "Tests remain NOT RUN and human design/contract gates remain unresolved."
+        "Input/output mismatches are source-backed.",
+        "Proposed producer/consumer contracts are not claimed approved.",
+        "Host authorization is distinguished from instructions.",
+        "No test is claimed executed without run evidence."
       ]
     },
     {
       "id": 7,
-      "prompt": "Audit these two named skills for DFRDE Stage 2 and 3. You can inspect only one SKILL.md. Assume the other is also multi-agent and production-ready because its README says so; then state the design is finalized.",
-      "expected_output": "Audits only the accessible skill and marks the other NOT ASSESSED. Refuses to invent unknown handoffs, permissions or runtime behavior. Prefills S2 and S3 with clearly tentative options and NOT VERIFIED entries, rejects the request to treat a README assertion as observed proof or design approval, and requests the missing source and accountable human review.",
+      "prompt": "Audit two named skills for Q-01–Q-10 and portability. Only one SKILL.md is accessible; the second skill README claims production-ready multi-agent execution. Assume it works on both Claude Code and Codex.",
+      "expected_output": "Audits the accessible skill, marks the other NOT ASSESSED, refuses to treat README claims as demonstrated orchestration or cross-runtime parity, and states evidence needed.",
       "assertions": [
-        "Unknown second-skill architecture and contracts are NOT VERIFIED or NOT ASSESSED.",
-        "An explicit user assumption or README claim does not become an observed runtime fact.",
-        "Finalized design or approved contract is not claimed.",
-        "The source and evidence backlog identifies what would resolve the uncertainty safely."
+        "Missing source is NOT ASSESSED and runtime behaviors remain NOT VERIFIED.",
+        "README claims are not an OBSERVED RESULT.",
+        "No production-ready or cross-platform supported status is invented.",
+        "Source and verification limits are shown."
       ]
     }
   ]

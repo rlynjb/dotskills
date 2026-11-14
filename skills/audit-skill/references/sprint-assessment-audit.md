@@ -21,16 +21,11 @@ Also supply:
 - A responsibility/overlap matrix; unique, duplicated, conflicting and
   missing decisions; candidate handoff/integration options labeled
   PROPOSED, never as already implemented.
-- Evidence-backed risk findings and three or more NOT RUN synthetic
-  eval scenarios with observable assertions.
-- A DFRDE Stages 1–3 prefill aligned to the generic engineering review
-  template: S1-Q01–S1-Q10 discovered facts, S2-Q01–S2-Q05 conditional
-  design alternatives/trade-offs, and S3-Q01–S3-Q06 candidate contracts,
-  invariants, permission/failure boundaries, and NOT RUN acceptance checks.
-  For Stage 2, distinguish keep-as-is, central refinement, and per-ticket
-  alternatives when supported by sources; do not pick an architecture.
-  For Stage 3, bind contract proposals to those options and preserve
-  explicit HUMAN REVIEW REQUIRED gates for all three stages.
+- Evidence-backed risk findings and existing evaluation evidence;
+  distinguish defined cases from authorized runs and observed results.
+  Identify missing coverage without generating new test cases.
+- Existing interface and ownership contracts where evidenced, plus
+  candidate handoff/integration options marked PROPOSED; no approvals.
 - A meeting-ready list of only unresolved confirmations, open decisions
   and missing evidence; do not ask again what file/line evidence proves.
 
@@ -86,8 +81,5 @@ edit source files. Preserve gaps and pause for human review.
 - Existing safeguards precede risks. A written check or promise of
   read-only behavior does not count as an observed success.
 - Cross-platform parity is not claimed without runtime evidence.
-- Cases are **NOT RUN** and the team receives an explicit list of questions,
-  owners/decisions to confirm, and a smallest next validation step.
-- The Stage 2 design options and Stage 3 interface/behavior contracts are
-  **PROPOSED / CONDITIONAL** until the responsible people resolve Stage 1
-  intent and approve a design; no decision or contract is silently finalized.
+- Unexecuted evaluation cases are **NOT RUN**; unknown runtime evidence is **NOT VERIFIED**. The team receives the important source gaps and decisions to confirm.
+- Candidate integration designs and interface contracts remain **PROPOSED / CONDITIONAL** until responsible people approve them.

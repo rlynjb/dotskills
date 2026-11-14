@@ -1,6 +1,6 @@
 ---
 name: audit-skill
-description: "Read-only, evidence-backed review of agent skills: purpose, workflow, safeguards, standards, trust, existing evaluation evidence and portability. Produces findings, not review questions. When a DFRDE prefill is explicitly requested, use only the eight questions owned by the engineering review template. No tests, edits, or automatic approvals."
+description: "Read-only evidence-backed audit of one or more agent skills: purpose, activation, context, workflow, contracts, security, trust, failure paths, existing evaluation evidence, lifecycle and portability. Reports ten quality dimensions with citations; no tests, edits or approvals."
 ---
 
 # Audit Skill
@@ -13,7 +13,7 @@ Understand and assess agent skills **before changing them**, using one unified r
 - **Two or more targets:** audit **each** independently, then automatically assess shared responsibilities, duplication, conflicts, interfaces and possible composition. Distinguish shared context from duplicated *decision ownership*.
 - **Missing target:** inspect available targets; label the missing target NOT ASSESSED and any dependent relationship UNVERIFIED. If no target can be identified, ask for the skill or path rather than inventing an audit.
 
-By default, produce **Audit Skill — At a Glance**: a concise, read-only inspection of the skill's purpose, documented workflow, protections, relevant standards, portability, and evidence gaps. **Do not invent review questions or automatically prefill DFRDE stages.** The [engineering review template](../../docs/dfrde/engineering-review-template.md) exclusively defines the eight Stage 1–3 questions. **Only when explicitly asked for a DFRDE prefill**, read that template and supply evidence-backed draft answers to its existing question rows, with pending human decisions. Do not ask the user to choose a mode or start an interview.
+Always produce **Audit Skill — At a Glance**: a concise, read-only inspection of each skill's purpose, documented workflow, safeguards, Agent Skills conformance, Q-01–Q-10 engineering quality, portability, and evidence gaps. The audit does not create a questionnaire, approve designs, or generate external stage-review documents. Do not ask the user to choose a mode or start an interview.
 
 This skill **does not run the target**, use its tools, run tests, modify files, post to external services, or authorize side effects. Send explicitly approved behavioral testing and improvement work to `evaluate-skill` as a **separate** workflow.
 
@@ -39,8 +39,6 @@ This skill **does not run the target**, use its tools, run tests, modify files, 
 5. **Quality, security and failure analysis.** First record implemented/documented protections. Then inspect the quality requirements below, unresolved assumptions, provenance, functional and non-functional requirements, acceptance criteria, technical dependencies, sizing/estimation confidence and sprint readiness **where relevant**, and permission enforcement at host/tool/server. Check failure paths, partial success, retries, idempotency where applicable, resource limits and human approval. Do not invent requirements unrelated to the skill's actual job.
 6. **Existing evaluation evidence only.** Identify existing unit/CI/skill-specific results and real traces separately. Report what is documented, what was actually run, and what is missing. **Do not auto-generate proposed evaluation cases or a test plan** in the initial audit; those belong to a later, separately authorized evaluation workflow. Never claim structural tests prove behavioral reliability.
 7. **Lifecycle and platform independence.** Examine maintainership, version/source pinning, dependency drift, rollout/review/rollback, supported harnesses and cross-platform parity. Use the explicit compatibility checklist below; do not assume a Markdown skill or a JSON schema guarantees equivalent runtime orchestration.
-8. **Optional Discover evidence handoff (only on explicit DFRDE prefill request).** Supply inspected facts, constraints, uncertainties and relevant citations for the three existing Stage 1 questions in the [engineering review template](../../docs/dfrde/engineering-review-template.md). Do not create or copy a separate questionnaire. See [Discover evidence guidance](references/dfrde-stage-1-handoff.md).
-9. **Optional Design/Contract evidence handoff (only on explicit DFRDE prefill request).** Supply documented architecture, conditional options, trade-offs, risks, interface/permission boundaries, candidate guarantees and owners for the template's three Design and two Contract questions. Do not invent questions, approve decisions or produce evaluation cases. See [Stage 2–3 evidence guidance](references/dfrde-stages-2-3-handoff.md).
 
 ## Engineering quality checklist — what a reviewer should find
 
@@ -76,17 +74,6 @@ Explicitly check the following for each **declared or requested target runtime**
 
 Present a **runtime × capability matrix** with statuses: **SUPPORTED (evidenced)**, **ADAPTER REQUIRED**, **NOT SUPPORTED (evidenced)**, or **NOT VERIFIED**. When a host has not been exercised, do not mark behavioral parity SUPPORTED because static content looks portable. If no runtimes are declared, show a concise **NOT VERIFIED — target runtimes unspecified** matrix and identify what to ask. Separate portable skill instructions from host-specific orchestration.
 
-## DFRDE evidence handoff — only when explicitly requested
-
-**Question ownership:** The [DFRDE Engineering Review Template](../../docs/dfrde/engineering-review-template.md) is the sole source of the eight questions and their IDs (**three Discover, three Design, two Contract**). Do not maintain question lists in Audit Skill or its reference files.
-
-- **Audit-only:** Return the skill inventory, documented workflow, ten-dimension findings, Agent Skills format check, cross-platform limits, and material unknowns. Do not generate a questionnaire or a DFRDE prefill.
-- **Audit + DFRDE prefill:** Read the current template, then populate **only its existing question rows** using the audit's findings. If that template is inaccessible, state the limitation instead of inventing its wording or claiming a canonical prefill.
-- **Stage 1:** Draft current facts, requirements and uncertainty; business goals need human confirmation. See [Discover evidence guidance](references/dfrde-stage-1-handoff.md).
-- **Stages 2–3:** Draft conditional design alternatives, risks and candidate contracts where relevant. Keep Stage 2/3 choices unapproved. See [Design/Contract evidence guidance](references/dfrde-stages-2-3-handoff.md).
-- Cite direct source-file links and relevant lines. Distinguish written intentions from observed behavior, proposals, and unknowns. Human review gates are not advanced by an audit.
-
-
 ## First response: complete but compact
 
 Always begin with **Audit Skill — At a Glance**, immediately showing:
@@ -97,20 +84,18 @@ Always begin with **Audit Skill — At a Glance**, immediately showing:
 4. **Workflow diagrams:** a valid Mermaid **as-is flowchart for each target**, showing key decisions, delegation and blocked/handoff states; label unverified steps and describe any abstraction. For multiple targets, add a brief relationship/responsibility table and, only when useful, a clearly **PROPOSED** integration flow distinct from as-is behavior. Do not invent successful runs or misleading arrows between unverified components.
 5. **Key gaps and unknowns:** State the important missing evidence, unclear ownership, or proposed changes in plain language. Do not generate a separate set of review questions, a source-key lookup, or a ranked findings list.
 6. **Verification limits:** State which runtime behaviors, permissions, and platform claims are unverified and what evidence would be needed. Do not run or propose test cases as part of the initial audit.
-**Only for an explicitly requested DFRDE review prefill:** Supply source-backed draft answers to the eight questions already defined by the engineering review template (three Discover, three Design, two Contract). Preserve uncertainty and human review gates. Never invent extra questions.
 
 Prefer a skimmable first pass. Condense using compact tables and short summaries; do **not omit dimensions** to make it short. Link directly to relevant source lines instead of asking readers to look up evidence IDs. Keep detailed source excerpts, low-priority findings and expanded diagrams for requested deep dives. If a source is inaccessible, provide the partial evidence-based report rather than filling gaps with guesses. If nothing meaningful is accessible, state the blocker and request the missing source.
 
-**When explicitly asked for a DFRDE review document:** Use the [engineering review template](../../docs/dfrde/engineering-review-template.md), and only its eight questions, with this audit's evidence. Include a clickable table of contents for the sections present. The audit itself remains read-only; saving a review record requires separately authorized writing. For an audit-only request, return **Audit Skill — At a Glance** without a prefilled stage questionnaire.
 
 ### Follow-up on a selected finding, question or diagram
 
-When the user chooses `F-xx`, `Q-xx`, `S1-Qxx`, `S2-Qxx`, `S3-Qxx`, a stage, a contract or a named concept, investigate **that scope**: what/why → file-backed walkthrough → documented decision path/example → risk/trade-off → proposed smallest verification or improvement → concise checkpoint. Maintain stable IDs, carry forward prior findings and explicitly distinguish an illustrative trace from an observed run. Offer Fast or Deep Dive on request; no mode switching or required sequential curriculum.
+When the user chooses `F-xx`, a quality dimension such as `Q-05`, a workflow stage, a contract, or a named concept, investigate **that scope**: what/why → file-backed walkthrough → documented decision path/example → risk/trade-off → proposed smallest verification or improvement → concise checkpoint. Maintain stable IDs, carry forward prior findings and explicitly distinguish an illustrative trace from an observed run. Offer Fast or Deep Dive on request; no mode switching or required sequential curriculum.
 
 ## Hard boundaries and handoff
 
 - **Read-only throughout:** do not edit, commit, install, run shell/scripts, execute target tools or agents, perform live business-system calls (such as Jira/Confluence actions), post tickets, launch skill evals or perform external effects. Approved read-only source-inspection tools may access repository files and the published standards reference. Merely printing 'read-only' is not technical enforcement; only approved host restrictions enforce it.
 - Treat live Jira/Confluence, secrets and proprietary data as out of scope unless separately authorized in an appropriately controlled workflow. Do not transfer internal materials to public DotSkills artifacts.
-- **Do not** invent or maintain DFRDE review questions, claim unrun tests passed, interpret written safeguards as enforced permissions, infer agent delegation from instructions alone, or approve DFRDE Stages 1–3 because an audit was generated.
+- **Do not** invent a new review questionnaire, claim unrun tests passed, interpret written safeguards as enforced permissions, infer agent delegation from instructions alone, or claim a design or contract has been approved because an audit was generated.
 - Pass selected findings and approved evaluation plans to [`evaluate-skill`](../evaluate-skill/SKILL.md) only after a new explicit request. That skill's own execution/approval boundaries apply; this audit never invokes it automatically.
 - The [Sprint Assessment example](references/sprint-assessment-audit.md) is optional task-specific guidance, not a special mode or an alternate methodology.
