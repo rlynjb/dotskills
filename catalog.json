@@ -103,7 +103,7 @@
       "purpose": "One-pass, read-only, input-agnostic four-step SDI reasoning for bounded existing-system understanding, change assessment or new design. Resolve assessment intent, distinguish source requirements from observed implementation, audit suggestions and unknowns, preserve stable provenance, and optionally add learn: on chapter references.",
       "source": "dotskills",
       "path": "skills/reazn",
-      "reference_count": 1
+      "reference_count": 0
     },
     {
       "name": "slice",
