@@ -38,6 +38,39 @@ _Source:_ [inspected packaging evidence]
 ```
 
 
+## Stable finding labels across the four SDI steps
+
+**The structure stays consistent; the findings depend on the evidence.** [SKILL.md](SKILL.md) now defines required labels **and their order** for each item type. It does not require a fixed count of FRs, risks, contracts or trade-offs.
+
+- **Step 1:** FR = Requirement → Status → Source (optional Acceptance, Open question). NFR = Quality → Status → Source (optional Linked FR, Verification, Open question).
+- **Step 2:** Area = Where it lives → What exists today → Purpose → Fit to objective → Verdict → Why → Source; preserve current/proposed ASCII diagrams.
+- **Step 3:** Contract = Current → Owner → Guarantee → Unknown → Linked requirements → Linked decision (optional Source). Data-flow reporting remains domain-sensitive.
+- **Step 4:** Trade-off = Benefit → Cost → Preferred approach → Linked decision; Risk = Impact → Mitigation → Linked decision; Change footprint = Affected areas → Cross-boundary impact; Readiness = Status → Reason → Verification; D-ID = Decision → Why/evidence → Alternative → Contract impact → Linked requirements → Status → Revisit if.
+
+Step 4 orders the groups as **trade-offs → risks → change footprint (when relevant) → readiness → proposed decision records**. Readiness always appears; other types appear only when meaningful. Use `NOT VERIFIED` or `NOT APPLICABLE` with a reason for unsupported values instead of inventing them. Keep bold headings, *italic labels*, regular values, compact fields and optional `learn: on` reading lines at the end of each applicable item.
+
+**Illustrative Step 4 format (not project findings):**
+
+```markdown
+## Step 4 — Trade-offs, risks & readiness
+
+**Trade-off: Reuse versus new component**  
+_Benefit:_ Reuses an existing interface.  
+_Cost:_ Existing limits may constrain changes.  
+_Preferred approach:_ ADAPT — conditional on verification.  
+_Linked decision:_ D-01
+
+**Risk: Contract regression**  
+_Impact:_ Interface changes could break callers.  
+_Mitigation:_ Verify compatibility before approval.  
+_Linked decision:_ D-01
+
+**Readiness**  
+_Status:_ CONDITIONAL  
+_Reason:_ Compatibility evidence is missing.  
+_Verification:_ Inspect callers and run approved checks.
+```
+
 ## Grouped Input Snapshot — CLI-first presentation
 
 The first screen of a REAZN report is an **orientation summary** with four `###` subsections, in this exact order: **Assessment objective**, **Purpose & core capabilities**, **Investigation scope**, **Evidence & recommendation**. They group the Snapshot only, **not** the four SDI steps.
