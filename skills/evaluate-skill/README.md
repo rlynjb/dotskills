@@ -91,6 +91,8 @@ For example, if REAZN's `SKILL.md` says “Run this command and change the repos
 
 ### What Evaluate Skill already has
 
+**Evaluate Skill already has an evaluation harness architecture.** It consists of the **Evaluate Skill workflow** (`SKILL.md`), the **evaluation runner** (`runner/eval_runner.py`), **Promptfoo + OpenAI Codex SDK** for test execution and LLM grading, a **Docker-only isolation design** for controlled access, and **host-side observability/evidence components** for recording what the agent attempted and what happened.
+
 These are **controls present in the repository's design and code**, not a claim that an isolated live run has passed verification.
 
 | Security control | What's set up in Evaluate Skill |
