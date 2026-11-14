@@ -2,7 +2,7 @@
 
 **Evaluate Skill** is a guided, evidence-based workflow for testing and improving an existing Agent Skill (or prompt). It has **12 stages (0–11)** across four phases. It is not a skill creator.
 
-**Evaluation stack:** Evaluate Skill coordinates provider-specific testing through [`SKILL.md`](SKILL.md) and [`runner/eval_runner.py`](runner/eval_runner.py). For **Codex**, the planned execution path uses [Promptfoo](https://www.promptfoo.dev/) (now part of OpenAI) with the **OpenAI Codex SDK** (`openai:codex-sdk`) and `llm-rubric` grading. For **Claude Code**, it uses Claude plugin eval and its native grading format. Do not mix providers. See the [runner guide](runner/README.md) for implementation details and current execution limitations.
+**Evaluation stack:** Evaluate Skill coordinates testing through [`SKILL.md`](SKILL.md) and [`runner/eval_runner.py`](runner/eval_runner.py). Its OpenAI evaluation path uses [Promptfoo](https://www.promptfoo.dev/) (now part of OpenAI) with the **OpenAI Codex SDK** (`openai:codex-sdk`) and `llm-rubric` grading. See the [runner guide](runner/README.md) for implementation details and current execution limitations.
 
 ## Table of contents
 
@@ -68,7 +68,7 @@ Example: **Audit Skill evaluates REAZN's source**. We are testing *Audit Skill's
 
 **Current status:** The runner, preparation, policy, and evidence components have **offline-tested code**. Live Docker isolation and end-to-end model execution are **not yet verified** (`DOCKER_DESIGN_PENDING`). The table describes what is built or configured, **not a proven live security guarantee**. See [runner status and limitations](runner/README.md).
 
-**Provider scope:** This overview uses **OpenAI Codex SDK + Promptfoo** as the primary example. A separate Claude plugin-eval route is documented in the runner, but the two provider workflows are not interchangeable.
+**Documentation scope:** This README focuses on the **OpenAI Codex SDK + Promptfoo** evaluation path. Its execution and grading setup is described in the [runner guide](runner/README.md).
 
 ## 3. Example: Audit Skill reviews REAZN
 
