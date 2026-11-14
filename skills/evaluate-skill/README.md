@@ -68,14 +68,31 @@ This tests **Audit Skill**, not REAZN's own four-step reasoning. To evaluate REA
 
 ## 4. Synthetic vs. real-skill evals
 
-Both types are useful, and both can be run in an isolated environment.
+**Evaluate Skill supports both synthetic and real-skill inputs.** The difference is **where the test material comes from**, not which evaluation stages run.
 
-| Test type | Example | Why use it? |
+| | Synthetic input | Real-skill input |
 | --- | --- | --- |
-| **Synthetic** | A small, made-up `SKILL.md` that claims to be read-only but provides no evidence of enforcement. | You know the intended finding in advance, so it is easier to test one behavior or edge case. |
-| **Real-skill** | A frozen copy of REAZN's actual skill files and references. | You see whether Audit Skill handles realistic complexity, competing evidence, and longer documents. |
+| **What it is** | Invented skill files or scenarios made for a test | A frozen copy of actual skill files and references |
+| **Example** | Evaluate Skill reviews a fictional GitLab-publishing skill that contains unsafe instructions | Audit Skill inspects a pinned snapshot of REAZN's source |
+| **Why use it** | Isolate a known edge case, failure, or trust boundary | Check behavior with realistic complexity and competing evidence |
+| **Advantage** | Easier to control inputs and define expected findings | More representative of real work |
+| **Trade-off** | May miss real-world complexity | Harder to establish and maintain the expected findings |
 
-A synthetic case is not automatically less valid; a real repository is not automatically more secure. **The permissions of the test environment determine what the running agent can do**, not whether the input is fictional or real.
+### What DotSkills already has
+
+- **Synthetic examples are saved:** [Evaluate Skill's six cases](evals/evals.json) include fictional `valid-sample` and `untrusted-gitlab` fixtures; the latter tests whether untrusted source instructions are treated as authority.
+- **Real-skill inputs are supported:** [Audit Skill's cases](../audit-skill/evals/evals.json) describe realistic audits. **Audit Skill inspecting a frozen REAZN snapshot is currently a README example**, not a saved REAZN-specific, pinned fixture in those cases.
+
+These are **case definitions and inputs**, not evidence that those particular evaluations have run.
+
+### How this fits Stage 2
+
+After you agree on a behavior in **Stage 1**, Evaluate Skill **proposes two or three test cases** in **Stage 2**: user prompts, expected outcomes, grading assertions, and optional synthetic fixtures. You can review, change, replace, or reject them **before they are saved**. Stage 2 supports either input type, but it does **not** automatically choose or require a synthetic-versus-real mix.
+
+**Practical approach:** Start with a synthetic case to isolate a specific behavior or security boundary; add a frozen real-skill case to see whether it holds under realistic conditions. Both use the **same approval, execution, and grading workflow**.
+
+**Do not confuse input type with the Stage 3 comparison:** *Synthetic vs. real-skill* describes the **test input**; *with-skill vs. without-skill* describes the **two runs being compared**. Neither input type grants permissions: the harness must enforce the same approved security boundaries.
+
 
 ## 5. Security and trust boundaries
 
