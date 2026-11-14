@@ -60,7 +60,7 @@ Status: Waiting for approval
 **Agent/tool and source trace (every stage):** After the concise stage
 summary, add a **Agent/tool** and **Sources** line
 when walking through each stage. State the active coding harness
-(Claude Code or Codex), then name any provider runner, grader, or
+(OpenAI Codex), then name any runner, grader, or
 methodology specialist actually used; otherwise say **no separate tool
 invoked**. Identify target files, local references and real run reports,
 plus any verified external documentation or service consulted. Label
@@ -456,11 +456,9 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    with the no-skill arm.
    Before presenting a launch option, follow the
    [provider-native evaluation integration](eval-runner-integration.md).
-   Detect and independently verify the active harness. For **Claude Code**,
-   prepare Claude plugin-eval cases and use Claude's paired execution and
-   `type: llm` graders. For **Codex**, prepare Promptfoo cases using
-   `openai:codex-sdk` as both execution and `llm-rubric` grading provider.
-   These are distinct tools and result formats; **never mix providers**.
+   Detect and independently verify the Codex harness. Prepare Promptfoo
+   cases using `openai:codex-sdk` for paired execution and `llm-rubric`
+   grading. Reject unsupported providers rather than switching runners.
    Confirm the selected native tooling and its actual supported flags
    in the independently verified host. The provider's CLI, an evaluator
    prompt, prepared fixture or configuration file is **not** a safety sandbox.
@@ -517,9 +515,8 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
    outputs, attempted tool actions, host traces, configuration, errors,
    and limits for **both** arms. Stage 4 examines the **native grades and
    observed evidence** produced by the run; it does not automatically call
-   a second grader. Use Claude plugin-eval `type: llm` graders **only**
-   for Claude, and Promptfoo `llm-rubric` with the Codex SDK **only**
-   for Codex. Do not mix grader instructions, reports or result schemas.
+   a second grader. Use Promptfoo `llm-rubric` with the Codex SDK; keep the grading
+   report separate from independently observed tool and state evidence.
    If evidence reveals a rubric defect, propose a new approved rubric
    revision and rerun/regrade **both** arms fairly; keep earlier results.
    Prefer deterministic checks for mechanical properties and human review
@@ -669,9 +666,8 @@ Keep answer keys and grading criteria out of the evaluated agent's input.
     plus an approved independent case when practical; do not launch model
     evaluations in this review stage without the Stage 9 approval and safety
     checks. For verified comparable paired outputs, use the current provider's
-    supported result and comparison features only. Preserve Claude's
-    evaluation reports or Promptfoo's Codex results **without inventing
-    a shared score format**. An optional provider-specific viewer or
+    supported result and comparison features only. Preserve Promptfoo's Codex results **without inventing
+    missing scores or comparison evidence**. An optional provider-specific viewer or
     comparator is only an observed result if it actually ran.
     No model judgment can override a failed safety requirement.
     Compare evidence, assertion outcomes, human feedback, timing and
