@@ -92,8 +92,8 @@ One evidence-backed report with a consistent structure:
 1. **Input Snapshot** — four groups: **Assessment objective**, **Purpose & core capabilities**, **Investigation scope**, and **Evidence & recommendation**. Includes resolved intent, examined baseline, and evidence limits.
 2. **Step 1 — Requirements & scope** — source-supported functional requirements (FRs), non-functional requirements (NFRs), and questions **when applicable**.
 3. **Step 2 — Verify patterns & recommend high-level design** — existing responsibilities, evidence, reuse fit, conditional recommendations, and current/proposed flow diagrams **when relevant**.
-4. **Step 3 — Deep dive & data flow** — four relevant areas: mechanisms & boundaries; data-flow traces; contract considerations; and **Output Assessment** (what the subject produces, expected vs. observed behavior, evidence and verification status). Only contracts and output assessments use fixed multi-field blocks; inapplicable areas are not invented.
-5. **Step 4 — Trade-offs, risks & readiness** — material alternatives, risks, mitigation, verification needs, proposed decision records, and optional implementation watchpoints.
+4. **Step 3 — Deep dive & data flow** — four relevant areas: mechanisms & boundaries; data-flow traces; contract considerations; and **Output Assessment** (what the subject produces, expected vs. observed behavior, evidence and verification status). Only contracts and output assessments use fixed multi-field blocks; an optional free-form **Additional findings** section captures material observations that fit neither.
+5. **Step 4 — Trade-offs, risks & readiness** — material alternatives, risks, mitigation, verification needs, proposed decision records, optional implementation watchpoints, and free-form **Additional findings** when warranted.
 6. **Open decisions / questions** — remaining owner-specific gaps, or a statement that none were identified.
 
 ## Step-by-step analysis lenses & fields
@@ -120,6 +120,7 @@ A **lens** describes what REAZN examines; a **record** has fixed field labels an
 - **Data-flow deep dive (lens):** source/input → transformation or handoff → destination/consumer, including read/write paths where relevant. No mandatory multi-field record.
 - **Contract (fixed record):** `Current` → `Owner` → `Guarantee` → `Unknown` → `Linked requirements` → `Linked decision`; optional `Source`.
 - **Output Assessment (fixed record):** `Output` → `Expected behavior` → `Observed behavior` → `Evidence` → `Verification status`. This evaluates what the **assessed subject** produces, not the REAZN report. Documented instructions and static code do not prove runtime execution; uninspected outputs remain `NOT VERIFIED`.
+- **Additional findings (optional, free-form):** After the standard Step 3 analysis, briefly explain any material evidence-backed discovery that does not fit those lenses or records. No fixed fields; omit if none.
 
 ### Step 4 — Trade-offs, risks & readiness
 
@@ -130,12 +131,13 @@ A **lens** describes what REAZN examines; a **record** has fixed field labels an
 - **Readiness (always):** `Status` → `Reason` → `Verification`. For `understand-existing`, this means **evidence readiness**, not approval to implement.
 - **Proposed decision record (when consequential):** `Decision` → `Why/evidence` → `Alternative` → `Contract impact` → `Linked requirements` → `Status` → `Revisit if`.
 - **Implementation Watchpoint (`Watchpoint: <name>`, optional fixed record):** `Expected` → `Verify` → `Evidence` → `Status`. Include **after any proposed decision records**, only for material design assumptions, contract changes or ownership/dependency decisions that merit a later implementation check. `PENDING VERIFICATION` means no comparison was performed; `REVIEW REQUIRED` needs grounded discrepancy evidence; `VERIFIED` needs an actual comparison. A watchpoint is not a confirmed bug or implementation task.
+- **Additional findings (optional, free-form):** After any watchpoints, briefly capture material evidence-backed observations not covered by other Step 4 records. No prescribed labels or extra fields; omit if none.
 
 After Step 4, any **open question** uses `Question` → `Why it matters` → `Decision owner` → `Linked requirements`. Optional `learn: on` references appear after applicable record fields. See [`SKILL.md`](SKILL.md) for the authoritative rules and edge cases.
 
 **FRs/NFRs are not automatically work to implement.** They represent sourced expectations. REAZN distinguishes documented requirements, inspected implementation, proposed changes, and unverified gaps. In an understanding-only assessment, no new FR/NFR or design change needs to be invented.
 
-The report keeps **bold item headings, italic field labels, stable field order, compact spacing, and source references**. Findings and recommendations vary with the evidence; irrelevant items are omitted rather than manufactured. With `learn: on`, relevant findings may include a book chapter and study focus from the [optional learning guide](references/learning-chapters.md).
+The standard records keep **bold item headings, italic field labels, stable field order, compact spacing, and source references**. Optional Additional findings use concise free-form prose instead of a new schema; irrelevant items are omitted rather than manufactured. With `learn: on`, relevant findings may include a book chapter and study focus from the [optional learning guide](references/learning-chapters.md).
 
 ## Boundaries and references
 
