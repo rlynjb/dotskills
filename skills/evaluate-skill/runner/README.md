@@ -1,4 +1,4 @@
-# Evaluate Skill — provider-specific evaluation workflows (experimental)
+# Evaluate Skill — OpenAI Codex evaluation workflow (experimental)
 
 > **Active execution decision:** Offline preparation and historical native
 > evidence remain here, but all future live evaluated-agent execution follows
@@ -58,34 +58,26 @@ discovery or provider dispatch.
 
 | Active harness | Execution | Grading | Native result format |
 | --- | --- | --- | --- |
-| Claude Code | Claude's `claude plugin eval`, with-skill and without-skill via `--ablation with-without` | Claude plugin-eval `graders/*.md` using `type: llm` | Claude plugin-eval JSON / review artifacts |
 | Codex | Promptfoo with the `openai:codex-sdk` provider in separate with-skill and without-skill workspaces | Promptfoo `llm-rubric` assertions configured to use the same Codex SDK provider | Promptfoo JSON results |
 
-**Ownership and integration are distinct:** `claude plugin eval` is Claude
-tooling. [Promptfoo is now part of OpenAI](https://www.promptfoo.dev/about/)
+[Promptfoo is now part of OpenAI](https://www.promptfoo.dev/about/)
 and remains an [open-source, multi-provider framework](https://www.promptfoo.dev/blog/promptfoo-joining-openai/).
-Evaluate Skill explicitly invokes the Promptfoo CLI for the Codex route;
-Promptfoo uses the `openai:codex-sdk` provider for execution and LLM-rubric
-grading. This is not a grading service automatically bundled into the Codex
-SDK. No Anthropic grader prompt is passed to Codex, and no Codex rubric is
-substituted for Claude's native graders. Do not describe these paths as
-identical implementations.
+Evaluate Skill invokes the Promptfoo CLI with the Codex SDK
+(`openai:codex-sdk`) for execution and `llm-rubric` grading.
+This is not a grading service automatically bundled into Codex.
 
-## Historical native harness selection: no substitution
+## Historical Codex session detection
 
-- `native_eval.py inspect` checks for a Claude session via `CLAUDECODE`,
-  or a Codex session via `CODEX_THREAD_ID` / `CODEX_SESSION_ID`.
-- Preparation selects the detected harness. `--harness` is permitted only
-  for **offline preparation** when detection is unavailable; conflicting
-  session markers and mismatches are blocked.
-- Execution requires an identifiable active session matching the prepared
-  case. The presence of a CLI binary alone is **not** harness identification.
-- If the native tool, credentials, approval, or independent isolation are
-  missing, report **Blocked — Not Run**. Never switch providers.
+- The native helper detects Codex via `CODEX_THREAD_ID` or
+  `CODEX_SESSION_ID` and rejects unsupported sessions.
+- `--harness codex` is permitted for **offline preparation** when
+  detection is unavailable. Other harness choices are rejected.
+- A CLI binary's presence does not identify the caller.
+- Missing tools, approval, or independently verified isolation mean
+  **Blocked — Not Run**, without fallback.
 
-These environment markers are a convenience, not a trusted attestation of
-the actual caller. The separately enforced host must verify provider identity
-and routing before running a model.
+The session marker is not trusted attestation of the caller. The
+independent host must verify identity and routing before execution.
 
 ## Historical preparation detail — no model calls
 
@@ -112,13 +104,10 @@ variables. `prepare --provider` selects only the provider-specific artifact
 format. A live evaluation must separately prove its actual provider route.
 The example paths are placeholders.
 
-The preparer writes a manifest with `PREPARED_NOT_RUN` status and one of:
-
-- Claude: `plugin/.claude-plugin/plugin.json`, `plugin/skills/<skill>/`,
-  `plugin/evals/<case>/prompt.md`, and `graders/criterion-*.md`.
-- Codex: `codex/promptfooconfig.yaml`, separate `with_skill/` and
-  `without_skill/` workspaces, and `llm-rubric` assertions with the
-  `openai:codex-sdk` grader provider.
+The preparer writes a `PREPARED_NOT_RUN` manifest and
+`codex/promptfooconfig.yaml` with separate `with_skill/` and
+`without_skill/` workspaces and `llm-rubric` assertions using
+`openai:codex-sdk`.
 
 **Important:** Static fixture generation and model/tool instructions do not
 establish that the provider accepted the case or that isolation works.
@@ -137,8 +126,8 @@ python3 skills/evaluate-skill/runner/eval_runner.py configure \
 
 This changes the manifest to `CONFIGURED_NOT_BOUND`, writes an exact
 `execution-config.json`, selects the approved model snapshot in the actual
-Claude command or Promptfoo provider configs, applies the approved turn/cost
-settings to those configs, and records provider-config and staged-bundle
+Promptfoo provider config, applies the approved turn/cost
+settings to that config, and records provider-config and staged-bundle
 digests. The independent host verifier must inspect this exact configuration
 before issuing its enforcement receipt. A staged revision mismatch blocks
 configuration; manifest claims alone are not trusted.
@@ -299,11 +288,8 @@ python3 skills/evaluate-skill/runner/native_eval.py run \
   --capability-inventory /trusted/provider-capabilities.json
 ```
 
-The legacy dispatcher invokes only the selected native command, but it does
-not replace `trusted_host.py` supervision:
+The retired native dispatcher recorded the approved Promptfoo command:
 
-- Claude: `claude plugin eval <prepared-plugin> --ablation with-without
-  --model <approved-snapshot> --no-publish --json <output>`
 - Codex: `promptfoo eval --config <prepared-config> --no-cache --no-share
   --output <output>`
 
@@ -365,31 +351,30 @@ python3 -m unittest discover -s skills/evaluate-skill/runner -p 'test_*.py' -v
   routing, case preparation, fixture security, immutable probes, host evidence,
   expanded-profile authorization/audit interfaces, transition gates,
   append-only recovery records, and refusal paths only.
-- No real Claude or Codex evaluation has been verified end to end in this
+- No real Codex evaluation has been verified end to end in this
   environment. The native Codex host implementation and no-model probes exist;
   a live independent session observer and approved paired proof are still absent.
-- Native tool compatibility, ablation behavior, evaluator-only rubric
+- Native tool compatibility, paired-run behavior, evaluator-only rubric
   isolation, actual grader responses, trace integrity, and result parsing
   still require approved-host validation. The preparer requires assertions
   before it can build native grader definitions.
 - **Fixture paths are skill-root-relative**, matching
   `scripts/validate_evals.py`: a case stored in `<skill>/evals/evals.json`
   can reference `evals/files/example.txt`, resolved from `<skill>/`.
-  The dispatcher stages the same approved path in Claude's `fixtures/`
-  or in **both** Codex `inputs/` workspaces. It rejects missing files,
+  The dispatcher stages the same approved path in **both** Codex
+  `inputs/` workspaces. It rejects missing files,
   absolute paths, parent traversal, symlinked files/directories, and
   suites outside the selected target skill **before** creating a bundle.
   It does not copy `evals.json` into either evaluated-agent workspace.
-- **Offline fixture regression tests:** the dispatcher suite covers Claude,
-  Codex, fixture-path isolation, policy assessment, legacy-flag rejection,
+- **Offline fixture regression tests:** the dispatcher suite covers Codex
+  preparation, fixture-path isolation, policy assessment, legacy-flag rejection,
   and blocked execution. These tests do **not** verify live models,
   provider-native format compatibility, or actual host isolation.
-- The prototype does not aggregate native results across providers into a
-  single score. Keep provider output schemas separate. Compare revisions
-  within each provider using actual supported reports and human review.
+- Compare revisions using actual Codex-backed Promptfoo reports and
+  human review. Do not synthesize scores from missing runs.
 - The trusted host compiles a native read-only Codex profile, normalizes Codex
   turn items, snapshots state, cleans workspaces, and publishes no-replace
-  evidence. It does not implement Claude, writable, mock-external, connector,
+  evidence. It does not implement writable, mock-external, connector,
   MCP, or Docker execution, and it never supplies model credentials. The
   committed inventory remains unverified until a separately approved paired
   live proof completes with an independently observed session identity.
