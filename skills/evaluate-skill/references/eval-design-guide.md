@@ -6,8 +6,8 @@ and converts approved cases into **provider-native formats** via
 [`native_eval.py`](../runner/native_eval.py). The Agent Skills guide's
 `grading.json`, `timing.json`, and `benchmark.json` are example
 conventions, **not required outputs** of the current dispatcher or
-requirements of the core Agent Skills specification. Claude and Codex
-retain their distinct result schemas.
+requirements of the core Agent Skills specification. This runner uses
+the Codex-backed Promptfoo result format.
 
 ## Stage 2 — automatically draft cases, then teach through review
 
@@ -68,7 +68,7 @@ relative to the target skill root for the authoring convention. Use `id`
 `assertions` (array of observable strings). The general Agent Skills
 example may omit assertions, but **the current native preparer requires
 approved nonempty assertions before `prepare` can succeed**, so provide
-them for any case intended for Claude/Codex model grading. This is a
+them for any case intended for Codex-backed model grading. This is a
 dispatcher constraint, not a new core Agent Skills specification rule.
 
 **Fixture-path contract (implemented and offline-tested):**
@@ -77,11 +77,10 @@ dispatcher constraint, not a new core Agent Skills specification rule.
 `<skill>/evals/evals.json`, the approved path
 `evals/files/fixture.txt` refers to
 `<skill>/evals/files/fixture.txt`. The path is preserved when staged
-under Claude's case `fixtures/` or Codex's paired `inputs/`.
+under both Codex paired-workspace `inputs/` directories.
 The dispatcher validates all fixtures before creating output, denies
 absolute/traversal paths, missing files and symlinked path components,
-and rejects suites outside the target skill. Offline tests cover both
-harness paths; **provider-native live execution remains unverified**.
+and rejects suites outside the target skill. Offline tests cover Codex case preparation; **provider-native live execution remains unverified**.
 
 Validate the authoring suite locally:
 
@@ -120,7 +119,7 @@ mark the run **Not Run** and provide only a static review.
 
 Write expected behavior *before* the first run. **For this provider-native
 workflow, teach and approve testable `assertions` before Stage 2
-preparation** so the Claude grader files or Codex rubric can be generated.
+preparation** so the Codex-backed Promptfoo rubric can be generated.
 A human may refine assertions after reviewing real outputs, but that is
 a **new rubric revision** requiring approval and comparable re-evaluation
 of both arms. Predeclare must-pass safety boundaries; never change
@@ -199,9 +198,8 @@ invocation). The example describes a proposal, not an observed run.
 tooling (see [native integration](eval-runner-integration.md) and
 [runner guide](../runner/README.md)), approved case and rubric, scoped run
 and provider approvals, and independent host-enforced mock-only isolation
-**before** attempting either arm. Claude uses `claude plugin eval`;
-Codex uses Promptfoo with `openai:codex-sdk`. Never fall back to the
-other provider. If unavailable, mark **Blocked — Not Run** at Stage 3;
+**before** attempting either arm. Use Promptfoo with
+`openai:codex-sdk` only; do not fall back to another provider. If unavailable, mark **Blocked — Not Run** at Stage 3;
 fixture validation alone cannot justify grading or diagnosis.
 
 For each case, run comparable provider-native configurations:
@@ -225,15 +223,13 @@ separate bounded authorization and verified controls. Use mocks,
 record attempted actions, and stop if isolation cannot be proved.
 
 Preparation saves a **unique, usually gitignored** bundle under
-`eval-workspaces/`: either `claude-native-<case>-<id>/plugin/`
-(with `evals/<case>/prompt.md` and `graders/`) **or**
-`codex-native-<case>-<id>/codex/promptfooconfig.yaml` (with
-`with_skill/` and `without_skill/` workspaces). Both include a
-`manifest.json` marked `PREPARED_NOT_RUN` until a verified run
-actually occurs. **Do not** expect generic per-arm `grading.json` or
-`timing.json`, or `benchmark.json`, from this dispatcher. Provider
-reports such as `claude-results.json` or `codex-results.json`
-are only meaningful when actually written after an approved run.
+`eval-workspaces/`, such as `codex-docker-<case>-<id>/`, containing
+`codex/promptfooconfig.yaml` and separate `with_skill/` and
+`without_skill/` workspaces. The bundle includes a `manifest.json`
+marked `PREPARED_NOT_RUN` until a verified run actually occurs.
+**Do not** expect generic per-arm `grading.json`, `timing.json`, or
+`benchmark.json`. A `codex-results.json` report is meaningful only
+when produced by an approved run.
 
 Preserve provider-native results and trusted host-action traces separately.
 Record the source SHA, case/rubric revision, harness/model, permissions,
@@ -263,9 +259,8 @@ state, with cited evidence. For external-action security cases, treat
 an unauthorized *attempt* as FAIL even if a mock host blocked it.
 Missing attempt traces or state verification mean Unknown, not Pass.
 Deterministic scripts can verify mechanical properties; the selected
-provider's native LLM grading evaluates semantics. For Claude that means
-plugin-eval `type: llm` graders; for Codex, Promptfoo `llm-rubric`
-with the Codex SDK. Their **native output formats are separate**.
+Codex-backed Promptfoo `llm-rubric` evaluates semantics.
+The grader's output does not independently prove safety.
 Do not require `grading.json` or presume an `assertion_results`
 array. Review the provider's actual artifacts alongside trusted host
 attempt/state evidence and human judgment. For **Unknown**, **Invalid**
@@ -277,7 +272,7 @@ as proof that a prohibited tool action did not occur.
 
 Use this **evidence-first, unweighted teaching convention** when explaining
 judgments alongside provider-native evidence. It is **not a requirement
-or output schema** of Claude plugin eval, Promptfoo, or Agent Skills.
+or output schema** of Promptfoo or Agent Skills.
 
 | Grade | When to assign it | How to record it |
 | --- | --- | --- |
@@ -362,6 +357,5 @@ or "Model recommendation" for your own synthesis.
 Historical repository-level `evals/` records, when present, are separate
 from current skill-local `evals/evals.json` suites. **Do not silently
 migrate or delete historical cases.** The active dispatcher
-[`native_eval.py`](../runner/native_eval.py) prepares separate Claude or
-Codex-native evaluations but does **not** install or sandbox either
-provider's model runner.
+[`native_eval.py`](../runner/native_eval.py) prepares Codex-backed
+Promptfoo cases but does **not** install or sandbox the model runner.
