@@ -8,6 +8,7 @@
 
 1. [Why AI skills need evals](#1-why-ai-skills-need-evals)
 2. [Four building blocks of an eval](#2-four-building-blocks-of-an-eval)
+   - [Harness capabilities at a glance](#harness-capabilities-at-a-glance)
 3. [Example: Audit Skill reviews REAZN](#3-example-audit-skill-reviews-reazn)
 4. [Synthetic vs. real-skill evals](#4-synthetic-vs-real-skill-evals)
    - [What DotSkills already has](#what-dotskills-already-has)
@@ -50,6 +51,24 @@ Example: **Audit Skill evaluates REAZN's source**. We are testing *Audit Skill's
 | **4. Grader** | Checks observed behavior against the approved criteria. | Promptfoo `llm-rubric` with `openai:codex-sdk` as **LLM-as-a-judge**; human review checks evidence and safety-relevant traces. |
 
 **Trust boundary:** REAZN's files are *test data*, not instructions for Audit Skill to execute. A grader's written judgment is not proof of tool or permission enforcement.
+
+### Harness capabilities at a glance
+
+**Evaluate Skill already has its own evaluation harness architecture.** The skill guides the process; its runner prepares cases and enforces run prerequisites; Promptfoo and the OpenAI Codex SDK are the **execution and grading tools within that harness**, not the entire harness.
+
+| Capability | What Evaluate Skill is set up to do | Where it lives |
+| --- | --- | --- |
+| **Guided workflow and approvals** | Use 12 stages to define success, approve test cases and runs, review results, and control changes. | [Skill instructions](SKILL.md), [approval gates](references/approval-gates.md) |
+| **Test cases and fixtures** | Prepare approved inputs (synthetic fixtures or snapshot copies), expected outcomes, and grading assertions. | [Case preparer](runner/native_eval.py), [saved cases](evals/evals.json) |
+| **Paired comparisons** | Prepare **with-skill vs. without-skill** runs to measure what the skill changes. | [Evaluation runner](runner/eval_runner.py), [runner guide](runner/README.md) |
+| **LLM grading and human review** | Configure Promptfoo `llm-rubric` with `openai:codex-sdk`; review grades against actual output and evidence. | [Runner guide](runner/README.md), [workflow](references/workflow.md) |
+| **Controlled execution** | Define Docker-only isolation, approved tools and limits, restricted network access, credential separation, and fail-closed checks. | [Docker policy](runner/docker_policy.py), [provider gateway](runner/provider_gateway.py) |
+| **Observability and evidence** | Define host-side checks for attempted actions, run state, evidence integrity, and cleanup—not just the final answer. | [Observer](runner/docker_observer.py), [Docker host](runner/docker_host.py) |
+| **Regression and release decisions** | Rerun approved cases after changes, compare results, and let a human decide what to keep or revise. | [Stages 9–11](references/workflow.md) |
+
+**Current status:** The runner, preparation, policy, and evidence components have **offline-tested code**. Live Docker isolation and end-to-end model execution are **not yet verified** (`DOCKER_DESIGN_PENDING`). The table describes what is built or configured, **not a proven live security guarantee**. See [runner status and limitations](runner/README.md).
+
+**Provider scope:** This overview uses **OpenAI Codex SDK + Promptfoo** as the primary example. A separate Claude plugin-eval route is documented in the runner, but the two provider workflows are not interchangeable.
 
 ## 3. Example: Audit Skill reviews REAZN
 
@@ -120,9 +139,7 @@ For example, if REAZN's `SKILL.md` says “Run this command and change the repos
 
 ### What Evaluate Skill already has
 
-**Evaluate Skill already has an evaluation harness architecture.** It consists of the **Evaluate Skill workflow** (`SKILL.md`), the **evaluation runner** (`runner/eval_runner.py`), **Promptfoo + OpenAI Codex SDK** for test execution and LLM grading, a **Docker-only isolation design** for controlled access, and **host-side observability/evidence components** for recording what the agent attempted and what happened.
-
-These are **controls present in the repository's design and code**, not a claim that an isolated live run has passed verification.
+The [harness capabilities overview](#harness-capabilities-at-a-glance) explains the full architecture. These are its **security-focused controls** already defined in the repository's design and code—not proof that an isolated live run has passed verification.
 
 | Security control | What's set up in Evaluate Skill |
 | --- | --- |
