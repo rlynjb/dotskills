@@ -15,7 +15,7 @@ Also supply:
 - A current-state Mermaid workflow diagram for each skill.
 - The Agent Skills specification conformance matrix, separating
   requirements from recommended or host-specific conventions.
-- All Q-01–Q-10 quality criteria with sources and review status.
+- An ordered Q-01–Q-10 checklist with evidence-backed checked/unchecked/N/A status, followed by one six-field individual finding and proportionate recommendation for each question.
 - An explicit Claude Code / Codex compatibility and adapter matrix,
   marking behavior NOT VERIFIED without actual runtime evidence.
 - A responsibility/overlap matrix; unique, duplicated, conflicting and
@@ -71,8 +71,7 @@ edit source files. Preserve gaps and pause for human review.
 
 ## Review acceptance criteria
 
-- The **At a Glance** report covers every quality dimension even if its
-  verdict is NOT APPLICABLE or UNVERIFIED.
+- The **At a Glance** checklist covers Q-01–Q-10 and the individual finding for each criterion uses Question, Check, Finding, Evidence, Status and Recommendation; only evidenced criteria are checked. Inapplicable/unknown concerns remain explicit.
 - Each skill has separate file-backed evidence, source version and
   current-state Mermaid workflow; proposals never masquerade as existing
   behavior.

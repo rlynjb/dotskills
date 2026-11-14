@@ -47,8 +47,8 @@ Skills are grouped by use.
   **What you'll learn:** LLM evals, test cases, assertions, grading, and regression analysis.
 
 - **Skill:** [audit-skill](skills/audit-skill/SKILL.md)  
-  **Purpose:** Review one or more skills automatically with at-a-glance profiles, standards and quality checks, Mermaid workflows, cross-platform compatibility, risks, and handoffs; read-only.  
-  **What you'll learn:** Skill contracts, Agent Skills compliance, evidence quality, trust, portability, responsibility boundaries, and proposed eval cases.
+  **Purpose:** Audit one or more skills in a read-only pass: Q-01–Q-10 evidence-based checkboxes, individual findings and recommendations, plus standards, workflows and portability checks.  
+  **What you'll learn:** Skill contracts, Agent Skills compliance, context and trust, permission boundaries, existing evaluation evidence, and reasoned improvements.
 
 ---
 

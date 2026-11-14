@@ -2,11 +2,12 @@
 
 **`audit-skill` is one read-only, overview-first workflow for reviewing one or more agent skills.** It automatically adjusts its scope from independent single-skill analysis to multi-skill responsibility and handoff analysis. There is **no Explore/Audit/Compare mode selection**.
 
-The first result is a compact, source-backed review of what each skill does, how it works, which safeguards exist, what remains unverified, and what requires human review. Each skill is checked against the same **Q-01–Q-10 engineering quality concerns**. The audit does not execute tools, change documents, choose architectures, or approve decisions. Choose any finding afterward for a deeper explanation.
+The first result is a complete, **one-pass** At a Glance checklist plus **Q-01–Q-10 individual findings**. Each checkbox indicates whether the criterion is sufficiently evidenced; each finding explains what exists, what's unverified and a recommendation when justified. The audit does not execute tools, change documents, select architectures or approve decisions. No user checkpoints between questions.
 
 ## Table of contents
 
 - [How it works](#how-it-works)
+- [One-pass checklist and findings](#one-pass-checklist-and-findings)
 - [What the first report contains](#what-the-first-report-contains)
 - [Quality and standards checks](#quality-and-standards-checks)
 - [Cross-platform compatibility](#cross-platform-compatibility)
@@ -22,30 +23,55 @@ The first result is a compact, source-backed review of what each skill does, how
              Read-only source inspection
                            |
               Audit Skill — At a Glance
-              /                       \
-       For every skill          Only with 2+ skills
-       - Contract/profile       - Responsibility matrix
-       - Standards review       - Shared/unique decisions
-       - Current-state flow     - Conflicts/duplication
-       - Quality & evidence     - Handoff/integration options
-       - Runtime parity                |
-              \                       /
-               Evidence-backed findings + verification limits
                            |
-                 Human selects topic/finding
+                Q-01–Q-10 checklist
+               checked / unchecked / N/A
                            |
-               Cited, focused deep dive
+             Ten source-backed findings
+       Question / Check / Finding / Evidence
+              Status / Recommendation
                            |
-              Human decides next workflow
+          Standards / as-is flow / portability
+        + multi-skill comparison when relevant
+                           |
+              Gaps and verification limits
+                           |
+          Optional user-selected deep dive
 ```
 
 1. **Find and inspect** each available skill, references, agents, manifests, tests and relevant history, with source revision and line evidence.
 2. **Apply the same review criteria to every skill**, whether one or several were supplied.
 3. **Add relationships automatically** only when there are two or more accessible skills. Otherwise mark inter-skill comparison NOT APPLICABLE.
-4. **Report all criteria at a glance** with existing safeguards first, then evidence gaps, limitations and behavior that has **not** been verified. Do not generate evaluation test cases during the initial audit.
+4. **Report the At a Glance checklist, followed by all ten individual findings in a single response** with supported/unsupported checks, concrete evidence, and brief recommendations. No pauses or automatic evaluation-case generation.
 5. **Wait for a requested deep dive.** Never silently change the skill or run a behavioral evaluation.
 
 If a named target cannot be accessed, label it NOT ASSESSED and avoid constructing a fictitious comparison.
+
+## One-pass checklist and findings
+
+Audit Skill uses the **four SDI reasoning steps internally across the whole inspection**: understand the skill's job and scope; verify its workflow; examine relevant contracts, context, trust and failures; then assess gaps, trade-offs and readiness. **It does not assign an SDI step to each Q, print extra SDI stages or pause for Q-by-Q approval.**
+
+The Q-01–Q-10 checklist uses:
+
+- `- [x]` **PRESENT** — the criterion's relevant expectations are backed by inspected evidence. This is **presence**, not approval or a live test pass.
+- `- [ ]` **PARTIAL / MISSING / NOT VERIFIED** — important coverage is incomplete, absent in the inspected scope or impossible to establish from available sources.
+- **N/A** **NOT APPLICABLE** — the whole criterion genuinely does not apply, with an explanation.
+
+A checkmark requires the **appropriate evidence level**. A documented output format may establish its contract, but a prompt saying "read-only" is not proof of enforced host permissions; a defined eval is not a run result.
+
+Every criterion then has the same **six fields**: `Question`, `Check`, `Finding`, `Evidence`, `Status`, `Recommendation`. For example:
+
+```markdown
+**Q-05 — Contracts & outputs**  
+_Question:_ Are required inputs, outputs, validation, invariants, ownership and failed handoffs defined?  
+_Check:_ ☐  
+_Finding:_ The output is documented, but missing-input handling was not described in the inspected scope.  
+_Evidence:_ DOCUMENTED INSTRUCTIONS — [verified source reference]; execution NOT VERIFIED.  
+_Status:_ PARTIAL  
+_Recommendation:_ Define the missing-input response and verify the behavior separately.
+```
+
+This is an **illustrative** finding, not an observed audit. If a criterion is fully evidenced or not applicable, its recommendation can say `None justified`. If you later supply additional context, it stays **USER-PROVIDED — NOT VERIFIED** until supporting evidence is inspected. The initial audit remains read-only and fully one-pass.
 
 ## What the first report contains
 
@@ -55,7 +81,8 @@ The report begins **Audit Skill — At a Glance** (not a mode guide or a long qu
 | --- | --- |
 | **Target/source boundary** | Which skills and revisions were inspected; what was inaccessible; no tests or target skill execution |
 | **Skill profile(s)** | Purpose, activation, inputs, dependencies, steps/decisions, agents and tools, outputs, permissions, failures and handoffs |
-| **Quality dashboard** | Q-01–Q-10 plain-English findings for each skill, with direct source links and key unknowns |
+| **Q-01–Q-10 checklist** | Ten ordered checked/unchecked/N/A items summarizing whether each criterion is evidenced, plus a short basis |
+| **Individual findings** | A consistent Question → Check → Finding → Evidence → Status → Recommendation block for each criterion |
 | **Agent Skills specification matrix** | Required format vs recommended/optional structure; normative claims tied to the published specification |
 | **Mermaid current-state diagram(s)** | One flowchart per target, including decisions, delegation, stop conditions and unverified edges |
 | **Relationship analysis (2+ only)** | Shared/unique responsibility matrix, conflicts, duplicate decisions, and proposed handoff/compose/merge alternatives |
@@ -94,7 +121,7 @@ The [Agent Skills specification](https://agentskills.io/specification) is the st
 | Q-09 | Evals and observability | Existing tests, CI, scenarios, execution traces, expected and observed outcomes |
 | Q-10 | Lifecycle and portability | Owners, versioning, review/rollback, compatible hosts, adapters and regressions |
 
-For each applicable item, write a **plain-English sentence** describing what the audit found and what remains unverified, with direct links to the evidence. Avoid shorthand verdicts or a separate legend. A written instruction does not prove behavior was tested or enforced.
+For each criterion, answer its canonical question using actual source evidence. Follow the same compact **Question → Check → Finding → Evidence → Status → Recommendation** layout, without inventing missing content. The detailed questions are defined in [SKILL.md](SKILL.md). A written instruction does not prove runtime enforcement; an eval definition does not prove execution.
 
 The separate **standards compliance matrix** distinguishes required specification elements, recommendations and experimental/host-specific behavior. It should not imply full standards conformance if the published specification was not consulted or a validator was not run.
 
@@ -119,9 +146,10 @@ Use a runtime × capability matrix with **SUPPORTED (evidenced)**, **ADAPTER REQ
 
 ```text
 Use audit-skill on Sprint Assessment in this repository.
-Start with a complete at-a-glance report including the skill contract,
-Mermaid current-state flow, Agent Skills format check, ten quality
-areas, cross-platform compatibility and evidence gaps.
+Start with Q-01–Q-10 checked/unchecked/N/A at a glance,
+then give the six-field evidence-backed finding for each question.
+Include Agent Skills compliance, as-is Mermaid flow, compatibility
+and material gaps.
 Cite file/line evidence. Do not execute the skill or edit anything.
 ```
 

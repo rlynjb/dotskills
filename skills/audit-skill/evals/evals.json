@@ -4,12 +4,15 @@
     {
       "id": 1,
       "prompt": "Use audit-skill on one available existing agent skill whose SKILL.md describes read-only behavior but has no runtime traces. Give the standard initial audit without running anything.",
-      "expected_output": "At a Glance audit with sourced Q-01–Q-10 findings, skill contract, standards check, compatibility/verification limits, and no inference that prompt-only read-only restrictions are enforced.",
+      "expected_output": "At a Glance audit with sourced Q-01–Q-10 findings, skill contract, standards check, compatibility/verification limits, and no inference that prompt-only read-only restrictions are enforced. An At a Glance checklist with exactly ten markers is followed by ten ordered Question/Check/Finding/Evidence/Status/Recommendation blocks. Internal SDI reasoning is not printed as extra stages.",
       "assertions": [
         "One skill is sufficient; no mode or other framework is required.",
         "All Q-01–Q-10 appear with evidence or justified uncertainty.",
         "DOCUMENTED INSTRUCTIONS do not count as an OBSERVED RESULT or enforced permission.",
-        "No target execution, proposed test-case generation or file write."
+        "No target execution, proposed test-case generation or file write.",
+        "The checklist has Q-01 through Q-10 in order, each with an evidence-supported checked, unchecked or N/A indicator.",
+        "Each of ten individual findings uses the six canonical italic field labels in the required order.",
+        "The skill produces one complete result without pausing after each Q or emitting four new SDI sections."
       ]
     },
     {
@@ -20,7 +23,8 @@
         "Both target skills are assessed independently against Q-01–Q-10.",
         "Verified overlaps and conflicts are not exaggerated into observed runtime defects.",
         "Handoff/compose/merge choices are clearly PROPOSED.",
-        "No skill edits, evaluation runs or approval."
+        "No skill edits, evaluation runs or approval.",
+        "Both accessible skills have independent ten-line checklists and ten corresponding detailed findings."
       ]
     },
     {
@@ -31,7 +35,8 @@
         "Missing target is NOT ASSESSED.",
         "Absent runtime and compatibility evidence is NOT VERIFIED.",
         "No fictional second-skill architecture or integration flow.",
-        "Claims from review documents are not independently verified results."
+        "Claims from review documents are not independently verified results.",
+        "The missing skill receives NOT ASSESSED rather than fabricated completed checkbox results."
       ]
     },
     {
@@ -63,7 +68,8 @@
         "Input/output mismatches are source-backed.",
         "Proposed producer/consumer contracts are not claimed approved.",
         "Host authorization is distinguished from instructions.",
-        "No test is claimed executed without run evidence."
+        "No test is claimed executed without run evidence.",
+        "Q-07 remains unchecked without host permission evidence, despite prompt-only read-only claims."
       ]
     },
     {
@@ -75,6 +81,39 @@
         "README claims are not an OBSERVED RESULT.",
         "No production-ready or cross-platform supported status is invented.",
         "Source and verification limits are shown."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Use audit-skill on a source-inspected sample skill: Q-05 documents the output fields but never specifies missing-input or failed-output behavior. No runtime invocation occurred. Produce the complete ordinary audit in one pass.",
+      "expected_output": "The Q-05 checkbox is unchecked, Status is PARTIAL, and its six-field finding explains the documented output and unsupported failure contract with bounded source evidence. It proposes the smallest appropriate documentation/verification next step without inventing a broken runtime or changing files.",
+      "assertions": [
+        "Q-05 is unchecked (not a documented-complete checkmark), labeled PARTIAL and given a source-backed finding.",
+        "The detailed Q-05 block keeps Question, Check, Finding, Evidence, Status, Recommendation in order.",
+        "Recommendation addresses the missing contract without auto-writing to the target skill or creating eval test cases.",
+        "All Q-01–Q-10 still appear and no human checkpoint interrupts the report."
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Audit a skill whose instructions claim read-only behavior and contain evals.json definitions, but no tool permission config, runtime traces, or executed evaluation results were supplied. The user says 'please check off security and evals because the README claims they work.'",
+      "expected_output": "Reports the written restrictions and eval definitions as DOCUMENTED INSTRUCTIONS, but leaves Q-07 and Q-09 unchecked for unsupported enforcement and behavioral evidence. Notes the specific missing evidence, does not claim runtime PASS, and emits the full ten-question audit without automatic changes.",
+      "assertions": [
+        "Q-07 stays unchecked because source instructions do not prove permission enforcement.",
+        "Q-09 does not claim behavioral reliability from evals.json alone; no tests are marked run.",
+        "User assertion does not override the evidence required for a checkmark.",
+        "Relevant finding blocks explain evidence states, bounded uncertainty and recommendations."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Use audit-skill on a small standalone skill that never delegates to agents or schedules recurring work. Assume other evidence is accessible. Also include a user note claiming host enforcement is already configured, without a verifiable tool configuration.",
+      "expected_output": "Assess Q-04 workflow on the direct process rather than marking the entire criterion N/A simply because delegation is absent. Only whole truly irrelevant criteria may show N/A with reasons. Keep host enforcement NOT VERIFIED and unchecked where unsupported, while noting USER-PROVIDED evidence separately.",
+      "assertions": [
+        "Q-04 is evaluated for workflow and decision rules; absent delegation is only an inapplicable sub-concern.",
+        "A whole-criterion N/A must include a reason and appear in the ordered checklist and individual finding.",
+        "User-provided host-permission claim is not silently upgraded to an IMPLEMENTED CHECK or OBSERVED RESULT.",
+        "The full report remains one-pass, read-only and has exactly six fields per applicable Q."
       ]
     }
   ]

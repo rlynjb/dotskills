@@ -27,7 +27,7 @@
     {
       "name": "audit-skill",
       "category": "methodology",
-      "purpose": "Unified read-only evidence-backed audit of one or more agent skills covering Q-01–Q-10 engineering quality, Agent Skills conformance, contracts, trust, permissions, workflow diagrams, existing evaluation evidence, lifecycle and cross-platform compatibility.",
+      "purpose": "One-pass, read-only, evidence-backed audit of one or more agent skills: Q-01–Q-10 checkmarked coverage and six-field individual findings, with internal SDI reasoning, recommendations, Agent Skills compliance, trust, evaluation limits and portability.",
       "source": "dotskills",
       "path": "skills/audit-skill",
       "reference_count": 0
