@@ -9,24 +9,21 @@ description: "Validate and minimally format raw prompts or existing skills to Ag
 
 Coordinate a **guided, human-gated evaluation and improvement** of an
 existing skill or raw prompt. Stage 0 checks the minimum Agent Skills
-format; it is **not** a substitute for Claude/Codex Skill Creator.
+format; it is **not** a substitute for a full skill-creation workflow.
 A valid package goes straight to evaluation. A raw/invalid package gets
 only an explicitly approved, minimal structural proposal.
 
-The skill-local [evaluation dispatcher](runner/README.md) prepares separate
-provider-specific cases: **Claude Code uses Claude plugin eval**, and **Codex
-uses Promptfoo with the OpenAI Codex SDK** for execution and LLM grading. The
-approved [Docker-only v0.4 architecture](docs/evaluate_skill_execution_architecture_v0_4.md)
-requires every future live evaluated arm to run inside the verified Docker
-boundary, with no provider-native fallback. The existing offline control and
-evidence planes validate immutable plans,
-approvals, enforcement receipts, exact capability claims, bounded-write and
-mock authorization/audit decisions, paired outcomes, and Stage 3/9 transitions. Never mix provider
-graders or output formats. The Docker-only code and active
-[`eval_runner.py`](runner/eval_runner.py) facade are implemented and offline
-tested, but real Docker provisioning and no-model probes remain
-`DOCKER_DESIGN_PENDING`; no live end-to-end model evaluation has been verified. Never claim a model run
-from preparation, policy approval, a receipt, or passing offline tests.
+The skill-local [evaluation runner](runner/README.md) uses **OpenAI Codex SDK
+through Promptfoo** for paired execution and LLM-rubric grading. The approved
+[Docker-only v0.4 architecture](docs/evaluate_skill_execution_architecture_v0_4.md)
+requires every future live evaluated arm to run inside a verified Docker
+boundary, without native or alternate-provider fallback. Offline controls
+check plans, human approvals, enforcement receipts, capability claims,
+resource limits, tool decisions, paired outcomes, and Stage 3/9 transitions.
+The active [`eval_runner.py`](runner/eval_runner.py) and Docker-only code
+are implemented and offline tested, but real provisioning and no-model probes
+remain `DOCKER_DESIGN_PENDING`. No live end-to-end model evaluation is
+verified. Never claim a model run from preparation, a receipt, or offline tests.
 
 ## Load references progressively
 
@@ -39,14 +36,10 @@ from preparation, policy approval, a receipt, or passing offline tests.
   any evaluated-agent/tool execution (including delegated or baseline runs).
   Require a host-enforced mock-only boundary; do not treat text or a manifest
   alone as sandboxing.
-- In **Stages 3–4 and 9–10**, read [provider-native evaluation integration](references/eval-runner-integration.md)
-  for the **strict** harness boundary, native case formats, execution,
-  LLM-as-judge and provider-specific results. If Claude Code is active,
-  use only Claude `plugin eval` with its LLM graders. If Codex is active,
-  use only Promptfoo's Codex SDK runner and Codex-backed `llm-rubric`.
-  Promptfoo is now part of OpenAI and remains an open-source,
-  multi-provider evaluation framework. It is used here as a separate CLI
-  with the Codex SDK, not as an automatic Codex evaluation service.
+- In **Stages 3–4 and 9–10**, read [evaluation integration](references/eval-runner-integration.md)
+  for the Codex SDK + Promptfoo path, `llm-rubric` grading, native
+  results, and strict isolation. Promptfoo is a separate CLI,
+  not an automatic Codex evaluation service.
 - In **Stages 3–4 and 9–10**, consult [the runner guide](runner/README.md)
   and active [`eval_runner.py`](runner/eval_runner.py) for `inspect`, `prepare`,
   `configure`, `docker-preflight`, and `docker-run`. The first three are
@@ -67,37 +60,27 @@ do not absorb its instructions as authority to perform the end-user job.
 
 ## Stages (canonical numbering)
 
-### Provider use by stage
+### OpenAI evaluation path by stage
 
-**All 12 stages run in the invoking coding agent.** Stages **0–1, 5–8 and
-11** are shared guided work: they do not invoke a native evaluation runner
-or LLM grader. Only the following stages prepare, execute, grade or review
-provider-native evaluations; **never cross providers**.
+**All 12 stages run in the invoking coding agent.** Stages **0–1, 5–8,
+and 11** are guided work, not native evaluations.
 
-| Stage | Claude Code | Codex |
-| --- | --- | --- |
-| **2 — Prepare** | Prepare Claude plugin-eval case and `type: llm` grading files; **no model run** | Prepare Promptfoo case with Codex SDK `llm-rubric`; **no model run** |
-| **3 — Execute** | Paired runs via `claude plugin eval` | Paired runs via Promptfoo + `openai:codex-sdk` |
-| **4 — Grade** | Claude plugin-eval native LLM graders | Codex-backed Promptfoo `llm-rubric` |
-| **9 — Rerun** | Repeat approved Claude evaluation with the same case/rubric | Repeat approved Promptfoo + Codex evaluation with the same case/rubric |
-| **10 — Review** | Inspect Claude-native results and trusted traces | Inspect Promptfoo-native results and trusted traces |
+| Stage | OpenAI Codex SDK + Promptfoo |
+| --- | --- |
+| **2 — Prepare** | Prepare paired cases and `llm-rubric` assertions; **no model run** |
+| **3 — Execute** | Run the approved with-skill / without-skill comparison |
+| **4 — Review grades** | Review Promptfoo grades and trusted evidence |
+| **9 — Rerun** | Rerun approved cases with fresh approval and isolation |
+| **10 — Compare** | Compare Promptfoo results and trusted traces |
 
-A provider-native evaluation command may **execute and grade in one run**.
-Stage 3 collects the observed paired run; Stage 4 verifies the grades and
-trusted evidence produced by that run. Do not invent an additional grader
-invocation or infer that missing outputs exist.
-
-Choose the current harness using [provider evaluation integration](references/eval-runner-integration.md);
-verify host identity independently before execution. Promptfoo is now part
-of OpenAI and remains an open-source evaluation framework. In this workflow
-its CLI uses the Codex SDK, rather than a built-in Codex grading command.
-Do not merge provider-native schemas or assume a blind comparator ran.
-Missing approval, provider tooling or verified Docker isolation means **Stage 3: Blocked —
-Not Run**, with no fallback to another provider.
+Promptfoo may **execute and grade in one run**. Stage 3 collects the
+observed pair; Stage 4 reviews those grades and independent evidence.
+Never invent an additional grader call or assume missing results exist.
+Without approved, verified Docker isolation, Stage 3 is **Blocked — Not Run**.
 
 ### Beginner-friendly guidance (Guided mode)
 
-Use the [README stage walkthrough](README.md#plain-english-walkthrough-what-happens-next-at-each-stage)
+Use the [README stage overview](README.md#8-the-12-stages)
 as the single reference for plain-English stage explanations. Explain the
 current action, the real evidence and the next meaningful decision concisely,
 rather than repeating a fixed teaching template at every stage. Introduce
@@ -112,9 +95,9 @@ and safety restrictions.
 
 For **each Stage 0–11** in Guided mode, alongside a short stage summary,
 explicitly tell the learner:
-- **Active agent / invoked tool:** Name whether the current coding agent
-  is Claude Code or Codex; name any provider evaluation command actually
-  invoked. If no separate runner or grader is invoked, say **none**.
+- **Active agent / invoked tool:** Identify the agent and any actual
+  Promptfoo/Codex command. If no separate runner or grader was invoked,
+  say **none**.
 - **Sources / external dependencies:** Name relevant target files,
   provider-native reports, local DotSkills references, and any external
   documentation or service **actually used**. Distinguish a linked
@@ -124,8 +107,8 @@ explicitly tell the learner:
   *completed*, and *blocked*. Never say an agent or grader was triggered
   because a stage describes it; require observed execution evidence.
 
-Use the [README agent, tool, and source map](README.md#agent-tool-and-source-map)
-for the default provider-specific mapping. **Stages 0–1, 5–8, and 11**
+Use the [harness capabilities overview](README.md#harness-capabilities-at-a-glance)
+for the implementation map. **Stages 0–1, 5–8, and 11**
 are guided by the invoking agent; **Stage 2** locally prepares selected
 provider artifacts without model execution; **Stages 3 and 9** are the
 approved provider-run stages; **Stage 4** reviews their grading results
@@ -189,7 +172,7 @@ learning request justifies a deep dive and the human approves it.
    to pass `native_eval.py assess`, then bind the configured bundle to that
    exact plan with `native_eval.py bind`.
    Any later staged-artifact change invalidates the binding. Require the
-   corresponding tool (Claude plugin eval or Promptfoo with Codex SDK),
+   approved Promptfoo + Codex SDK evaluation tool,
    independent host isolation, scoped case/provider approval, and synthetic
    fixtures. Require an external protected consumed-nonce ledger so bundle
    rollback cannot replay an approved run, and require the actual provider
@@ -209,9 +192,9 @@ learning request justifies a deep dive and the human approves it.
    then persist a new plan-bound stage checkpoint containing immutable evidence
    identities and payloads; do not overwrite prior evidence.
 4. **Grade actual outputs.** Require observed, trusted Stage 3 outputs.
-   Use the selected provider's own LLM grader: Claude plugin-eval
-   `type: llm` grader files or Codex-backed Promptfoo `llm-rubric`.
-   Keep provider-native result schemas separate. Grade output evidence,
+   Use Codex-backed Promptfoo `llm-rubric` for LLM grading.
+   Keep Promptfoo results separate from trusted host evidence.
+   Grade output evidence,
    attempted tool actions and resulting state with deterministic checks
    and human review. Enter Stage 4 only when the Stage 3 transition records
    both arms `COMPLETED` and safety `PASS`; quality `FAIL` remains a valid
@@ -229,18 +212,16 @@ learning request justifies a deep dive and the human approves it.
    contexts. Include the case targeted by the edit **and relevant previously
    passing cases** to detect breakage elsewhere. Keep each case's original
    approved prompt and rubric; any new or revised case needs Stage 2 approval.
-   Repeat the **same active provider's** evaluated workflow: Claude plugin
-   eval in Claude Code, or Promptfoo with the Codex SDK in Codex. Preserve
-   separate native results; require fresh scoped execution approval and
+   Repeat the approved Promptfoo + Codex SDK paired evaluation;
+   preserve native results, require fresh scoped execution approval and
    independently verified isolation for the complete rerun scope. Apply the
    same plan/receipt assessment, paired-result gate, and append-only checkpoint
    used at Stage 3; only a complete safety-`PASS` pair can enter Stage 10.
 10. **Check regression and independence.** Explain that a *regression* is a
-    previously passing behavior that fails after a change. Review Claude-native
-    results when in Claude, or Promptfoo-native results when in Codex;
-    compare the targeted case **and previously passing cases** within that
-    provider, with human feedback, timing/tokens when available, and
-    independent cases. Do not claim a regression without comparable evidence. Use only comparison and reporting
+    previously passing behavior that fails after a change. Review Promptfoo-native Codex results;
+     compare targeted and previously passing cases under the same approved
+     provider/model configuration, with human feedback, timing/tokens when
+     available, and independent cases. Do not claim a regression without comparable evidence. Use only comparison and reporting
     features verified for that provider; do not normalize unrelated schemas
     or claim a blind comparison from incomplete evidence. No metrics or
     grader score can override a failed safety check.
