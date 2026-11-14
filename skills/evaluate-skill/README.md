@@ -99,15 +99,37 @@ The same principle applies to production agents: their **production runtime** mu
 
 ## 6. How to run your first evaluation
 
-Start with one clear expected behavior instead of trying to test everything at once.
+The **five beginner steps** describe the basic evaluation cycle. They are a teaching summary, **not a separate industry-standard framework**. Your Evaluate Skill already covers them in **Stages 1–4**, preceded by **Stage 0** (checking the skill's format).
 
-1. **Choose the behavior.** Example: Audit Skill must not mistake a documented read-only rule for verified permission enforcement.
-2. **Prepare a fixed case.** Pin a synthetic fixture or REAZN revision. Write the expected finding and grading criteria **before** seeing the output.
-3. **Get approval and check isolation.** The approved harness, provider, permitted tools, and test scope must be verified before running an evaluated agent. If this is not ready, stop at **Blocked — Not Run**.
-4. **Run and save evidence (only when authorized).** Preserve the raw report, provider output, tool attempts, and trusted traces. Do not run the inspected skill just because its source requests it.
-5. **Grade expected vs. actual.** Check source accuracy, evidence classification, coverage, boundary compliance, and useful conclusions. Repeat the same frozen case to check consistency.
+### Basic eval steps → Evaluate Skill stages
 
-**You can practice now without running a live eval:** write a test case and review an already-saved audit report against its frozen source. Label that a *static/manual review*, not a completed Stage 3 model evaluation. Stages 3 and 9 require the verified execution boundary described below.
+| Beginner step | Your stage | What happens |
+| --- | --- | --- |
+| **1. Choose the behavior** | **1 · Define success** | Pick one behavior to test—for example, whether Audit Skill distinguishes documented rules from verified enforcement. |
+| **2. Prepare a fixed test case** | **2 · Design cases** | Freeze the input (synthetic files or a REAZN revision), expected result, and grading assertions before running. |
+| **3. Approve and check safety** | **2 · Design cases** and **3 · Run baseline** | Approve the test case first; separately approve the run and verify the permitted tools and isolation. |
+| **4. Run and save evidence** | **3 · Run baseline** | Compare **with skill** versus **without skill** and preserve outputs, tool attempts, and trusted traces. |
+| **5. Grade expected vs. actual** | **4 · Review grades** | Review the Promptfoo rubric grades alongside the real output and evidence; don't assume the judge is always right. |
+
+**Important:** Promptfoo may generate grades during Stage 3. **Stage 4 reviews those grades**; it does not automatically run a second grader.
+
+### Your additional stages (5–11)
+
+These extend the basic evaluation into **diagnosis, improvement, and regression checking**. They are part of your **DotSkills 12-stage workflow**, not extra steps required by every eval framework.
+
+| Stage | What it adds |
+| --- | --- |
+| **5 · Diagnose** | Find out *why* a result failed before changing anything. |
+| **6 · Review five lenses** | Check context, correctness, observability, trust, and lifecycle. |
+| **7 · Propose** | Recommend a focused improvement and request approval. |
+| **8 · Apply** | Make only the approved changes. |
+| **9 · Rerun** | Repeat approved cases after changes, with fresh run approval and safety checks. |
+| **10 · Compare** | Look for improvements and regressions against previous results. |
+| **11 · Decide** | Let a human choose to keep, revise, revert, release, or iterate. |
+
+**In short:** **Stage 0** checks structure; **Stages 1–4** cover the first evaluation; **Stages 5–11** are your added improvement and decision loop.
+
+You can practice the early steps by writing a case and comparing an already-saved audit report with its source. That is a **manual review**, not an executed model eval.
 
 ## 7. How teams use evals in practice
 
