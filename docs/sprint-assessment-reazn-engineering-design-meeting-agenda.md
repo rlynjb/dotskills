@@ -4,6 +4,15 @@
 
 **Approach:** Discovery first → Clarify requirements → Discuss options → Agree on next steps.
 
+## Table of Contents
+
+1. [Sprint Assessment + REAZN Integration](#1-sprint-assessment--reazn-integration)
+2. [Contracts Between Sprint Assessment and REAZN](#2-contracts-between-sprint-assessment-and-reazn)
+3. [REAZN Design and Audit Skill Findings](#3-reazn-design-and-audit-skill-findings)
+4. [Security, Trust Boundaries, and AgentCon/MCP Con 2026](#4-security-trust-boundaries-and-agentconmcp-con-2026)
+5. [Evaluation Strategy and Evaluate Skill](#5-evaluation-strategy-and-evaluate-skill)
+6. [Closing Discussion — Aligning on Next Steps](#closing-discussion--aligning-on-next-steps)
+
 ---
 
 ## 1. Sprint Assessment + REAZN Integration
