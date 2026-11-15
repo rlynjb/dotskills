@@ -29,12 +29,9 @@ Sprint Assessment processes Jira tickets in batches of potentially 10–50. I'd 
 
 **Follow-up questions:**
 
-- How does Sprint Assessment currently assess each ticket? Does it perform a deeper analysis or primarily evaluate ticket readiness?
-- What does Sprint Assessment currently return for each ticket? A score, individual findings, recommendations, or a consolidated batch report?
-- What specific gap or limitation are we hoping REAZN will address?
-- Are we considering dispatching REAZN for every ticket, or only for tickets that require deeper analysis?
-- If selective dispatch is preferred, how would Sprint Assessment determine which tickets need REAZN?
-- Are there any performance, cost, or execution constraints we should consider when processing larger batches?
+- How does Sprint Assessment currently assess each ticket, and what does it return?
+- What specific problem are we hoping REAZN will solve?
+- Is the plan to invoke REAZN for every ticket or only when deeper analysis is needed?
 
 ### Possible integration approaches to explore
 
@@ -94,12 +91,9 @@ If integration moves forward, we should clarify what Sprint Assessment sends to 
 
 **Follow-up questions:**
 
-- Which skill should own the overall assessment workflow?
-- What information does REAZN need to perform a reliable assessment?
-- Should REAZN return its complete SDI report or a smaller structured result?
-- How would Sprint Assessment incorporate REAZN's findings into the final assessment?
-- What should happen when required context is missing or REAZN cannot complete an assessment?
-- What existing conventions or contracts should we reuse?
+- Which skill owns the workflow and the final assessment?
+- What inputs should Sprint Assessment pass to REAZN, and what output should it receive?
+- How should the workflow handle missing information or an incomplete REAZN assessment?
 
 ### Proposed contract areas for discussion
 
@@ -157,11 +151,8 @@ REAZN uses the four-step SDI framework, while Audit Skill reviews documented des
 
 **Follow-up questions:**
 
-- What level of requirements or design analysis would be useful for Sprint Assessment?
-- Does REAZN's existing four-step approach provide that level of analysis, or would we need a more focused output?
-- Are there already standards or review criteria that our team follows when developing skills?
-- Would reviewing the two skills together help us identify overlapping responsibilities or missing contracts?
-- Which parts of the integration would benefit most from a source-based engineering audit?
+- What level of requirements and design analysis does Sprint Assessment need?
+- Does REAZN's current four-step approach and output meet that need?
 
 ### REAZN's current design
 
@@ -219,12 +210,8 @@ My AgentCon/MCP Con 2026 materials cover security, trust boundaries, and reliabi
 
 **Follow-up questions:**
 
-- What protections or security practices are currently in place?
-- Are Jira tickets, repository content, and other retrieved information treated as untrusted input?
-- What permissions do these skills currently have, and how are those permissions enforced?
-- Are there established standards for delegation between skills or agents?
-- Are we planning to formalize these boundaries, or is this outside the current project scope?
-- Would it be helpful for me to review my AgentCon/MCP Con materials and bring back relevant findings?
+- What security and trust boundaries are already established for these skills?
+- Are there gaps where additional research or conference findings would be useful?
 
 ### Potential conference material
 
@@ -266,13 +253,9 @@ I'm developing Evaluate Skill for repeatable behavioral testing. I'd like to und
 
 **Follow-up questions:**
 
-- What tests or evaluations already exist for Sprint Assessment?
-- Are we primarily reviewing generated outputs manually, or do we have executable test cases?
-- How do we determine whether a generated assessment is correct?
-- Do we have representative Jira tickets and expected outcomes that we could use for evaluation?
-- Would we want to test individual skills first, or the entire Sprint Assessment–REAZN workflow?
-- Are we interested in measuring the consistency of dispatch decisions, not just the final results?
-- Would it be useful for me to demonstrate the Evaluate Skill workflow and discuss how it could support our existing process?
+- How are Sprint Assessment and REAZN currently tested or validated?
+- What evidence would show that the skills and their integration work as expected?
+- Are executable evaluations a priority for this project?
 
 ### How Evaluate Skill could contribute
 
