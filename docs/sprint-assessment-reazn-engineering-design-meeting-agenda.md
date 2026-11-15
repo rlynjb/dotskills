@@ -10,9 +10,7 @@
 
 ### Context
 
-Sprint Assessment processes Jira tickets in batches, potentially 10, 20, or 50 tickets.
-
-Before assuming that REAZN should be integrated into the workflow, I'd like to understand how Sprint Assessment currently processes these tickets, what its existing assessment capabilities are, and what problems we want the integration to solve.
+Sprint Assessment processes Jira tickets in batches of potentially 10–50. I'd like to understand its current workflow and what problem REAZN would solve before discussing integration.
 
 ### Questions to discuss
 
@@ -77,9 +75,7 @@ Continue using Sprint Assessment and REAZN separately while gathering evidence a
 
 ### Context
 
-If we decide to integrate both skills, I think it would be useful to define their responsibilities and the contract governing how they communicate.
-
-In particular, I'd like to understand what Sprint Assessment would pass to REAZN, what REAZN is expected to return, and how Sprint Assessment would consume those results.
+If integration moves forward, we should clarify what Sprint Assessment sends to REAZN, what REAZN returns, and which skill owns each responsibility.
 
 ### Questions to discuss
 
@@ -142,11 +138,7 @@ This would help us work through the contract using a concrete example.
 
 ### Context
 
-I've been developing REAZN as an input-agnostic, evidence-based engineering assessment skill using the four-step System Design Interview (SDI) framework.
-
-I've also developed Audit Skill to review the engineering design, responsibilities, contracts, trust boundaries, and limitations of skills.
-
-Before suggesting changes or using audit findings to guide the integration, I'd like to share how REAZN is structured and understand whether its current capabilities align with what Sprint Assessment needs.
+REAZN uses the four-step SDI framework, while Audit Skill reviews documented design and evidence gaps. I'd like to see whether these capabilities fit Sprint Assessment's needs.
 
 ### Questions to discuss
 
@@ -219,9 +211,7 @@ A previous audit of Refine Requirements Light can serve as historical context, b
 
 ### Context
 
-I've been collecting technical materials from AgentCon/MCP Con 2026 covering agent security, trust boundaries, context management, interface contracts, governance, and reliability.
-
-I think some of those practices could be useful as we develop our skills, but I'd like to understand what security and reliability expectations already exist and whether further investigation would be valuable.
+My AgentCon/MCP Con 2026 materials cover security, trust boundaries, and reliability. I'd like to understand existing team practices before recommending additional work.
 
 ### Questions to discuss
 
@@ -268,11 +258,7 @@ I think some of those practices could be useful as we develop our skills, but I'
 
 ### Context
 
-I've been developing Evaluate Skill to support repeatable, evidence-based evaluations for agent skills.
-
-My longer-term goal is to move beyond manually inspecting generated outputs and begin measuring whether skills behave correctly, follow their contracts, and handle edge cases reliably.
-
-However, I'd first like to understand the team's current evaluation approach and whether writing executable evals aligns with the project's priorities.
+I'm developing Evaluate Skill for repeatable behavioral testing. I'd like to understand how Sprint Assessment is currently validated and whether executable evals align with team priorities.
 
 ### Questions to discuss
 
