@@ -8,7 +8,6 @@ be added because a real need exists, not just to match a template.
 | --- | --- |
 | [skill/](skill/SKILL.md) | Rich authoring starter with optional guidance (remove unused files). |
 | [evals/](evals/README.md) | **Recommended new convention:** copy `evals.json` into a target skill's `evals/` folder. |
-| [case/](case/README.md) | **Legacy manual suite:** original detailed cases and grading files; preserved for existing tests. |
 
 ## Start a skill
 

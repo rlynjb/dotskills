@@ -38,8 +38,6 @@ A skill can be a single `skills/<name>/SKILL.md` with YAML frontmatter
    gitignored `eval-workspaces/`. Do not claim a quality score from
    structural/fixture checks.
 
-Existing [legacy manual cases](../evals/README.md) remain in their
-original layout. Do not migrate, delete or expose them automatically.
 The installed skill must not have evaluator answer keys in readable
 workspace; DotSkills copy/build adapters exclude skill-local `evals/`.
 See [runtime safety boundaries](skill-repository-integrity-and-runtime-safety.md).

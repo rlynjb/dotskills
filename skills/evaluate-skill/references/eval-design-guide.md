@@ -354,8 +354,7 @@ source labels: AgentSkills.io convention (with URL), exact verified
 conference talk if applicable, target-skill source, real run evidence,
 or "Model recommendation" for your own synthesis.
 
-Historical repository-level `evals/` records, when present, are separate
-from current skill-local `evals/evals.json` suites. **Do not silently
-migrate or delete historical cases.** The active dispatcher
+Store each target's evaluation definitions and fixtures in its own
+`evals/` directory. The active dispatcher
 [`native_eval.py`](../runner/native_eval.py) prepares Codex-backed
 Promptfoo cases but does **not** install or sandbox the model runner.

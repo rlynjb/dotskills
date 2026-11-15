@@ -112,14 +112,11 @@ failed eval need not mean the target `SKILL.md` is wrong. See
 [conference source mappings](../skills/README.md); the mapping is
 not a verified transcript for every talk.
 
-## Migration and safety boundaries
+## Evaluation safety boundaries
 
-The previous manually authored cases under
-[`evals/code-review/context-validation/`](../evals/code-review/context-validation/README.md)
-and their recorded attempts are **preserved**. They use an older case
-template, and this update does not silently move, remove or regrade
-them. The newly added `evaluate-skill/evals/evals.json` contains
-**proposed test cases only**, not executed outcomes.
+The [Evaluate Skill test definitions](../skills/evaluate-skill/evals/evals.json)
+contain **proposed test cases only**, not executed outcomes. Keep each target
+skill's evaluation cases and fixtures under its own `evals/` directory.
 
 The evaluator must stage agent-facing inputs separately and keep
 answer keys and earlier runs inaccessible; simply putting them in
