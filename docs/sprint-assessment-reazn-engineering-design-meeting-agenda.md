@@ -176,24 +176,13 @@ Identify alternatives, risks, mitigations, unresolved decisions, and verificatio
 
 REAZN can assess Jira requirements, repository changes, existing implementations, agent skills, or system/workflow descriptions. It is designed to produce a read-only assessment, with evidence and uncertainty explicitly identified.
 
-### How Audit Skill could contribute
+### Additional Engineering Research (Ongoing)
 
-Audit Skill performs a read-only engineering review using ten criteria, including:
+I'm also developing Audit Skill to review agent skill design and engineering practices, although I haven't evaluated its reliability yet.
 
-- Activation and discovery
-- Workflow and orchestration
-- Contracts and outputs
-- Context and trust
-- Permissions and side effects
-- Failure handling
-- Evals and observability
-- Lifecycle and portability
+Separately, I've been reviewing my AgentCon/MCP Con 2026 session notes and external resources, including [GitHub's guidance on reusable agent skills](https://github.blog/ai-and-ml/github-copilot/build-once-run-on-any-agent-a-practical-guide-to-agent-skills/), to identify potentially useful engineering practices.
 
-For the integration, I think the most relevant areas would be orchestration, contracts, trust boundaries, failures, and evaluation evidence.
-
-**Important distinction:** Audit Skill can identify documented capabilities and evidence gaps. It doesn't automatically establish that a skill behaves correctly during execution.
-
-A previous audit of Refine Requirements Light can serve as historical context, but the current REAZN version should be reviewed separately before treating those findings as current.
+For now, I'd like to prioritize understanding and validating REAZN and Sprint Assessment. If we identify areas where additional research would help, I can bring those findings into future discussions.
 
 ### What I'd like us to establish
 
