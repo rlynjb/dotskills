@@ -105,17 +105,6 @@ These are **three discussion categories**, not an official industry-standard fra
 | **B. Responsibilities & Orchestration** | Dispatch and workflow ownership | Trigger, Processing, Ownership |
 | **C. Reliability & Verification** | Failures, evidence, and testing | Traceability, Failure behavior |
 
-### Industry references versus proposed design
-
-**Established practices to consult (when applicable):**
-
-- [OpenAPI Specification](https://spec.openapis.org/oas/latest.html) — describing structured request and response interfaces when an API is actually involved.
-- [RFC 9457: Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html) — a standardized approach to HTTP error responses, if the integration uses HTTP.
-- [Pact documentation](https://docs.pact.io/) — consumer-provider contract testing for independently implemented components.
-- [W3C Trace Context](https://www.w3.org/TR/trace-context/) — propagating trace identifiers across services when distributed tracing is relevant.
-
-**Proposed for this project, not prescribed by those standards:** Selective dispatch, the exact ticket-to-REAZN fields, which skill owns aggregation, the assessment status names, and the handling of partial batch failures. These decisions depend on Sprint Assessment's existing implementation and execution environment.
-
 ### Example scenario
 
 Suppose a Jira ticket requires users to export assessment results as CSV, but a generated assessment describes PDF export.
