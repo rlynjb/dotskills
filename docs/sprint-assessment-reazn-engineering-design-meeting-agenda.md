@@ -7,8 +7,8 @@
 ## Table of Contents
 
 1. [Sprint Assessment + REAZN Integration](#1-sprint-assessment--reazn-integration)
-2. [Contracts Between Sprint Assessment and REAZN](#2-contracts-between-sprint-assessment-and-reazn)
-3. [REAZN Design and Audit Skill Findings](#3-reazn-design-and-audit-skill-findings)
+2. [REAZN Design and Audit Skill Findings](#2-reazn-design-and-audit-skill-findings)
+3. [Contracts Between Sprint Assessment and REAZN](#3-contracts-between-sprint-assessment-and-reazn)
 4. [Security, Trust Boundaries, and AgentCon/MCP Con 2026](#4-security-trust-boundaries-and-agentconmcp-con-2026)
 5. [Evaluation Strategy and Evaluate Skill](#5-evaluation-strategy-and-evaluate-skill)
 6. [Closing Discussion — Aligning on Next Steps](#closing-discussion--aligning-on-next-steps)
@@ -77,62 +77,7 @@ Continue using Sprint Assessment and REAZN separately while gathering evidence a
 
 ---
 
-## 2. Contracts Between Sprint Assessment and REAZN
-
-### Context
-
-If integration moves forward, we should clarify what Sprint Assessment sends to REAZN, what REAZN returns, and which skill owns each responsibility.
-
-### Questions to discuss
-
-**Main question:**
-
-> If we move forward with integrating Sprint Assessment and REAZN, what contracts would we need to establish between the two skills, and are any of these contracts already defined?
-
-**Follow-up questions:**
-
-- Which skill owns the workflow and the final assessment?
-- What inputs should Sprint Assessment pass to REAZN, and what output should it receive?
-- How should the workflow handle missing information or an incomplete REAZN assessment?
-
-### Contract areas to discuss
-
-These are **three discussion categories**, not an official industry-standard framework or agreed requirements. First, check whether the team already has a handoff pattern to reuse.
-
-| Area | Focus | Coverage | Example for Jira, Sprint Assessment, and REAZN |
-| --- | --- | --- | --- |
-| **A. Interface Contract** | Inputs, outputs, and errors | Input, Output, Status | Sprint Assessment passes Jira ticket `PROJ-123`, its description, acceptance criteria, and available source context to REAZN. REAZN returns the ticket ID, SDI findings, evidence references, and an assessment status (such as `completed` or `incomplete`). |
-| **B. Responsibilities & Orchestration** | Dispatch and workflow ownership | Trigger, Processing, Ownership | For a batch of 20 Jira tickets, Sprint Assessment could identify which tickets need deeper analysis, dispatch those to REAZN, and combine the results. REAZN would be responsible for each dispatched ticket's detailed SDI assessment. This dispatch strategy remains a design option. |
-| **C. Reliability & Verification** | Failures, evidence, and testing | Traceability, Failure behavior | If REAZN cannot access repository evidence for `PROJ-123`, it returns an explicitly incomplete finding linked to that ticket rather than guessing. An eval would check that Sprint Assessment preserves this status without treating it as verified. |
-
-### Example scenario
-
-Suppose a Jira ticket requires users to export assessment results as CSV, but a generated assessment describes PDF export.
-
-We could discuss:
-
-1. Should Sprint Assessment detect that discrepancy independently?
-2. Should the discrepancy trigger REAZN?
-3. What evidence would REAZN receive?
-4. What should REAZN return to indicate the mismatch?
-5. Would that result affect Sprint Assessment's score, produce an additional finding, or require human review?
-
-This would help us work through the contract using a concrete example.
-
-### What I'd like us to establish
-
-- Whether a formal handoff contract is necessary for the proposed integration
-- Existing contracts or patterns we can reuse
-- Responsibility and ownership boundaries
-- Required versus optional input/output fields
-- Failure-handling expectations
-- Any unresolved design decisions
-
-**My consideration:** I would prefer explicit, testable contracts if we proceed with an automated integration, but I want to understand the existing architecture before proposing a specific schema.
-
----
-
-## 3. REAZN Design and Audit Skill Findings
+## 2. REAZN Design and Audit Skill Findings
 
 ### Context
 
@@ -188,6 +133,61 @@ For now, I'd like to prioritize understanding and validating REAZN and Sprint As
 - Which findings deserve further investigation
 
 **My consideration:** I can share the REAZN documentation and relevant audit findings as engineering evidence, without assuming the integration needs to adopt every part of my skill's design.
+
+---
+
+## 3. Contracts Between Sprint Assessment and REAZN
+
+### Context
+
+If integration moves forward, we should clarify what Sprint Assessment sends to REAZN, what REAZN returns, and which skill owns each responsibility.
+
+### Questions to discuss
+
+**Main question:**
+
+> If we move forward with integrating Sprint Assessment and REAZN, what contracts would we need to establish between the two skills, and are any of these contracts already defined?
+
+**Follow-up questions:**
+
+- Which skill owns the workflow and the final assessment?
+- What inputs should Sprint Assessment pass to REAZN, and what output should it receive?
+- How should the workflow handle missing information or an incomplete REAZN assessment?
+
+### Contract areas to discuss
+
+These are **three discussion categories**, not an official industry-standard framework or agreed requirements. First, check whether the team already has a handoff pattern to reuse.
+
+| Area | Focus | Coverage | Example for Jira, Sprint Assessment, and REAZN |
+| --- | --- | --- | --- |
+| **A. Interface Contract** | Inputs, outputs, and errors | Input, Output, Status | Sprint Assessment passes Jira ticket `PROJ-123`, its description, acceptance criteria, and available source context to REAZN. REAZN returns the ticket ID, SDI findings, evidence references, and an assessment status (such as `completed` or `incomplete`). |
+| **B. Responsibilities & Orchestration** | Dispatch and workflow ownership | Trigger, Processing, Ownership | For a batch of 20 Jira tickets, Sprint Assessment could identify which tickets need deeper analysis, dispatch those to REAZN, and combine the results. REAZN would be responsible for each dispatched ticket's detailed SDI assessment. This dispatch strategy remains a design option. |
+| **C. Reliability & Verification** | Failures, evidence, and testing | Traceability, Failure behavior | If REAZN cannot access repository evidence for `PROJ-123`, it returns an explicitly incomplete finding linked to that ticket rather than guessing. An eval would check that Sprint Assessment preserves this status without treating it as verified. |
+
+### Example scenario
+
+Suppose a Jira ticket requires users to export assessment results as CSV, but a generated assessment describes PDF export.
+
+We could discuss:
+
+1. Should Sprint Assessment detect that discrepancy independently?
+2. Should the discrepancy trigger REAZN?
+3. What evidence would REAZN receive?
+4. What should REAZN return to indicate the mismatch?
+5. Would that result affect Sprint Assessment's score, produce an additional finding, or require human review?
+
+This would help us work through the contract using a concrete example.
+
+### What I'd like us to establish
+
+- Whether a formal handoff contract is necessary for the proposed integration
+- Existing contracts or patterns we can reuse
+- Responsibility and ownership boundaries
+- Required versus optional input/output fields
+- Failure-handling expectations
+- Any unresolved design decisions
+
+**My consideration:** I would prefer explicit, testable contracts if we proceed with an automated integration, but I want to understand the existing architecture before proposing a specific schema.
 
 ---
 
