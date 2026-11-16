@@ -99,11 +99,11 @@ If integration moves forward, we should clarify what Sprint Assessment sends to 
 
 These are **three discussion categories**, not an official industry-standard framework or agreed requirements. First, check whether the team already has a handoff pattern to reuse.
 
-| Area | Core question | Example for Sprint Assessment + REAZN |
+| Area | Focus | Coverage |
 | --- | --- | --- |
-| **A. Interface contract** | What is sent, returned, and reported when a result is incomplete or fails? | Sprint Assessment passes a ticket ID, requirements, and available evidence; REAZN returns findings, evidence references, and a completion/error status. |
-| **B. Responsibilities and orchestration** | Who decides when REAZN runs, and who owns the final result? | Sprint Assessment may decide whether to dispatch REAZN and aggregate batch results; REAZN may own the detailed SDI assessment. These are options to confirm, not established behavior. |
-| **C. Reliability and verification** | How do we handle missing evidence, failed handoffs, and proof of correct behavior? | A ticket referencing inaccessible repository code produces an explicit incomplete result; an approved test checks that it is not reported as verified. |
+| **A. Interface Contract** | Inputs, outputs, and errors | Input, Output, Status |
+| **B. Responsibilities & Orchestration** | Dispatch and workflow ownership | Trigger, Processing, Ownership |
+| **C. Reliability & Verification** | Failures, evidence, and testing | Traceability, Failure behavior |
 
 ### Industry references versus proposed design
 
