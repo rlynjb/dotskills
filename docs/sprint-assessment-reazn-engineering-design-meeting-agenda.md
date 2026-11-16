@@ -95,20 +95,26 @@ If integration moves forward, we should clarify what Sprint Assessment sends to 
 - What inputs should Sprint Assessment pass to REAZN, and what output should it receive?
 - How should the workflow handle missing information or an incomplete REAZN assessment?
 
-### Proposed contract areas for discussion
+### Contract areas to discuss
 
-These are illustrative definitions, not agreed requirements or confirmed existing behavior.
+These are **three discussion categories**, not an official industry-standard framework or agreed requirements. First, check whether the team already has a handoff pattern to reuse.
 
-| Contract area | Proposed definition | Example |
+| Area | Core question | Example for Sprint Assessment + REAZN |
 | --- | --- | --- |
-| **Trigger** | Conditions determining whether REAZN should be invoked. | A Jira ticket lacks clear acceptance criteria or involves changes across multiple services. |
-| **Input** | Information Sprint Assessment passes to REAZN. | Ticket ID, description, acceptance criteria, relevant repository context, and requested scope. |
-| **Processing** | The assessment REAZN is expected to perform. | Evaluate the ticket using the four SDI steps, identifying requirements, architecture, contracts, and risks. |
-| **Output** | Information REAZN returns for Sprint Assessment to consume. | Requirements gaps, architectural findings, interface considerations, risks, and supporting evidence. |
-| **Status** | How completion, uncertainty, and failures are represented. | completed, incomplete, needs_review, or failed. |
-| **Traceability** | How findings are associated with the original ticket and assessment execution. | Ticket ID, skill version, source revision, and references supporting each finding. |
-| **Ownership** | Which skill is responsible for specific decisions and outputs. | Sprint Assessment owns batch aggregation; REAZN owns its detailed design findings. |
-| **Failure behavior** | Expected behavior when one assessment cannot finish. | An unavailable repository produces an incomplete result rather than fabricated architecture findings; other tickets continue where safe. |
+| **A. Interface contract** | What is sent, returned, and reported when a result is incomplete or fails? | Sprint Assessment passes a ticket ID, requirements, and available evidence; REAZN returns findings, evidence references, and a completion/error status. |
+| **B. Responsibilities and orchestration** | Who decides when REAZN runs, and who owns the final result? | Sprint Assessment may decide whether to dispatch REAZN and aggregate batch results; REAZN may own the detailed SDI assessment. These are options to confirm, not established behavior. |
+| **C. Reliability and verification** | How do we handle missing evidence, failed handoffs, and proof of correct behavior? | A ticket referencing inaccessible repository code produces an explicit incomplete result; an approved test checks that it is not reported as verified. |
+
+### Industry references versus proposed design
+
+**Established practices to consult (when applicable):**
+
+- [OpenAPI Specification](https://spec.openapis.org/oas/latest.html) — describing structured request and response interfaces when an API is actually involved.
+- [RFC 9457: Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html) — a standardized approach to HTTP error responses, if the integration uses HTTP.
+- [Pact documentation](https://docs.pact.io/) — consumer-provider contract testing for independently implemented components.
+- [W3C Trace Context](https://www.w3.org/TR/trace-context/) — propagating trace identifiers across services when distributed tracing is relevant.
+
+**Proposed for this project, not prescribed by those standards:** Selective dispatch, the exact ticket-to-REAZN fields, which skill owns aggregation, the assessment status names, and the handling of partial batch failures. These decisions depend on Sprint Assessment's existing implementation and execution environment.
 
 ### Example scenario
 
