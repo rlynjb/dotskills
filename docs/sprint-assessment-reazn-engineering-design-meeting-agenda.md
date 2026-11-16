@@ -158,11 +158,11 @@ If integration moves forward, we should clarify what Sprint Assessment sends to 
 
 These are **three discussion categories**, not an official industry-standard framework or agreed requirements. First, check whether the team already has a handoff pattern to reuse.
 
-| Area | Focus | Coverage | Example for Jira, Sprint Assessment, and REAZN |
-| --- | --- | --- | --- |
-| **A. Interface Contract** | Inputs, outputs, and errors | Input, Output, Status | Sprint Assessment passes Jira ticket `PROJ-123`, its description, acceptance criteria, and available source context to REAZN. REAZN returns the ticket ID, SDI findings, evidence references, and an assessment status (such as `completed` or `incomplete`). |
-| **B. Responsibilities & Orchestration** | Dispatch and workflow ownership | Trigger, Processing, Ownership | For a batch of 20 Jira tickets, Sprint Assessment could identify which tickets need deeper analysis, dispatch those to REAZN, and combine the results. REAZN would be responsible for each dispatched ticket's detailed SDI assessment. This dispatch strategy remains a design option. |
-| **C. Reliability & Verification** | Failures, evidence, and testing | Traceability, Failure behavior | If REAZN cannot access repository evidence for `PROJ-123`, it returns an explicitly incomplete finding linked to that ticket rather than guessing. An eval would check that Sprint Assessment preserves this status without treating it as verified. |
+| Contract area | Key considerations | Example for Jira, Sprint Assessment, and REAZN |
+| --- | --- | --- |
+| **A. Interface Contract** | Inputs, outputs, status, and error handling | Sprint Assessment passes Jira ticket `PROJ-123`, its description, acceptance criteria, and available source context to REAZN. REAZN returns the ticket ID, SDI findings, evidence references, and an assessment status (such as `completed` or `incomplete`). |
+| **B. Responsibilities & Orchestration** | Triggers, processing, and ownership | For a batch of 20 Jira tickets, Sprint Assessment could identify which tickets need deeper analysis, dispatch those to REAZN, and combine the results. REAZN would be responsible for each dispatched ticket's detailed SDI assessment. This dispatch strategy remains a design option. |
+| **C. Reliability & Verification** | Traceability, failure behavior, and testing | If REAZN cannot access repository evidence for `PROJ-123`, it returns an explicitly incomplete finding linked to that ticket rather than guessing. An eval would check that Sprint Assessment preserves this status without treating it as verified. |
 
 ### Example scenario
 
