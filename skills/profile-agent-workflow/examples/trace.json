@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "run_id": "illustrative-two-ticket-run",
+  "workflow_revision": "illustrative-v1",
+  "coverage": {
+    "dispatch_complete": true,
+    "tool_complete": true,
+    "model_usage_complete": true
+  },
+  "events": [
+    {
+      "id": "E-01",
+      "type": "dispatch_decision",
+      "unit_id": "T-014",
+      "skill": "refine-requirements",
+      "decision": "SKIP",
+      "reason_code": "REQUIREMENTS_COMPLETE"
+    },
+    {
+      "id": "E-02",
+      "type": "agent_start",
+      "unit_id": "T-014",
+      "skill": "sprint-assessment"
+    },
+    {
+      "id": "E-03",
+      "type": "tool_call",
+      "unit_id": "T-014",
+      "tool": "jira.read",
+      "fingerprint": "safe-hash-T014"
+    },
+    {
+      "id": "E-04",
+      "type": "model_call",
+      "unit_id": "T-014",
+      "purpose": "execution",
+      "usage": {
+        "input_tokens": 1200,
+        "cached_input_tokens": 300,
+        "output_tokens": 250,
+        "cost_usd": 0.024
+      }
+    },
+    {
+      "id": "E-05",
+      "type": "dispatch_decision",
+      "unit_id": "T-015",
+      "skill": "refine-requirements",
+      "decision": "DISPATCH",
+      "reason_code": "AMBIGUOUS_REQUIREMENTS"
+    },
+    {
+      "id": "E-06",
+      "type": "agent_start",
+      "unit_id": "T-015",
+      "skill": "refine-requirements"
+    },
+    {
+      "id": "E-07",
+      "type": "tool_call",
+      "unit_id": "T-015",
+      "tool": "jira.read",
+      "fingerprint": "safe-hash-T015"
+    },
+    {
+      "id": "E-08",
+      "type": "tool_call",
+      "unit_id": "T-015",
+      "tool": "jira.read",
+      "fingerprint": "safe-hash-T015"
+    },
+    {
+      "id": "E-09",
+      "type": "model_call",
+      "unit_id": "T-015",
+      "purpose": "execution",
+      "usage": {
+        "input_tokens": 1800,
+        "cached_input_tokens": 400,
+        "output_tokens": 450,
+        "cost_usd": 0.06
+      }
+    },
+    {
+      "id": "E-10",
+      "type": "model_call",
+      "unit_id": "T-015",
+      "purpose": "grader",
+      "usage": {
+        "input_tokens": 600,
+        "cached_input_tokens": 0,
+        "output_tokens": 100,
+        "cost_usd": 0.011
+      }
+    },
+    {
+      "id": "E-11",
+      "type": "agent_start",
+      "unit_id": "T-015",
+      "skill": "sprint-assessment"
+    }
+  ]
+}

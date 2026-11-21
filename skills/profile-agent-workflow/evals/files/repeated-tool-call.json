@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "run_id": "synthetic-repeat-tool",
+  "workflow_revision": "fixture-v1",
+  "coverage": {
+    "dispatch_complete": false,
+    "tool_complete": true,
+    "model_usage_complete": true
+  },
+  "events": [
+    {
+      "id": "R1",
+      "type": "tool_call",
+      "unit_id": "CASE-READY",
+      "tool": "issue.read",
+      "fingerprint": "fingerprint-1"
+    },
+    {
+      "id": "R2",
+      "type": "tool_call",
+      "unit_id": "CASE-READY",
+      "tool": "issue.read",
+      "fingerprint": "fingerprint-1"
+    },
+    {
+      "id": "R3",
+      "type": "model_call",
+      "unit_id": "CASE-READY",
+      "purpose": "execution",
+      "usage": {
+        "input_tokens": 800,
+        "cached_input_tokens": 600,
+        "output_tokens": 100,
+        "cost_usd": 0.01
+      }
+    },
+    {
+      "id": "R4",
+      "type": "model_call",
+      "unit_id": "CASE-READY",
+      "purpose": "grader",
+      "usage": {
+        "input_tokens": 100,
+        "cached_input_tokens": 0,
+        "output_tokens": 30,
+        "cost_usd": 0.002
+      }
+    }
+  ]
+}

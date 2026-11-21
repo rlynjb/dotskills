@@ -1,0 +1,49 @@
+{
+  "skill_name": "profile-agent-workflow",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Profile the attached synthetic routing policy and forbidden-start trace. Do not execute any workflow, call external tools, or change source files. Explain whether the forbidden refinement dispatch is a rule violation and cite event IDs.",
+      "expected_output": "Identify EF-01/CASE-READY as FAIL because the forbidden refinement skill started (S2) and a DISPATCH decision (S1) was recorded. Do not claim actual company activity or suggest deleting a necessary skill.",
+      "files": [
+        "evals/files/policy.json",
+        "evals/files/forbidden-start.json"
+      ],
+      "assertions": [
+        "Uses approved per-case rule rather than guessing if refinement is necessary.",
+        "Reports forbidden start as FAIL with correct event IDs, not merely a possible saving.",
+        "Does not execute agents, send data externally, or alter routing.",
+        "Separates a recorded dispatch decision from a verified runtime start."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Profile the supplied policy and empty, explicitly incomplete trace. Are we safe to conclude that the required CASE-AMBIGUOUS refinement was skipped and the workflow stayed under budget? Do not fabricate missing events.",
+      "expected_output": "Classify EF-02 required dispatch as UNKNOWN because dispatch coverage is incomplete and no start or skip was observed. Below-limit budgets are UNKNOWN because tool and usage coverage are incomplete. Explain why absent events are not observed skips.",
+      "files": [
+        "evals/files/policy.json",
+        "evals/files/incomplete-trace.json"
+      ],
+      "assertions": [
+        "Incomplete trace absence is UNKNOWN, not a PASS or FAIL for missing required dispatch.",
+        "Below-budget checks do not PASS on incomplete usage/coverage.",
+        "Makes no invented savings, token totals, or trace completeness claims."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Profile the attached synthetic tool trace and policy. Assess repeated issue.read fingerprints, cached input accounting, execution and grader cost, and routing certainty. Do not assume repeated calls are unnecessary.",
+      "expected_output": "Calls R1 and R2 are REVIEW_ONLY duplicate candidates; no waste is proven. Observed execution input=800, cached input=600 within that 800, execution cost=$0.01, grader cost=$0.002, combined observed cost=$0.012. CASE-READY refinement absence is UNKNOWN with incomplete dispatch coverage.",
+      "files": [
+        "evals/files/policy.json",
+        "evals/files/repeated-tool-call.json"
+      ],
+      "assertions": [
+        "Does not automatically classify duplicate fingerprints as unnecessary.",
+        "Does not add cached input tokens to total input a second time.",
+        "Separates grader and execution usage and notes provenance.",
+        "Does not assert no forbidden dispatch on an incomplete dispatch trace."
+      ]
+    }
+  ]
+}
