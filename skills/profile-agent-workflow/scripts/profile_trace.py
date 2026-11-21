@@ -61,7 +61,8 @@ def load_json(path: Path) -> dict:
 
 
 def validate(trace: dict, policy: dict) -> tuple[list[dict], list[dict], dict, dict]:
-    if trace.get("schema_version") != 1 or policy.get("schema_version") != 1:
+    if (type(trace.get("schema_version")) is not int or trace["schema_version"] != 1
+            or type(policy.get("schema_version")) is not int or policy["schema_version"] != 1):
         raise ProfileInputError("trace and policy must have schema_version 1")
     _string(trace.get("run_id"), "trace.run_id")
     _string(policy.get("policy_id"), "policy.policy_id")
@@ -124,7 +125,7 @@ def validate(trace: dict, policy: dict) -> tuple[list[dict], list[dict], dict, d
         rule_id = _string(rule.get("id"), f"rules[{index}].id")
         unit = _string(rule.get("unit_id"), f"{rule_id}.unit_id")
         skill = _string(rule.get("skill"), f"{rule_id}.skill")
-        if rule.get("expected") not in EXPECTED:
+        if not isinstance(rule.get("expected"), str) or rule["expected"] not in EXPECTED:
             raise ProfileInputError(f"{rule_id}.expected must be REQUIRED, FORBIDDEN or OPTIONAL")
         if (unit, skill) in seen_rules or rule_id in rule_ids:
             raise ProfileInputError(f"duplicate routing rule: {rule_id} / {unit} / {skill}")
