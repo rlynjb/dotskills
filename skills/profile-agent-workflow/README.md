@@ -90,7 +90,7 @@ The local [trace contract](references/trace-contract.md) describes the input sem
 For deterministic analyzer regression checks, run:
 
 ```bash
-python3 -m unittest discover -s skills/profile-agent-workflow/tests -v
+python3 -m unittest discover -s skills/profile-agent-workflow/evals -v
 ```
 
 The offline analyzer only validates and counts records in a normalized report. It **does not verify trace authenticity, enforce cost limits, evaluate answer quality, certify safety, discover policies automatically, or prove that any real company workflow has been optimized**. Those require independently trusted instrumentation, approved eval execution and human review.
