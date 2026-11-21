@@ -28,6 +28,8 @@ The default selector is `category=methodology`, so the result is:
 └── .agents/
     └── skills/
         ├── evaluate-skill/
+    ├── profile-agent-workflow/
+        ├── profile-agent-workflow/
         ├── context-engineering/
         ├── correctness-and-verification/
         ├── skill-lifecycle-and-release/
@@ -81,6 +83,7 @@ dist/openai/dotskills-methodology/
 ├── plugin.json
 └── skills/
     ├── evaluate-skill/
+    ├── profile-agent-workflow/
     ├── context-engineering/
     ├── correctness-and-verification/
     ├── skill-lifecycle-and-release/
