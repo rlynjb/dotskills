@@ -59,7 +59,7 @@ The deliberately fictional sample has two units: T-014 (refinement should be ski
 
 - `dispatch_checks`: per-unit routing rule, decision events, observed starts, and PASS / FAIL / UNKNOWN / NOT APPLICABLE.
 - `uncontracted_invocations`: observed starts not covered by an approved routing rule; these are **UNKNOWN**, not automatically unnecessary.
-- `repeat_tool_call_candidates`: repeated hashed tool requests that warrant investigation, not automatic cost defects.
+- `repeat_tool_call_candidates` and `repeat_agent_start_candidates`: repeated hashed tool requests or repeated starts that warrant investigation, not automatic cost defects.
 - `usage`: observed execution and grader tokens/costs separately. Cached input tokens are already included within input tokens.
 - `budget_checks`: measured use against **supplied** limits, with UNKNOWN when below-limit evidence is incomplete.
 - `coverage_warning` and `unknowns`: provenance and measurement limits that should not be hidden.
