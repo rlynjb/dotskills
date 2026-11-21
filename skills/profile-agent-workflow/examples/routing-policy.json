@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "policy_id": "illustrative-routing-contract-v1",
+  "workflow_revision": "illustrative-v1",
+  "rules": [
+    {
+      "id": "R-01",
+      "unit_id": "T-014",
+      "skill": "refine-requirements",
+      "expected": "FORBIDDEN",
+      "reason": "Illustrative: ticket already has clear approved requirements"
+    },
+    {
+      "id": "R-02",
+      "unit_id": "T-014",
+      "skill": "sprint-assessment",
+      "expected": "REQUIRED",
+      "reason": "Illustrative: ready ticket needs assessment"
+    },
+    {
+      "id": "R-03",
+      "unit_id": "T-015",
+      "skill": "refine-requirements",
+      "expected": "REQUIRED",
+      "reason": "Illustrative: required outcomes are ambiguous"
+    },
+    {
+      "id": "R-04",
+      "unit_id": "T-015",
+      "skill": "sprint-assessment",
+      "expected": "REQUIRED",
+      "reason": "Illustrative: assess after refinement"
+    },
+    {
+      "id": "R-05",
+      "unit_id": "T-015",
+      "skill": "jira-ticket-decomposition",
+      "expected": "OPTIONAL",
+      "reason": "Illustrative: decomposition decided separately"
+    }
+  ],
+  "budgets": {
+    "max_execution_cost_usd": 0.1,
+    "max_total_cost_usd": 0.1,
+    "max_execution_input_tokens": 3500,
+    "max_agent_starts": 3,
+    "max_tool_calls": 3
+  }
+}
