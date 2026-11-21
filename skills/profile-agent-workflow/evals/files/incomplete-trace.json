@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "run_id": "synthetic-incomplete",
+  "workflow_revision": "fixture-v1",
+  "coverage": {
+    "dispatch_complete": false,
+    "tool_complete": false,
+    "model_usage_complete": false
+  },
+  "events": []
+}
