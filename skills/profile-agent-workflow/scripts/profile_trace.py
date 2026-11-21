@@ -23,6 +23,7 @@ BUDGETS = {
     "max_total_cost_usd": ("total_cost", "model_usage_complete"),
     "max_execution_input_tokens": ("execution_input", "model_usage_complete"),
     "max_agent_starts": ("agent_starts", "dispatch_complete"),
+    "max_model_calls": ("model_calls", "model_usage_complete"),
     "max_tool_calls": ("tool_calls", "tool_complete"),
 }
 USAGE_FIELDS = {"input_tokens", "cached_input_tokens", "output_tokens", "cost_usd"}
@@ -88,7 +89,7 @@ def validate(trace: dict, policy: dict) -> tuple[list[dict], list[dict], dict, d
             raise ProfileInputError(f"duplicate event id: {event_id}")
         seen_event_ids.add(event_id)
         kind = event.get("type")
-        if kind not in EVENT_TYPES:
+        if not isinstance(kind, str) or kind not in EVENT_TYPES:
             raise ProfileInputError(f"unknown event type at {event_id}: {kind!r}")
         _string(event.get("unit_id"), f"{event_id}.unit_id")
         if kind in ("dispatch_decision", "agent_start"):
@@ -136,7 +137,7 @@ def validate(trace: dict, policy: dict) -> tuple[list[dict], list[dict], dict, d
         raise ProfileInputError("unknown budget key(s): " + ", ".join(sorted(set(budgets) - set(BUDGETS))))
     for key, value in budgets.items():
         _number(value, f"budgets.{key}", integer=key.endswith("_tokens")
-                or key in {"max_agent_starts", "max_tool_calls"})
+                or key in {"max_agent_starts", "max_tool_calls", "max_model_calls"})
     return events, rules, budgets, coverage
 
 
@@ -206,6 +207,10 @@ def profile(trace: dict, policy: dict) -> dict:
         {"unit_id": k[0], "skill": k[1], "start_event_ids": ids, "status": "UNKNOWN"}
         for k, ids in sorted(starts.items()) if k not in allowed_keys
     ]
+    repeat_agents = [
+        {"unit_id": k[0], "skill": k[1], "start_event_ids": ids, "status": "REVIEW_ONLY"}
+        for k, ids in sorted(starts.items()) if len(ids) > 1
+    ]
     repeats = [
         {"unit_id": k[0], "tool": k[1], "fingerprint": k[2],
          "event_ids": ids, "status": "REVIEW_ONLY"}
@@ -222,6 +227,7 @@ def profile(trace: dict, policy: dict) -> dict:
         "execution_input": (execution["observed_input_tokens"], execution["input_tokens_complete"]),
         "agent_starts": (counts["agent_start"], coverage["dispatch_complete"]),
         "tool_calls": (counts["tool_call"], coverage["tool_complete"]),
+        "model_calls": (counts["model_call"], coverage["model_usage_complete"]),
     }
     budget_checks = []
     for name, cap in sorted(budgets.items()):
@@ -256,6 +262,7 @@ def profile(trace: dict, policy: dict) -> dict:
         "dispatch_checks": dispatch,
         "uncontracted_invocations": uncontracted,
         "repeat_tool_call_candidates": repeats,
+        "repeat_agent_start_candidates": repeat_agents,
         "usage": {
             "execution": execution, "grader": grader,
             "observed_total_cost_usd": round(observed_total_cost, 10),
