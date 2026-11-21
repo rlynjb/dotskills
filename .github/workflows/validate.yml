@@ -29,6 +29,6 @@ jobs:
       - name: Test OpenAI adapter
         run: python3 -m unittest discover -s adapters/openai -p "test_*.py" -v
       - name: Test Profile Agent Workflow offline profiler (no model calls)
-        run: python3 -m unittest discover -s skills/profile-agent-workflow/tests -p "test_*.py" -v
+        run: python3 -m unittest discover -s skills/profile-agent-workflow/evals -p "test_*.py" -v
       - name: Smoke test Profile Agent Workflow sample
         run: python3 skills/profile-agent-workflow/scripts/profile_trace.py --trace skills/profile-agent-workflow/examples/trace.json --policy skills/profile-agent-workflow/examples/routing-policy.json > /dev/null
