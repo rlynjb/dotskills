@@ -46,6 +46,10 @@ Skills are grouped by use.
   **Purpose:** Evaluate and improve agent skills through guided tests, evidence-based diagnosis, and approved changes.  
   **What you'll learn:** LLM evals, test cases, assertions, grading, and regression analysis.
 
+- **Skill:** [profile-agent-workflow](skills/profile-agent-workflow/SKILL.md)  
+  **Purpose:** Read-only analysis of approved dispatch rules and normalized agent traces: detect routing violations, measure token/cost/tool usage, flag repeat candidates, and propose bounded efficiency tests without running agents.  
+  **What you'll learn:** Dispatch correctness, resource budgeting, trace coverage, evidence-based optimization, and separating profiler findings from eval results.
+
 - **Skill:** [audit-skill](skills/audit-skill/SKILL.md)  
   **Purpose:** Audit one or more skills in a read-only pass: Q-01–Q-10 evidence-based checkboxes, individual findings and recommendations, plus standards, workflows and portability checks.  
   **What you'll learn:** Skill contracts, Agent Skills compliance, context and trust, permission boundaries, existing evaluation evidence, and reasoned improvements.
