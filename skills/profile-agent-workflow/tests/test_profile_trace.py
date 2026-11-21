@@ -121,6 +121,18 @@ class ProfileTraceTests(unittest.TestCase):
         with self.assertRaises(ProfileInputError):
             profile(trace, self.policy)
 
+    def test_invalid_rule_type_is_rejected_cleanly(self) -> None:
+        policy = copy.deepcopy(self.policy)
+        policy["rules"][0]["expected"] = ["FORBIDDEN"]
+        with self.assertRaises(ProfileInputError):
+            profile(self.trace, policy)
+
+    def test_invalid_event_type_is_rejected_cleanly(self) -> None:
+        trace = copy.deepcopy(self.trace)
+        trace["events"][0]["type"] = ["dispatch_decision"]
+        with self.assertRaises(ProfileInputError):
+            profile(trace, self.policy)
+
     def test_duplicate_event_rejected(self) -> None:
         trace = copy.deepcopy(self.trace)
         trace["events"].append(copy.deepcopy(trace["events"][0]))
