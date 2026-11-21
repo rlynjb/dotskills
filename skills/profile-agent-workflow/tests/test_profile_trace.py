@@ -97,6 +97,24 @@ class ProfileTraceTests(unittest.TestCase):
                       if b["budget"] == "max_execution_input_tokens")
         self.assertEqual(budget["status"], "UNKNOWN")
 
+    def test_repeated_agent_start_is_review_only_without_contract_limit(self) -> None:
+        trace = copy.deepcopy(self.trace)
+        trace["events"].append({
+            "id": "extra-start", "type": "agent_start", "unit_id": "T-015",
+            "skill": "refine-requirements",
+        })
+        report = profile(trace, self.policy)
+        self.assertEqual(len(report["repeat_agent_start_candidates"]), 1)
+        self.assertEqual(report["repeat_agent_start_candidates"][0]["status"], "REVIEW_ONLY")
+        self.assertEqual(next(d for d in report["dispatch_checks"] if d["rule_id"] == "R-03")["status"], "PASS")
+        self.assertEqual(next(b for b in report["budget_checks"] if b["budget"] == "max_agent_starts")["status"], "FAIL")
+
+    def test_model_call_budget(self) -> None:
+        policy = copy.deepcopy(self.policy)
+        policy["budgets"]["max_model_calls"] = 2
+        report = profile(self.trace, policy)
+        self.assertEqual(next(b for b in report["budget_checks"] if b["budget"] == "max_model_calls")["status"], "FAIL")
+
     def test_invalid_cached_subset_rejected(self) -> None:
         trace = copy.deepcopy(self.trace)
         next(e for e in trace["events"] if e["id"] == "E-04")["usage"]["cached_input_tokens"] = 9999
