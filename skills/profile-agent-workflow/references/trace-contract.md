@@ -83,7 +83,7 @@ Two JSON documents. A trace describes one captured run. A policy describes **rev
 
 - `dispatch_decision`: `unit_id`, `skill`, `decision` = `DISPATCH` or `SKIP`, and optional `reason_code`. A decision is *not* proof of an actual start.
 - `agent_start`: `unit_id`, `skill`. Record every attempt to start, including retries; the trace producer should explain blocked attempts separately if tracked.
-- `tool_call`: `unit_id`, `tool`, optional `fingerprint` (stable hash only for **semantically equivalent** safe requests). Two calls with equal fingerprints are **repeat candidates** and may be necessary.
+- `tool_call`: `unit_id`, `tool`, optional `fingerprint` (stable hash only for **semantically equivalent** safe requests). Two calls with equal fingerprints are **repeat candidates** and may be necessary. Repeated `agent_start` events for the same unit and skill are likewise review candidates, not proof of waste.
 - `model_call`: `unit_id`, `purpose` = `execution` or `grader`, optional `usage` numbers. Input, cached-input and output token counts must be nonnegative integers; cost must be a nonnegative number. `cached_input_tokens` must not exceed `input_tokens` when both are known.
 
 Additional fields may be retained by the producer, but the offline analyzer ignores them. Every event must have a unique string `id`. Every event needs a string `unit_id`. The analyzer preserves referenced event IDs in findings; it does not read request bodies.
@@ -108,6 +108,7 @@ All budgets are optional, nonnegative and user/team-supplied. The analyzer recog
 - `max_total_cost_usd` (execution plus grader)
 - `max_execution_input_tokens` (input includes cached tokens)
 - `max_agent_starts`
+- `max_model_calls`
 - `max_tool_calls`
 
 Measured usage is **observed and provider-reported**. Provider-billed costs may differ from estimates. Do not add cached-input tokens to input tokens again; do not treat a cache hit as a free model invocation. Partial usage can demonstrate an **already observed overrun** but cannot prove that a run stayed under budget.
