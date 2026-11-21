@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "run_id": "synthetic-forbidden-start",
+  "workflow_revision": "fixture-v1",
+  "coverage": {
+    "dispatch_complete": true,
+    "tool_complete": true,
+    "model_usage_complete": true
+  },
+  "events": [
+    {
+      "id": "S1",
+      "type": "dispatch_decision",
+      "unit_id": "CASE-READY",
+      "skill": "refine-requirements",
+      "decision": "DISPATCH",
+      "reason_code": "WRONG_ROUTE"
+    },
+    {
+      "id": "S2",
+      "type": "agent_start",
+      "unit_id": "CASE-READY",
+      "skill": "refine-requirements"
+    }
+  ]
+}
