@@ -51,7 +51,7 @@ Skills are grouped by use.
   **What you'll learn:** Dispatch correctness, resource budgeting, trace coverage, evidence-based optimization, and separating profiler findings from eval results.
 
 - **Skill:** [audit-skill](skills/audit-skill/SKILL.md)  
-  **Purpose:** Guided, read-only review of one or more skills: Q-01–Q-10 evidence-backed responsibility/overlap audit, human-approved boundary decisions, human-approved handoff contracts, and a separate workflow-validation handoff.  
+  **Purpose:** Overview-first, read-only skill review: Q-01–Q-10 responsibility/overlap audit plus proposed B-xx boundaries and provisional C-xx contracts together, followed by consolidated human decisions and a separate validation handoff.  
   **What you'll learn:** Skill ownership, overlap resolution, lightweight contracts, human decision gates, trust/security boundaries, and evaluation readiness.
 
 ---
