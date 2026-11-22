@@ -56,7 +56,7 @@ The key distinction is between **CURRENT DOCUMENTED**, **PROPOSED**, **HUMAN-APP
                (Codex / Evaluate Skill)
 ```
 
-There is **one consolidated human review stage**, not an earlier Gate A and a later Gate B. The human may take several turns to revise decisions. The skill should not advance an unresolved path as if approved.
+There is **one consolidated human review stage**, not two sequential approval stops. The human may take several turns to revise decisions. The skill should not advance an unresolved path as if approved.
 
 **First response:** show the full analysis and both types of proposals. **Later responses:** address your chosen decisions, update dependencies, and prepare Step 4 when the relevant decisions are approved.
 
