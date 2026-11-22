@@ -14,11 +14,14 @@ Perform each skill's Q-01–Q-10 audit independently, show
 as-is Mermaid workflows, and compare responsibility overlap.
 
 Step 2: recommend B-xx boundaries with owner, non-owner,
-decision authority and alternatives. Stop at Gate A for my input.
+decision authority and alternatives.
+Step 3: also draft C-xx handoff contracts based on those
+proposed boundaries. Label each dependency as CONDITIONAL.
 
-When I approve those boundaries, draft C-xx handoff contracts
-and stop at Gate B. After approval, prepare the validation
-checklist only—do not run either skill or edit files.
+Show Steps 1, 2 and 3 together BEFORE asking for my feedback.
+Then let me approve, revise, reject or defer B/C decisions.
+After relevant decisions are approved, prepare Step 4 validation
+only—do not run either skill or edit files.
 ```
 
 ## Step 1 — inspect the *as-is* responsibilities
@@ -60,7 +63,7 @@ Every substantive finding needs direct links to actually inspected source lines.
 - *Alternative:* Both skills independently assess clarity, which increases rework and inconsistent judgments.
 - *Status:* PROPOSED.
 
-**Gate A — ask the human:** Approve B-01, revise its owner/exclusion, reject it, or defer it. If revised, restate the **revised** decision for confirmation. Do not automatically pick a winner because the recommendation sounds reasonable.
+**Continue directly to Step 3:** show the proposed contract that would result from this B-01 recommendation. Do not pause for a decision yet.
 
 ## Step 3 — example contract (conditional on B-01)
 
@@ -72,9 +75,9 @@ Every substantive finding needs direct links to actually inspected source lines.
 - *Invariants:* preserve original ticket identity, evidence provenance, open questions and decisions; do not fabricate missing acceptance criteria.
 - *Error behavior:* if the upstream output is absent or incompatible, preserve the failure with a human-facing reason rather than silently continue.
 - *Security:* least privilege, no unapproved Jira writes or transfer of confidential source data.
-- *Status:* PROPOSED if B-01 was explicitly approved; otherwise CONDITIONAL — BLOCKED BY B-01.
+- *Status in initial overview:* PROPOSED — CONDITIONAL ON B-01 (not approved).
 
-**Gate B — ask the human:** Approve C-01, revise its fields/guarantees, reject it, or defer it. Don't claim approval or implementation from a proposed contract.
+**Consolidated human review — after Step 3:** present B-01 and C-01 together, with dependencies. The human may approve, revise, reject, or defer either item (or explicitly approve both as a compatible set). If the boundary changes, update dependent contract wording and request confirmation. Do not claim implementation from design approval.
 
 ## Step 4 — example validation handoff (not executed)
 
@@ -99,7 +102,7 @@ Audit Skill can later **read** the genuine run artifacts and compare observed-ve
 
 - Each accessible skill receives its own ten-check Q-01–Q-10 assessment and ten six-field findings.
 - As-is flows, evidence, proposals, human approvals and observed results remain distinct.
-- Boundary decisions have B-xx IDs, options and a real Gate A; contract decisions have C-xx IDs and a real Gate B.
-- No approval is inferred from a checkbox, a favorable recommendation or a non-specific human remark.
+- The first response shows Step 1 findings, Step 2 B-xx proposals, and Step 3 C-xx proposals together before any approval request.
+- One consolidated review accepts individual B/C approvals, revisions, rejections or deferrals and tracks dependencies. No approval is inferred from a checkbox, a favorable recommendation or a non-specific human remark.
 - Open and deferred decisions block only dependent final contracts/readiness.
 - No target execution, unauthorized source edits or live business-system effects occur within Audit Skill.
