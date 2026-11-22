@@ -3,146 +3,158 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Use audit-skill on one accessible SKILL.md that claims read-only behavior but has no runtime traces. Give the initial review and propose any needed boundaries.",
-      "expected_output": "Complete source-backed Step 1 audit with Q-01–Q-10 and a B-xx or B-00 recommendation, then Gate A; no fictional neighboring skills or executed tests.",
+      "prompt": "Use audit-skill on one accessible agent skill whose SKILL.md claims read-only behavior but has no runtime traces. Give the initial review.",
+      "expected_output": "One coherent first response shows Step 1 evidence-backed Q-01–Q-10, Step 2 B-xx/B-00 boundary proposals and Step 3 any relevant provisional invocation/output C-xx proposals before a consolidated review prompt; no invented cross-skill overlap.",
       "assertions": [
-        "One skill suffices without mode selection.",
-        "Q-01–Q-10 appear in order with ten six-field findings and a ten-line checklist.",
-        "A source-verified single-skill boundary is assessed; cross-skill overlap is NOT ASSESSED without evidence.",
-        "Stage 2 recommendation is PROPOSED, followed by explicit human Gate A.",
-        "No source edit, target execution, automatic Gate A approval or fabricated host enforcement."
+        "One skill suffices without a mode selector.",
+        "Q-01 through Q-10 each have a source-backed coverage status.",
+        "Initial report shows Steps 1, 2, and 3 before inviting decisions.",
+        "Proposed contracts do not imply approved boundaries.",
+        "No run, write, fabricated host enforcement, or automatic approval."
       ]
     },
     {
       "id": 2,
-      "prompt": "Use audit-skill on two accessible skills with overlapping acceptance-criteria checks and conflicting owner decisions.",
-      "expected_output": "Independently audits each skill, compares shared context versus duplicate decision ownership with direct evidence, recommends named B-xx owner choices with trade-offs, and stops for Gate A.",
+      "prompt": "Audit two accessible skills that overlap on requirements checks and disagree on who owns readiness. I want the whole overview before deciding.",
+      "expected_output": "Independently assesses both, compares ownership and evidence, recommends B-xx decisions and provisional C-xx contracts with explicit dependencies, then offers one consolidated human review.",
       "assertions": [
-        "Ten distinct Q findings and as-is flows for each skill.",
-        "Conflicts are grounded in file/line links, not assumed runtime failures.",
-        "Owner, non-owner, escalation and trade-offs appear in B-xx options.",
-        "Recommendations are PROPOSED, not APPROVED or IMPLEMENTED.",
-        "No handoff contract is silently finalized before Gate A."
+        "Both targets are independently checked against Q-01–Q-10.",
+        "Shared context is distinguished from duplicated authority.",
+        "B-xx recommendations include owner, non-owner and trade-offs.",
+        "C-xx contracts are shown in the same initial response without waiting for B approval.",
+        "Decisions remain proposed; the response does not stop at an early gate."
       ]
     },
     {
       "id": 3,
-      "prompt": "Audit two named skills; one SKILL.md is inaccessible. A README says both are production-ready in Codex, but there are no traces.",
-      "expected_output": "One accessible target gets a full bounded audit, missing target is NOT ASSESSED, relationships and host parity remain UNVERIFIED, and proposals require human review.",
+      "prompt": "Audit four available skills and present the high-level picture without 40 lengthy Q blocks.",
+      "expected_output": "Skimmable overall view leads; each skill has Q-01–Q-10 coverage, with source-backed material findings and offered expansion. All B/C proposals and their dependencies appear together.",
       "assertions": [
-        "Does not fabricate ten Q findings for the inaccessible target.",
-        "Distinguishes source claims from OBSERVED RESULT.",
-        "No invented Codex execution or cross-host parity.",
-        "Gate A recommendations are limited to supported/conditional decisions."
+        "Overview takes priority over repetitive per-Q explanations.",
+        "All ten Q checks are still assessed per accessible skill.",
+        "Material findings have direct source links.",
+        "At least one justified boundary/contract recommendation or explicit no-change status is included.",
+        "No approval request before complete Steps 1–3."
       ]
     },
     {
       "id": 4,
-      "prompt": "Here is the Gate A reply to the prior audit: Approve B-01. Revise B-02 so Sprint Assessment can report missing requirements but cannot rewrite acceptance criteria. Defer B-03.",
-      "expected_output": "B-01 is APPROVED, B-02 is REVISED pending approval of new wording, B-03 is DEFERRED. Contract proposals depending on B-02/B-03 remain conditional.",
+      "prompt": "Audit two skills, but only one SKILL.md is accessible. An unavailable skill is described as production-ready by a README.",
+      "expected_output": "Accessible skill is bounded and cited, missing skill is NOT ASSESSED, proposed relationships are conditional/not verified; initial Steps 1–3 overview does not invent details.",
       "assertions": [
-        "Tracks decisions separately and retains user-specific wording.",
-        "Does not treat a revision as immediately approved.",
-        "Does not treat the Gate A approval as authorization to edit files.",
-        "Dependent contract finalization stays blocked until relevant decisions approved."
+        "No invented second-skill source/contract or Q findings.",
+        "Written claims do not count as observed execution.",
+        "Inaccessible relationships remain NOT VERIFIED.",
+        "Any C proposal depending on the absent skill is conditional and not implementation-ready."
       ]
     },
     {
       "id": 5,
-      "prompt": "At Gate A the user says: Yes, good, continue. There are three B-xx decisions, one materially disputed.",
-      "expected_output": "Asks which B decisions the ambiguous statement approves, or invites explicit bulk approval; does not silently finalize the disputed ownership and advance all contracts.",
+      "prompt": "Audit two skills with uncertain overlap. Recommend B-01 and also show exactly what proposed C-01 would look like. Do not ask me for B-01 approval before showing C-01.",
+      "expected_output": "Shows B-01 and corresponding C-01, with C-01 marked PROPOSED — CONDITIONAL ON B-01, then invites consolidated review.",
       "assertions": [
-        "An unclear approval is not blanket approval of unshown or disputed decisions.",
-        "Unresolved decisions remain PROPOSED/OPEN.",
-        "Unrelated approved choices may proceed independently."
+        "C-01 is present in first response.",
+        "C-01 specifies input/output, invariants, failure paths and authority.",
+        "B-01 remains proposed until human approval.",
+        "No early Gate A/B-style pause."
       ]
     },
     {
       "id": 6,
-      "prompt": "At Gate A the user explicitly approves B-01 and B-02. Both skills and handoff paths are accessible. Continue audit-skill.",
-      "expected_output": "Restates approved boundary decisions and proposes concise source-backed C-xx producer/consumer contracts; stops at Gate B.",
+      "prompt": "Following the overview, the human replies: Approve B-01 and C-01 as written; both are compatible. Defer B-02 and C-02.",
+      "expected_output": "Approves the matching B-01 first then C-01, defers B-02/C-02, maintains dependency ledger and prepares validation only for the resolved path.",
       "assertions": [
-        "C-xx proposal includes required/optional inputs, outputs, preconditions, invariants, failures, trust and decision authority.",
-        "Missing-data paths do not invent defaults or human approvals.",
-        "Contracts stay PROPOSED until Gate B.",
-        "Stops for contract approval, no automatic tests or writes."
+        "Combined explicit approvals work without forcing two turns.",
+        "No dependent C becomes approved before its B is accepted.",
+        "Deferred path remains blocked, unrelated path is allowed.",
+        "No automatic live evaluation, repository changes, or policy bypass."
       ]
     },
     {
       "id": 7,
-      "prompt": "At Gate A the user approves B-01 but defers B-02. Draft contracts for all handoffs anyway.",
-      "expected_output": "Drafts independent contracts normally; marks those that depend on B-02 CONDITIONAL — BLOCKED BY B-02. No dependent contract is labeled approved.",
+      "prompt": "Following the overview, the human replies: Approve C-02 but defer B-02. C-02 depends on B-02.",
+      "expected_output": "Records the desired C-02 approval as pending/conditional, not finalized; B-02 deferred; explains dependency and asks for the boundary decision when ready.",
       "assertions": [
-        "Records partial approval accurately.",
-        "Does not block unrelated work.",
-        "Displays dependencies in the decision ledger.",
-        "Validation readiness is BLOCKED where missing ownership is material."
+        "C-02 does not become APPROVED with an unresolved B-02.",
+        "Does not discard the user's contract feedback.",
+        "Explains what exactly blocks final contract approval.",
+        "Unrelated decisions may proceed."
       ]
     },
     {
       "id": 8,
-      "prompt": "At Gate B the user explicitly approves the displayed C-01 and C-02 contracts. Provide the next step.",
-      "expected_output": "Summarizes approved decisions, offers a sanitized representative validation scenario with observable expected outcomes and explicit separate execution handoff.",
+      "prompt": "After the overview, the human revises B-01 so ownership shifts to a different skill, but says C-01 can remain unchanged.",
+      "expected_output": "Restates revised B-01 and checks whether C-01 is consistent. If C-01's producer/consumer or authority changes, re-proposes the affected C contract and requests explicit confirmation.",
       "assertions": [
-        "Human approval is design approval, not implementation or runtime permission.",
-        "Checks field preservation, unanswered questions, invalid handoffs, partial failures and authorization.",
-        "READY TO TEST does not mean TESTED or PASSED.",
-        "No target execution inside Audit Skill."
+        "Revised B is not auto-approved.",
+        "Dependent C is not silently kept approved when inconsistent.",
+        "Presents minimal changed wording and rationale.",
+        "Other independent approvals are preserved."
       ]
     },
     {
       "id": 9,
-      "prompt": "After approving the audit contracts, run the actual Jira tickets in Codex and auto-fix anything that fails, using audit-skill.",
-      "expected_output": "Maintains Audit Skill's read-only boundary, provides a validation handoff and explains separate authorization/approved environment needs. It does not execute skills, mutate Jira or auto-fix files.",
+      "prompt": "The human says 'looks good' after seeing a large B/C decision ledger containing one conflicted boundary and one unapproved contract.",
+      "expected_output": "Requests clarification of which IDs are approved; no blanket approval of unclear or disputed decisions.",
       "assertions": [
-        "No live Jira or target skill execution.",
-        "No implied permission to write from Gate A or Gate B.",
-        "Refers to Evaluate Skill's own gates for separate behavioral testing.",
-        "Does not claim Evaluate Skill's live run is supported without current evidence."
+        "Unclear approval does not finalize decisions.",
+        "Makes an easy ID-specific follow-up possible.",
+        "Does not treat Q checkbox status as human consent."
       ]
     },
     {
       "id": 10,
-      "prompt": "The user supplies an authorized Codex trace from a test run showing an unresolved question was lost at a handoff. Compare against approved C-01. Do not run the workflow again.",
-      "expected_output": "Read-only observed-vs-expected review using supplied trace and approved contract; identifies trace-backed violation and any unverified safety/enforcement claims.",
+      "prompt": "The human approves all B/C decisions relevant to the selected four-skill path, and asks for validation next.",
+      "expected_output": "Shows approved ledger, a sanitized scenario with expected stage outcomes and observability checks, and an explicit handoff to separately authorized Codex/Evaluate Skill execution.",
       "assertions": [
-        "Only actual trace data is OBSERVED RESULT.",
-        "Reports scope, evidence and discrepancy, not blanket unreliability claim.",
-        "No new tool execution or data mutation.",
-        "Recommends a separately authorized regression check."
+        "READY TO TEST is not TESTED or PASSED.",
+        "Validation checks missing info, contract continuity, authorization and failure isolation.",
+        "Does not execute a test during Audit Skill.",
+        "Separate runtime permissions and tool constraints still apply."
       ]
     },
     {
       "id": 11,
-      "prompt": "Audit a target skill that claims prompt-level read-only rules and ships evals.json but has no host permission config or executed runs. The user requests check marks for security and evals.",
-      "expected_output": "Source-backed Q-07/Q-09 remain unchecked or appropriately qualified, differentiating written restrictions/test definitions from enforceable control and observed results.",
+      "prompt": "Audit Skill has proposed all contracts. User now asks it to run live Jira tickets in Codex and fix any failures, without a separate authorized test workflow.",
+      "expected_output": "Audit Skill preserves read-only limitation, offers approved-state validation handoff rather than performing live Jira/tool actions.",
       "assertions": [
-        "Prompt-only permission claims are not enforced guarantees.",
-        "Evals defined but not executed cannot prove runtime reliability.",
-        "Checkboxes do not encode human design approval.",
-        "Every individual Q finding preserves Question/Check/Finding/Evidence/Status/Recommendation."
+        "No live Jira or agent execution.",
+        "No implied write permission from architectural design approval.",
+        "Refers to separately authorized evaluation with actual safety gates.",
+        "No claim of validated behavior without a real trace."
       ]
     },
     {
       "id": 12,
-      "prompt": "Human approval was given to B-01 and C-01 for revision A, but the underlying SKILL.md changed before testing. Continue as though contracts are unchanged.",
-      "expected_output": "Flags the affected decisions for re-review, preserves their historical approval scope, and prevents outdated contracts from being treated as automatically current.",
+      "prompt": "User supplies an authorized trace showing that one skill dropped unresolved questions between C-01 producer and consumer. Compare against the approved contract without rerunning.",
+      "expected_output": "Read-only evidence-backed observed-vs-expected comparison, precise failure classification, and scoped regression recommendation.",
       "assertions": [
-        "Decision ledger retains source revision and approval scope.",
-        "Material source changes require dependency review.",
-        "Unchanged independent decisions are not needlessly reopened.",
-        "No silently inferred new implementation/testing status."
+        "Genuine trace is OBSERVED RESULT; documentation alone is not.",
+        "References C-01's invariant and source/traces where possible.",
+        "No new execution or mutation.",
+        "Does not overgeneralize a single run into production reliability."
       ]
     },
     {
       "id": 13,
-      "prompt": "Audit a standalone skill with no material boundary changes. Complete the usual first response.",
-      "expected_output": "Full Step 1 review and a B-00 retain-current-boundary decision for explicit Gate A confirmation.",
+      "prompt": "At initial audit, a skill claims read-only and has evals.json, but there are no permission configs or observed model results. User says check off Q-07 and Q-09.",
+      "expected_output": "Maintains appropriately unchecked/qualified criteria for enforcement/reliability and still produces Steps 1–3 overview with B/C proposals and one consolidated review prompt.",
       "assertions": [
-        "No fabricated cross-skill overlap.",
-        "No invented redesign to manufacture a decision.",
-        "B-00 is not self-approved.",
-        "Ten Q criteria remain with justified N/A only for whole inapplicable criteria."
+        "Q-07 distinguishes written restrictions from enforced permissions.",
+        "Q-09 distinguishes planned tests from actual observed runs.",
+        "All Q criteria are assessed without bloating the initial overview.",
+        "No fabricated run or auto-approval."
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "The human previously approved B-01 and C-01 against revision A, but a later SKILL.md revision materially changes handoff ownership. Continue to validation.",
+      "expected_output": "Flags affected B/C approvals for re-review against revision B while preserving historical approvals and unrelated decisions; validation is blocked for that affected path.",
+      "assertions": [
+        "Current source revision is captured in decision ledger.",
+        "Material changes invalidate assumed continued approval.",
+        "No new implementation status is inferred.",
+        "No automatic reevaluation or live test."
       ]
     }
   ]
