@@ -1,275 +1,272 @@
 # Audit Skill
 
-**`audit-skill` is one read-only, overview-first workflow for reviewing one or more agent skills.** It automatically adjusts its scope from independent single-skill analysis to multi-skill responsibility and handoff analysis. There is **no Explore/Audit/Compare mode selection**.
+**Audit Skill is now a guided, human-reviewed design audit for one or more agent skills.** It discovers what exists, proposes better responsibility boundaries, lets you approve or revise them, then proposes handoff contracts for another human review. Finally, it prepares a validation checklist and can inspect genuine test evidence.
 
-The first result is a complete, **one-pass** At a Glance checklist plus **Q-01–Q-10 individual findings**. Each checkbox indicates whether the criterion is sufficiently evidenced; each finding explains what exists, what's unverified and a recommendation when justified. The audit does not execute tools, change documents, select architectures or approve decisions. No user checkpoints between questions.
+It stays **read-only**. It does not execute the target skills, edit their files, approve decisions on your behalf, or silently start Evaluate Skill.
 
 ## Table of contents
 
-1. [Why audit an agent skill?](#1-why-audit-an-agent-skill)
-2. [What are we reviewing?](#2-what-are-we-reviewing)
-3. [Example: Audit Skill reviews REAZN](#3-example-audit-skill-reviews-reazn)
-4. [How the one-pass audit works](#4-how-the-one-pass-audit-works)
-5. [Understand the ten questions and checklist](#5-understand-the-ten-questions-and-checklist)
-   - [Q-01–Q-10 engineering criteria](#q-01q-10-engineering-criteria)
-   - [Worked examples](#worked-examples)
-6. [Read the report and its evidence](#6-read-the-report-and-its-evidence)
-   - [Evidence and safety rules](#evidence-and-safety-rules)
-7. [Run your first audit](#7-run-your-first-audit)
-8. [Cross-platform compatibility](#8-cross-platform-compatibility)
-9. [How Audit Skill fits with other DotSkills](#9-how-audit-skill-fits-with-other-dotskills)
+1. [Why this skill exists](#1-why-this-skill-exists)
+2. [The four steps and two human gates](#2-the-four-steps-and-two-human-gates)
+3. [What a first run looks like](#3-what-a-first-run-looks-like)
+4. [How to approve or revise a boundary](#4-how-to-approve-or-revise-a-boundary)
+5. [How to approve a handoff contract](#5-how-to-approve-a-handoff-contract)
+6. [What validation means here](#6-what-validation-means-here)
+7. [Q-01–Q-10 and evidence](#7-q-01q-10-and-evidence)
+8. [Run your own audit](#8-run-your-own-audit)
+9. [Skill boundaries and safety](#9-skill-boundaries-and-safety)
 
-Think of this as a senior engineer walking a junior developer through their first review of an AI agent skill. The goal is to understand **what the skill claims to do**, **what the inspected files actually support**, and **what still needs testing**. This README teaches the process; it does **not** add extra questions, new output fields, or execution permissions to the skill.
+## 1. Why this skill exists
 
-## 1. Why audit an agent skill?
+Imagine four coding-agent skills that participate in an engineering workflow. Each skill has its own `SKILL.md`, but there are unanswered design questions:
 
-Imagine a teammate gives you a pull request and says, "This feature is secure and production-ready." As an engineer, you don't just accept that sentence. You read the code, inspect the tests and configuration, ask where the boundaries are, and identify anything that hasn't been proved.
+- Two skills both check whether requirements are complete. Which one makes the final decision?
+- The output from one skill is useful to the next, but no one defined which fields are required.
+- A skill silently assumes an unanswered question was resolved.
+- A workflow looks correct on paper, but nobody has observed it execute end-to-end.
 
-**Auditing an agent skill works the same way.** A `SKILL.md` file describes how an AI coding assistant *should* behave, but a description isn't the same as seeing the behavior happen.
+Audit Skill helps separate four things:
 
-For example, if a skill says "read-only," you can confirm that the restriction is **documented**. You cannot conclude that writes are **technically blocked** unless you inspect the relevant permission enforcement or a genuine authorized result.
+1. **What exists** in the inspected source.
+2. **What you propose** should change.
+3. **What a human explicitly approves** as a design decision.
+4. **What has actually been implemented and observed** in a tested environment.
 
-- **Audit Skill asks:** Is the skill's design, scope, workflow, and evidence clear and credible?
-- **Evaluate Skill asks:** When the skill actually runs in an approved test environment, does its behavior meet expectations?
+Those are separate claims. Approving a recommendation does not mean someone edited the skills, and a documented safety rule does not prove the host enforces it.
 
-**Remember:** Audit is an evidence-backed *review*, not an execution test, a quality score, or an automatic approval to release.
-
-## 2. What are we reviewing?
-
-Before reviewing anything, identify the **target skill**. This is the skill being examined, not necessarily the skill doing the examining.
-
-| Part | Plain-English meaning | Example |
-| --- | --- | --- |
-| **Auditor** | The reviewer that looks for engineering evidence and gaps. | Audit Skill |
-| **Target** | The agent skill under review. | REAZN |
-| **Source evidence** | What the reviewer is allowed to inspect: files, references, configurations, tests, and accessible history. | REAZN's `SKILL.md`, README, linked references, and eval definitions |
-| **Report** | The reviewer’s findings, with citations and clear limits on what is known. | At a Glance checklist and ten Q-01–Q-10 findings |
-
-One target is enough. For **two or more accessible skills**, Audit Skill reviews each independently and then checks responsibility overlap, ownership conflicts, and handoffs. You don't need to select a special compare mode.
-
-If a named target isn't accessible, say **NOT ASSESSED** rather than making up its implementation or comparing it as though it were inspected. Record the branch or commit whenever possible so the evidence can be checked later.
-
-## 3. Example: Audit Skill reviews REAZN
-
-Let's use your real skills to make the difference concrete. **Audit Skill is doing the review; REAZN is only the target. REAZN does not run.**
-
-Imagine Audit Skill reads a frozen revision of REAZN and notices:
-
-1. **Purpose (Q-01):** REAZN describes a read-only four-step SDI assessment. That supports a claim about its *documented purpose*.
-2. **Contracts (Q-05):** REAZN defines named output fields and expected behavior. That supports a claim about its *written output contract*, not automatic compliance by a running model.
-3. **Permissions (Q-07):** The file says it won't modify the repository. Without inspected host-level restrictions, Audit Skill must **not** turn that into a claim of enforced read-only permission.
-4. **Evaluations (Q-09):** REAZN may include defined eval cases. Their existence does **not** prove the cases were run successfully.
-
-Those are **teaching examples**, not new inspection results or preset checkbox statuses. The real audit must cite the exact revision and files it actually inspected.
-
-A useful question to ask for every conclusion is: **"How do we know that?"** If the answer is only "the prompt says so," report it as documented, not observed.
-
-## 4. How the one-pass audit works
+## 2. The four steps and two human gates
 
 ```text
-                 One or more target skills
-                           |
-             Read-only source inspection
-                           |
-              Audit Skill — At a Glance
-                           |
-                Q-01–Q-10 checklist
-               checked / unchecked / N/A
-                           |
-             Ten source-backed findings
-       Question / Check / Finding / Evidence
-              Status / Recommendation
-                           |
-          Standards / as-is flow / portability
-        + multi-skill comparison when relevant
-                           |
-              Gaps and verification limits
-                           |
-          Optional user-selected deep dive
+  STEP 1 — Responsibility & overlap audit
+  Inspect current SKILL.md files, dependencies, Q-01–Q-10
+                         |
+  STEP 2 — Define boundaries
+  Recommend owner / non-owner / decision authority
+                         |
+                  HUMAN GATE A
+             Approve / revise / defer
+                         |
+  STEP 3 — Define handoff contracts
+  Recommend producer / consumer / fields / guarantees
+                         |
+                  HUMAN GATE B
+             Approve / revise / defer
+                         |
+  STEP 4 — Validation preparation
+  Test scenario / expected behavior / evidence review
+                         |
+              Separate authorized test
+                (Codex / Evaluate Skill)
 ```
 
-1. **Find and inspect** each available skill, references, agents, manifests, tests and relevant history, with source revision and line evidence.
-2. **Apply the same review criteria to every skill**, whether one or several were supplied.
-3. **Add relationships automatically** only when there are two or more accessible skills. Otherwise mark inter-skill comparison NOT APPLICABLE.
-4. **Report the At a Glance checklist, followed by all ten individual findings in a single response** with supported/unsupported checks, concrete evidence, and brief recommendations. No pauses or automatic evaluation-case generation.
-5. **Wait for a requested deep dive.** Never silently change the skill or run a behavioral evaluation.
+There is no extra mode selector. The same workflow handles one or multiple skills.
 
-If a named target cannot be accessed, label it NOT ASSESSED and avoid constructing a fictitious comparison.
+**First response:** Audit Skill completes Step 1 and recommends the Step 2 boundary decisions. It then **stops** for your review. It does **not** interrupt you between every Q-01–Q-10 finding.
 
-**Junior-developer takeaway:** You get the full initial review in one response. The four SDI reasoning steps are used **internally**; Audit Skill does not turn them into additional output stages, ask for ten separate approvals, or automatically run evals.
+**Second response (after Gate A):** It incorporates your boundary decisions and drafts Step 3 handoff contracts. It stops at **Gate B**.
 
-## 5. Understand the ten questions and checklist
+**Third response (after Gate B):** It shows what is approved, what is still pending, and a realistic Step 4 validation handoff.
 
-The ten questions are engineering **review criteria**. They help you avoid focusing only on whether the prompt sounds well written.
+If a decision is deferred, only the work that depends on that decision is blocked. You can still discuss or approve unrelated boundaries.
 
-A checkmark means that the applicable expectation has enough evidence at the **appropriate level**. It does **not** mean the skill is production-ready. If the evidence is incomplete or the behavior is not verified, the report must say so.
+## 3. What a first run looks like
 
-### Checkbox decisions and individual findings
+For a single target, Audit Skill inventories responsibilities, prohibited actions, inputs, outputs, ownership, and internal boundaries. It will not invent other skills to manufacture an overlap finding.
 
-Audit Skill uses the **four SDI reasoning steps internally across the whole inspection**: understand the skill's job and scope; verify its workflow; examine relevant contracts, context, trust and failures; then assess gaps, trade-offs and readiness. **It does not assign an SDI step to each Q, print extra SDI stages or pause for Q-by-Q approval.**
+For multiple targets, it independently assesses every accessible skill and compares them afterward.
 
-The Q-01–Q-10 checklist uses:
+A Step 1 report includes:
 
-- `- [x]` **PRESENT** — the criterion's relevant expectations are backed by inspected evidence. This is **presence**, not approval or a live test pass.
-- `- [ ]` **PARTIAL / MISSING / NOT VERIFIED** — important coverage is incomplete, absent in the inspected scope or impossible to establish from available sources.
-- **N/A** **NOT APPLICABLE** — the whole criterion genuinely does not apply, with an explanation.
+- **Audit Skill — At a Glance:** source revision, inspected/unavailable files, current responsibilities, and `NOT EXECUTED`.
+- **Q-01–Q-10:** ten evidence-backed checklist markers and ten short findings **per accessible skill**.
+- **As-is Mermaid diagram:** the actual documented workflow, distinguishing unknown edges from established behavior.
+- **Responsibility/overlap comparison:** unique responsibilities, shared context, duplicated decisions, conflicting instructions, unowned work, and missing handoffs.
+- **Agent Skills standards and runtime compatibility:** documented format/conformance, dependencies, and any unverified claims about Codex or another host.
+- **Boundary decision proposals:** short `B-xx` items that need your input.
 
-A checkmark requires the **appropriate evidence level**. A documented output format may establish its contract, but a prompt saying "read-only" is not proof of enforced host permissions; a defined eval is not a run result.
+### Example — four engineering skills
 
-Every criterion then has the same **six fields**: `Question`, `Check`, `Finding`, `Evidence`, `Status`, `Recommendation`. For example:
+Suppose these are your selected targets:
 
-```markdown
-**Q-05 — Contracts & outputs**  
-_Question:_ Are required inputs, outputs, validation, invariants, ownership and failed handoffs defined?  
-_Check:_ ☐  
-_Finding:_ The output is documented, but missing-input handling was not described in the inspected scope.  
-_Evidence:_ DOCUMENTED INSTRUCTIONS — [verified source reference]; execution NOT VERIFIED.  
-_Status:_ PARTIAL  
-_Recommendation:_ Define the missing-input response and verify the behavior separately.
-```
+- PRD Development
+- Refine Requirements
+- Jira Ticket Decomposition
+- Sprint Assessment
 
-This is an **illustrative** finding, not an observed audit. If a criterion is fully evidenced or not applicable, its recommendation can say `None justified`. If you later supply additional context, it stays **USER-PROVIDED — NOT VERIFIED** until supporting evidence is inspected. The initial audit remains read-only and fully one-pass.
+A *hypothetical* Step 1 finding is that Refine Requirements and Sprint Assessment both describe checking acceptance criteria. That is a **shared concern**, not necessarily a conflict. The audit should identify the actual decision each skill owns, using links to the inspected source.
 
-### Q-01–Q-10 engineering criteria
+A candidate `B-01` recommendation could be:
 
-The [Agent Skills specification](https://agentskills.io/specification) is the standards baseline for `SKILL.md`, naming/frontmatter and supporting resources. Its actual requirements are distinct from the team-defined engineering quality expectations below.
+> **Decision B-01 — Who owns requirements clarity?**
+>
+> **Observed:** Two skills examine acceptance criteria.
+>
+> **Recommendation:** Refine Requirements owns detailed requirements clarification. Sprint Assessment consumes that result when judging sprint readiness and reports missing evidence instead of silently rewriting the requirements.
+>
+> **Alternative:** Both skills independently clarify requirements, but that risks contradictory decisions and duplicated work.
+>
+> **Status:** PROPOSED — your review required.
 
-| ID | Requirement | What a reviewer should find |
-| --- | --- | --- |
-| Q-01 | Purpose and boundaries | Intended job, who uses it, when it should not activate |
-| Q-02 | Activation and discovery | Invocation, triggers, incorrect-trigger behavior |
-| Q-03 | Structure, inputs and dependencies | Source files, context, tools/MCP, credentials and environment assumptions |
-| Q-04 | Workflow and orchestration | Steps, decisions, dynamic vs named agents, delegation, approvals and result aggregation |
-| Q-05 | Contracts and outputs | Explicit inputs, outputs, guarantees, invariants, ownership and failed handoffs |
-| Q-06 | Context and trust | Provenance, freshness, conflicting or untrusted information and evidence |
-| Q-07 | Permissions and side effects | Enforced authorization, least privilege, scoped writes and human approval |
-| Q-08 | Failure and stop behavior | Unavailable tools, ambiguous inputs, partial batches, retries, stop conditions |
-| Q-09 | Evals and observability | Existing tests, CI, scenarios, execution traces, expected and observed outcomes |
-| Q-10 | Lifecycle and portability | Owners, versioning, review/rollback, compatible hosts, adapters and regressions |
+This is an **illustrative proposal**, not an assertion about what the four current skills do. The actual audit must inspect their source and cite lines first.
 
-For each criterion, answer its canonical question using actual source evidence. Follow the same compact **Question → Check → Finding → Evidence → Status → Recommendation** layout, without inventing missing content. The detailed questions are defined in [SKILL.md](SKILL.md). A written instruction does not prove runtime enforcement; an eval definition does not prove execution.
+## 4. How to approve or revise a boundary
 
-The separate **standards compliance matrix** distinguishes required specification elements, recommendations and experimental/host-specific behavior. It should not imply full standards conformance if the published specification was not consulted or a validator was not run.
-
-### Worked examples
-
-For a plain-English explanation and **one REAZN example for every checklist criterion**, see [Q-01–Q-10 explained with examples](references/coverage-checklist-examples.md). It illustrates what evidence supports a checked or partial item; it does **not** change the default compact checklist, the six-field individual findings, or evidence-based checkbox decisions.
-
-## 6. Read the report and its evidence
-
-Think of the report as a code review with a traceable explanation: **what was checked, what was found, what evidence supports it, and what should happen next.**
-
-A useful audit does not simply list ten opinions. It makes each material conclusion verifiable against the actual source and clearly separates what is written, what is implemented, and what has been observed.
-
-The report begins **Audit Skill — At a Glance** (not a mode guide or a long question menu):
-
-| Output | What it communicates |
-| --- | --- |
-| **Target/source boundary** | Which skills and revisions were inspected; what was inaccessible; no tests or target skill execution |
-| **Skill profile(s)** | Purpose, activation, inputs, dependencies, steps/decisions, agents and tools, outputs, permissions, failures and handoffs |
-| **Q-01–Q-10 checklist** | Ten ordered checked/unchecked/N/A items summarizing whether each criterion is evidenced, plus a short basis |
-| **Individual findings** | A consistent Question → Check → Finding → Evidence → Status → Recommendation block for each criterion |
-| **Agent Skills specification matrix** | Required format vs recommended/optional structure; normative claims tied to the published specification |
-| **Mermaid current-state diagram(s)** | One flowchart per target, including decisions, delegation, stop conditions and unverified edges |
-| **Relationship analysis (2+ only)** | Shared/unique responsibility matrix, conflicts, duplicate decisions, and proposed handoff/compose/merge alternatives |
-| **Cross-runtime matrix** | Explicit host-by-capability compatibility evidence and adapter needs |
-| **Evidence and gaps** | Existing safeguards first; important source-backed findings, limitations and unanswered questions |
-
-The main report remains concise. A selected `F-xx`, quality dimension (`Q-01`–`Q-10`), diagram, workflow stage, or contract receives an evidence-backed deep dive without switching modes. Never present a hypothetical path as a tested run.
-
-### Mermaid example (illustrative only)
-
-```mermaid
-flowchart TD
-    A["Skill receives task"] --> B{"Required evidence available?"}
-    B -->|Yes| C["Documented evaluation steps"]
-    B -->|No| D["Clarify or stop as unresolved"]
-    C --> E["Evidence-backed result"]
-    D --> E
-```
-
-A real diagram must come from the target files and label which edges are inferred or unverified. For two skills, keep **as-is** diagrams distinct from any **PROPOSED** integration diagram.
-
-### Evidence and safety rules
-
-- **DOCUMENTED INSTRUCTIONS** = written guidance; **IMPLEMENTED CHECK** = code/config check found; **OBSERVED RESULT** = actual authorized trace; **NOT VERIFIED** = not established.
-- Cite relevant file paths and lines; distinguish a referenced file from an actually loaded file.
-- Report existing safeguards **before** gaps. Missing evidence must not become a fabricated failure or a passing test.
-- The audit is **read-only** and never executes target agents, scripts, evals, live Jira/Confluence actions or repo mutations. Approved read-only file/repository sources may be inspected.
-- Prompt text cannot enforce permissions. Only host/tool/server controls can enforce read-only authority.
-- Preserve approved workplace data boundaries; do not paste confidential sources into a public repository.
-
-**Remember:** A checklist can establish design coverage from source files. It cannot, by itself, certify that an AI agent will always follow the instructions, that tools enforce permissions, or that a deployment is safe.
-
-## 7. Run your first audit
-
-You don't need to build a new harness or write an eval suite to begin a **static, read-only audit**. Start with one skill you can inspect and one clear instruction: **review the source; don't execute or change it**.
-
-Here's a simple walkthrough:
-
-1. **Choose the target.** Start with REAZN or another accessible agent skill. Identify the exact revision and relevant references.
-2. **Ask for the standard audit.** Request the full At a Glance Q-01–Q-10 checklist and ten findings, with source links and verification limits.
-3. **Read the evidence before the recommendations.** Confirm each material statement comes from an inspected file. Question unsupported "verified," "production-ready," or "secure" claims.
-4. **Pick one finding to discuss.** Ask for a focused deep dive if needed. Any proposed edit or behavioral eval is a **separate decision**, not an automatic consequence of the audit.
-
-The example prompts below follow the skill's existing invocation contract.
-
-**One skill — no mode to select:**
+At **Gate A**, Audit Skill should show you decision IDs, recommended owners, exclusions, evidence, and trade-offs. You can respond naturally:
 
 ```text
-Use audit-skill on Sprint Assessment in this repository.
-Start with Q-01–Q-10 checked/unchecked/N/A at a glance,
-then give the six-field evidence-backed finding for each question.
-Include Agent Skills compliance, as-is Mermaid flow, compatibility
-and material gaps.
-Cite file/line evidence. Do not execute the skill or edit anything.
+Approve B-01 and B-02. Defer B-03.
 ```
 
-**Two skills — comparison happens automatically:**
+Or:
 
 ```text
-Use audit-skill on Sprint Assessment and Refine Requirements.
-Inspect each independently, then include the ownership/overlap matrix,
-conflicting decisions, missing handoffs and PROPOSED integration choices.
-Include standards, quality, runtime-compatibility and evidence checks.
-Read-only; no execution or edits. Pause for my review.
+Revise B-01. Sprint Assessment should identify missing
+requirements, but it should not change acceptance criteria.
+Keep the rest of the recommendation.
 ```
 
-**Focused follow-up:**
+For revisions, Audit Skill restates the **new wording** and asks for your confirmation of that changed decision. It must not label the new wording APPROVED based only on the old approval.
+
+Each decision is tracked with a status:
+
+- **PROPOSED** — the skill recommended it.
+- **APPROVED** — you explicitly approved the specific wording.
+- **REVISED** — the recommendation was changed; final approval is still required.
+- **REJECTED** — not adopted.
+- **DEFERRED** — pending a later decision.
+
+**Important:** This is approval of the *design decision in the conversation*. It is not authorization to modify files, run agents, or claim that a team or manager signed off.
+
+## 5. How to approve a handoff contract
+
+Once the relevant boundaries are approved, Audit Skill moves to Step 3. It keeps contracts **lightweight**: enough clarity for two skills to cooperate reliably without designing a giant schema prematurely.
+
+A proposed contract should explain:
+
+- **Producer → consumer:** which skill provides information and which skill consumes it.
+- **When:** conditions required before the handoff is allowed.
+- **Inputs and outputs:** required and optional fields; expected result states.
+- **Guarantees:** information that must not be lost or silently changed.
+- **Failure handling:** what happens when information is missing, contradictory, malformed, or unavailable.
+- **Trust and authority:** source provenance, sensitive information, and human approval boundaries.
+- **Compatibility:** schema/version requirements where they actually matter.
+
+### Example — not an implemented contract
 
 ```text
-Deep dive F-02. Show the exact source evidence, implementation status,
-risk, trade-offs and the smallest useful validation step.
+C-01 — Refine Requirements → Jira Ticket Decomposition
+
+Required input:
+  - Ticket or requirement identity
+  - Refined requirements and acceptance criteria
+  - Source references
+  - Open questions and unresolved decisions
+
+Expected output:
+  - Candidate decomposition with traceable source links
+  - Explicit blocked/needs-clarification state when appropriate
+
+Must preserve:
+  - Original identity, sources, open questions, approval state
+
+Missing data:
+  - Mark NEEDS HUMAN; do not invent acceptance criteria
+
+Status: PROPOSED — requires Gate B approval
 ```
 
-The optional [Sprint Assessment example](references/sprint-assessment-audit.md) demonstrates a two-skill audit. It is task-specific guidance, not another review process.
+This is a teaching example; the real contract must be adapted to the current files and your approved boundaries.
 
-## 8. Cross-platform compatibility
+At **Gate B**, you can approve `C-01`, revise a field, or defer a contract. Anything dependent on a deferred boundary stays `CONDITIONAL` and cannot be finalized.
 
-An Agent Skills-compatible Markdown directory does **not** guarantee that a multi-agent workflow behaves the same in every harness. The review explicitly covers:
+## 6. What validation means here
 
-1. Skill packaging and installation.
-2. Discovery, triggers and invocation.
-3. Context loading and configuration inheritance.
-4. Tools, shell names, MCP integrations and local paths.
-5. Agent delegation, concurrency and worker result aggregation.
-6. User identity, permission and approval enforcement.
-7. Output schemas, error handling, timeouts and partial failures.
-8. Eval evidence, adapter ownership and supported versions.
+**Audit Skill prepares validation, but it does not run the workflow.**
 
-Use a runtime × capability matrix with **SUPPORTED (evidenced)**, **ADAPTER REQUIRED**, **NOT SUPPORTED (evidenced)** and **NOT VERIFIED**. When runtimes are unspecified, say so. Do not assume Claude Code and Codex have interchangeable tool names or delegation APIs.
+After your approvals, it can give you a representative scenario and a checklist to use in a separate, explicitly authorized Codex execution. The important checks include:
 
-## 9. How Audit Skill fits with other DotSkills
+- Does the right skill own each decision?
+- Are input and output fields passed correctly between skills?
+- Do original sources and unanswered questions survive?
+- Does missing information result in `BLOCKED` or `NEEDS HUMAN` instead of a made-up answer?
+- Are approval, security and tool permissions respected?
+- Are errors and partial failures visible?
+- Is runtime evidence available for any portability or reliability claim?
 
-| Skill | Responsibility |
-| --- | --- |
-| **Audit Skill** (this skill) | Read-only review of one or more skills across Q-01–Q-10, Agent Skills conformance, trust, source evidence, workflows, failure behavior and portability; no execution, approval or edits |
-| [Evaluate Skill](../evaluate-skill/SKILL.md) | Separately authorized behavioral evaluation, diagnosis, human-approved changes and regression review; runtime safety gates still apply |
-| [Integrate Skills](../integrate-skills/SKILL.md) | Draft collaboration/architecture walkthrough for connecting independently reviewed skills; not an implementation runner |
-| [Learn Repo](../learn-repo/SKILL.md) | Guided learning of an entire codebase rather than skill-specific audit |
+If you already performed an authorized run and supply traces or results, Audit Skill can **inspect that evidence read-only**, comparing it with the approved contract. It must distinguish genuine observed behavior from a source document's promise.
 
-**Recommended path:** Audit as-is → discuss contracts/decisions with humans → separately authorize evaluation or implementation when warranted.
+For **executing and grading** behavior, use [Evaluate Skill](../evaluate-skill/SKILL.md) under its own authorization and sandbox restrictions. Check its current runner status rather than assuming live evaluations are available. A `READY TO TEST` label does not mean `TESTED` or `PASSED`.
 
-**Status:** This revision defines a single review procedure, not a proven new agent runtime or eval engine. Static documentation checks alone do not establish behavioral reliability.
+## 7. Q-01–Q-10 and evidence
 
-**The mental model to keep:** **Target → inspected evidence → Q-01–Q-10 findings → human decision.** If you later want to prove runtime behavior, hand off to a separately authorized evaluation. Don't treat a good-looking audit report as a passing test.
+These ten criteria remain the canonical static/evidence-based review underneath Step 1. They are **not** ten new approval gates:
+
+- **Q-01 — Purpose & boundaries:** What does the skill own and avoid?
+- **Q-02 — Activation & discovery:** When and how does it activate?
+- **Q-03 — Structure, inputs & dependencies:** What resources does it need?
+- **Q-04 — Workflow & orchestration:** How does it make decisions, delegate, stop, and ask for approval?
+- **Q-05 — Contracts & outputs:** What enters and leaves? What are the guarantees and failure rules?
+- **Q-06 — Context & trust:** Are sources current, attributable, and safely treated?
+- **Q-07 — Permissions & effects:** What can the skill change, and who enforces that?
+- **Q-08 — Failure & stop behavior:** What happens when something fails or is missing?
+- **Q-09 — Evals & observability:** Are there real executed checks or just proposed tests?
+- **Q-10 — Lifecycle & portability:** Who maintains it and what runtimes are supported?
+
+For a checked criterion, Audit Skill needs **appropriate evidence**. A documented output format may support a documented contract, but prompt-only read-only language cannot prove host permission enforcement. Defined eval cases cannot prove a live run.
+
+The finding for every Q uses the same **Question → Check → Finding → Evidence → Status → Recommendation** layout. Claims must link directly to inspected files/lines. It separates:
+
+- **DOCUMENTED INSTRUCTIONS:** written behavior.
+- **IMPLEMENTED CHECK:** validator/guard in inspectable code or config.
+- **OBSERVED RESULT:** actual authorized execution evidence.
+- **NOT VERIFIED:** insufficient evidence.
+
+Read [Q-01–Q-10 explained with examples](references/coverage-checklist-examples.md) for the junior-friendly walkthrough.
+
+## 8. Run your own audit
+
+**Single skill:**
+
+```text
+Use audit-skill on Refine Requirements.
+Inspect its SKILL.md and material references.
+Give the full Step 1 Q-01–Q-10 evidence-backed review.
+Then recommend B-xx responsibility/boundary decisions
+and stop at Gate A for my approval.
+Do not edit or execute anything.
+```
+
+**Four skills together:**
+
+```text
+Use audit-skill on PRD Development, Refine Requirements,
+Jira Ticket Decomposition, and Sprint Assessment.
+
+Step 1: inspect all accessible SKILL.md files and references;
+show evidence-backed responsibility/overlap findings.
+Step 2: recommend a clear owner, non-owner, and decision authority
+for every material overlap or gap. Let me approve or revise
+the B-xx decisions at Gate A.
+
+After my approval, propose lightweight C-xx handoff contracts
+at Gate B. Once those are approved, prepare the validation
+scenario and checks. Do not run tests or change files.
+```
+
+For a shorter follow-up, refer to a decision ID, such as `Revise B-02`, `Approve C-01`, or `Explain why Q-05 is partial`.
+
+See also the [Sprint Assessment worked example](references/sprint-assessment-audit.md).
+
+## 9. Skill boundaries and safety
+
+Audit Skill's role is **evidence-backed inspection and human-gated design review**. It does not become an implementation agent or execution harness just because a human approves a design.
+
+- **Audit Skill:** inspect, compare, recommend, record human design choices, draft contracts, prepare/check validation evidence.
+- **Evaluate Skill:** separately authorized execution/evaluation, grading, diagnosis, and improvement under its current safety gates.
+- **The human/team:** approve architectural ownership and interface contracts; authorize implementation, data access, and execution separately.
+
+The practical mental model is:
+
+**Inspected source → recommended boundary → human-approved boundary → proposed contract → human-approved contract → separate test evidence.**
+
+The four user-facing steps here are not the same as the four SDI engineering-reasoning steps. Audit Skill may use SDI *internally* to reason about scope, design, contracts, and trade-offs, but you should only have one guided review process to follow.
