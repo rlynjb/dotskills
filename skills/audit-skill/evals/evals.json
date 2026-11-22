@@ -56,7 +56,7 @@
         "C-01 is present in first response.",
         "C-01 specifies input/output, invariants, failure paths and authority.",
         "B-01 remains proposed until human approval.",
-        "No early Gate A/B-style pause."
+        "No early sequential approval pause."
       ]
     },
     {
