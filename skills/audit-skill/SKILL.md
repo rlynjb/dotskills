@@ -1,6 +1,6 @@
 ---
 name: audit-skill
-description: "Guided, evidence-backed review of one or more agent skills: inspect responsibility and overlap (Q-01–Q-10), propose skill boundaries for human approval, propose lightweight handoff contracts for human approval, and prepare/review workflow validation evidence. Read-only: never execute target skills, run evals, modify source or infer approval."
+description: "Overview-first, evidence-backed audit of one or more agent skills: inspect responsibilities and overlap (Q-01–Q-10), present proposed boundaries AND provisional handoff contracts together, then guide human approve/revise/reject/defer decisions. Prepare validation separately. Read-only: no live execution, source edits, or inferred approvals."
 ---
 
 # Audit Skill
@@ -13,11 +13,11 @@ Help a human understand what agent skills currently do, decide what each skill *
 - **Two or more targets:** audit each independently, then compare shared and unique responsibilities, duplicate decision ownership, conflicting instructions, missing ownership, and producer/consumer handoffs. A shared topic is not automatically duplicated ownership.
 - **Inaccessible target:** mark NOT ASSESSED; inspect accessible targets, mark affected relationships UNVERIFIED, and do not construct missing architecture.
 - **No target:** ask for a skill or repository location instead of fabricating an audit.
-- **No mode menu:** the four steps below are one workflow. Start with Step 1 and propose Step 2 decisions in the first response, then pause at the first human gate.
+- **No mode menu or sequential approval gates:** the four steps below are one workflow. Present the complete **Step 1–3 overview** in the first response, then invite human review of the proposed boundary and contract decisions together.
 
 **Read-only throughout.** The skill may inspect authorized sources and supplied test evidence; it must not execute target skills, delegate live workers, run scripts or evals, edit/commit files, use write-capable business integrations, or approve changes. Human approval of a design decision does **not** authorize a repository mutation, tool call, or live test. Route explicitly authorized testing to [Evaluate Skill](../evaluate-skill/SKILL.md) as a separate workflow.
 
-## Workflow and user checkpoints
+## Workflow and human review
 
 ```text
 Step 1  Inspect responsibilities and overlap
@@ -26,28 +26,32 @@ Step 1  Inspect responsibilities and overlap
 Step 2  Recommend skill boundaries
         Owner / non-owner / decision authority
                            |
-                     HUMAN GATE A
-                 Approve / revise / defer
-                           |
-Step 3  Recommend handoff contracts
+Step 3  Recommend handoff contracts (provisional)
         Producer / consumer / guarantees / failures
+        Label dependencies on proposed B-xx boundaries
                            |
-                     HUMAN GATE B
-                 Approve / revise / defer
+                   ONE OVERALL VIEW
+          As-is analysis + B-xx + C-xx proposals
+                           |
+                      HUMAN REVIEW
+             Approve / revise / reject / defer
+              Individual items or explicit sets
                            |
 Step 4  Prepare validation and review evidence
-        Test scenarios + expected outcomes + trace review
+        Approved decisions + scenarios + trace review
                            |
-          Separate authorized Codex / Evaluate Skill run
+           Separate authorized Codex / Evaluate Skill run
 ```
 
-- **First response:** complete the evidence-based Step 1 review and show actionable Step 2 boundary recommendations. Stop and request review at **Gate A**. Do not silently proceed to contract approval.
-- **After Gate A:** incorporate approved/revised decisions and show Step 3 proposed contracts. Stop at **Gate B**.
-- **After Gate B:** publish the approved-decision ledger, Step 4 validation checklist and handoff to separately authorized test execution. If the user provides actual authorized traces/results, inspect them as evidence in a read-only follow-up.
-- **No material boundary changes:** still present an explicit `B-00 — retain current documented boundary` decision for human confirmation before Step 3; do not silently mark it approved.
-- **Partial decisions:** retain APPROVED items, keep unresolved decisions OPEN/DEFERRED, and draft dependent contracts as CONDITIONAL only; never label them approved. Step 4 readiness is BLOCKED where a material decision or handoff remains unresolved.
-- **Resume:** use decisions explicitly approved in the current conversation; show their IDs and scope. If source revisions, target scope, or a related decision change, flag affected approvals for re-review. Do not assume durable state beyond available conversation or an explicitly supplied decision record.
-- Do not pause after each Q-01–Q-10 criterion: human gates belong to **architecture decisions**, not checkbox scoring.
+- **First response:** independently audit all accessible targets, show a skim-friendly overall view of **Steps 1, 2 and 3**, including both boundary decisions `B-xx` and **provisional** handoff contracts `C-xx`. Explain links and dependencies. **Do not ask for approvals or stop before all three steps are shown.**
+- **One consolidated review:** after the overview, invite the human to **approve, revise, reject or defer** any `B-xx` or `C-xx` item, individually or as a clearly identified set. Do not interpret an unanswered item as approved.
+- **Contracts are proposed before boundary approval:** every `C-xx` that depends on a `B-xx` decision must say `PROPOSED — CONDITIONAL ON B-xx`. It may be discussed and revised immediately; it can only become APPROVED after its dependent boundary wording is explicitly approved and remains consistent.
+- **Combined approvals:** an explicit, unambiguous human approval of both a boundary and its compatible contract can finalize both in the same reply. Process the boundary first, check contract consistency, then record contract approval. If the boundary is revised, re-show the affected contract wording and seek explicit confirmation of that updated version.
+- **No material boundary changes:** propose `B-00 — retain current documented boundary` for confirmation, and include any meaningful standalone invocation/input-output `C-xx` proposal in the initial overview.
+- **Partial decisions:** retain APPROVED items; keep unresolved items PROPOSED/REVISED/REJECTED/DEFERRED and their dependent contracts CONDITIONAL. Step 4 readiness is BLOCKED for the affected path; independent paths can proceed.
+- **Follow-up:** show an updated compact B/C decision ledger, highlight impacts of requested edits, and provide Step 4 validation preparation once the relevant decisions are approved. Never claim a design decision has been implemented or tested because it was approved.
+- **Resume:** use approvals explicitly given in the available conversation or supplied decision record, with their scope/revision. Recheck impacted approvals after source revisions or dependencies change; do not assume durable state without evidence.
+- Do not pause after each Q-01–Q-10 criterion: all review and approval happens **after** the initial Steps 1–3 overview.
 
 ## Evidence discipline (all steps)
 
@@ -69,7 +73,7 @@ Step 4  Prepare validation and review evidence
 
 1. Inventory for each target: purpose, when to invoke and not invoke, users, required inputs, context, dependencies, stages, delegated workers/tools, validation, outputs, side effects, stop/failure handling, ownership, human authority and handoffs.
 2. Reconstruct an evidence-backed **as-is Mermaid flow**: trigger → evidence/context → decisions/validation → delegation → output/effects → stop/handoff. Label inferred or unverified edges; do not depict proposed orchestration as implemented.
-3. Apply the **canonical Q-01–Q-10** to each accessible target (below). Produce a ten-line At a Glance checklist followed by ten individual six-field findings. For multiple skills, do this **per skill**, then produce a concise cross-skill responsibility/overlap comparison.
+3. Apply the **canonical Q-01–Q-10** to each accessible target (below). Show a ten-line At a Glance checklist per skill with direct source-backed **material findings**, prioritizing the cross-skill picture; expand individual six-field Q findings when asked or when necessary to substantiate significant gaps. Do not allow 40 repetitive blocks to bury the initial overview of four skills.
 4. For multiple targets, identify: **unique owner**, **shared context**, **duplicated decision ownership**, **conflict**, **unowned responsibility**, and **handoff gap**. Name the exact skills and source evidence; only propose potential integration paths, marked PROPOSED.
 5. Assess relevant trust, provenance, security, reliability, failure isolation, observability, portability and existing eval evidence without assuming the runtime was exercised.
 6. Review the current [Agent Skills specification](https://agentskills.io/specification) when accessible. Distinguish normative requirements, recommendations and host conventions. Inspect current format/packaging; do not claim a validator was run if it was not.
@@ -96,7 +100,7 @@ Step 4  Prepare validation and review evidence
 - In Q-07 and Q-09, do not mark runtime enforcement or reliability PRESENT from prompt-only statements or unrun eval definitions.
 - For each target, show Q-01 through Q-10 **in order**; no invented scoring, approval, or production-readiness label.
 
-Each of the ten findings has these **six fields in order**, with italic labels and a direct source link in Evidence:
+When presenting a detailed Q finding, use these **six fields in order**, with italic labels and a direct source link in Evidence:
 
 ```markdown
 **Q-05 — Contracts & outputs**
@@ -108,9 +112,9 @@ _Status:_ PARTIAL
 _Recommendation:_ Define missing-input behavior before approving a handoff contract.
 ```
 
-This is an example, **not** a real finding. Keep each finding short and source-specific. Show the Agent Skills compliance and host compatibility reviews separately from Q-01–Q-10.
+This is an example, **not** a real finding. The initial report must still assess all ten criteria for every accessible skill; show the checklist and material evidence first, and offer or provide detailed six-field findings without displacing the Steps 1–3 overview. Show the Agent Skills compliance and host compatibility reviews separately from Q-01–Q-10.
 
-## Step 2 — Define Skill Boundaries (HUMAN GATE A)
+## Step 2 — Propose Skill Boundaries (initial overview)
 
 **Outcome:** recommendations that become **human-reviewed design decisions**, not automatic edits.
 
@@ -122,15 +126,15 @@ From Step 1, propose only material boundary choices. For each `B-xx` decision, p
 - **Options and trade-off:** why this is the smallest reasonable boundary, what is lost or gained, and alternatives worth considering.
 - **Status:** PROPOSED, APPROVED, REVISED, REJECTED, or DEFERRED; every decision starts PROPOSED unless a directly relevant human approval is already explicit.
 
-Ask the human to **approve, revise, reject, or defer the named B-xx decisions**, individually or as an explicitly named set. Accept direct input as a revision, restate the amended boundary, and seek confirmation of **that revised wording** before calling it APPROVED. A vague `looks good` is not blanket approval of unclear/unshown decisions. Never silently decide an ownership conflict.
+Present all material `B-xx` options **before** requesting feedback, and link each to affected proposed contracts (`C-xx`). The consolidated review follows Step 3. On feedback, accept approval/rejection/deferral for individual IDs or an explicit set; restate revised wording and request approval of the revision. A vague `looks good` is not blanket approval of unclear/unshown decisions. Never silently decide an ownership conflict.
 
-**Gate A rule:** do not finalize dependent Step 3 contracts until required boundary decisions are approved. A user may ask for provisional contracts despite open decisions; label those CONDITIONAL and block final approval until the dependencies are resolved. Record who approved only if actually known, and describe the approval as **design approval in this conversation**, not management/organization authorization or source implementation.
+**Boundary dependency rule:** draft downstream contracts *now*, even while boundaries are only proposed. A contract cannot be **finalized** until its required boundary wording is explicitly approved. Record who approved only if actually known, and describe approval as **design approval in this conversation**, not management/organization authorization or source implementation.
 
-## Step 3 — Define Handoff Contracts (HUMAN GATE B)
+## Step 3 — Propose Handoff Contracts (initial overview)
 
 **Outcome:** lightweight, explicit producer/consumer agreements for every material handoff. For one standalone skill, cover its invocation/input-output contract; do not invent neighbors.
 
-Only after Gate A for the relevant ownership decisions, propose `C-xx` contracts with:
+In the **same initial report as Step 1 and Step 2**, propose `C-xx` contracts using the recommended (but still provisional) boundaries:
 
 - **Handoff and owner:** source stage/producer → destination stage/consumer; related `B-xx` boundary decision.
 - **Trigger/preconditions:** when the handoff is allowed and required evidence or authorization.
@@ -141,17 +145,17 @@ Only after Gate A for the relevant ownership decisions, propose `C-xx` contracts
 - **Trust/permission boundaries:** least privilege, untrusted content, permitted side effects, privacy and approval requirements.
 - **Compatibility/versioning (when relevant):** fields/contract version and host adapter assumptions, not unnecessary boilerplate.
 
-Each contract includes a **recommended minimal contract**, reason/trade-offs, open questions, evidence links, and `PROPOSED` status. Avoid excessive schemas; use a short vertical contract card per handoff. If a contract relies on an unapproved boundary, mark `CONDITIONAL — BLOCKED BY B-xx`.
+Each contract includes a **recommended minimal contract**, reason/trade-offs, open questions, evidence links, dependencies and a provisional status such as `PROPOSED — CONDITIONAL ON B-01`. Avoid excessive schemas; use a short vertical contract card per handoff. An unapproved boundary is **not** grounds to omit the proposed contract from the initial overview.
 
-Ask the human to approve, revise, reject, or defer each named `C-xx` contract. After revisions, show the new contract text and request explicit approval. Record the status in the same decision ledger; do not equate a human-approved contract with an implemented or tested one.
+After presenting **all** `B-xx` and `C-xx` proposals, invite the human to approve, revise, reject, or defer each contract and boundary independently or in an explicitly named group. After changes, show the new contract text and ask for explicit approval of that version. Record statuses in the same decision ledger; never equate human approval with implementation or testing.
 
-**Gate B rule:** do not label the workflow contract-ready until material contracts are approved. Missing upstream information, conflicting human decisions, or an unverified dependency must remain visible and carry into Step 4.
+**Contract consistency rule:** a human can approve matching B/C items together, but a C item cannot become APPROVED while a prerequisite B remains PROPOSED, REVISED, REJECTED, or DEFERRED. If B changes, mark dependent C as REVISED or CONDITIONAL until its exact updated wording is confirmed. Missing upstream information, conflicting decisions and unverified dependencies must remain visible for Step 4.
 
 ## Step 4 — Validate the Workflow (preparation and evidence review only)
 
 **Outcome:** a practical validation handoff and honest evidence summary. **Audit Skill does not execute tests.**
 
-1. After Gates A/B, identify one **sanitized representative scenario** (or a bounded synthetic fixture) spanning the selected skills. List required inputs, approved boundary/contract IDs, expected stage outcomes, and human checkpoints.
+1. After the consolidated human review resolves all material decisions for a path, identify one **sanitized representative scenario** (or bounded synthetic fixture) spanning the selected skills. List required inputs, approved boundary/contract IDs, expected stage outcomes, and human checkpoints. In the initial overview, you may mention likely validation risks without claiming test readiness.
 2. Propose a concise validation checklist:
    - Each skill activates for the correct responsibility; no duplicate or unauthorized decisions.
    - Required fields, source references and unresolved questions survive every handoff without fabrication.
@@ -166,7 +170,7 @@ Ask the human to approve, revise, reject, or defer each named `C-xx` contract. A
 
 ## Decision ledger and continuation rules
 
-Maintain a compact ledger after each gate and at the end:
+Maintain a compact ledger in the initial overview and update it after each human response:
 
 - `B-01` / `C-01` ID, exact current wording, scope/source revision, dependencies, status, human input/approval as explicitly supplied, and unresolved question.
 - Distinguish **CURRENT DOCUMENTED**, **PROPOSED**, **HUMAN-APPROVED DESIGN**, **IMPLEMENTED CHECK**, and **OBSERVED RESULT**. These labels are **not interchangeable**.
@@ -174,21 +178,21 @@ Maintain a compact ledger after each gate and at the end:
 - If they defer an essential decision, explain what contract or validation step remains blocked. Other independent decisions may proceed.
 - When the user supplies new facts without corroborating source, note `USER-PROVIDED — NOT VERIFIED` and request/recommend a verification path without blocking unrelated decisions.
 
-## Output shape by turn
+## Output shape by turn — overview first
 
-**Initial invocation (Step 1 + Step 2):**
+**Initial invocation: Steps 1–3 in one response, then a single consolidated human review prompt**
 
-1. `Audit Skill — At a Glance`: targets and exact revision, inspected/unavailable sources, NOT EXECUTED, short skill profiles.
-2. Per-target Q-01–Q-10 checklist and **ten six-field findings**, followed by evidence-backed as-is Mermaid diagrams, Agent Skills conformance and host-compatibility notes.
-3. If two or more skills: source-backed responsibility/overlap comparison. If one: scope/boundary profile and only evidenced neighbors.
-4. Material gaps and `B-xx` boundary recommendations with options/trade-offs.
-5. **GATE A — Human decision needed**: concise prompt to approve/revise/reject/defer listed decisions. Stop.
+1. **Audit Skill — Overall View:** targets/revisions, inspected/unavailable sources and NOT EXECUTED; a short per-skill responsibility snapshot and as-is workflow summary.
+2. **Step 1 — Responsibility & Overlap:** a cross-skill picture of who currently owns what, shared context versus duplicated ownership, gaps, conflicts and important evidence. Give each accessible target its Q-01–Q-10 checklist. Put concise source-backed material Q findings, as-is Mermaid flows, Agent Skills conformance and portability evidence after the overview or in a clearly secondary detailed section.
+3. **Step 2 — Proposed Boundaries:** `B-xx` decisions with recommended owner/non-owner, alternatives, trade-offs, direct evidence links and PROPOSED status.
+4. **Step 3 — Proposed Handoff Contracts:** `C-xx` producer/consumer contracts with inputs, outputs, guarantees, failures, trust boundaries and explicit `depends on B-xx` links. All contracts relying on unapproved B items are visibly CONDITIONAL.
+5. **Decision Overview:** one compact ledger summarizing all B/C IDs, recommendation, status and dependencies; ask the human which ones to approve/revise/reject/defer. **Do not require approval before showing the proposed contracts.** No tests are run.
 
-**After Gate A (Step 3):** approved/revised boundary ledger → proposed `C-xx` contracts, evidence, guarantees, failure paths → **GATE B — Human decision needed**. Stop.
+**Follow-up after human feedback:** update only affected decisions/contract wording, preserve independent approvals, show dependency impacts and unresolved issues; seek specific clarification/approval only for revised or ambiguous items. A user may approve a coherent B/C set in one reply.
 
-**After Gate B (Step 4):** approved ledger → validation readiness and check scenarios → separate test/evaluation handoff → evidence limits. If supplied traces exist, add read-only observed-vs-expected findings. Do not claim an execution without actual evidence.
+**Step 4 (when relevant material B/C decisions are approved):** approved ledger → validation readiness and scenarios → separate test/evaluation handoff → evidence limits; add read-only observed-vs-expected findings if actual authorized traces are supplied. Do not claim execution without genuine evidence.
 
-**On a focused follow-up:** discuss or revise the selected Q/B/C item with its real source and dependency; do not regenerate unrelated findings unless their evidence changed. A request for `audit only` may stop after Step 1, but never infer approval or skip a required gate when the user requests boundary/contract design.
+**Focused follow-up:** discuss the selected Q/B/C item with source references and dependency impact; do not regenerate unrelated findings unless source evidence changed. A user requesting `audit only` may stop after Step 1, and a user requesting an overview can see Steps 1–3 without making any approval decision.
 
 ## Engineering reasoning and safety
 
@@ -199,5 +203,5 @@ Additional boundaries:
 - No Q-01–Q-10 checkbox implies human approval or tested production readiness.
 - No architecture decision is approved through inference, checkmarks, or prior examples. Don't confuse the person chatting with a team approver.
 - Do not invent source lines, loaded references, agent worker execution, trace identifiers, or platform parity.
-- Human approval of a boundary/contract is necessary for advancing its dependent design stage; permission for runtime actions or source writes is separate and must be enforced by the host/tools.
+- Boundary/contract **proposals** may be presented together without prior approval. Human approval is needed before treating them as finalized or preparing a path as READY TO TEST; permissions for runtime actions or source writes are separate and must be enforced by the host/tools.
 - For training examples, consult [coverage checklist examples](references/coverage-checklist-examples.md). For a multi-skill case, consult [Sprint Assessment worked example](references/sprint-assessment-audit.md). Neither is evidence about the target being audited.
