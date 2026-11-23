@@ -54,6 +54,16 @@ Assess the same **six considerations**, in this order, for each accessible targe
 5. **Boundaries:** Unclear owners, human approval/authorization expectations, trust/security limits and responsibility leakage.
 6. **Feedback:** When work returns for clarification or revision; whether rework ownership is clear.
 
+**If an issue appears under considerations 4–6**, examine whether the affected skills could document an **optional connection** rather than become tightly coupled. Show each affected skill's situation separately: how it can start and finish on its own, whether another skill's output is useful *when voluntarily supplied*, who owns each decision, what action is out of scope, and where proposed changes/questions return for human review.
+
+- **Standalone use:** Preserve the skill's own starting inputs, complete workflow, and meaningful outputs. A second skill's result must not silently become a required prerequisite.
+- **Optional handoff:** Describe how an existing output *may* be passed as context if it is available and the user or authorized workflow chooses it. No skill must invoke or automatically run the other.
+- **Responsibilities:** Preserve each skill's distinct decisions. Consuming an optional output does not transfer ownership or let a consumer silently rewrite the producer's conclusions.
+- **Boundaries:** Document authority to edit files, publish results, make decisions, or invoke other skills. A documented restriction is not proof of runtime enforcement.
+- **Feedback:** Propose returning findings or unresolved questions to the responsible skill's owner or human reviewer; do not silently modify the other skill's artifacts.
+
+**Important:** This is a **recommendation for documentation**, not an automatic change to target skills. Do not presume standalone use already works if a skill currently documents a required dependency, and do not rewrite a truly mandatory safety or data prerequisite as optional. Report the actual documented dependency and mark any independence proposal as conditional on human design review. Do not manufacture an optional handoff when the skills are unrelated. A feedback or security issue may need controls beyond explanatory wording; identify those limits.
+
 Do not design schemas, preconditions, postconditions, invariants, retries, routing rules, runtime controls, or feedback orchestration here. Record unknowns rather than guessing.
 
 ### Step 2 — Cross-skill responsibility and overlap analysis
@@ -80,6 +90,7 @@ Prioritize each actionable suggestion **High / Medium / Low** and include:
 - **Proposed ownership or documentation adjustment** (not an edit).
 - **Benefit / trade-off**, including a no-change option when intentional overlap is reasonable.
 - **Human confirmation required:** yes/no; identify the decision owner only if known.
+- **For relevant Handoff, Boundary, or Feedback issues:** include concise **per-skill optional-connection wording** as a *PROPOSED documentation change*: standalone entry and complete output; optional use of the partner's output; retained decision/authority boundaries; return of proposed updates/questions to the owner. Make the partner's corresponding wording explicit when both skills are affected. Link evidence and avoid making either skill mandatory or automatically invoked.
 
 Keep proposals separate from documented facts. Do not finalize ownership or architecture decisions, even when a suggestion seems obvious.
 
@@ -101,6 +112,8 @@ Use these seven headings, in order:
 - **Two or three skills:** section 2 **must use side-by-side Markdown comparison tables**, with a `Consideration` column and a column for each skill. Align the six rows in the same order. Prefer two small tables: **Primary** (Inputs, Responsibilities, Outputs) and **Supporting** (Handoffs, Boundaries, Feedback).
 - **Four or more skills:** split into readable side-by-side groups of two or three skills, *and* provide an overall synthesis of all selected skills. Do not omit any skill or material overlap to keep a table narrow.
 - **Section 3:** compare the same overlapping activity across the affected skills in aligned columns; include classification and impact. In section 4, explicitly name every affected skill.
+- **Section 2, Supporting table (rows 4–6):** show the observed issue, its evidence status, and its effect **for each skill**, not only for the relationship as a whole. Immediately below the table, add **Proposed optional connection documentation — per affected skill** when an optional handoff could address an evidenced issue. Give each affected skill its own short block covering **Standalone use / Optional handoff / Responsibility / Boundary / Feedback**, and distinguish current documented behavior from recommended future wording. In section 5, carry the related recommendation and human decision; in section 7, defer formal contract details.
+- The recommended optional route must preserve three valid paths when supported: **Skill A alone**, **Skill B alone**, and **Skill A → optional Skill B review → owner-reviewed updates**. Do not state that all three paths work today without evidence. Neither skill is required to call, import, or execute the other.
 - Keep each table cell concise. Put evidence links, caveats, rationale and recommendations in short **vertical notes immediately following** the relevant comparison, not in giant cells.
 - Match depth and labels for all skills. Where evidence is missing say **NOT DOCUMENTED**, **UNVERIFIED**, or **NOT ASSESSED** as applicable; do not populate empty cells with invented behavior.
 - When the host cannot render Markdown tables, use paired, consistently labeled comparison blocks so readers can compare the same considerations without hunting across distant sections.

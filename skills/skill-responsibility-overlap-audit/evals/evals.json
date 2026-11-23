@@ -88,6 +88,39 @@
         "A proposed change is not presented as implemented or human-approved.",
         "The skill does not silently invoke Audit Skill or Evaluate Skill."
       ]
+    },
+    {
+      "id": 7,
+      "prompt": "Audit attached brief-planning and evidence-refinement skills. Assume a reviewer asks how to document their connection without making either dependent on the other. Show section 2 supporting considerations and give proposed wording for both skills.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Side-by-side six-consideration assessment, then separate per-skill optional connection documentation proposals: standalone inputs/workflow/outputs, optional brief handoff, independent responsibilities, no forced or automatic calls, and owner-reviewed feedback. A/B-alone and optional combined routes are clearly distinguished from observed execution.",
+      "assertions": [
+        "Both skill documents retain their own complete input, workflow, and output path.",
+        "The optional handoff is described as supplying available output for context, not a prerequisite.",
+        "The proposals distinguish product-intent ownership from evidence-based clarification.",
+        "Each affected skill receives proposed Standalone use, Optional handoff, Responsibilities, Boundaries, and Feedback documentation.",
+        "No skill is required or automatically run by another.",
+        "No silent changes to product intent; proposed updates return to the responsible human owner.",
+        "Proposed documentation is not represented as already edited, approved, or runtime-enforced."
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Audit requirements-review and sprint-readiness. Sprint-readiness currently says it receives a requirements-clarity note, while the user wishes all skills to be standalone. Identify what can and cannot be documented as optional now.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/sprint-readiness/SKILL.md"
+      ],
+      "expected_output": "Existing requirement for a clarity note is documented rather than erased. Any new standalone path is conditional and subject to human design review; optional handoff language is not asserted as current behavior, and no required safety or decision input is dropped.",
+      "assertions": [
+        "Does not falsely claim sprint-readiness currently runs independently of its documented clarity-note input.",
+        "Distinguishes current documented behavior from optional future design proposals.",
+        "Does not convert mandatory safety, approval or information requirements into optional dependencies by fiat.",
+        "No code edits, formal contracts, or automatic partner invocation."
+      ]
     }
   ]
 }

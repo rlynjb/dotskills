@@ -80,6 +80,11 @@ Examine **six considerations** for each skill.
 
 For considerations 4–6, note observations and potential problems **without** designing detailed interfaces, schemas, runtime controls, retry policies, or feedback orchestration.
 
+**Optional connection guidance when a supported issue exists in Handoffs, Boundaries, or Feedback:**
+- For **each affected skill separately**, propose documentation of **standalone use** (its own starting inputs, full workflow and outputs), an **optional handoff** (a partner's result can be provided as context when available), distinct **responsibilities**, clear **boundaries** (no unauthorized edits, publishing, decisions or automatic skill invocation), and **feedback** to the responsible owner as proposed changes/questions.
+- Neither skill requires or automatically runs the other. Present the possible paths as Skill A alone, Skill B alone, or Skill A followed by *optional* Skill B with human-reviewed updates.
+- Label all suggested wording **PROPOSED, NOT IMPLEMENTED** and provide direct evidence. If current files truly require another skill's output, report that fact; standalone support must remain **UNVERIFIED** or *conditional on a separate design change*, not assumed. Do not create a connection for unrelated skills or weaken necessary approval/security requirements.
+
 ### Step 2 — Cross-Skill Responsibility & Overlap Analysis
 
 For each overlapping capability, record:
@@ -118,6 +123,7 @@ For each recommendation, provide:
 - **Proposed change:** Ownership clarification or documentation adjustment.
 - **Expected benefit/trade-off:** Why the change may help and any downside.
 - **Human confirmation required:** Yes/no, with the decision owner if known.
+- **Optional connection wording, when relevant:** Proposed documentation for **each affected skill** under Standalone use, Optional handoff, Responsibilities, Boundaries, Feedback—preserving standalone inputs, outputs and workflow and requiring no automatic cross-skill invocation.
 
 Keep recommendations separate from confirmed findings. Do not implement them.
 
@@ -137,6 +143,7 @@ Keep recommendations separate from confirmed findings. Do not implement them.
 - **Two or three skills:** In report section 2, use concise **side-by-side comparison tables** with one column per skill and the same six consideration rows, preferably split into Primary (Inputs, Responsibilities, Outputs) and Supporting (Handoffs, Boundaries, Feedback).
 - **Four or more skills:** Compare in smaller side-by-side groups of two or three skills, then include an overall synthesis covering **every** selected skill and all material relationships.
 - **Cross-skill overlap:** Align the activity and each involved skill's role; include classification and workflow effect. Explicitly name affected skills for gaps.
+- **Supporting considerations 4–6:** For each real issue, give **per-skill** findings in the side-by-side cells, then show compact *proposed optional connection documentation* blocks for each affected skill directly below: Standalone use, Optional handoff, Responsibilities, Boundaries and Feedback. Do not imply target files were changed.
 - Keep tables scannable; place evidence links, interpretation, and recommendations as short vertical notes below. If Markdown tables are not supported, use equivalent aligned comparison blocks. Do not invent data to fill cells.
 
 ### Evidence & Quality Requirements

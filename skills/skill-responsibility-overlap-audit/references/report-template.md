@@ -25,9 +25,34 @@ For **two or three skills**, use side-by-side tables. Keep long citations and ex
 
 | Consideration | [Skill A] | [Skill B] |
 | --- | --- | --- |
-| 4. Handoffs | [Producer/consumer or unknown] | [Producer/consumer or unknown] |
-| 5. Boundaries | [Approval/permissions concerns] | [Approval/permissions concerns] |
-| 6. Feedback | [Rework/return triggers] | [Rework/return triggers] |
+| 4. Handoffs | [Current handoff and issue, if any] | [Current handoff and issue, if any] |
+| 5. Boundaries | [Current ownership/authority and issue] | [Current ownership/authority and issue] |
+| 6. Feedback | [Current revision path and issue] | [Current revision path and issue] |
+
+**Proposed optional connection documentation — per affected skill (only if justified by a row 4–6 issue):**
+
+**[Skill A] — PROPOSED wording, NOT YET IMPLEMENTED**
+- *Standalone use:* [Existing starting inputs, complete workflow and own outputs; if unverified or currently dependent, say so.]
+- *Optional handoff:* [When another skill's existing output is available, it may be supplied as **optional context**. The skill never requires or auto-runs its partner.]
+- *Responsibilities:* [What Skill A owns; what remains with Skill B.]
+- *Boundaries:* [No automatic invocation, unauthorized edit/publish/approval, or change to another skill's decisions.]
+- *Feedback:* [Report proposed changes and open questions to the correct human owner; no silent upstream edits.]
+- *Evidence / open design question:* [Direct links; note gaps and who needs to confirm.]
+
+**[Skill B] — PROPOSED wording, NOT YET IMPLEMENTED**
+- *Standalone use:* [How Skill B starts, finishes and produces useful outputs without Skill A.]
+- *Optional handoff:* [If Skill A's output exists, Skill B may consume it as context, not as a prerequisite.]
+- *Responsibilities:* [What Skill B owns and must not overwrite.]
+- *Boundaries:* [No required/autonomous invocation or unauthorized side effects.]
+- *Feedback:* [What Skill B returns as suggestions/questions for Skill A's owner to review.]
+- *Evidence / open design question:* [Direct links; note gaps and who needs to confirm.]
+
+**Illustrative workflow choices — not verified by this template:**
+- Run **Skill A alone**.
+- Run **Skill B alone**.
+- Run **Skill A**, optionally supply its result to **Skill B**, then let the responsible human owner review any suggested updates.
+
+If either skill currently **requires** the other's output, do not label standalone use as supported. Record the dependency as-is and propose any optionalization **conditionally**. If there is no relevant issue, omit these recommendation blocks; do not fabricate a connection. Documented boundaries do not prove runtime restrictions.
 
 **Evidence and interpretation (vertical notes):**
 
@@ -61,7 +86,8 @@ For each real overlap, align the involved skills, then explain it below.
 
 - **Priority:** [High / Medium / Low]
 - **Finding:** [Problem and linked evidence.]
-- **Proposed change:** [Ownership/documentation proposal only.]
+- **Proposed change:** [Ownership/documentation proposal only; when appropriate, cite the per-skill proposed optional handoff, boundary, and feedback wording from section 2.]
+- **Standalone integrity:** [Does each skill retain its own inputs, outputs and workflow? If not evidenced, what needs human confirmation?]
 - **Benefit / trade-off:** [Including cost of change.]
 - **Human confirmation:** [Required? Who, if known?]
 

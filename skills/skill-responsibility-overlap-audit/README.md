@@ -6,8 +6,9 @@ A focused, **read-only Stage 2 investigation skill** for clarifying responsibili
 
 1. Individual reviews of the same **six considerations**: Inputs, Responsibilities, Outputs, Handoffs, Boundaries and Feedback. The first three receive deeper analysis; the last three identify future design questions.
 2. **Side-by-side comparisons** for two or more skills, so ownership and differences are visible in the same rows. Large sets are split into groups with an overall synthesis.
-3. Evidence-backed classification of legitimate shared behavior, complementary roles, duplication, conflicts and unclear ownership.
-4. Missing responsibilities/gaps, High/Medium/Low recommendations, and questions for human review.
+3. **Optional connection documentation proposals, per affected skill** when Handoffs, Boundaries, or Feedback reveal a material issue. Keep each skill independently usable with complete inputs, workflow and outputs; suggest passing the other skill's result as optional context only, never as an automatic invocation.
+4. Evidence-backed classification of legitimate shared behavior, complementary roles, duplication, conflicts and unclear ownership.
+5. Missing responsibilities/gaps, High/Medium/Low recommendations, and questions for human review.
 
 It does **not** decide the future architecture, draft contracts, execute skills, make repository edits, or mark recommendations as approved.
 
@@ -34,6 +35,14 @@ An optional workflow description or harness name helps explain which handoffs ma
 - **Duplicated decision:** both independently claim the final authority on the same requirement. May create conflicting results.
 - **Handoff gap:** a skill expects information no preceding skill promises to produce.
 - **Unverified:** the evidence does not establish a capability or missing capability. A documented promise alone is not runtime proof.
+
+## Optional connections preserve standalone skills
+
+Suppose one skill produces a product brief and another refines requirements. **Illustrative only:** either skill may be run on its own from its supported inputs. If a brief already exists, a human may pass it to refinement as useful context. Refinement can suggest changes to the brief, but does not silently revise it; the brief's owner reviews any proposed updates. Neither skill must invoke or automatically run the other.
+
+When the audit finds handoff, boundary, or feedback issues, it may recommend **wording for each affected skill** under five labels: *Standalone use*, *Optional handoff*, *Responsibilities*, *Boundaries*, and *Feedback*. These are **proposals for human review**, not edits to the audited skills or formal contracts.
+
+If inspection shows a skill actually requires a partner's output, the report must **not** pretend it already supports standalone use. Changing a documented required dependency would be a separate design decision. Security or authorization rules may also require enforcement beyond documentation.
 
 ## How this differs from other DotSkills skills
 
