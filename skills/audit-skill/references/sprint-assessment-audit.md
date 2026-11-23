@@ -109,7 +109,7 @@ Audit Skill can later **read** the genuine run artifacts and compare observed-ve
 
 ## Acceptance criteria for the guided review
 
-- Each accessible skill receives its own ten-check Q-01–Q-10 assessment and ten six-field findings.
+- Each accessible skill receives a ten-check Q-01–Q-10 assessment. The overview explains material findings in plain English; detailed six-field findings are shown when needed or requested, without burying Steps 1–3.
 - As-is flows, evidence, proposals, human approvals and observed results remain distinct.
 - The first response shows Step 1 findings, Step 2 B-xx proposals, and Step 3 C-xx proposals together before any approval request.
 - One consolidated review accepts individual B/C approvals, revisions, rejections or deferrals and tracks dependencies. No approval is inferred from a checkbox, a favorable recommendation or a non-specific human remark.
