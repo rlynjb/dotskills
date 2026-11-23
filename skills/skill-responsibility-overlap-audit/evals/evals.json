@@ -327,114 +327,145 @@
     },
     {
       "id": 22,
-      "prompt": "Compare requirements-review and sprint-readiness using Skill Responsibility & Overlap Audit. The report must keep all material F-xx findings with labeled Finding/Evidence/Assessment/Why/Recommendation in the exact C1–C6 row and skill cell they belong to—not in separate Finding A/B/C blocks. Keep the side-by-side comparison.",
+      "prompt": "Compare requirements-review and sprint-readiness using Skill Responsibility & Overlap Audit. Use compact side-by-side Primary (C1–C3) and Supporting (C4–C6) tables. Place only short F-xx pointers in table cells, then render all meaningful Finding, Evidence, Assessment, Why, Recommendation, and optional wording fields as distinct Markdown bullet lines immediately after the relevant table. Do not use HTML or put long fields inline in table cells.",
       "files": [
         "evals/files/requirements-review/SKILL.md",
         "evals/files/sprint-readiness/SKILL.md"
       ],
-      "expected_output": "A readable C1–C6 side-by-side Markdown report with concise, source-backed F-01/F-02 mini-records in the relevant skill cells, separated by sentences rather than HTML line breaks. Optional longer wording sits in a directly adjacent F-xx detail row. Step 4 references those IDs.",
+      "expected_output": "Compact, same-orientation Primary and Supporting tables with brief F-xx summaries in cells and full material finding details on separate Markdown bullet lines immediately below the relevant table; evidence and proposed revisions are distinct and human reviewed.",
       "assertions": [
-        "Original side-by-side layout with one consideration per physical Markdown row and skill columns is preserved.",
-        "Material F-xx identifiers and Finding/Evidence/Assessment/Why/Recommendation are present inline in the correct skill cell; no HTML markup or literal line-break tags.",
-        "No detached Finding A/B/C section or duplicated five-field findings after the comparison.",
-        "Cross-skill effects are referenced by F-xx and Cx without invented evidence.",
-        "Source evidence and proposed Stage 2 changes remain clearly distinct from runtime observations."
+        "Both tables have identical skill columns and C1–C6 as rows, without rotating the Primary layout.",
+        "Detailed finding fields use actual separate Markdown bullet lines outside pipe-table cells, immediately after the related table.",
+        "Source facts, possible inferred consequences, and any proposed wording are explicitly distinguished.",
+        "No HTML breaks, giant cells, new wording table, or detached findings section.",
+        "Stage 2 audit remains read-only and never presumes approval or execution."
       ]
     },
     {
       "id": 23,
-      "prompt": "Audit discovery-brief and approval-evidence. Show Current wording, Concern and Recommended wording — PROPOSED within the existing C-row skill cell if concise, or in an adjacent F-xx wording row when a quote is longer. Restore readable Markdown tables, without HTML.",
+      "prompt": "Audit discovery-brief and approval-evidence. Use compact side-by-side Primary (C1–C3) and Supporting (C4–C6) tables. Place only short F-xx pointers in table cells, then render all meaningful Finding, Evidence, Assessment, Why, Recommendation, and optional wording fields as distinct Markdown bullet lines immediately after the relevant table. Do not use HTML or put long fields inline in table cells.",
       "files": [
         "evals/files/discovery-brief/SKILL.md",
         "evals/files/approval-evidence/SKILL.md"
       ],
-      "expected_output": "Clean two-skill comparison table with compact F-xx summaries in the relevant consideration cells; exact source quotation and proposed wording may appear in a directly adjacent F-xx detail row in the same table, never raw HTML or a detached finding section.",
+      "expected_output": "Compact, same-orientation Primary and Supporting tables with brief F-xx summaries in cells and full material finding details on separate Markdown bullet lines immediately below the relevant table; evidence and proposed revisions are distinct and human reviewed.",
       "assertions": [
-        "Exact sourced Current wording and its proposed change are visibly connected to the same consideration and F-xx ID.",
-        "No literal HTML tags or extra columns, and no separate findings section.",
-        "Source text is DOCUMENTED, behavioral risk INFERRED unless runtime evidence exists, and replacement PROPOSED.",
-        "Recommended wording preserves existing approval and safety requirements.",
-        "Step 4 references original F-xx without duplicating long exact wording."
+        "Both tables have identical skill columns and C1–C6 as rows, without rotating the Primary layout.",
+        "Detailed finding fields use actual separate Markdown bullet lines outside pipe-table cells, immediately after the related table.",
+        "Source facts, possible inferred consequences, and any proposed wording are explicitly distinguished.",
+        "No HTML breaks, giant cells, new wording table, or detached findings section.",
+        "Stage 2 audit remains read-only and never presumes approval or execution."
       ]
     },
     {
       "id": 24,
-      "prompt": "Compare four synthetic skills: requirements-review, sprint-readiness, ticket-drafting, and estimation-advisor. Use small grouped tables when needed, but retain row-level F-xx notes in cells and stable C1–C6 IDs. Demonstrate how a finding connected to multiple considerations is cross-referenced without duplicating the full finding.",
+      "prompt": "Compare four synthetic skills: requirements-review, sprint-readiness, ticket-drafting, and estimation-advisor. Use compact side-by-side Primary (C1–C3) and Supporting (C4–C6) tables. Place only short F-xx pointers in table cells, then render all meaningful Finding, Evidence, Assessment, Why, Recommendation, and optional wording fields as distinct Markdown bullet lines immediately after the relevant table. Do not use HTML or put long fields inline in table cells.",
       "files": [
         "evals/files/requirements-review/SKILL.md",
         "evals/files/sprint-readiness/SKILL.md",
         "evals/files/ticket-drafting/SKILL.md",
         "evals/files/estimation-advisor/SKILL.md"
       ],
-      "expected_output": "Grouped, readable Markdown tables cover four skills with concise inline F-xx finding summaries in their primary C1–C6 skill cells. Related considerations use F-xx references. An immediately adjacent detail row may hold a long quote. Step 4 references actionable findings without a detached finding section or HTML.",
+      "expected_output": "Compact, same-orientation Primary and Supporting tables with brief F-xx summaries in cells and full material finding details on separate Markdown bullet lines immediately below the relevant table; evidence and proposed revisions are distinct and human reviewed.",
       "assertions": [
-        "All four skills and all six considerations remain represented.",
-        "Material F-xx and Cx IDs are inside or immediately adjacent to their primary consideration row, not detached below.",
-        "No HTML tags or forced multi-line content inside Markdown table cells.",
-        "Related consideration cross-references do not duplicate full findings.",
-        "Grouped two- or three-skill tables remain readable and preserve human-review and read-only boundaries."
+        "Both tables have identical skill columns and C1–C6 as rows, without rotating the Primary layout.",
+        "Detailed finding fields use actual separate Markdown bullet lines outside pipe-table cells, immediately after the related table.",
+        "Source facts, possible inferred consequences, and any proposed wording are explicitly distinguished.",
+        "No HTML breaks, giant cells, new wording table, or detached findings section.",
+        "Stage 2 audit remains read-only and never presumes approval or execution."
       ]
     },
     {
       "id": 25,
-      "prompt": "Run skill-responsibility-overlap-audit on the supplied requirements-review and sprint-readiness synthetic skills in a plain-text terminal that displays raw HTML tags literally. Render the six-consideration side-by-side Markdown report with F-xx assessment, reason and recommendation fields. Prior formatting broke because field lines were separated by HTML markup. Keep the original table visual and show a clear C2 responsibilities finding.",
+      "prompt": "Run skill-responsibility-overlap-audit on the supplied requirements-review and sprint-readiness synthetic skills in a plain-text terminal that displays raw HTML tags literally. Use compact side-by-side Primary (C1–C3) and Supporting (C4–C6) tables. Place only short F-xx pointers in table cells, then render all meaningful Finding, Evidence, Assessment, Why, Recommendation, and optional wording fields as distinct Markdown bullet lines immediately after the relevant table. Do not use HTML or put long fields inline in table cells.",
       "files": [
         "evals/files/requirements-review/SKILL.md",
         "evals/files/sprint-readiness/SKILL.md"
       ],
-      "expected_output": "Two compact Markdown comparison tables with single-line pipe-table rows, C1–C6 labels and short, inline, readable F-xx finding sentences in the relevant cells. Uses no HTML tags or manually inserted line-break markup and no detached findings section. The actual ownership conflict is source-backed and results in a proposal for human review.",
+      "expected_output": "Compact, same-orientation Primary and Supporting tables with brief F-xx summaries in cells and full material finding details on separate Markdown bullet lines immediately below the relevant table; evidence and proposed revisions are distinct and human reviewed.",
       "assertions": [
-        "No raw HTML tags, line-break markup or embedded table-cell newlines.",
-        "Only three table columns: Consideration, Skill A, Skill B; normal terminal wrapping is allowed.",
-        "Meaningful F-xx finding includes an assessment, evidence, why and recommendation tied to its Cx row.",
-        "No fabricated runtime claim, contract design, source edit or auto-approval.",
-        "Step 4 references F-xx without reprinting entire finding."
+        "Both tables have identical skill columns and C1–C6 as rows, without rotating the Primary layout.",
+        "Detailed finding fields use actual separate Markdown bullet lines outside pipe-table cells, immediately after the related table.",
+        "Source facts, possible inferred consequences, and any proposed wording are explicitly distinguished.",
+        "No HTML breaks, giant cells, new wording table, or detached findings section.",
+        "Stage 2 audit remains read-only and never presumes approval or execution."
       ]
     },
     {
       "id": 26,
-      "prompt": "Audit the synthetic discovery-brief SKILL.md in a narrow terminal. An exact discovery-prerequisite quote and proposed revision are long. Keep the C1 Inputs finding visible in the same consideration group while preventing a giant broken HTML-filled cell. Show what to do when wording is lengthy.",
+      "prompt": "Audit the synthetic discovery-brief SKILL.md in a narrow terminal. Use compact side-by-side Primary (C1–C3) and Supporting (C4–C6) tables. Place only short F-xx pointers in table cells, then render all meaningful Finding, Evidence, Assessment, Why, Recommendation, and optional wording fields as distinct Markdown bullet lines immediately after the relevant table. Do not use HTML or put long fields inline in table cells.",
       "files": [
         "evals/files/discovery-brief/SKILL.md"
       ],
-      "expected_output": "The C1 finding is summarized in a short source-backed Markdown cell or consideration-first block. Full exact wording and proposed replacement appear immediately after the C1 row in a single additional F-xx wording/detail row or adjacent block, without extra columns or raw HTML. Documentation and inferred risk are separated.",
+      "expected_output": "Compact, same-orientation Primary and Supporting tables with brief F-xx summaries in cells and full material finding details on separate Markdown bullet lines immediately below the relevant table; evidence and proposed revisions are distinct and human reviewed.",
       "assertions": [
-        "Original Inputs consideration is clear and remains linked to F-xx.",
-        "Exact Current wording / Concern / Recommended wording are adjacent to the finding and not a detached section.",
-        "No raw HTML markup, mandatory discovery inference, or fabricated quote.",
-        "Human approval, no source mutation and Stage 2 investigation limits are retained."
+        "Both tables have identical skill columns and C1–C6 as rows, without rotating the Primary layout.",
+        "Detailed finding fields use actual separate Markdown bullet lines outside pipe-table cells, immediately after the related table.",
+        "Source facts, possible inferred consequences, and any proposed wording are explicitly distinguished.",
+        "No HTML breaks, giant cells, new wording table, or detached findings section.",
+        "Stage 2 audit remains read-only and never presumes approval or execution."
       ]
     },
     {
       "id": 27,
-      "prompt": "Audit the synthetic requirements-review and sprint-readiness skills. A previous audit incorrectly transposed the Primary section: each consideration became its own table, 'Consideration | 2. Responsibilities (C2)' appeared as a header, and skill names became rows. Keep the already-correct Supporting side-by-side orientation. Render C1–C3 and C4–C6 in two matching side-by-side tables and include material F-xx assessments.",
+      "prompt": "Audit the synthetic requirements-review and sprint-readiness skills. Use compact side-by-side Primary (C1–C3) and Supporting (C4–C6) tables. Place only short F-xx pointers in table cells, then render all meaningful Finding, Evidence, Assessment, Why, Recommendation, and optional wording fields as distinct Markdown bullet lines immediately after the relevant table. Do not use HTML or put long fields inline in table cells.",
       "files": [
         "evals/files/requirements-review/SKILL.md",
         "evals/files/sprint-readiness/SKILL.md"
       ],
-      "expected_output": "Section 2 has exactly one Primary table whose first column has C1, C2, C3 and whose remaining column headings are the two skills. One Supporting table uses the same skill column order with C4, C5, C6. Meaningful F-xx fields stay inside skill cells. No transposed per-consideration tables, HTML, or detached findings.",
+      "expected_output": "Compact, same-orientation Primary and Supporting tables with brief F-xx summaries in cells and full material finding details on separate Markdown bullet lines immediately below the relevant table; evidence and proposed revisions are distinct and human reviewed.",
       "assertions": [
-        "Primary header is Consideration + both skill names, in the same order as Supporting.",
-        "C1 Inputs, C2 Responsibilities and C3 Outputs are first-column rows, never table headers.",
-        "No separate mini-table per C1/C2/C3 or rows named after the skills.",
-        "Supporting C4–C6 retains its working side-by-side presentation.",
-        "F-xx source evidence and CLARIFY/REVISE/KEEP decisions remain within their relevant skill cells; no runtime claims or skill edits."
+        "Both tables have identical skill columns and C1–C6 as rows, without rotating the Primary layout.",
+        "Detailed finding fields use actual separate Markdown bullet lines outside pipe-table cells, immediately after the related table.",
+        "Source facts, possible inferred consequences, and any proposed wording are explicitly distinguished.",
+        "No HTML breaks, giant cells, new wording table, or detached findings section.",
+        "Stage 2 audit remains read-only and never presumes approval or execution."
       ]
     },
     {
       "id": 28,
-      "prompt": "Audit synthetic discovery-brief and approval-evidence skills in a terminal. One Primary C3 wording concern needs an exact quotation and a proposed replacement. Keep only two comparison tables total and insert the wording detail immediately under C3 in the SAME Primary table, without reintroducing its header or pivoting the skills into rows.",
+      "prompt": "Audit synthetic discovery-brief and approval-evidence skills in a terminal. Use compact side-by-side Primary (C1–C3) and Supporting (C4–C6) tables. Place only short F-xx pointers in table cells, then render all meaningful Finding, Evidence, Assessment, Why, Recommendation, and optional wording fields as distinct Markdown bullet lines immediately after the relevant table. Do not use HTML or put long fields inline in table cells.",
       "files": [
         "evals/files/discovery-brief/SKILL.md",
         "evals/files/approval-evidence/SKILL.md"
       ],
-      "expected_output": "Primary table remains Consideration | discovery-brief | approval-evidence with C1–C3 rows; any needed F-xx wording detail follows the relevant C row inside that same Primary table. Supporting table retains the same skill columns C4–C6. No third wording table, copied header, HTML, or detached finding.",
+      "expected_output": "Compact, same-orientation Primary and Supporting tables with brief F-xx summaries in cells and full material finding details on separate Markdown bullet lines immediately below the relevant table; evidence and proposed revisions are distinct and human reviewed.",
       "assertions": [
-        "Only two main comparison table headers for a two-skill audit: Primary and Supporting.",
-        "Any optional F-xx detail row is adjacent to its primary finding within the same table.",
-        "Skill names are only skill column headings, not first-column row labels.",
-        "Evidence status of quoted instructions and inferred consequences remain distinct.",
-        "All six considerations and Stage 2 human-review boundaries are preserved."
+        "Both tables have identical skill columns and C1–C6 as rows, without rotating the Primary layout.",
+        "Detailed finding fields use actual separate Markdown bullet lines outside pipe-table cells, immediately after the related table.",
+        "Source facts, possible inferred consequences, and any proposed wording are explicitly distinguished.",
+        "No HTML breaks, giant cells, new wording table, or detached findings section.",
+        "Stage 2 audit remains read-only and never presumes approval or execution."
+      ]
+    },
+    {
+      "id": 29,
+      "prompt": "Audit requirements-review and sprint-readiness in a Codex terminal. The user reports that inline Finding/Evidence/Assessment/Why/Recommendation labels in Primary cells make the table unreadable. Render compact Primary and Supporting side-by-side tables; immediately after Primary, write each material finding field on its own actual Markdown bullet line.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/sprint-readiness/SKILL.md"
+      ],
+      "expected_output": "Primary and Supporting remain compact matching tables. A material F-xx pointer is followed by a nearby vertical note containing Finding, Evidence, Assessment, Why, Recommendation each on separate bullet lines. No raw HTML and no large inline table cells.",
+      "assertions": [
+        "Two side-by-side tables retain identical skill column headers.",
+        "F-xx links a short table cell summary to a vertical field list directly after that table.",
+        "Each requested label is a distinct Markdown list line, not combined into one paragraph.",
+        "No HTML, multi-line table cells, transposition, invented evidence or unapproved changes."
+      ]
+    },
+    {
+      "id": 30,
+      "prompt": "Audit discovery-brief and approval-evidence with long exact text under Current wording, Concern and Recommended wording. Keep those three fields as separate Markdown bullet lines in the F-xx note directly below their comparison table, not inside the table.",
+      "files": [
+        "evals/files/discovery-brief/SKILL.md",
+        "evals/files/approval-evidence/SKILL.md"
+      ],
+      "expected_output": "Clear compact table with F-xx pointer, then separate Markdown lines for exact current text, inferred concern and proposed replacement; none are in table cells. The proposal respects permissions and approval boundaries.",
+      "assertions": [
+        "Current wording, Concern and Recommended wording are three separate Markdown bullet lines in one F-xx note.",
+        "Source quotation is exact and proposed text is labeled PROPOSED.",
+        "No giant table cells, raw HTML or unapproved source mutations.",
+        "Human review and Stage 2 scope remain explicit."
       ]
     }
   ]

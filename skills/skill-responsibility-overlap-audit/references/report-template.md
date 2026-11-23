@@ -11,38 +11,46 @@ Use as an **output guide, not a source of facts**. Replace all bracketed placeho
 
 ## 2. Individual Skill Assessments
 
-**Use the same side-by-side orientation in BOTH tables.** The first column is always `Consideration`; the remaining columns are the **same skill names, in the same order**. Primary C1–C3 and Supporting C4–C6 are **rows**, never headings or separate per-skill tables. This exact structure is required for two- or three-skill audits.
+**Use the original compact side-by-side layout.** The Primary and Supporting tables both have the same skill columns. Cells contain **short summaries only**. After each table, put any meaningful fields on **separate Markdown bullet lines** in an F-xx note directly underneath. No HTML tags or multi-line table cells.
 
-**Primary considerations — analyze in detail**
-
-| Consideration | [Skill A] | [Skill B] |
-| --- | --- | --- |
-| 1. Inputs (C1) | **F-01 (C1)** **Finding:** Discovery reads as mandatory. **Evidence:** DOCUMENTED [source]. **Assessment:** CLARIFY. **Why:** Could delay a provisional draft. **Recommendation:** Clarify discovery as optional when justified. | Accepts a ticket or idea; no upstream brief is required. [Source] |
-| 2. Responsibilities (C2) | **F-02 (C2)** **Finding:** Owns initial product requirements. **Evidence:** DOCUMENTED [source]. **Assessment:** KEEP. **Why:** The PRD remains useful on its own. **Recommendation:** Preserve ownership. | Reviews requirements against evidence and proposes clarifications. [Source] |
-| 3. Outputs (C3) | **F-03 (C3)** **Finding:** A readiness phrase may be unclear. **Evidence:** DOCUMENTED [source]; risk INFERRED. **Assessment:** CLARIFY. **Why:** Readers may confuse document completeness with implementation approval. **Recommendation:** Clarify what readiness means. | Produces a review with unresolved items. [Source] |
-| ↳ F-03 wording (C3) | **Current wording:** "[Exact sourced phrase]." **Concern:** [Specific risk of misinterpretation.] **Recommended wording — PROPOSED:** "[Supported clarification]." | — |
-
-**Supporting considerations — identify issues; defer detailed design**
+**Primary considerations — analyze deeply, report compactly**
 
 | Consideration | [Skill A] | [Skill B] |
 | --- | --- | --- |
-| 4. Handoffs (C4) | Optional PRD context may be passed to refinement; no automatic invocation. [Source] | Consumes an existing PRD optionally; the standalone path remains available. [Source] |
-| 5. Boundaries (C5) | Drafts within authorization; cannot publish or approve new scope without permission. [Source] | Review-only; proposes changes rather than editing the PRD. [Source] |
-| 6. Feedback (C6) | Human owner reviews proposed updates. [Source] | Returns questions and proposed changes to the owner. [Source] |
+| 1. Inputs (C1) | **F-01 · CLARIFY** — Discovery wording sounds mandatory. [source] | Starts from a ticket or idea. [source] |
+| 2. Responsibilities (C2) | **F-02 · KEEP** — Owns initial product requirements. [source] | Reviews requirements against evidence. [source] |
+| 3. Outputs (C3) | Produces a draft PRD. [source] | Produces a requirements review. [source] |
 
-*Everything above is illustrative, not an audit of real skills. In actual output, replace the placeholders with inspected evidence. Include the `↳ F-xx wording` row **only when needed**, immediately under that consideration in the **same table**.*
+**F-01 (C1) — [Skill A] · CLARIFY**
+- **Finding:** Wording may imply discovery is required.
+- **Evidence:** DOCUMENTED — [source]; potential impact INFERRED.
+- **Assessment:** CLARIFY.
+- **Why:** Could delay a valid provisional draft.
+- **Recommendation:** Clarify optional discovery for human review.
+- **Current wording:** "[Exact inspected text.]"
+- **Concern:** [What an agent might misunderstand.]
+- **Recommended wording — PROPOSED:** "[Source-aligned replacement.]"
 
-**Mandatory layout checks**
+**F-02 (C2) — [Skill A] · KEEP**
+- **Finding:** Product requirements have a clear owner.
+- **Evidence:** DOCUMENTED — [source].
+- **Assessment:** KEEP.
+- **Why:** Keeps a standalone deliverable.
+- **Recommendation:** Preserve the current responsibility.
 
-- **Two tables, not one table per consideration:** exactly one Primary comparison table and one Supporting comparison table for two or three skills; headers match in column names and order.
-- The **only first-column main row labels** are C1–C3 in Primary and C4–C6 in Supporting; optional F-xx wording detail rows immediately follow the finding they clarify.
-- **Never transpose Primary** into a table with considerations as column headings or skill names as row labels. A header such as `| Consideration | 2. Responsibilities (C2) |` is an incorrect layout.
-- Use one physical Markdown line per table row. Within cells use short inline labeled sentences, not HTML, bullets, or embedded newlines. Escape literal pipe characters inside quotes.
-- Material items use **F-xx** and brief Finding / Evidence / Assessment / Why / Recommendation inline. KEEP may be appropriate; do not force findings in every cell. If exact wording is lengthy, use one immediately adjacent detail row in the **same table**, not a third comparison table or a detached findings section.
-- Preserve source provenance: **DOCUMENTED** describes inspected instructions; **INFERRED** labels plausible effects; **UNVERIFIED** means evidence is missing; **PROPOSED** describes a recommendation. Do not invent quotes or execution results.
-- Related considerations may say `Related: F-xx (Cx)` without duplicating the finding. Section 5 consolidates actionable F-xx work rather than reproducing paragraphs.
-- For four or more skills, use repeated two- or three-skill groups **with the same fixed orientation** and an overall synthesis covering all selected skills. If a host cannot render tables, use consideration-first blocks as a fallback instead of emitting malformed Markdown.
-- Proposed C4–C6 integration details remain optional and clearly labeled **PLANNED / PROPOSED — NOT IMPLEMENTED**; source details belong only in the relevant skill's cell. Stage 3 still defines contracts.
+*The findings and sources above are illustrations only. Include an F-xx note for real material findings, not every routine cell; list the fields on separate lines.*
+
+**Supporting considerations — identify issues, defer formal design**
+
+| Consideration | [Skill A] | [Skill B] |
+| --- | --- | --- |
+| 4. Handoffs (C4) | Optional outbound context. [source] | Optional inbound context. [source] |
+| 5. Boundaries (C5) | Drafts within authorized scope. [source] | Review-only, no silent upstream edits. [source] |
+| 6. Feedback (C6) | Human owner reviews accepted proposals. [source] | Returns proposed changes and questions. [source] |
+
+For material C4–C6 findings, show the same **F-xx (Cx) vertical notes immediately here**, before Section 3. Do not create separate tables or move the findings to the end of the report.
+
+**Layout contract:** For two or three skills, use exactly the two comparison tables above, in the same skill order. C1–C3 and C4–C6 are rows, never headings or separate per-consideration tables. Keep complete Finding/Evidence/Assessment/Why/Recommendation and Current wording/Concern/Recommended wording **outside** pipe-table cells, each on a new bullet line. Match F-xx IDs in table summaries to their vertical explanations. No HTML, huge inline cells, duplicated findings, or invented evidence. Stage 2 recommendations need human review; Stage 3 designs contracts.
 
 ## 3. Cross-Skill Responsibility & Overlap Findings
 

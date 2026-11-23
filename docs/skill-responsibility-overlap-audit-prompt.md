@@ -82,19 +82,12 @@ Examine **six considerations** for each skill.
 
 For considerations 4–6, note observations and potential problems **without** designing detailed interfaces, schemas, runtime controls, retry policies, or feedback orchestration.
 
-**Per-finding engineering assessment — apply only to meaningful findings:**
-- `Finding:` The current source-backed observation or uncertainty.
-- `Evidence:` Direct source and DOCUMENTED / OBSERVED / INFERRED / UNVERIFIED status.
-- `Assessment:` Exactly one: **KEEP** (preserve), **CLARIFY** (explain ambiguous ownership/wording), **REVISE** (reconsider a documented conflict), **ADD** (propose a material missing responsibility supported by evidence), or **VERIFY** (obtain missing evidence first).
-- `Why:` Practical reason, trade-off or consequence.
-- `Recommendation:` Smallest justified next action; no change is valid. Human confirmation remains necessary for decisions.
-Use the **original side-by-side Markdown table**, with one physical row per C1–C6 consideration and one column per skill. Place material findings in their skill cell as **short inline labeled sentences** separated with spaces or semicolons, not markup. Example: `**F-01 (C2)** **Finding:** Clear ownership. **Evidence:** DOCUMENTED [source]. **Assessment:** KEEP. **Why:** Independent output is preserved. **Recommendation:** Keep as-is.` Assign report-local IDs sequentially in consideration order, then skill order; preserve IDs in revisions for unchanged findings. Do not add columns, detached Finding A/B/C sections, or five-field records for every routine cell. If long exact wording would overload a cell, use one **immediately adjacent detail row** labeled `↳ F-xx wording (Cx)` within the same table.
-
-**Optional instruction wording review — expand only meaningful wording concerns:**
-- `Current wording:` Quote the smallest exact ambiguous/conflicting passage from an **inspected** file, with a direct source link/lines. If inaccessible, mark NOT VERIFIED; do not invent a quotation.
-- `Concern:` Explain the plausible misleading interpretation, real consequence, and why the wording matters. The text itself may be DOCUMENTED while the predicted behavior is **INFERRED**, not OBSERVED.
-- `Recommended wording — PROPOSED:` Give a concise ready-to-copy replacement only when evidence supports intended behavior. Preserve permissions, mandatory prerequisites, required approvals, standalone use and scope. Otherwise use VERIFY and identify the question/owner to resolve before rewriting.
-Keep these fields concise within the same C1–C6 row where possible. For longer exact source quotes and replacements, add one **adjacent detail row** with the same F-xx (Cx), inside the existing comparison table. Never use HTML line-break tags, embedded newlines, extra columns, a seventh consideration, a new workflow step, or detached finding sections. Step 4 references the F-xx rather than repeating the wording; nothing is edited by the audit.
+**Per-finding engineering assessment — separate lines, not inline table fields:**
+- Keep both C1–C3 Primary and C4–C6 Supporting tables **compact**. Each cell gets a brief observation plus F-xx/assessment pointer when meaningful.
+- **Immediately after the table containing a material finding**, provide an `**F-xx (Cx) — Skill · Assessment**` heading and then each relevant field on **its own Markdown bullet line**: `- **Finding:**`, `- **Evidence:**`, `- **Assessment:**`, `- **Why:**`, `- **Recommendation:**`.
+- Optional wording concerns add further lines: `- **Current wording:**`, `- **Concern:**`, `- **Recommended wording — PROPOSED:**`. Quote exact inspected text; distinguish DOCUMENTED words from INFERRED risk. If intended behavior is unverified, ask for clarification before drafting replacement.
+- Use KEEP / CLARIFY / REVISE / ADD / VERIFY for preliminary assessments, separately from evidence certainty, High/Medium/Low priority and human approval.
+- No giant inline table cells, HTML line-break markup, extra wording tables, detached Findings A/B/C sections, or repeated Step 4 explanations. Use the F-xx identifier to connect the compact row summary to its vertical note immediately below that table.
 
 **Optional connection guidance when a supported issue exists in Handoffs, Boundaries, or Feedback:**
 - For **each affected skill separately**, propose documentation of **standalone use** (its own starting inputs, full workflow and outputs), an **optional handoff** (a partner's result can be provided as context when available), distinct **responsibilities**, clear **boundaries** (no unauthorized edits, publishing, decisions or automatic skill invocation), and **feedback** to the responsible owner as proposed changes/questions.
@@ -169,15 +162,14 @@ Keep recommendations separate from confirmed findings. Do not implement them.
 
 ### Adaptive Side-by-Side Report Layout
 
-- **One skill:** Use the six considerations as vertical sections. Cross-skill comparisons are not applicable.
-- **Two or three skills:** In Section 2, output **exactly one Primary table (C1–C3 rows) and one Supporting table (C4–C6 rows)**, both with the exact same column orientation: `Consideration | <skill A> | <skill B>`. Skill names are **column headings**, and `1. Inputs (C1)`, `2. Responsibilities (C2)`, `3. Outputs (C3)` are **first-column rows**—never transposed into separate per-consideration tables. C4–C6 use the same orientation. Put material **F-xx / Finding / Evidence / Assessment / Why / Recommendation** into the affected skill cell as compact inline sentences. Do not add HTML tags, extra columns or detached findings.
-- **Four or more skills:** Compare in smaller side-by-side groups of two or three skills, then include an overall synthesis covering **every** selected skill and all material relationships.
-- **Cross-skill overlap:** Align the activity and each involved skill's role; include classification and workflow effect. Explicitly name affected skills for gaps.
-- **Supporting considerations C4–C6:** Put the documented issue and related **planned optional connection recommendation** in each affected skill's row cell, not in new blocks under the table: C4 covers optional handoff/context and potential directionally named local references; C5 covers authority boundaries and no automatic invocation; C6 covers feedback and human review. Label unimplemented paths **PLANNED / PROPOSED — NOT IMPLEMENTED** and proposed missing references **PLANNED — NOT CREATED**. Do not imply target files were changed.
-- **Meaningful wording concerns anywhere in C1–C6:** Add `Current wording / Concern / Recommended wording — PROPOSED` within the skill cell if brief; otherwise use a **neighboring F-xx wording row inside that same Primary or Supporting table**. Do **not** create a separate third table or repeat table headers for a wording detail. Quote exact source text and do not turn inferred risk into observed behavior.
-- **Section 5:** Consolidate actionable findings without duplicating their full reasoning. When a material combined-workflow coordination issue exists, include an **Optional coordinator assessment** with one of the three outcomes, grounded rationale, a simpler alternative, a human decision, and explicit preservation of standalone use.
-- **Preflight both tables:** The Primary and Supporting headers must have identical skill names in the same order. Primary has C1, C2, C3 as **rows**, Supporting has C4, C5, C6 as **rows**. Never emit a rotated Primary table with header `Consideration | 2. Responsibilities (C2)` and skill names as rows. Fix that layout before finalizing.
-- Keep tables scannable with short inline labeled sentences and direct evidence links. One Markdown table row occupies one source line; avoid HTML, multiline lists and unescaped pipes in cells. If cells become dense, compare two skills per table. If a terminal cannot render tables, use consideration-first skill blocks rather than malformed Markdown; do not invent data to fill cells.
+- **One skill:** use vertical C1–C6 assessment blocks without inventing a second skill.
+- **Two or three skills:** exactly one compact **Primary** table (C1 Inputs, C2 Responsibilities, C3 Outputs as rows) and one compact **Supporting** table (C4 Handoffs, C5 Boundaries, C6 Feedback as rows), with `Consideration | Skill A | Skill B` in the same skill order.
+- **Table cells:** only short observations, source links, and meaningful F-xx/assessment labels. The five finding fields and full wording proposals **must not** be written inline within cells.
+- **Immediately after Primary and Supporting respectively**, present material F-xx notes with **one Markdown bullet per field**, including optional Current wording, Concern and Recommended wording — PROPOSED. Preserve direct evidence and distinctions between source facts, inferred effects, and proposed changes.
+- **Four or more skills:** repeat comparable two- or three-skill tables with an overall synthesis. Do not omit skills or material relationships.
+- **Preflight:** headings and skill columns match; C1–C6 are row labels; F-xx points to nearby separate-line notes; no HTML, transposed tables, multi-line cells, extra wording tables, or disconnected finding sections.
+- **Optional integration:** keep C4 handoff, C5 decision authority and C6 feedback separate. Proposals are PLANNED / PROPOSED — NOT IMPLEMENTED; Stage 3 defines contracts. Coordinator suggestions remain conditional.
+- **Step 4:** prioritize actionable recommendations by F-xx without repeating full reasoning.
 
 ### Evidence & Quality Requirements
 

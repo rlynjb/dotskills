@@ -41,48 +41,33 @@ Read and follow the shared [Senior Engineer → Junior Developer Communication G
 - Preserve legitimate shared context. Two skills reading the same input is not automatically duplicated decision ownership.
 - Do not silently promote a human review recommendation to an approved design.
 
-## Meaningful finding assessment — reason about keep versus change
+## Meaningful finding assessment — concise comparison plus vertical explanations
 
-For **meaningful findings in any of the six considerations**, help the reader decide what to keep, clarify, or change **without breaking the original side-by-side layout**. Keep **one concise Markdown table row for each C1–C6 consideration** and a column for each skill. Summarize material findings **in the relevant skill cell using short inline labeled sentences**, not multi-line cell content or separate Finding A/B/C sections. For a single-skill audit use the same fields in vertical consideration blocks. Use five fields when the finding is material:
+Keep the original side-by-side tables. For each C1–C6 **main consideration row**, give every skill only a **brief source-backed summary** plus a report-local `F-xx` identifier and assessment when relevant. Never put five full fields, a long exact quotation, or a proposed rewrite **inside a table cell**.
 
-- **Finding:** What is documented/observed, missing or unclear in the inspected skill.
-- **Evidence:** Direct source path with precise lines/section when possible, plus **DOCUMENTED / OBSERVED / INFERRED / UNVERIFIED** (or NOT ASSESSED when inaccessible). Distinguish facts from interpretations.
-- **Assessment:** Exactly one preliminary engineering judgment: **KEEP, CLARIFY, REVISE, ADD, or VERIFY**.
-- **Why:** The practical reason, benefit, risk or consequence. Explain it in plain English.
-- **Recommendation:** The smallest justified next step, including "keep as-is" when appropriate. Any modification remains PROPOSED and subject to human review.
+Immediately **after the Primary table**, expand its material findings in short vertical Markdown blocks. Immediately **after the Supporting table**, expand its material findings in the same way. The blocks remain part of **Section 2 — Individual Skill Assessments**, directly connected to their C1–C6 table rows with the F-xx ID; do not create a detached "Finding A/B/C" report section.
 
-**Traceable row and finding labels:** Number the six consideration rows **C1–C6** in order (e.g., `2. Responsibilities (C2)`). Give every expanded, material finding a unique report-local ID `F-01`, `F-02`, ... and show it in the corresponding **skill cell**, e.g. `**F-01 (C2) — [short title]**`. Assign IDs in consideration order, then skill order; preserve them within report revisions where the finding meaning is unchanged. These are report identifiers, not source or Jira IDs. A finding may name secondary related considerations (e.g. `Related: C4`) but has **one primary row**. In other related cells, link to `F-xx` briefly rather than repeating the full explanation.
+**Example with real newlines (format only):**
 
-**Terminal-safe table presentation:** Use only standard Markdown tables with **one physical line per table row**. Apply the exact same column orientation to **Primary C1–C3 and Supporting C4–C6**; never pivot considerations into column headers or skills into row labels. In each material skill cell, write the five fields as **compact inline sentences**, separated with spaces or semicolons, not HTML tags or embedded newlines. For example: `**F-01 (C2)** **Finding:** product ownership is clear. **Evidence:** DOCUMENTED — [source]. **Assessment:** KEEP. **Why:** the PRD remains usable alone. **Recommendation:** preserve ownership.` Keep an uncomplicated cell to a short description (and a source when useful); do not turn every cell into a five-field record.
+```markdown
+**F-01 (C1) — Skill A · CLARIFY**
+- **Finding:** Discovery may sound mandatory.
+- **Evidence:** DOCUMENTED — [template.md:154](real-source-url); possible risk INFERRED.
+- **Assessment:** CLARIFY.
+- **Why:** Could postpone a valid provisional draft.
+- **Recommendation:** Clarify when discovery is optional, subject to human review.
+- **Current wording:** "[Exact inspected passage.]"
+- **Concern:** [Possible misunderstanding, not claimed observed behavior.]
+- **Recommended wording — PROPOSED:** "[Supported replacement.]"
+```
 
-**Readability over density:** Preserve the original three-column layout in **both** tables, with skill columns fixed and normal text wrapping. If a detailed finding or exact wording proposal makes a cell hard to scan, add **one immediately adjacent detail row inside the same consideration group**, e.g. `| ↳ F-01 wording (C2) | **Current wording:** ... **Concern:** ... **Recommended wording — PROPOSED:** ... | — |`, rather than a detached finding section. Never insert raw HTML tags, line-break markup, Markdown bullets, or physical newline characters **inside a table cell**. Escape literal pipe characters inside quoted text as `\\|` so table columns remain aligned.
+Each field must be on **its own Markdown bullet line**, outside a pipe table. Use the basic **Finding, Evidence, Assessment, Why, Recommendation** fields for material findings; append Current wording, Concern, Recommended wording — PROPOSED only for meaningful instruction ambiguity. Routine C-rows need no extra blocks. KEEP may justify no change.
 
-**Traceability:** Use `F-01`, `F-02` in consideration order and skill order, preserving IDs within revisions for the same finding. One primary consideration owns a finding; a related cell may briefly say `Related: F-01 (C2)` rather than repeating it. These are report-local identifiers, not source or ticket IDs.
+**Assessment labels:** KEEP = preserve supported behavior; CLARIFY = remove ambiguous wording or ownership; REVISE = reconsider a documented conflict; ADD = propose a source-backed missing responsibility; VERIFY = gather missing evidence before deciding. Evidence statuses DOCUMENTED / OBSERVED / INFERRED / UNVERIFIED / NOT ASSESSED are different from assessments, priority, and human approval. A quote is DOCUMENTED when inspected; its possible effect is INFERRED without runtime proof. Do not invent sources or claim implementation.
 
-**Assessment meanings:**
-- **KEEP:** Preserve an appropriate documented responsibility or behavior within inspected scope; explain why it works. Do not infer actual runtime success.
-- **CLARIFY:** Explain ambiguous wording, responsibilities or ownership more precisely; don't claim the underlying behavior is broken.
-- **REVISE:** Reconsider conflicting or problematic documented instructions/decision ownership; identify the trade-off and human decision.
-- **ADD:** Propose a demonstrably missing responsibility or guidance grounded in the inspected scope; never add requirements merely from missing evidence.
-- **VERIFY:** Evidence is insufficient. Specify which source, owner decision or separately authorized check to obtain **before deciding** whether to change anything.
+**Traceability:** Assign F-01, F-02, ... in consideration order and skill order; retain stable IDs on revisions for unchanged findings. Put the short F-xx pointer in the appropriate C1–C6 table cell, and repeat that ID as the vertical block heading just below the relevant table. A cross-related row can say `Related: F-xx (Cx)` without copying the explanation. Step 4 consolidates actionable items by F-xx, with priority, instead of repeating the text.
 
-**Keep labels distinct:** Assessment is not evidence status, approval, or priority. UNVERIFIED often calls for VERIFY, not an assumed defect; two skills sharing context may deserve KEEP. Do not manufacture an issue to fill a row.
-
-**Be proportionate:** Expand material findings and useful strengths with **short inline sentences in their relevant cells**. Avoid five-field records for routine cells or invented problems. Use an immediately adjacent detail row only when an exact quotation or explanation would otherwise overwhelm the table. Step 4 consolidates actionable CLARIFY/REVISE/ADD findings and material VERIFY work (High/Medium/Low separately) by **F-xx** without repeating them. KEEP requires no change ticket.
-
-### Instruction wording review — conditional expansion of a finding
-
-When a **material issue** in **any of the six considerations** involves wording that could mislead an agent or human about inputs, responsibilities, outputs, handoffs, boundaries, or feedback, expand that finding's five-field assessment with a **short wording review**. This is not a seventh consideration, a new investigation step, or a mandatory review of every sentence.
-
-Use these additional fields **only when justified**:
-
-- **Current wording:** Quote the smallest **exact** relevant passage from the inspected source with a direct file/line or section link; preserve meaningful context and never invent or paraphrase a quote as if verbatim. If the actual text is inaccessible, say **NOT VERIFIED** and request/identify the source rather than fabricating a quotation.
-- **Concern:** Explain the specific possible misinterpretation or conflicting instruction and its practical consequence; distinguish documented text from the **INFERRED** behavioral risk. Wording that merely sounds awkward is not sufficient.
-- **Recommended wording — PROPOSED:** Supply a concise, ready-to-copy replacement **only when the intended behavior is supported**. Preserve permissions, approval limits, required safety/data prerequisites, standalone operation and original scope. If intent or authority is unclear, give a conditional option or **VERIFY** with a concrete question instead of silently choosing policy.
-
-**Placement:** Put a **short** Current wording / Concern / Recommended wording — PROPOSED explanation in the affected skill cell when readable. If the exact source quote or replacement is too long, put it in a **directly following detail row labeled with the same F-xx and Cx**, still inside the original comparison table. Do not add new columns, HTML markup, a separate findings section, or duplicate it in Step 4. Never truncate a meaningful quote so that it misrepresents the original instructions.
-
-**Evidence rule:** An ambiguous phrase is **DOCUMENTED** if quoted from inspected instructions; the claim that it might cause a wrong tool call or decision is **INFERRED** unless verified by an authorized trace. A proposed rewrite is **PROPOSED**, not applied, approved, or validated. Explicitly note what remains a Stage 3 contract/design issue.
+**Terminal rules:** Markdown pipe cells cannot reliably display true multiline fields. Never use HTML line-break tags, embedded raw line breaks, nested lists, separate per-consideration tables, or wide inline finding paragraphs to simulate them. Keep source link labels short while preserving actual URLs. For 2–3 skills, use two compact matching tables; for more skills, group comparisons while covering all skills.
 
 ## Procedure — four investigation steps
 
@@ -102,7 +87,7 @@ Assess the same **six considerations**, in this order, for each accessible targe
 5. **Boundaries:** Unclear owners, human approval/authorization expectations, trust/security limits and responsibility leakage.
 6. **Feedback:** When work returns for clarification or revision; whether rework ownership is clear.
 
-Within each C1–C6 consideration row, include meaningful per-skill **F-xx / Finding / Evidence / Assessment / Why / Recommendation** as **concise inline text in the affected cell**, including useful KEEP decisions. For material wording concerns, add a brief Current wording / Concern / Recommended wording — PROPOSED explanation in that cell or in an **adjacent detail row for the same F-xx (Cx)** when needed for readability. Do not add detached findings or force changes for every row.
+Within each C1–C6 row, include only a short observation and any **F-xx · KEEP/CLARIFY/REVISE/ADD/VERIFY** label in the relevant skill cell. Put the detailed **Finding, Evidence, Assessment, Why, Recommendation** and optional **Current wording, Concern, Recommended wording — PROPOSED** on **separate Markdown bullet lines immediately after the relevant Primary or Supporting table**. Do not overload the cells or create a detached findings section.
 
 **If an issue appears under considerations 4–6**, examine whether the affected skills could document an **optional connection** rather than become tightly coupled. Show each affected skill's situation separately: how it can start and finish on its own, whether another skill's output is useful *when voluntarily supplied*, who owns each decision, what action is out of scope, and where proposed changes/questions return for human review.
 
@@ -128,7 +113,7 @@ For each *material* shared capability, identify the activity, involved skills, e
 - **Conflicting:** responsibilities or instructions contradict one another.
 - **Unclear:** ownership or rationale is not established.
 
-Check all material relationships across the selected skills; do not pretend a multi-skill comparison is a single native Audit Skill run if its available mode is narrower. Do not manufacture pairwise conflicts to fill a matrix. Distinguish an overlap from a handoff: a downstream consumer reading an upstream output may be expected behavior. Reference the F-xx IDs from the relevant consideration cells; do not repeat their full explanation.
+Check all material relationships across the selected skills; do not pretend a multi-skill comparison is a single native Audit Skill run if its available mode is narrower. Do not manufacture pairwise conflicts to fill a matrix. Distinguish an overlap from a handoff: a downstream consumer reading an upstream output may be expected behavior. Reference the F-xx pointers in the comparison cells and their matching vertical notes directly below the table; do not repeat their full explanation.
 
 ### Step 3 — Missing responsibilities and gaps
 
@@ -136,7 +121,7 @@ Investigate orphaned activities, unavailable inputs/outputs, lost context, contr
 
 ### Step 4 — Recommended changes for human review
 
-**Consolidate earlier findings** instead of regenerating them. Group and deduplicate actionable CLARIFY / REVISE / ADD and material VERIFY decisions by the **F-xx IDs inside C1–C6 rows**, citing original evidence and the related proposed wording without reproducing the full before/after text. KEEP usually means no change is needed. If no modifications are justified, explicitly say so. Priority (High/Medium/Low) is independent of the assessment label.
+**Consolidate earlier findings** by F-xx ID and Cx from the tables/vertical notes. Prioritize actionable CLARIFY/REVISE/ADD and material VERIFY work separately as High/Medium/Low; do not duplicate full wording or explanations. KEEP is generally no change.
 
 Prioritize each actionable suggestion **High / Medium / Low** and include:
 
@@ -195,28 +180,49 @@ Use these seven headings, in order:
 6. **Open Questions for Human Review** — decisions or missing evidence.
 7. **Deferred Items for Integration-Contract Design** — note the handoffs, guarantees, permissions and feedback questions requiring later design, without drafting contracts.
 
-### Adaptive layout: side by side for two or more skills
+### Adaptive layout: same compact comparison for Primary and Supporting
 
-**Mandatory table orientation — identical for Primary and Supporting:**
+**Multi-skill Section 2 has two comparison tables, always with skills as columns:**
+- **Primary:** `Consideration | Skill A | Skill B` with three main rows: C1 Inputs, C2 Responsibilities, C3 Outputs.
+- **Supporting:** identical skill headers and order, with three main rows: C4 Handoffs, C5 Boundaries, C6 Feedback.
+- **All table cells:** one **short observation** per skill, with `F-xx · Assessment` and a short direct source label where relevant. **Do not print Finding/Evidence/Why/Recommendation or any exact wording quote in full inside table cells.**
+- **Immediately after each table:** provide detailed F-xx blocks for that table's **material** findings, each field as a real, separate Markdown bullet line. That keeps field text on new lines without rotating or breaking tables. No third wording table, no detached Findings A/B/C section.
 
-- For two or three selected skills, Section 2 must have **exactly one Primary comparison table for C1–C3** and **exactly one Supporting comparison table for C4–C6**. Both tables have the **same column order**: first column `Consideration`, then **one column per audited skill** (for example, `prd-development`, then `refine-requirements`). The chosen skill names and order must not change between tables.
-- **C1, C2, and C3 are rows, never column headings or separate per-consideration tables.** Keep the consideration labels in the FIRST column: `1. Inputs (C1)`, `2. Responsibilities (C2)`, and `3. Outputs (C3)`. All findings for a skill belong in that skill's column, not in rows named after the skill.
-- **Forbidden rotated layout:** Do not produce a table with a header like `| Consideration | 2. Responsibilities (C2) |` and then separate `prd-development` / `refine-requirements` rows. Do not repeat the word `Consideration` at the start of each individual C1–C3 table. Do not create a third table just to show one finding's wording.
-- Use compact evidence-backed summaries with F-xx findings in the appropriate C-row cell. If a proposed exact wording change needs extra room, add **one immediately adjacent `↳ F-xx wording (Cx)` row within the same Primary or Supporting table**, keeping the original three columns. Never start another table with its own headers for that wording.
-- **Preflight before presenting the report:** Verify that the Primary and Supporting table headers name the same skills in the same column order, and that C1–C3 appear once as first-column row labels (not headers or skill rows). If the Primary table is transposed, rewrite **that table** into the Supporting layout before sending. For four or more skills, apply this same orientation to every two- or three-skill comparison group and provide the overall synthesis.
+**Layout example (not actual findings):**
 
-- **One skill:** use a vertical assessment under all six labels; mark cross-skill findings not applicable.
-- **Two or three skills:** strictly follow the **two tables with identical skill columns** rule above: Primary contains C1–C3 as rows; Supporting contains C4–C6 as rows. Both use `Consideration | <Skill A> | <Skill B>` in the header. For material findings, use **short inline F-xx / Finding / Evidence / Assessment / Why / Recommendation sentences** in the affected skill cell, no HTML and no extra columns. Move lengthy exact wording only to the next row **within the same table**, never a new table.
-- **Four or more skills:** split into readable side-by-side groups of two or three skills, *and* provide an overall synthesis of all selected skills. Do not omit any skill or material overlap to keep a table narrow.
-- **Section 2:** keep the normal C1–C6 consideration rows readable. Put material **F-xx / Finding / Evidence / Assessment / Why / Recommendation** in the affected skill's cell as compact inline sentences. If Current wording / Concern / Recommended wording — PROPOSED requires more space, use one immediately adjacent row labeled `↳ F-xx wording (Cx)` **within the same table**, not a separate findings section. Cross-reference related considerations with a brief F-xx ID. **Section 3:** compare overlaps by reference to the F-xx; in Section 4, identify affected skills.
-- **Section 2, Supporting table (C4–C6):** show observed handoff, boundary, and feedback issues **in each affected skill's cell**. If a planned optional integration would address a real issue, incorporate only the **relevant** planning note in that cell: C4 covers optional input/output handoff and `SKILL.md` versus a possible directionally named reference; C5 covers standalone authority and no automatic invocation; C6 covers proposed feedback/owner review. Mark unbuilt paths **PLANNED / PROPOSED — NOT IMPLEMENTED** and missing reference files **PLANNED — NOT CREATED**. Do not create separate per-skill optional-connection sections that repeat the row findings. Stage 3 still defines contracts; Section 5 consolidates actions by F-xx.
-- **Section 5:** consolidate earlier actionable recommendations without repeating their five-field explanations. When more than one skill has a material combined-workflow issue, include the **Optional coordinator assessment** under the related prioritized recommendation. Prefer NOT NEEDED if simple optional handoffs and suggested next-action commands suffice. If supported, recommend a separately invoked coordinator only for actual routing/sequencing/context/feedback coordination that does not fit the component skills. If evidence is missing, DEFER; never imply the coordinator was built or the host can dispatch skills automatically.
-- The recommended optional route must preserve three valid paths when supported: **Skill A alone**, **Skill B alone**, and **Skill A → optional Skill B review → owner-reviewed updates**. Do not state that all three paths work today without evidence. Neither skill is required to call, import, or execute the other.
-- Keep table cells scannable: **one physical Markdown line per table row**, with concise labeled sentences in each material cell. Do not insert HTML tags, explicit line-break markup or multi-line bullets. If the grid becomes hard to read, compare two skills per table or use consideration-first blocks at narrow widths; keep related finding details adjacent to their C1–C6 consideration, not detached elsewhere.
-- Match depth and labels for all skills. Where evidence is missing say **NOT DOCUMENTED**, **UNVERIFIED**, or **NOT ASSESSED** as applicable; do not populate empty cells with invented behavior.
-- When the host cannot render Markdown tables, use paired, consistently labeled comparison blocks so readers can compare the same considerations without hunting across distant sections.
+```markdown
+**Primary considerations**
 
-Read [report template](references/report-template.md) for an optional format example, not as evidence about the target skills. Avoid dense tables for detailed prose; use them only where the *side-by-side comparison* helps.
+| Consideration | Skill A | Skill B |
+| --- | --- | --- |
+| 1. Inputs (C1) | F-01 · CLARIFY — Discovery sounds mandatory. [source] | Accepts a ticket or idea. [source] |
+| 2. Responsibilities (C2) | Owns initial product requirements. [source] | Reviews implementation evidence. [source] |
+| 3. Outputs (C3) | Produces a PRD. [source] | Produces a review brief. [source] |
+
+**F-01 (C1) — Skill A · CLARIFY**
+- **Finding:** Discovery may sound mandatory.
+- **Evidence:** DOCUMENTED — [source]; possible effect INFERRED.
+- **Assessment:** CLARIFY.
+- **Why:** Could delay a provisional PRD.
+- **Recommendation:** Clarify optional discovery, subject to human review.
+- **Current wording:** "[Exact inspected source wording.]"
+- **Concern:** [Specific potential misinterpretation.]
+- **Recommended wording — PROPOSED:** "[Evidence-supported replacement.]"
+
+**Supporting considerations**
+
+| Consideration | Skill A | Skill B |
+| --- | --- | --- |
+| 4. Handoffs (C4) | Optional outgoing context. [source] | Optional incoming context. [source] |
+| 5. Boundaries (C5) | Edits only with authorization. [source] | Read-only. [source] |
+| 6. Feedback (C6) | Owner reviews updates. [source] | Returns proposed changes. [source] |
+```
+
+**Preflight:** The two table headers match; each C1–C6 appears as a main consideration row, not a column heading; full findings use bullet lines **outside table cells** directly after the appropriate table; no raw HTML, arbitrary line-break markup, or giant cells. Do not pivot the Primary table into a separate table per consideration. Keep the Supporting table equally compact. Step 4 links to F-xx rather than repeating the same text.
+
+For four or more skills, use comparable groups of two or three skill columns with a synthesis covering all selected skills. For one skill, use consideration-first vertical assessment blocks. If tables are unsupported, use consideration-first blocks with clear per-skill labels instead of malformed tables.
+
+For C4–C6, preserve the planned optional handoffs, independent ownership, and owner-reviewed feedback. Label unimplemented plans **PLANNED / PROPOSED — NOT IMPLEMENTED**, and proposed missing references **PLANNED — NOT CREATED**. Consider a coordinator only if justified; design contracts in Stage 3. Use the [report template](references/report-template.md) as layout guidance, not evidence.
 
 ## Completion boundary
 
