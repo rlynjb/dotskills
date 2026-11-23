@@ -17,8 +17,10 @@ and how I can decide or verify it.
 Step 1: inspect both SKILL.md files and their material references,
 including agent definitions, relevant permissions, output formats,
 failure paths and any existing evaluations. Cite actual source lines.
-Perform each skill's Q-01–Q-10 audit independently, show
-as-is Mermaid workflows, and compare responsibility overlap.
+For each skill, explicitly organize Step 1 into:
+Inputs, Responsibilities, Outputs, Handoffs, Boundaries,
+Feedback. Use Observed / Evidence / Open question for each.
+Then do Q-01–Q-10, as-is Mermaid flows and cross-skill comparison.
 
 Step 2: recommend B-xx boundaries with owner, non-owner,
 decision authority and alternatives.
@@ -27,40 +29,61 @@ proposed boundaries. Label each dependency as CONDITIONAL.
 
 Show Steps 1, 2 and 3 together BEFORE asking for my feedback.
 Then let me approve, revise, reject or defer B/C decisions.
-After relevant decisions are approved, prepare Step 4 validation
-only—do not run either skill or edit files.
+After the consolidated review, show a brief Step 4
+Validation Readiness (NOT EXECUTED) summary. Prepare
+detailed validation after relevant decisions are approved;
+do not run either skill or edit files.
 ```
 
-## Step 1 — inspect the *as-is* responsibilities
+## Step 1 — Skill Responsibility & Overlap Assessment (example structure)
 
-Questions to investigate from source (do not presume the answers):
+**Use the same six headings for EACH skill.** These questions guide evidence gathering; they are **not** verified answers. Under each heading in a real audit, fill out `Observed`, `Evidence` (actual source links/lines), and `Open question`. Start by observing, questioning assumptions and validating the source—**don't choose an architecture here**.
 
-### Sprint Assessment
+### Sprint Assessment — six considerations to investigate
 
-- How are Jira items discovered, grouped, dispatched, assessed and aggregated?
-- Does the actual source direct one worker per ticket? How do dynamic workers differ from reusable agent files?
-- What criteria determine estimation and sprint readiness?
-- What happens if one ticket is missing evidence, a worker fails or a batch partially completes?
-- Does the host enforce read/write restrictions, or are they only written in natural language?
+**01 — Inputs:** Where do Jira items, prior assessments, evidence and worker configuration come from? Which are truly required?
 
-### Refine Requirements
+**02 — Responsibilities:** Does this skill decide sprint readiness, estimates, or both? Who owns any delegated work and its aggregation?
 
-- What triggers the assessment and defines its scope?
-- Which requirements, acceptance-criteria, architecture and source-evidence checks does it own?
-- What are the declared outputs, stop conditions, human approvals and prohibited actions?
-- Does the skill have an actual documented handoff, or only an informal suggestion?
+**03 — Outputs:** What assessment, score/status, evidence, unresolved issues or error results does it promise to return?
 
-### Relationship comparison
+**04 — Handoffs:** Does it consume another skill's output, and what fields must remain intact? Is its result passed to another stage or only reported to a human?
 
-- Who owns requirements **clarity** versus sprint **readiness**?
-- Is an acceptance-criteria review shared context or duplicated decision authority?
-- Where should unresolved questions, evidence links and confidence information flow?
-- Can one item fail without losing successful assessment of other items?
-- Which contract parts are host-independent, and which tool/worker operations require a runtime adapter?
+**05 — Boundaries:** Which decisions need human approval? Are Jira modifications prohibited in instructions only, or technically enforced by the runtime?
 
-**Diagram readability:** For each skill's as-is Mermaid flow, use complete 2–4-word node labels, split longer labels with quoted `<br/>` line breaks, and explain abbreviated nodes under **Node explanations**. Do not rely on smaller fonts or omit a decision to fit a narrow viewer. Keep evidence and `NOT VERIFIED` conditions clear.
+**06 — Feedback:** If requirements or dependencies are insufficient, who receives the issue? Is that return/escalation path documented or still unknown?
 
-Every substantive finding needs direct links to actually inspected source lines. **Explain the consequence of each material overlap**: for example, two skills reading the same ticket can be fine, but two independently rewriting it may lead to inconsistent decisions. Only mark **OBSERVED RESULT** when a genuine authorized trace exists. A proposed integration is never an as-is workflow diagram.
+### Refine Requirements — six considerations to investigate
+
+**01 — Inputs:** What triggers refinement, and which tickets, documents, code, evidence or previous outputs are needed?
+
+**02 — Responsibilities:** Does it assess requirements completeness and technical concerns, or also authorize product decisions?
+
+**03 — Outputs:** What findings, functional/nonfunctional requirements, acceptance criteria, assumptions or open questions does it produce?
+
+**04 — Handoffs:** How could its assessment be consumed by Sprint Assessment or another skill? Is such a relationship actually documented?
+
+**05 — Boundaries:** What changes or approvals are excluded? What should happen when a stakeholder decision remains unresolved?
+
+**06 — Feedback:** If a later stage finds a missing or contradictory requirement, is there an identified owner and evidence-based return path?
+
+### Cross-skill Responsibility & Overlap
+
+After the two independent six-consideration summaries, compare the source-backed relationship:
+
+- Who owns **requirements clarity** versus **sprint readiness**?
+- Is reviewing acceptance criteria **shared information** or **duplicated final decision authority**?
+- Which identity, evidence links, unresolved questions and permission state must survive a handoff?
+- If one item or worker fails, is its result clearly separated from the rest?
+- If Sprint Assessment finds a requirements gap, does the documented flow identify who reconsiders it? If not, report **feedback-routing gap / NOT VERIFIED** and propose a route later, not as a fact.
+
+**Diagram readability:** For each skill's as-is Mermaid flow, use complete 2–4-word node labels, split longer labels with quoted `<br/>` line breaks, and explain abbreviated nodes under **Node explanations**. Do not shrink fonts or omit decisions to fit a narrow viewer.
+
+Every real observation requires actual inspected source lines. Explain the consequence of each material gap in junior-friendly language. Only mark **OBSERVED RESULT** when a genuine authorized trace exists. Keep proposed integration separate from the as-is flow.
+
+### Supporting Quality Checks (Q-01–Q-10)
+
+Include each target's ten Q-01–Q-10 statuses and material source-backed explanations. These are evidence/quality checks **supporting the six considerations**, not a second six-part investigation. Keep detailed six-field findings available for justified gaps or follow-up.
 
 ## Step 2 — example boundary recommendation (not approved)
 
@@ -111,7 +134,7 @@ Audit Skill can later **read** the genuine run artifacts and compare observed-ve
 
 ## Acceptance criteria for the guided review
 
-- Each accessible skill receives a ten-check Q-01–Q-10 assessment. The overview explains material findings in plain English; detailed six-field findings are shown when needed or requested, without burying Steps 1–3.
+- Each accessible skill receives the same **six numbered considerations**, each with `Observed / Evidence / Open question`, and a separate ten-check Q-01–Q-10 quality assessment. Material findings remain junior-friendly without burying Steps 1–3.
 - As-is flows, evidence, proposals, human approvals and observed results remain distinct.
 - The first response shows Step 1 findings, Step 2 B-xx proposals, and Step 3 C-xx proposals together before any approval request.
 - One consolidated review accepts individual B/C approvals, revisions, rejections or deferrals and tracks dependencies. No approval is inferred from a checkbox, a favorable recommendation or a non-specific human remark.
