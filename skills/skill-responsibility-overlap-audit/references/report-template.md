@@ -50,6 +50,8 @@ Use as an **output guide, not a source of facts**. Replace all bracketed placeho
 
 For material C4–C6 findings, show the same **F-xx (Cx) vertical notes immediately here**, before Section 3. Do not create separate tables or move the findings to the end of the report.
 
+**Quality review coverage (optional; only when requested):** After the Supporting table and any material Supporting F-xx notes, list the selected Q-01–Q-10 status for each inspected skill, citing evidence and referring to F-xx (Cx) when a material issue has already been explained. Use `PRESENT / PARTIAL / MISSING / NOT VERIFIED / NOT APPLICABLE`; do not add another comparison table or required report heading. A lens-only review does **not** require Q coverage. See [quality-review-questions.md](quality-review-questions.md) and [review-lenses.md](review-lenses.md).
+
 **Layout contract:** For two or three skills, use exactly the two comparison tables above, in the same skill order. C1–C3 and C4–C6 are rows, never headings or separate per-consideration tables. Keep complete Finding/Evidence/Assessment/Why/Recommendation and Current wording/Concern/Recommended wording **outside** pipe-table cells, each on a new bullet line. Match F-xx IDs in table summaries to their vertical explanations. No HTML, huge inline cells, duplicated findings, or invented evidence. Stage 2 recommendations need human review; Stage 3 designs contracts.
 
 ## 3. Cross-Skill Responsibility & Overlap Findings
@@ -73,10 +75,10 @@ For each real overlap, align the involved skills and reference the originating *
 
 ## 5. Prioritized Recommendations
 
-**Summarize, don't repeat:** Consolidate material CLARIFY/REVISE/ADD and VERIFY work by the **F-xx identifiers in C1–C6 table cells**, with independent High/Medium/Low priorities. For wording concerns, point to the replacement in that cell rather than repeating it. KEEP generally requires no implementation item. If no change is justified, say so.
+**Summarize, don't repeat:** Consolidate material CLARIFY/REVISE/ADD and VERIFY work by the **F-xx IDs in C1–C6 table cells and their immediate vertical findings**, with independent High/Medium/Low priorities. For wording concerns, point to the proposed replacement in the F-xx note rather than repeating it. KEEP generally requires no implementation item. If no change is justified, say so.
 
 - **Priority:** [High / Medium / Low]
-- **Finding:** [F-xx, C1–C6, affected skill and assessment; refer to that table cell rather than repeating its five fields or recommended wording.]
+- **Finding:** [F-xx, C1–C6, affected skill and assessment; refer to the vertical finding note rather than repeating its fields or recommended wording.]
 - **Proposed change:** [Ownership/documentation proposal only; when appropriate, cite the per-skill proposed optional handoff, boundary, and feedback wording from section 2.]
 - **Standalone integrity:** [Does each skill retain its own inputs, outputs and workflow? If not evidenced, what needs human confirmation?]
 - **Documentation location:** [Per affected skill: proposed `Optional Handoffs` note in `SKILL.md`, plus a potential optional, directionally named local reference only if warranted; say whether that file actually exists.]
@@ -103,8 +105,14 @@ If simple handoffs suffice, state **NOT NEEDED** with one reason; do not fill a 
 
 ## 7. Deferred Items for Integration-Contract Design
 
-- [Unresolved handoff, guarantees, trust, versioning, failure handling, observability, or feedback questions.]
-- [If a separate coordinator is proposed: future routing conditions, context-passing expectations, approval gates, runtime compatibility and evaluation — not contracts written here.]
-- **Not designed in this audit.** No contract or architecture decision is approved.
+**Contract design questions — Stage 3 (when justified)**
+- [Related F-xx/Cx; affected skill(s); unresolved handoff, guarantee, authorization, feedback, version or failure question; human decision needed. Do not draft the contract.]
+- [For an optional coordinator proposal, note future routing, context preservation, approvals and host compatibility as open design questions.]
+
+**Validation candidates — Stage 5 (PROPOSED, NOT EXECUTED; when justified)**
+- [Related F-xx: Given a representative input, when an approved and authorized workflow runs, then a specific observable result should occur. Note the artifact/trace evidence needed and Stage 3 dependency.]
+- [Do not invent test outcomes, enforceability, readiness or approvals; omit speculative scenarios with no relevant finding.]
+
+**Not designed or executed in this audit.** No contract, architecture or evaluation result is approved.
 
 **Evidence note:** A target file's instructions are `DOCUMENTED`, not `OBSERVED` runtime behavior. Missing source access means `NOT ASSESSED`, not a failing skill.

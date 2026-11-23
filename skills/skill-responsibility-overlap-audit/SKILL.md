@@ -1,6 +1,6 @@
 ---
 name: skill-responsibility-overlap-audit
-description: "Read-only investigation of one or more AI agent skills to identify ownership, overlapping responsibilities, duplication, and gaps. Use before integration-contract design. Assess six considerations per skill; compare two or more skills side by side with source evidence, proposed changes, and human-review questions. Never edit skills, design contracts, execute workflows, or infer approvals."
+description: "Read-only Stage 2 audit of skill responsibilities, overlap and gaps across six considerations. Optional user-requested Q-01–Q-10 quality review and conference-derived review lenses, with evidence-based findings and proposed Stage 3/5 questions. Default concise layout unchanged. No source edits, contracts, workflow execution or inferred approvals."
 ---
 
 # Skill Responsibility & Overlap Audit
@@ -13,7 +13,7 @@ Invoke for requests such as "compare these skills' responsibilities," "find over
 
 **This skill owns:** an as-is responsibility assessment, cross-skill overlap classification, documented gaps, prioritized *proposals*, and open questions for humans.
 
-**This skill does not own:** finalized responsibility decisions; formal inputs/outputs or other integration contracts; agent orchestration; source edits; live execution; security enforcement; eval grading. The separate [Audit Skill](../audit-skill/SKILL.md) covers the broader guided review, Q-01–Q-10, proposed boundaries and conditional contracts. [Evaluate Skill](../evaluate-skill/SKILL.md) handles separately authorized behavior evaluations. Do not invoke either automatically.
+**This skill does not own:** finalized ownership decisions; formal input/output or other integration contracts; agent orchestration implementation; source edits; live execution; security enforcement; or eval grading. The original Q-01–Q-10 are now available here as an **optional review**, not a dependency on the legacy Audit Skill. [Evaluate Skill](../evaluate-skill/SKILL.md) and [Profile Agent Workflow](../profile-agent-workflow/SKILL.md) remain separate, permission-scoped capabilities for later behavioral evaluation and trace review. Do not invoke them automatically.
 
 ## Inputs and scope
 
@@ -40,6 +40,27 @@ Read and follow the shared [Senior Engineer → Junior Developer Communication G
 - Explain important findings as: **what exists → why it matters → what is worth checking or changing**. Use clear junior-friendly language and distinguish facts from proposals.
 - Preserve legitimate shared context. Two skills reading the same input is not automatically duplicated decision ownership.
 - Do not silently promote a human review recommendation to an approved design.
+
+## Optional quality-review questions and conference lenses
+
+**Default: core investigation only.** The six considerations (C1–C6), four investigation steps, seven report headings, compact Primary/Supporting tables and vertical F-xx findings do not change. Do not load optional reference files or print Q coverage during an ordinary responsibility/overlap audit.
+
+**Read optional references only when requested:**
+- `quality_review: off` (default): no Q checklist.
+- `quality_review: on` or an explicit *full ten-question quality review*: consult [quality-review-questions.md](references/quality-review-questions.md) and check Q-01–Q-10 in order for each target.
+- `quality_questions: Q-06,Q-07` or an explicit subset request: check **only** the selected Q IDs in canonical order.
+- `review_lenses: [context-engineering, security-and-trust]` or another named lens: consult [review-lenses.md](references/review-lenses.md). `review_lenses: relevant` means choose only lenses justified by the actual inspected skill and explain why they apply. A lens request alone **does not** turn on all Q questions.
+- When Q and lenses are both requested, **deduplicate** the same concern into one F-xx finding and cross-reference Q-xx/lens names. Never create two findings for the same source problem merely because two review perspectives identified it.
+
+**Preserve the working layout:** Place a material quality/lens issue in the relevant C1–C6 table cell as a **short F-xx pointer**. Explain it using the usual Finding / Evidence / Assessment / Why / Recommendation vertical bullets directly after the corresponding Primary or Supporting table. Add Current wording / Concern / Recommended wording — PROPOSED only when real source wording is consequential. No giant cells, HTML line breaks, new consideration, eighth numbered report section, or mandatory extra fields.
+
+**Q-01–Q-10 coverage (optional):** For a full/subset Q review only, after the Supporting table and any related F-xx notes within **Section 2**, add a small `Quality review coverage (optional)` block grouped by inspected skill: one concise vertical line per selected Q with `PRESENT`, `PARTIAL`, `MISSING`, `NOT VERIFIED` or `NOT APPLICABLE`, source/evidence limit and any linked F-xx (Cx). Use the definitions in the reference. Never score a skill or claim production readiness. For lens-only review, list applied lenses briefly without a Q checklist.
+
+**Critical boundaries:** Q-05 inventories currently documented contracts/gaps, but never drafts Stage 3 interface, invariant or failure contracts. Q-07 does not treat written permission claims as enforced host/tool permissions. Q-09 distinguishes defined eval cases from actual executed results, and this skill **does not run evaluations or profile traces**.
+
+**Stage handoffs:** In Section 7, list grounded **Contract design questions — Stage 3** and optional **Validation candidates — Stage 5 (PROPOSED, NOT EXECUTED)**. Candidate checks may say Given / When / Then and what output or trace would establish success, dependent on human approval and authorized execution; do not claim READY TO TEST, TESTED, or PASS. Keep design/implementation and validation in their separate stages.
+
+**Incremental learning:** Add future conference or research topics to the optional lenses reference, with named source, applicability, evidence needed and C/Q mapping. Speaker takeaways are not automatically AAIF requirements or proof that a skill works.
 
 ## Meaningful finding assessment — concise comparison plus vertical explanations
 
@@ -113,7 +134,7 @@ For each *material* shared capability, identify the activity, involved skills, e
 - **Conflicting:** responsibilities or instructions contradict one another.
 - **Unclear:** ownership or rationale is not established.
 
-Check all material relationships across the selected skills; do not pretend a multi-skill comparison is a single native Audit Skill run if its available mode is narrower. Do not manufacture pairwise conflicts to fill a matrix. Distinguish an overlap from a handoff: a downstream consumer reading an upstream output may be expected behavior. Reference the F-xx pointers in the comparison cells and their matching vertical notes directly below the table; do not repeat their full explanation.
+Check all material relationships across the selected skills; inspect each skill and relevant pairings, then synthesize a genuine multi-skill comparison. Do not manufacture pairwise conflicts to fill a matrix. Distinguish an overlap from a handoff: a downstream consumer reading an upstream output may be expected behavior. Reference the F-xx pointers in the comparison cells and their matching vertical notes directly below the table; do not repeat their full explanation.
 
 ### Step 3 — Missing responsibilities and gaps
 
@@ -173,12 +194,12 @@ In the audit report's **Section 5 — Prioritized Recommendations**, add **Optio
 Use these seven headings, in order:
 
 1. **Executive Summary** — scope, skill count, top findings, evidence limits.
-2. **Individual Skill Assessments** — six considerations for every selected skill.
+2. **Individual Skill Assessments** — six considerations for every selected skill; requested Q coverage stays within Section 2.
 3. **Cross-Skill Responsibility & Overlap Findings** — classifications and effects.
 4. **Missing Responsibilities & Gaps** — including uncertainty.
 5. **Prioritized Recommendations** — High / Medium / Low, proposals only.
 6. **Open Questions for Human Review** — decisions or missing evidence.
-7. **Deferred Items for Integration-Contract Design** — note the handoffs, guarantees, permissions and feedback questions requiring later design, without drafting contracts.
+7. **Deferred Items for Integration-Contract Design** — record grounded Stage 3 contract-design questions and optional Stage 5 validation candidates (PROPOSED, NOT EXECUTED), without drafting contracts.
 
 ### Adaptive layout: same compact comparison for Primary and Supporting
 

@@ -28,6 +28,13 @@ For meaningful findings, use the [shared senior-engineer mentoring communication
 - **Relevant environment/harness, if known:** [Optional]
 - **Scope or constraints:** [Optional]
 
+### Optional broader review settings
+
+- **Quality review:** [`off` (default) / `on` (Q-01–Q-10) / selected IDs such as `Q-06,Q-07`]
+- **Conference review lenses:** [`none` (default) / named lenses: context-engineering, security-and-trust, reliability-and-workflow, evaluation-and-observability, lifecycle-and-portability / `relevant`]
+
+When expressly requested, consult the installed skill's [canonical Q-01–Q-10](../skills/skill-responsibility-overlap-audit/references/quality-review-questions.md) or [conference review lenses](../skills/skill-responsibility-overlap-audit/references/review-lenses.md). These are optional review questions, not runnable evals or approved contracts.
+
 ### Goal
 
 Document what each skill owns, which capabilities are shared or unnecessarily duplicated, which responsibilities are missing, and what changes should be considered before integration design.
@@ -40,7 +47,7 @@ Work with the actual number and type of skills supplied; do not assume any parti
 
 Inspect each available SKILL.md and relevant references, scripts, configuration, agents, examples, and evaluation files.
 
-Apply the existing Audit Skill methodology when useful. If the audit methodology compares only one or two skills at a time, review skills individually, perform relevant pairwise comparisons, and synthesize a cross-skill assessment. Do not imply it natively supports a larger batch.
+Use the six considerations and four investigation steps below directly. The legacy Audit Skill is not a dependency. Inspect skills independently, then compare relevant pairs and synthesize the actual collection.
 
 ### Step 1 — Individual Skill Review
 
@@ -158,7 +165,7 @@ Keep recommendations separate from confirmed findings. Do not implement them.
 4. **Missing Responsibilities & Gaps** — Evidence-backed gaps and potential impacts.
 5. **Prioritized Recommendations** — Actionable proposed changes, not implemented decisions.
 6. **Open Questions for Human Review** — Issues requiring clarification or approval.
-7. **Deferred Integration Considerations** — Handoff, boundary, and feedback items to examine during contract design.
+7. **Deferred Items for Integration-Contract Design** — Stage 3 contract questions and optional Stage 5 validation candidates, marked PROPOSED / NOT EXECUTED.
 
 ### Adaptive Side-by-Side Report Layout
 
@@ -170,6 +177,14 @@ Keep recommendations separate from confirmed findings. Do not implement them.
 - **Preflight:** headings and skill columns match; C1–C6 are row labels; F-xx points to nearby separate-line notes; no HTML, transposed tables, multi-line cells, extra wording tables, or disconnected finding sections.
 - **Optional integration:** keep C4 handoff, C5 decision authority and C6 feedback separate. Proposals are PLANNED / PROPOSED — NOT IMPLEMENTED; Stage 3 defines contracts. Coordinator suggestions remain conditional.
 - **Step 4:** prioritize actionable recommendations by F-xx without repeating full reasoning.
+
+### Optional Q/lens reviews and future-stage preparation
+
+- **Core only (default):** The original six considerations and seven report headings; no Q checklist or automatic conference lenses.
+- **Full/subset Q review requested:** Use `quality-review-questions.md`. Assess ten Qs in canonical order or only requested IDs. After the Supporting table and its F-xx notes, show `Quality review coverage (optional)` as brief vertical lines with statuses, evidence and F-xx/Cx references. Do not generate duplicate findings.
+- **Lenses requested:** Use `review-lenses.md` to ask topic-specific questions mapped to existing considerations. A lens-only review does not trigger the ten-question coverage checklist.
+- **Evidence safeguards:** Q-05 identifies current contract gaps, not finalized new contracts. Q-07 separates documented permissions from enforced permissions. Q-09 separates existing eval definitions from run evidence.
+- **Section 7:** Record supported Stage 3 contract-design questions and up to three Stage 5 Given/When/Then verification candidates when useful; label them PROPOSED / NOT EXECUTED. Do not run tests, claim READY TO TEST, or approve a design.
 
 ### Evidence & Quality Requirements
 

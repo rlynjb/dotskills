@@ -19,7 +19,24 @@ Assessment labels describe preliminary engineering judgment, not evidence certai
 
 When a meaningful issue comes from ambiguous instructions, its **Current wording, Concern, Recommended wording — PROPOSED** appear on **separate Markdown bullet lines** in the same F-xx note directly below the relevant comparison table. That makes the text readable without putting long quotes in table cells. It is optional, not a seventh consideration or another stage.
 
-It does **not** decide the future architecture, draft contracts, execute skills, make repository edits, or mark recommendations as approved.
+It does **not** decide the future architecture, draft contracts, execute skills, run evaluations, make repository edits, or mark recommendations as approved.
+
+## Optional broader reviews — opt in
+
+The **default** remains the established six-consideration, four-step, seven-section audit. It does not load extra questions or generate a new quality checklist.
+
+- **Ten questions:** `quality_review: on` asks Q-01–Q-10, using [quality-review-questions.md](references/quality-review-questions.md); `quality_questions: Q-06,Q-07` reviews only those Qs. Coverage is a short optional vertical checklist within report Section 2. Significant questions use the **same** existing F-xx finding format instead of a second findings system.
+- **Conference-derived lenses:** `review_lenses: [context-engineering, security-and-trust]` chooses named perspectives from [review-lenses.md](references/review-lenses.md). A request for “relevant lenses” selects only documented-applicable ones and gives a reason; this does not automatically run all ten Qs.
+- **Both:** Keep issues deduplicated, mapped to C1–C6, and source-backed. Never infer actual tool permission enforcement or a passing eval from instructions or test definitions.
+
+**Stage 3 / Stage 5 preparation:** Section 7 can include brief contract questions and proposed `Given / When / Then` validation candidates, explicitly **NOT EXECUTED**. Designing contracts and running evals remain separate activities.
+
+```text
+Use skill-responsibility-overlap-audit on skills/first-skill and skills/second-skill.
+quality_review: on
+review_lenses: [context-engineering, evaluation-and-observability]
+Keep the core report layout; do not edit source files or run evaluations.
+```
 
 ## Example invocation
 
@@ -85,8 +102,8 @@ When warranted, the audit may propose a separate `skills/<workflow-goal>-workflo
 
 ## How this differs from other DotSkills skills
 
-- **This skill:** investigates current responsibilities and gaps only; stops before integration design.
-- **[Audit Skill](../audit-skill/SKILL.md):** broader Q-01–Q-10 quality review, proposed boundaries and conditional contracts, human-review workflow, and validation preparation.
+- **This skill:** investigates current responsibilities and gaps, with optional broader Q/lens review and proposed next-stage questions; stops before integration design.
+- **Original Audit Skill (legacy):** Q-01–Q-10 have been brought here as an optional review. The legacy files are retained for historical reference, not required or automatically invoked. Decommissioning them can be handled separately.
 - **[Evaluate Skill](../evaluate-skill/SKILL.md):** guided evaluations and evidence-based skill improvements, where an authorized runner exists.
 - **[Profile Agent Workflow](../profile-agent-workflow/SKILL.md):** read-only analysis of dispatch and resource traces against approved routing rules.
 

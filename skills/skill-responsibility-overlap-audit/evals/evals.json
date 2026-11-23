@@ -467,6 +467,122 @@
         "No giant table cells, raw HTML or unapproved source mutations.",
         "Human review and Stage 2 scope remain explicit."
       ]
+    },
+    {
+      "id": 31,
+      "prompt": "Audit requirements-review and sprint-readiness, with no optional review settings. Confirm that the default report has the normal six considerations and seven headings only.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/sprint-readiness/SKILL.md"
+      ],
+      "expected_output": "Normal compact Primary and Supporting comparison tables, vertical F-xx findings when meaningful, no ten-Q checklist and no automatic review-lens summaries.",
+      "assertions": [
+        "No Q-01–Q-10 coverage by default.",
+        "Six considerations and seven section headings unchanged.",
+        "No extra table columns, raw HTML or long in-cell finding fields.",
+        "All proposals remain human reviewed, not executed."
+      ]
+    },
+    {
+      "id": 32,
+      "prompt": "Run quality_review: on for requirements-review and sprint-readiness. Use the full canonical Q-01–Q-10 as an optional deeper quality review.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/sprint-readiness/SKILL.md"
+      ],
+      "expected_output": "Ten Q statuses for each skill, in order, after the Supporting table, without replacing C1–C6 or duplicating existing F-xx issues.",
+      "assertions": [
+        "Every Q-01 through Q-10 appears once per assessed skill.",
+        "Coverage status is grounded and separates NOT VERIFIED from MISSING.",
+        "F-xx findings are reused for material Q concerns.",
+        "Seven section headings and terminal-safe table structure preserved."
+      ]
+    },
+    {
+      "id": 33,
+      "prompt": "Review only Q-06 and Q-07 on approval-evidence. The user has not requested other Q IDs or lenses.",
+      "files": [
+        "evals/files/approval-evidence/SKILL.md"
+      ],
+      "expected_output": "Only Q-06 and Q-07 are assessed, with supported C1/C5 mapping and no runtime permission enforcement claims.",
+      "assertions": [
+        "Subset only, no all-ten checklist.",
+        "Untrusted data and permissions distinguish documented from observed.",
+        "No hallucinated tool enforcement.",
+        "No skill edits or test execution."
+      ]
+    },
+    {
+      "id": 34,
+      "prompt": "Apply only review_lenses: context-engineering to discovery-brief. Do not run full quality_review.",
+      "files": [
+        "evals/files/discovery-brief/SKILL.md"
+      ],
+      "expected_output": "An applicable context question is mapped to C1/C5; any material issue receives an ordinary F-xx without a Q-01–Q-10 status checklist.",
+      "assertions": [
+        "Named lens is applied with applicability rationale.",
+        "No full Q checklist unless requested.",
+        "No invented behavioral trace or changed target file.",
+        "Concise table layout preserved."
+      ]
+    },
+    {
+      "id": 35,
+      "prompt": "Use quality_review: on and review_lenses: [security-and-trust, evaluation-and-observability] for requirements-review and approval-evidence. Avoid duplicate reports of a single ambiguous approval boundary.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/approval-evidence/SKILL.md"
+      ],
+      "expected_output": "C1–C6 findings de-duplicated with Q/lens cross-links, plus one ten-Q coverage checklist per skill, no redundant proposed change.",
+      "assertions": [
+        "One F-xx per distinct issue despite Q and lens overlap.",
+        "Q status checklist is opt-in.",
+        "No automatic test grading or permission enforcement claims.",
+        "Stage 2 boundaries retained."
+      ]
+    },
+    {
+      "id": 36,
+      "prompt": "Run quality_review: on for ticket-drafting, specifically inspect Q-09 evaluations and observability. No executed eval traces were supplied.",
+      "files": [
+        "evals/files/ticket-drafting/SKILL.md"
+      ],
+      "expected_output": "Eval documentation or absence is accurately reported without inferring that any test ran; runtime outcome remains NOT VERIFIED.",
+      "assertions": [
+        "No test-run claims without evidence.",
+        "Test definitions cannot be reported as observed passing behavior.",
+        "Q-09 mapped to C3/C6.",
+        "No agent evaluation is executed."
+      ]
+    },
+    {
+      "id": 37,
+      "prompt": "With quality_questions: Q-05,Q-08, audit discovery-brief and ticket-drafting. Identify grounded Stage 3 design questions and Stage 5 verification candidates, not actual contracts or executed tests.",
+      "files": [
+        "evals/files/discovery-brief/SKILL.md",
+        "evals/files/ticket-drafting/SKILL.md"
+      ],
+      "expected_output": "Section 7 contains concise Stage 3 contract questions and optional Given/When/Then Stage 5 candidates with NOT EXECUTED labels, linked to material F-xx.",
+      "assertions": [
+        "Q-05 and Q-08 only.",
+        "No invented interface schema, retry contract or implemented policy.",
+        "Validation scenarios remain PROPOSED, NOT EXECUTED.",
+        "Seven report headings unchanged."
+      ]
+    },
+    {
+      "id": 38,
+      "prompt": "Use review_lenses: relevant on clear-evidence. Avoid forcing all five lenses into the output or fabricating quality defects; do not enable ten-question review.",
+      "files": [
+        "evals/files/clear-evidence/SKILL.md"
+      ],
+      "expected_output": "Select only evidence-relevant lenses or state none; normal C1–C6 report with no all-ten checklist or artificial defects.",
+      "assertions": [
+        "Lens applicability justified by inspected sources.",
+        "No Q coverage unless separately requested.",
+        "Clear existing protections may receive KEEP.",
+        "No invented scores, sources or runtime proof."
+      ]
     }
   ]
 }
