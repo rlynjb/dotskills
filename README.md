@@ -51,8 +51,8 @@ Skills are grouped by use.
   **What you'll learn:** Dispatch correctness, resource budgeting, trace coverage, evidence-based optimization, and separating profiler findings from eval results.
 
 - **Skill:** [audit-skill](skills/audit-skill/SKILL.md)  
-  **Purpose:** Overview-first, read-only skill review: Q-01–Q-10 responsibility/overlap audit plus proposed B-xx boundaries and provisional C-xx contracts together, followed by consolidated human decisions and a separate validation handoff.  
-  **What you'll learn:** Skill ownership, overlap resolution, lightweight contracts, human decision gates, trust/security boundaries, and evaluation readiness.
+  **Purpose:** Junior-developer-friendly, overview-first skill review: explains Q-01–Q-10 findings, proposes responsibility boundaries and handoff contracts with reasons, then guides human decisions and separate validation preparation. Read-only.  
+  **What you'll learn:** Engineering reasoning through senior-to-junior explanations: who owns what, why overlaps and contracts matter, trade-offs, human decisions, trust/security boundaries, and evaluation readiness.
 
 ---
 
