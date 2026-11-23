@@ -58,6 +58,8 @@ Questions to investigate from source (do not presume the answers):
 - Can one item fail without losing successful assessment of other items?
 - Which contract parts are host-independent, and which tool/worker operations require a runtime adapter?
 
+**Diagram readability:** For each skill's as-is Mermaid flow, use complete 2–4-word node labels, split longer labels with quoted `<br/>` line breaks, and explain abbreviated nodes under **Node explanations**. Do not rely on smaller fonts or omit a decision to fit a narrow viewer. Keep evidence and `NOT VERIFIED` conditions clear.
+
 Every substantive finding needs direct links to actually inspected source lines. **Explain the consequence of each material overlap**: for example, two skills reading the same ticket can be fine, but two independently rewriting it may lead to inconsistent decisions. Only mark **OBSERVED RESULT** when a genuine authorized trace exists. A proposed integration is never an as-is workflow diagram.
 
 ## Step 2 — example boundary recommendation (not approved)
