@@ -47,9 +47,9 @@ If inspection shows a skill actually requires a partner's output, the report mus
 
 ### Where to document an optional handoff
 
-**Default: keep it in each affected `SKILL.md`.** The core rules belong there: standalone inputs and outputs, what each skill owns, a short optional-handoff condition, approval/permission limits, and feedback to the responsible human owner.
+**During Stage 2, recommend a *planned* `Optional Handoffs` note in each affected `SKILL.md`.** The core rules belong there: standalone inputs and outputs, what each skill owns, the possible future handoff direction, approval/permission limits, and feedback to the responsible human owner. Explicitly mark the connection **PLANNED / PROPOSED — NOT IMPLEMENTED**. The purpose is to communicate the integration *plan* to a future reviewer, not to assert that the skills have been integrated.
 
-**Add an optional local reference only when warranted** by substantial mapping rules, examples, conditional handoffs or conflict-resolution guidance. A skill should point to **its own** reference, never require a shared file or another skill's installation to function. Prefer self-explanatory direction names:
+**Recommend an optional local reference as a potential Stage 3 artifact only when warranted** by substantial mapping rules, examples, conditional handoffs or conflict-resolution guidance. If it does not exist, label its path **PLANNED — NOT CREATED**. A skill may later point to **its own** reference, never require a shared file or another skill's installation to function. Prefer self-explanatory direction names:
 
 ```text
 skills/
@@ -63,7 +63,7 @@ skills/
         └── refinement-to-prd-handoff.md     # Only if detailed
 ```
 
-This tree is **illustrative**, not a requirement to create files. For a short connection, the two `SKILL.md` files are enough. Use `handoff` for one transition or `handoffs` for multiple transitions within a single file; inspect existing references before suggesting duplicates. The audit recommends file placement and wording **per affected skill**, but does not edit target skills or create their handoff files.
+This tree is **illustrative**, not a requirement to create files. No target skill files or handoff references are created by this audit. For a short connection, the two *proposed* `SKILL.md` notes are enough. Stage 3 will decide the actual integration contract and whether any proposed reference file is needed. Use `handoff` for one transition or `handoffs` for multiple transitions within a single file; inspect existing references before suggesting duplicates. The audit recommends file placement and wording **per affected skill**, but does not edit target skills or create their handoff files.
 
 ### When to recommend an optional coordinator skill
 

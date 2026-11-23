@@ -31,13 +31,17 @@ For **two or three skills**, use side-by-side tables. Keep long citations and ex
 
 **Proposed optional connection documentation — per affected skill (only if justified by a row 4–6 issue):**
 
+**Status for this section: PLANNED / PROPOSED — NOT IMPLEMENTED, NOT CONTRACTED, NOT VERIFIED.** This is a Stage 2 investigation record to guide Stage 3 design, *not* a claim that the skills already exchange information or call one another.
+
 **[Skill A] — PROPOSED wording, NOT YET IMPLEMENTED**
 - *Standalone use:* [Existing starting inputs, complete workflow and own outputs; if unverified or currently dependent, say so.]
 - *Optional handoff:* [When another skill's existing output is available, it may be supplied as **optional context**. The skill never requires or auto-runs its partner.]
 - *Responsibilities:* [What Skill A owns; what remains with Skill B.]
 - *Boundaries:* [No automatic invocation, unauthorized edit/publish/approval, or change to another skill's decisions.]
 - *Feedback:* [Report proposed changes and open questions to the correct human owner; no silent upstream edits.]
-- *Documentation placement:* [PROPOSED: `SKILL.md` only, or `SKILL.md` plus own `references/<source>-to-<destination>-handoff.md` if transfer details are substantial. Explain why. Preserve essential rules in `SKILL.md`.]
+- *Documentation placement:* [PROPOSED `Optional Handoffs` note in this skill's `SKILL.md`. If substantial details justify it, name a proposed skill-local `references/<source>-to-<destination>-handoff.md`; if absent, label **PLANNED — NOT CREATED**. Otherwise say **SKILL.md only**.]
+- *Stage 3 follow-up:* [The still-undecided handoff fields, compatibility/approval requirements, feedback routing, and verification questions; do not draft contracts here.]
+- *Planning status:* [PLANNED / PROPOSED — NOT IMPLEMENTED or explicitly evidenced current state.]
 - *Evidence / open design question:* [Direct links; note gaps and who needs to confirm.]
 
 **[Skill B] — PROPOSED wording, NOT YET IMPLEMENTED**
@@ -46,7 +50,9 @@ For **two or three skills**, use side-by-side tables. Keep long citations and ex
 - *Responsibilities:* [What Skill B owns and must not overwrite.]
 - *Boundaries:* [No required/autonomous invocation or unauthorized side effects.]
 - *Feedback:* [What Skill B returns as suggestions/questions for Skill A's owner to review.]
-- *Documentation placement:* [PROPOSED: `SKILL.md` only, or `SKILL.md` plus its own optional `references/<source>-to-<destination>-handoff.md`, with a reason. A reverse-feedback file uses the opposite direction.]
+- *Documentation placement:* [PROPOSED `Optional Handoffs` note in this skill's `SKILL.md`. Use a directionally named local reference **only for substantial guidance**; indicate whether it exists or is **PLANNED — NOT CREATED**. Reverse feedback uses the opposite direction.]
+- *Stage 3 follow-up:* [Formal details and human decisions still needed before integration.]
+- *Planning status:* [PLANNED / PROPOSED — NOT IMPLEMENTED or explicitly evidenced current state.]
 - *Evidence / open design question:* [Direct links; note gaps and who needs to confirm.]
 
 **Illustrative workflow choices — not verified by this template:**
@@ -56,7 +62,7 @@ For **two or three skills**, use side-by-side tables. Keep long citations and ex
 
 If either skill currently **requires** the other's output, do not label standalone use as supported. Record the dependency as-is and propose any optionalization **conditionally**. If there is no relevant issue, omit these recommendation blocks; do not fabricate a connection. Documented boundaries do not prove runtime restrictions.
 
-**File placement decision:** Prefer a brief `Optional handoffs` section inside each affected `SKILL.md`. Use a skill-local reference only if field mappings, examples, conflict-resolution guidance or conditional cases make the explanation substantial. Name single-direction files `<source>-to-<destination>-handoff.md` (plural `handoffs` only for several transitions); reuse existing suitable files when possible. The owning skill's `SKILL.md` can link to its **own** reference and say when to read it. Never require a shared file or partner skill to understand or run standalone. All paths and edits in this template are **PROPOSED**, not completed.
+**File placement decision:** In this Stage 2 report, recommend a brief **planned** `Optional Handoffs` section inside each affected `SKILL.md`, so a future reviewer understands the direction without assuming the connection already works. Use a **proposed** skill-local reference only if field mappings, examples, conflict-resolution guidance or conditional cases make the explanation substantial. Name single-direction files `<source>-to-<destination>-handoff.md` (plural `handoffs` only for several transitions); reuse existing suitable files when possible. The owning skill's `SKILL.md` can link to its **own** reference and say when to read it. Never require a shared file or partner skill to understand or run standalone. All paths and edits in this template are **PROPOSED**, not completed.
 
 **Evidence and interpretation (vertical notes):**
 
@@ -92,7 +98,8 @@ For each real overlap, align the involved skills, then explain it below.
 - **Finding:** [Problem and linked evidence.]
 - **Proposed change:** [Ownership/documentation proposal only; when appropriate, cite the per-skill proposed optional handoff, boundary, and feedback wording from section 2.]
 - **Standalone integrity:** [Does each skill retain its own inputs, outputs and workflow? If not evidenced, what needs human confirmation?]
-- **Documentation location:** [Per affected skill: `SKILL.md` only, or `SKILL.md` plus optional directionally named local reference; reason; reuse existing suitable files.]
+- **Documentation location:** [Per affected skill: proposed `Optional Handoffs` note in `SKILL.md`, plus a potential optional, directionally named local reference only if warranted; say whether that file actually exists.]
+- **Planning status / Stage 3:** [PLANNED / PROPOSED — NOT IMPLEMENTED. Identify what Stage 3 must agree before any integration claim.]
 - **Benefit / trade-off:** [Including cost of change.]
 - **Human confirmation:** [Required? Who, if known?]
 

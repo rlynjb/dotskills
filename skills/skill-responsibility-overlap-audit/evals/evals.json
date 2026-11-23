@@ -201,6 +201,23 @@
         "Any future coordination is explicitly human-reviewed and separate from original skills.",
         "No runtime execution, source edits, or detailed contracts."
       ]
+    },
+    {
+      "id": 14,
+      "prompt": "Audit two synthetic skills with a possible future optional handoff. This is Stage 2 Investigation; the user wants the person reading each skill to understand the integration plan, but explicitly says the skills are NOT yet integrated. An optional direction-specific handoff reference might be helpful later; no such file exists today. Show per-skill proposed documentation and the Stage 3 follow-up without editing targets.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "The assessment proposes a brief future Optional Handoffs note for each affected SKILL.md, preserves standalone invocation, marks future cross-skill connection PLANNED / PROPOSED — NOT IMPLEMENTED and NOT VERIFIED, names possible directional references only if useful and labels nonexistent files PLANNED — NOT CREATED, and lists unresolved Stage 3 design/contract questions without writing a contract or claiming integration.",
+      "assertions": [
+        "Each affected skill has a separate proposed Optional Handoffs note and retains its own independent inputs, workflow, and outputs.",
+        "The intended handoff is clearly a plan, not an existing executed or contracted integration.",
+        "Missing optional handoff reference files are not falsely cited as existing or linked as if materialized.",
+        "A simple handoff can remain SKILL.md only instead of mandating another file.",
+        "Open contract, approval, and feedback decisions are deferred to Stage 3.",
+        "No coordinator is built, no source file edited, and no automatic cross-skill invocation is claimed."
+      ]
     }
   ]
 }
