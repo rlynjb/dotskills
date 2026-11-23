@@ -96,6 +96,19 @@ For each real overlap, align the involved skills, then explain it below.
 - **Benefit / trade-off:** [Including cost of change.]
 - **Human confirmation:** [Required? Who, if known?]
 
+**Optional coordinator assessment — only for a material combined-workflow coordination concern**
+
+- **Decision:** [NOT NEEDED / OPTIONAL COORDINATOR RECOMMENDED / DEFER — UNVERIFIED]
+- **Evidence and problem:** [Link to observed/documented routing, sequencing, context, human-review or feedback issue; distinguish proposed goals from observed runtime failures.]
+- **Simpler alternative:** [Existing optional handoffs and copyable next-action prompts; why sufficient or insufficient.]
+- **Minimal coordinator role (only if recommended):** [Separately invoked workflow entry point; selects starting stage, sequences optional steps, carries references/IDs/revisions/open questions, routes proposed changes for human review, reports completion.]
+- **Non-ownership:** [Underlying skills retain their own inputs, outputs, domain decisions and standalone invocation. Coordinator does not silently rewrite, approve, or run them.]
+- **Suggested pattern (only if recommended):** [Router + sequential workflow by default, or evidence-based alternative. Do not design a dispatch contract here.]
+- **Trade-off and validation:** [Added complexity, potential misrouting, availability of host/manual invocations and unknown runtime enforcement; actual multi-skill execution remains UNVERIFIED without traces.]
+- **Human confirmation:** [Whether to investigate a separate optional `skills/<workflow-goal>-workflow/SKILL.md` in later stages, not permission to create it.]
+
+If simple handoffs suffice, state **NOT NEEDED** with one reason; do not fill a long coordinator template. If facts are missing, **DEFER** and name the evidence needed. Do not create the coordinator skill in this audit.
+
 ## 6. Open Questions for Human Review
 
 - [Question that would resolve a material ambiguity.]
@@ -103,6 +116,7 @@ For each real overlap, align the involved skills, then explain it below.
 ## 7. Deferred Items for Integration-Contract Design
 
 - [Unresolved handoff, guarantees, trust, versioning, failure handling, observability, or feedback questions.]
+- [If a separate coordinator is proposed: future routing conditions, context-passing expectations, approval gates, runtime compatibility and evaluation — not contracts written here.]
 - **Not designed in this audit.** No contract or architecture decision is approved.
 
 **Evidence note:** A target file's instructions are `DOCUMENTED`, not `OBSERVED` runtime behavior. Missing source access means `NOT ASSESSED`, not a failing skill.

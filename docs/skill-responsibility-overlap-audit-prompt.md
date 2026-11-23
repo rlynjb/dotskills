@@ -91,6 +91,12 @@ For considerations 4–6, note observations and potential problems **without** d
 3. Name a one-direction reference `<source>-to-<destination>-handoff.md` (for example `prd-to-refinement-handoff.md`); use `handoffs` for a file spanning multiple transitions. Reverse feedback may use `<destination>-to-<source>-handoff.md`. Derive names from the actual skills; example paths are illustrative.
 4. Reuse an existing suitable file instead of duplicating it. In the report, give `Documentation location: SKILL.md only` **or** `SKILL.md + references/<direction>-handoff.md`, a short complexity-based rationale, and `Status: PROPOSED` for **each** affected skill. Do not create files, claim they exist, or draft formal contracts during the audit.
 
+**Optional coordinator check for material multi-skill issues:**
+- First ask whether a missing/unclear handoff can be handled with optional per-skill instructions and copyable next-action prompts. Do not recommend a new skill for every gap.
+- If a **combined workflow** needs a clear entry point, choosing the starting skill, sequencing stages, carrying artifact revisions/source links/requirement IDs/open questions, routing proposed changes through human approval or summarizing results, evaluate a **separately invoked optional coordinator skill**.
+- Report **NOT NEEDED**, **OPTIONAL COORDINATOR RECOMMENDED**, or **DEFER / UNVERIFIED**, with issue evidence, simpler alternative, minimal proposed coordination role, trade-off, and required human confirmation.
+- For a small combined flow, prefer the conceptual pattern **router → sequential workflow**; treat supervisor agents or durable state machines as heavier alternatives only when justified. The coordinator owns coordination, **not** the component skills' decisions. Each individual skill stays independently invocable. Do not create an orchestrator or design dispatch contracts in this audit; a Markdown instruction cannot prove host-side auto-dispatch, enforcement or durable execution.
+
 ### Step 2 — Cross-Skill Responsibility & Overlap Analysis
 
 For each overlapping capability, record:
@@ -131,6 +137,7 @@ For each recommendation, provide:
 - **Human confirmation required:** Yes/no, with the decision owner if known.
 - **Optional connection wording, when relevant:** Proposed documentation for **each affected skill** under Standalone use, Optional handoff, Responsibilities, Boundaries, Feedback—preserving standalone inputs, outputs and workflow and requiring no automatic cross-skill invocation.
 - **Documentation placement, per skill:** Recommend `SKILL.md` only by default, or `SKILL.md` plus a locally owned, directional `references/<source>-to-<destination>-handoff.md` if substantial details justify a reference. Explain the trade-off without creating the files.
+- **Optional coordinator decision for combined-workflow issues:** Check whether an explicitly invoked routing/sequencing skill is worth investigating, after considering documentation and manual next-action prompts. State NOT NEEDED, OPTIONAL COORDINATOR RECOMMENDED, or DEFER/UNVERIFIED, with evidence, minimal responsibilities, alternative, trade-off, and human confirmation. Do not create or require it.
 
 Keep recommendations separate from confirmed findings. Do not implement them.
 
@@ -151,6 +158,7 @@ Keep recommendations separate from confirmed findings. Do not implement them.
 - **Four or more skills:** Compare in smaller side-by-side groups of two or three skills, then include an overall synthesis covering **every** selected skill and all material relationships.
 - **Cross-skill overlap:** Align the activity and each involved skill's role; include classification and workflow effect. Explicitly name affected skills for gaps.
 - **Supporting considerations 4–6:** For each real issue, give **per-skill** findings in the side-by-side cells, then show compact *proposed optional connection documentation* blocks for each affected skill directly below: Standalone use, Optional handoff, Responsibilities, Boundaries, Feedback **and Documentation placement** (`SKILL.md` only versus `SKILL.md` plus a separate optional, directional reference, with reason). Do not imply target files were changed.
+- **Section 5:** When a material combined-workflow coordination issue exists, include an **Optional coordinator assessment** with one of the three outcomes, grounded rationale, a simpler alternative, a human decision, and explicit preservation of standalone use.
 - Keep tables scannable; place evidence links, interpretation, and recommendations as short vertical notes below. If Markdown tables are not supported, use equivalent aligned comparison blocks. Do not invent data to fill cells.
 
 ### Evidence & Quality Requirements

@@ -92,6 +92,7 @@ Prioritize each actionable suggestion **High / Medium / Low** and include:
 - **Human confirmation required:** yes/no; identify the decision owner only if known.
 - **For relevant Handoff, Boundary, or Feedback issues:** include concise **per-skill optional-connection wording** as a *PROPOSED documentation change*: standalone entry and complete output; optional use of the partner's output; retained decision/authority boundaries; return of proposed updates/questions to the owner. Make the partner's corresponding wording explicit when both skills are affected. Link evidence and avoid making either skill mandatory or automatically invoked.
 - **Documentation placement:** For each affected skill, recommend **SKILL.md only** or **SKILL.md + an optional, locally owned reference file** using the rules below; give a brief reason and a proposed location only when justified. Keep the short essential rules in SKILL.md either way.
+- **Optional coordinator decision for material combined-workflow issues:** assess whether a separately invoked routing/sequencing skill is warranted **after** checking simpler handoff documentation and copyable next actions. State NOT NEEDED, OPTIONAL COORDINATOR RECOMMENDED, or DEFER/UNVERIFIED with evidence; do not implement it.
 
 Keep proposals separate from documented facts.
 
@@ -107,6 +108,26 @@ Apply this **after** observing a material handoff, boundary, or feedback issue; 
 6. **State the recommendation per affected skill:** `Location: SKILL.md only` or `Location: SKILL.md + references/<direction>-handoff.md`; `Reason:` why the shorter or split form suits the observed complexity; `Status: PROPOSED`. If source layout cannot be verified, label the suggested path illustrative.
 
 Keep this at the **documentation organization** level. Leave formal field contracts, invariants, runtime routing, enforcement, and implementation for later approved stages. No target file or repository change is authorized by running this audit. Do not finalize ownership or architecture decisions, even when a suggestion seems obvious.
+
+### Optional coordinator skill — conditional recommendation only
+
+If two or more independently usable skills have a **material combined-workflow problem** involving routing, sequencing, context continuity, owner-reviewed feedback, or repeated manual coordination, assess whether a **separately invoked optional coordinator skill** would help. A handoff issue alone **does not** justify a coordinator.
+
+Use a small decision rule, backed by evidence:
+1. **NOT NEEDED:** A short optional handoff in each `SKILL.md`, existing reference guidance, or copyable next-action prompts are sufficient. Recommend the simpler approach; do not add a skill.
+2. **OPTIONAL COORDINATOR RECOMMENDED:** A real combined user goal or documented workflow requires repeated choice of starting point, sequencing across skills, preservation of IDs/revisions/sources/questions, explicit human review of proposed changes, or a return path that is awkward or error-prone to manage manually. Explain the specific coordination burden and why existing handoff documentation alone is insufficient.
+3. **DEFER / UNVERIFIED:** The need for orchestration, available harness capabilities, authority, or current execution evidence is unknown. Propose what to verify before choosing a coordinator.
+
+When recommending one, include a **brief proposed responsibility boundary**, not a complete coordinator implementation:
+
+- **Proposed entry point:** An optional, explicitly chosen combined workflow (e.g. `skills/<workflow-goal>-workflow/SKILL.md`), *in addition to* invoking each existing skill alone. This path and any suggested name are illustrative until reviewed.
+- **What it owns:** Decide where the combined flow starts based on supplied context; present the next skill/action; coordinate the intended order; preserve source links, document/version identifiers, requirement IDs, findings and open questions; route proposed changes back to the responsible owner; surface human approval stops; summarize results and unresolved items.
+- **What it does NOT own:** Product/technical decisions belonging to component skills, rewriting an upstream artifact without owner authorization, bypassing a user's explicit choice or approval, silently making a skill mandatory, or claiming runtime/tool/permission enforcement.
+- **Suggested pattern:** Prefer **routing followed by a short sequential workflow** for a simple PRD → refinement → owner-reviewed update loop. Consider a worker-agent supervisor only if independently justified; reserve a state machine or durable executor for real multi-session recovery and retry requirements. Do not prescribe an orchestrator framework in this audit.
+- **Execution reality:** A coordinator `SKILL.md` is a set of instructions, not proof of automatic dispatch, durability or multi-agent support. The host may need explicit user commands, copyable next-action prompts or separately authorized tool calls. Mark runtime claims **NOT VERIFIED** without traces.
+- **Alternative and trade-off:** Compare with manual, user-driven invocation using copyable prompts and optional handoff files. State the extra maintenance and possible misrouting risk of adding another skill. Keep the smallest adequate design.
+
+In the audit report's **Section 5 — Prioritized Recommendations**, add **Optional coordinator assessment** when a multi-skill coordination concern is material. Give **Decision (NOT NEEDED / OPTIONAL COORDINATOR RECOMMENDED / DEFER)**, **Evidence**, **Problem**, **Minimal proposed responsibilities**, **Alternative**, **Trade-off**, **Independent use preserved**, and **Human confirmation**. If not recommended, a single concise reason is enough; do not generate an unnecessary proposed coordinator skeleton. Keep any formal dispatch/routing contract, schemas, enforcement, and implementation in later approved stages. **Never create a coordinator during the audit.**
 
 ## Mandatory report format
 
@@ -127,6 +148,7 @@ Use these seven headings, in order:
 - **Four or more skills:** split into readable side-by-side groups of two or three skills, *and* provide an overall synthesis of all selected skills. Do not omit any skill or material overlap to keep a table narrow.
 - **Section 3:** compare the same overlapping activity across the affected skills in aligned columns; include classification and impact. In section 4, explicitly name every affected skill.
 - **Section 2, Supporting table (rows 4–6):** show the observed issue, its evidence status, and its effect **for each skill**, not only for the relationship as a whole. Immediately below the table, add **Proposed optional connection documentation — per affected skill** when an optional handoff could address an evidenced issue. Give each affected skill its own short block covering **Standalone use / Optional handoff / Responsibility / Boundary / Feedback / Documentation placement**, and distinguish current documented behavior from recommended future wording. For placement, prefer a concise `SKILL.md` addition; suggest an optional, directionally named reference only for substantial details. In section 5, carry the related recommendation and human decision; in section 7, defer formal contract details.
+- **Section 5:** when more than one skill has a material combined-workflow issue, include the **Optional coordinator assessment** under the related prioritized recommendation. Prefer NOT NEEDED if simple optional handoffs and suggested next-action commands suffice. If supported, recommend a separately invoked coordinator only for actual routing/sequencing/context/feedback coordination that does not fit the component skills. If evidence is missing, DEFER; never imply the coordinator was built or the host can dispatch skills automatically.
 - The recommended optional route must preserve three valid paths when supported: **Skill A alone**, **Skill B alone**, and **Skill A → optional Skill B review → owner-reviewed updates**. Do not state that all three paths work today without evidence. Neither skill is required to call, import, or execute the other.
 - Keep each table cell concise. Put evidence links, caveats, rationale and recommendations in short **vertical notes immediately following** the relevant comparison, not in giant cells.
 - Match depth and labels for all skills. Where evidence is missing say **NOT DOCUMENTED**, **UNVERIFIED**, or **NOT ASSESSED** as applicable; do not populate empty cells with invented behavior.

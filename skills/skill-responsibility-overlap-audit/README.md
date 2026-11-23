@@ -8,7 +8,8 @@ A focused, **read-only Stage 2 investigation skill** for clarifying responsibili
 2. **Side-by-side comparisons** for two or more skills, so ownership and differences are visible in the same rows. Large sets are split into groups with an overall synthesis.
 3. **Optional connection documentation proposals, per affected skill** when Handoffs, Boundaries, or Feedback reveal a material issue. Keep each skill independently usable with complete inputs, workflow and outputs; suggest passing the other skill's result as optional context only, never as an automatic invocation.
 4. Evidence-backed classification of legitimate shared behavior, complementary roles, duplication, conflicts and unclear ownership.
-5. Missing responsibilities/gaps, High/Medium/Low recommendations, and questions for human review.
+5. **Optional coordinator assessment** when multiple skills have a material combined-workflow routing, sequencing, context or feedback problem. Explain why a separate coordinator is needed—or why optional handoff docs and copyable prompts are enough.
+6. Missing responsibilities/gaps, High/Medium/Low recommendations, and questions for human review.
 
 It does **not** decide the future architecture, draft contracts, execute skills, make repository edits, or mark recommendations as approved.
 
@@ -63,6 +64,16 @@ skills/
 ```
 
 This tree is **illustrative**, not a requirement to create files. For a short connection, the two `SKILL.md` files are enough. Use `handoff` for one transition or `handoffs` for multiple transitions within a single file; inspect existing references before suggesting duplicates. The audit recommends file placement and wording **per affected skill**, but does not edit target skills or create their handoff files.
+
+### When to recommend an optional coordinator skill
+
+The audit now checks **whether multiple skills need more than an optional handoff**. A missing field or unclear ownership by itself doesn't justify a new coordinator.
+
+- **NOT NEEDED:** Each skill's own handoff instructions plus copyable next-step prompts are enough.
+- **OPTIONAL COORDINATOR RECOMMENDED:** A requested combined workflow repeatedly needs to select a starting skill, sequence stages, retain source/requirement IDs and revisions, manage human-reviewed returns, or report the end-to-end result. Explain why that work should be owned in one optional entry-point skill rather than spread across the individual skills.
+- **DEFER / UNVERIFIED:** The coordination need, supporting source evidence or host execution capability is unclear.
+
+When warranted, the audit may propose a separate `skills/<workflow-goal>-workflow/SKILL.md` with a **router + short sequential workflow** concept. It would own only coordination: where to start, what context to carry, how to present the next action and who reviews proposed updates. It **must not** take over the individual skills' decisions or remove their standalone invocation. The audit compares this with the simpler manual/copyable-prompt route, and **does not create the coordinator** or claim Markdown alone guarantees runtime dispatch.
 
 ## How this differs from other DotSkills skills
 

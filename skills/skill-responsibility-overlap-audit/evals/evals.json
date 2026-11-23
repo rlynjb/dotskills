@@ -153,6 +153,54 @@
         "Documentation and file paths are PROPOSED rather than represented as existing files.",
         "Formal field schemas and executable integration behavior are deferred."
       ]
+    },
+    {
+      "id": 11,
+      "prompt": "Audit the synthetic brief-planning and evidence-refinement skills. They have optional context sharing and an owner-reviewed return path. The user wants an integrated option, but provides no evidence of repeated routing/context-loss problems. Should the audit recommend a coordinator?",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "The audit compares simple optional SKILL.md handoffs and copyable next-action prompts with adding a coordinator, recommends NOT NEEDED or DEFER absent a real coordination burden, and does not default to creating a coordinator. Independent use remains intact.",
+      "assertions": [
+        "A mere optional handoff is not treated as proof a coordinator is required.",
+        "Reasons for NOT NEEDED or DEFER cite actual supplied evidence and uncertainty.",
+        "Each skill remains independently invocable.",
+        "No coordinator file, dispatch code, formal contract, or automatic execution is created or claimed."
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Audit the attached brief-planning and evidence-refinement skills for a combined workflow. The user wants ONE optional entry point that accepts either a feature idea or existing brief, helps select the starting stage, carries source/revision IDs and unanswered questions between two stages, and routes only human-accepted findings back for brief revision. Assume repeated manual copy/paste has been reported by the user, but no host execution trace has been supplied. Recommend an appropriately scoped approach, without implementing it.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "The audit conditionally recommends a separate optional coordinator skill with routing followed by a short sequential workflow, names owned coordination responsibilities versus independent component responsibilities, compares copyable manual prompts, preserves human approvals, and labels runtime dispatch and the reported copy/paste problem as unverified where applicable.",
+      "assertions": [
+        "Optional coordinator is separately invoked and never required for either skill's standalone entrypoint.",
+        "It owns starting-point choice, sequence, context continuity, feedback/approval path, and completion summary—not product/refinement decisions.",
+        "Human owner reviews proposed changes; no automatic rewriting or authorization is inferred.",
+        "Manual invocation with copyable prompts is compared as an alternative.",
+        "Host support, automatic dispatch, actual workflow execution and traces are NOT VERIFIED.",
+        "No coordinator SKILL.md or formal dispatch contract is created."
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "Audit requirements-review and sprint-readiness; the second expects a required clarity note, and some source files cannot be examined. The user suggests adding a coordinator to fix the missing data. Determine what to recommend.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/sprint-readiness/SKILL.md"
+      ],
+      "expected_output": "Audit preserves the currently documented required input and flags the missing handoff/ownership question. It defers coordinator selection until requirements and runtime capabilities are established, rather than treating orchestration as a substitute for an absent required input or human review.",
+      "assertions": [
+        "The required clarity note is not silently made optional.",
+        "A coordinator is not offered as a fix for missing source data alone.",
+        "Lack of evidence supports DEFER / UNVERIFIED or a justified NOT NEEDED, not confident implementation.",
+        "Any future coordination is explicitly human-reviewed and separate from original skills.",
+        "No runtime execution, source edits, or detailed contracts."
+      ]
     }
   ]
 }
