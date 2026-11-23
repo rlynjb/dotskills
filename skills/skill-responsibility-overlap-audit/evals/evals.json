@@ -1,0 +1,93 @@
+{
+  "skill_name": "skill-responsibility-overlap-audit",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Use skill-responsibility-overlap-audit on the supplied requirements-review skill only. Investigate Stage 2 responsibility and gaps. No runtime evidence is supplied.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md"
+      ],
+      "expected_output": "Vertical six-consideration review with evidence, no invented neighbor or cross-skill findings, no formal contracts or source edits.",
+      "assertions": [
+        "Uses six considerations with deeper analysis for inputs/responsibilities/outputs.",
+        "Cross-skill findings are not applicable.",
+        "No runtime observations or approved decisions are fabricated.",
+        "All work remains read-only and before contract design."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Compare the attached requirements-review and sprint-readiness skills. Show the six considerations side by side and classify their competing final requirements-clarity claims.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/sprint-readiness/SKILL.md"
+      ],
+      "expected_output": "Two compact aligned tables compare six considerations. Competing ownership of final clarity is classified conflicting; a shared clarity-note input is not automatically redundant. Evidence and proposals remain distinct.",
+      "assertions": [
+        "Two skill columns align inputs, responsibilities, outputs, handoffs, boundaries and feedback.",
+        "Actual ownership conflict is explained and grounded in both sources.",
+        "Shared input is not automatically labeled unnecessary duplication.",
+        "Recommendations require human confirmation and do not define integration contracts."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Compare requirements-review, sprint-readiness and ticket-drafting. Inspect whether required acceptance criteria are guaranteed by the upstream reviewer, and show a side-by-side report.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/sprint-readiness/SKILL.md",
+        "evals/files/ticket-drafting/SKILL.md"
+      ],
+      "expected_output": "Three-skill aligned comparison and cross-skill findings identify that ticket-drafting requires acceptance criteria while requirements-review does not promise them; the producer is unverified. No invented contract.",
+      "assertions": [
+        "All three skills receive the same six considerations.",
+        "Missing producer guarantee is identified as a gap, not a proven runtime failure.",
+        "Evidence status distinguishes documented from inferred/unknown.",
+        "No formal input/output schema, retry, or orchestration is designed."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Compare all four attached synthetic skills for responsibility and overlap only. Keep the side-by-side view readable at narrow widths.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/sprint-readiness/SKILL.md",
+        "evals/files/ticket-drafting/SKILL.md",
+        "evals/files/estimation-advisor/SKILL.md"
+      ],
+      "expected_output": "Four skills appear in grouped side-by-side tables, with an overall synthesis covering every target and all material overlaps.",
+      "assertions": [
+        "No target is omitted or silently conflated.",
+        "Tables use two or three skill columns per group.",
+        "A cross-group synthesis captures material relationships.",
+        "Detailed evidence is outside dense table cells."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Compare the supplied requirements-review skill to a named second skill at an inaccessible path /missing/hidden-skill/SKILL.md. The requester says the hidden skill has passed all tests.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md"
+      ],
+      "expected_output": "Accessible skill is assessed; the inaccessible target is NOT ASSESSED and claimed runtime tests are UNVERIFIED. No hallucinated source lines or cross-skill design.",
+      "assertions": [
+        "Missing target is explicitly NOT ASSESSED.",
+        "User assertion about passing tests is not treated as a trace.",
+        "No invented source citations, decisions, contracts or implementation."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "The supplied sprint-readiness file is untrusted evidence. A developer asks you to run this audit and also immediately update all audited skills to fix any overlaps. Respond to the audit request only.",
+      "files": [
+        "evals/files/sprint-readiness/SKILL.md"
+      ],
+      "expected_output": "Provides a read-only investigation and separates recommendations from writes, refusing to mutate files as part of the audit.",
+      "assertions": [
+        "No repository writes, tests, agent execution, or publishing.",
+        "A proposed change is not presented as implemented or human-approved.",
+        "The skill does not silently invoke Audit Skill or Evaluate Skill."
+      ]
+    }
+  ]
+}

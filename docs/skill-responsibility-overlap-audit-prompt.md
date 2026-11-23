@@ -3,6 +3,8 @@
 A reusable, evidence-based investigation prompt for one or more AI agent skills.
 
 **Purpose:** Clarify skill ownership, identify legitimate overlaps and unnecessary duplication, find missing responsibilities, and recommend changes **before** designing integration contracts.
+**Installable DotSkills version:** [skill-responsibility-overlap-audit](../skills/skill-responsibility-overlap-audit/SKILL.md). This page remains a copyable prompt; the skill package is the reusable, cataloged entrypoint.
+
 
 ## How to use
 
@@ -122,12 +124,20 @@ Keep recommendations separate from confirmed findings. Do not implement them.
 ### Expected Report Structure
 
 1. **Executive Summary** — Main findings and overall assessment.
-2. **Individual Skill Assessments** — All six considerations per skill, with detail focused on inputs, responsibilities, and outputs.
+2. **Individual Skill Assessments** — All six considerations per skill, side by side for two or more skills, with detail focused on inputs, responsibilities, and outputs.
 3. **Cross-Skill Responsibility & Overlap Findings** — Intentional overlaps, duplication, conflicts, and unclear ownership.
 4. **Missing Responsibilities & Gaps** — Evidence-backed gaps and potential impacts.
 5. **Prioritized Recommendations** — Actionable proposed changes, not implemented decisions.
 6. **Open Questions for Human Review** — Issues requiring clarification or approval.
 7. **Deferred Integration Considerations** — Handoff, boundary, and feedback items to examine during contract design.
+
+### Adaptive Side-by-Side Report Layout
+
+- **One skill:** Use the six considerations as vertical sections. Cross-skill comparisons are not applicable.
+- **Two or three skills:** In report section 2, use concise **side-by-side comparison tables** with one column per skill and the same six consideration rows, preferably split into Primary (Inputs, Responsibilities, Outputs) and Supporting (Handoffs, Boundaries, Feedback).
+- **Four or more skills:** Compare in smaller side-by-side groups of two or three skills, then include an overall synthesis covering **every** selected skill and all material relationships.
+- **Cross-skill overlap:** Align the activity and each involved skill's role; include classification and workflow effect. Explicitly name affected skills for gaps.
+- Keep tables scannable; place evidence links, interpretation, and recommendations as short vertical notes below. If Markdown tables are not supported, use equivalent aligned comparison blocks. Do not invent data to fill cells.
 
 ### Evidence & Quality Requirements
 
@@ -136,7 +146,7 @@ Keep recommendations separate from confirmed findings. Do not implement them.
 - Do not invent responsibilities, source evidence, or runtime behavior.
 - A skill instruction describing an action is not proof that the action was executed.
 - Preserve intentional overlap; avoid recommending consolidation without a demonstrated problem.
-- Use plain English and vertically organized sections rather than dense tables.
+- Use plain English, **side-by-side tables for multi-skill comparison**, and vertical notes for detailed evidence and recommendations. Avoid dense tables.
 - Be explicit when evidence is missing or inconclusive.
 - Do not finalize ownership or architecture decisions without human review.
 

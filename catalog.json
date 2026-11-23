@@ -42,6 +42,15 @@
       "reference_count": 0
     },
     {
+      "name": "skill-responsibility-overlap-audit",
+      "category": "methodology",
+      "purpose": "Read-only, evidence-based investigation of responsibilities and overlaps across one or more agent skills. Six considerations per skill, mandatory side-by-side comparisons for two or more, explicit gaps and human-reviewed recommendations, stopping before integration contracts or implementation.",
+      "source": "dotskills",
+      "path": "skills/skill-responsibility-overlap-audit",
+      "reference_count": 0,
+      "exposed": true
+    },
+    {
       "name": "context-engineering",
       "category": "methodology",
       "purpose": "Diagnose and improve how a target skill selects, verifies, expands, and stops using context.",

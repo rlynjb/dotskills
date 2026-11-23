@@ -1,0 +1,54 @@
+# Skill Responsibility & Overlap Audit
+
+A focused, **read-only Stage 2 investigation skill** for clarifying responsibilities before writing integration contracts. Works with one skill or any set of skills in a repository-aware coding agent.
+
+## What it produces
+
+1. Individual reviews of the same **six considerations**: Inputs, Responsibilities, Outputs, Handoffs, Boundaries and Feedback. The first three receive deeper analysis; the last three identify future design questions.
+2. **Side-by-side comparisons** for two or more skills, so ownership and differences are visible in the same rows. Large sets are split into groups with an overall synthesis.
+3. Evidence-backed classification of legitimate shared behavior, complementary roles, duplication, conflicts and unclear ownership.
+4. Missing responsibilities/gaps, High/Medium/Low recommendations, and questions for human review.
+
+It does **not** decide the future architecture, draft contracts, execute skills, make repository edits, or mark recommendations as approved.
+
+## Example invocation
+
+```text
+Use skill-responsibility-overlap-audit on:
+- skills/first-skill
+- skills/second-skill
+- skills/third-skill
+
+Goal: identify responsibilities, overlaps, and missing ownership
+before integration design.
+
+Use direct file/line evidence and show comparisons side by side.
+Do not make edits or draft integration contracts.
+```
+
+An optional workflow description or harness name helps explain which handoffs matter, but neither is required. Supply commit/branch revisions when reproducibility matters.
+
+## How to interpret overlap
+
+- **Shared input:** two skills read the same requirements for different reasons. Often healthy.
+- **Duplicated decision:** both independently claim the final authority on the same requirement. May create conflicting results.
+- **Handoff gap:** a skill expects information no preceding skill promises to produce.
+- **Unverified:** the evidence does not establish a capability or missing capability. A documented promise alone is not runtime proof.
+
+## How this differs from other DotSkills skills
+
+- **This skill:** investigates current responsibilities and gaps only; stops before integration design.
+- **[Audit Skill](../audit-skill/SKILL.md):** broader Q-01–Q-10 quality review, proposed boundaries and conditional contracts, human-review workflow, and validation preparation.
+- **[Evaluate Skill](../evaluate-skill/SKILL.md):** guided evaluations and evidence-based skill improvements, where an authorized runner exists.
+- **[Profile Agent Workflow](../profile-agent-workflow/SKILL.md):** read-only analysis of dispatch and resource traces against approved routing rules.
+
+The smaller scope is deliberate: first investigate **who owns what**, then address **how skills communicate and what they guarantee** in a separate design stage.
+
+## Files
+
+- [SKILL.md](SKILL.md) — installable skill instructions.
+- [Report template](references/report-template.md) — aligned comparison layout.
+- [Evaluation cases](evals/evals.json) — static expected-behavior cases; not evidence of an evaluation run.
+- [Copyable original prompt](../../docs/skill-responsibility-overlap-audit-prompt.md) — standalone non-installable prompt.
+
+DotSkills catalog registration makes the skill discoverable; it is not automatically installed in Codex, ChatGPT, or another harness. Check that environment's packaging and available tools.

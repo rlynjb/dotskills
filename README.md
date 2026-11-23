@@ -54,6 +54,10 @@ Skills are grouped by use.
   **Purpose:** Junior-developer-friendly, overview-first skill review: explains Q-01–Q-10 findings, proposes responsibility boundaries and handoff contracts with reasons, then guides human decisions and separate validation preparation. Read-only.  
   **What you'll learn:** Engineering reasoning through senior-to-junior explanations: who owns what, why overlaps and contracts matter, trade-offs, human decisions, trust/security boundaries, and evaluation readiness.
 
+- **Skill:** [skill-responsibility-overlap-audit](skills/skill-responsibility-overlap-audit/SKILL.md)  
+  **Purpose:** Focused read-only investigation of skill inputs, ownership, outputs, handoffs, boundaries, and feedback. Shows two or more skills side by side; identifies overlap and gaps **before** contract design.  
+  **What you'll learn:** Comparing evidence across skills, separating shared context from duplicated decisions, identifying unowned responsibilities, and forming proposals for human review.
+
 ---
 
 ### Decision support
