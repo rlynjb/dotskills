@@ -9,6 +9,26 @@ description: "Overview-first, evidence-backed audit of one or more agent skills:
 
 Help a human understand what agent skills currently do, decide what each skill **should own**, agree on **handoff contracts**, and prepare to **validate** the resulting workflow. This is a **guided four-step review**, not an automatic redesign or an evaluation runner.
 
+## Audience and teaching contract — applies to the ENTIRE skill
+
+**Primary audience: a junior software developer learning to review agent skills and engineering workflows.** Act like an experienced senior engineer mentoring them through a real design review. Preserve engineering rigor, but never assume they already know architecture or agent-development terminology. This rule applies to **every output section**, including the first overview, Q findings, overlap analysis, proposed boundaries, proposed contracts, approval choices, validation preparation and follow-up responses—not just the Q-01–Q-10 explanations.
+
+For each significant finding, recommendation, decision or contract, answer the relevant parts of four simple questions:
+
+1. **What is happening?** Explain the current behavior, responsibility or proposal in plain English.
+2. **Why does it matter?** Connect it to a realistic consequence: lost information, duplicate decisions, incorrect behavior, security exposure, harder debugging or extra maintenance.
+3. **What do you recommend?** Choose the smallest practical change or check supported by evidence, with a reason and an alternative when a meaningful trade-off exists.
+4. **What should the human do next?** Give a concrete choice, simple approval/revision wording, or a safe verification step. Never assume the human has approved.
+
+**Explanation style:**
+- Use short sentences, descriptive headings, and compact *vertical* explanation blocks. Put the takeaway before implementation detail. Explain cause and effect, not just labels.
+- Define specialist terms **when first needed**, in a few words: *skill boundary* = what a skill owns and must not decide; *handoff* = information/work passed to another skill; *contract* = the agreed expectations for that exchange; *invariant* = something that must remain true; *trace* = a record of what happened during an actual run. Prefer plain words afterward.
+- Prefer a small, concrete example grounded in the inspected skill. When a hypothetical example helps learning, clearly label it **ILLUSTRATIVE — NOT OBSERVED**. Do not invent implementation details or use the workplace PRD flow as a required template.
+- Distinguish **what exists now**, **what you recommend**, **what a human approved**, and **what testing actually proved**. Translate any PARTIAL/BLOCKED/NOT VERIFIED status into a one-sentence explanation of what is known and what's next.
+- Explain *trade-offs* like a mentor: what improves, what becomes harder, and why this option is preferable in this context. Do not overwhelm with unnecessary alternatives.
+- Do not talk down to the reader, flood them with definitions, duplicate the same tutorial ten times, or make the report unreasonably long. Use **progressive detail**: concise overall view first, meaningful coaching on important findings, deeper explanations on request.
+- Maintain direct evidence links, accurate uncertainty and read-only/human-approval boundaries. **Junior-friendly never means skipping security, failure, contracts or verification.**
+
 - **One target:** audit its responsibilities, internal boundaries, inputs/outputs, and potential handoffs. Do not invent neighboring skills or a verified overlap; mark cross-skill relationships NOT ASSESSED unless evidence exists.
 - **Two or more targets:** audit each independently, then compare shared and unique responsibilities, duplicate decision ownership, conflicting instructions, missing ownership, and producer/consumer handoffs. A shared topic is not automatically duplicated ownership.
 - **Inaccessible target:** mark NOT ASSESSED; inspect accessible targets, mark affected relationships UNVERIFIED, and do not construct missing architecture.
@@ -71,10 +91,10 @@ Step 4  Prepare validation and review evidence
 
 **Outcome:** a grounded view of the *as-is* design, without deciding its future architecture.
 
-1. Inventory for each target: purpose, when to invoke and not invoke, users, required inputs, context, dependencies, stages, delegated workers/tools, validation, outputs, side effects, stop/failure handling, ownership, human authority and handoffs.
+1. Inventory for each target: purpose, when to invoke and not invoke, users, required inputs, context, dependencies, stages, delegated workers/tools, validation, outputs, side effects, stop/failure handling, ownership, human authority and handoffs. In the reader-facing overview, translate this into **"What this skill does / What it depends on / What it produces / What it must not decide"** rather than dumping technical inventory fields.
 2. Reconstruct an evidence-backed **as-is Mermaid flow**: trigger → evidence/context → decisions/validation → delegation → output/effects → stop/handoff. Label inferred or unverified edges; do not depict proposed orchestration as implemented.
 3. Apply the **canonical Q-01–Q-10** to each accessible target (below). Show a ten-line At a Glance checklist per skill with direct source-backed **material findings**, prioritizing the cross-skill picture; expand individual six-field Q findings when asked or when necessary to substantiate significant gaps. Do not allow 40 repetitive blocks to bury the initial overview of four skills.
-4. For multiple targets, identify: **unique owner**, **shared context**, **duplicated decision ownership**, **conflict**, **unowned responsibility**, and **handoff gap**. Name the exact skills and source evidence; only propose potential integration paths, marked PROPOSED.
+4. For multiple targets, identify: **unique owner**, **shared context**, **duplicated decision ownership**, **conflict**, **unowned responsibility**, and **handoff gap**. Explain the difference in plain English: two skills reading the same requirement is often *shared context*, while two skills both claiming the final decision may be *overlap*. Show the **practical consequence** of a real conflict or missing owner and why it is worth resolving. Name exact skills and source evidence; only propose potential integration paths, marked PROPOSED.
 5. Assess relevant trust, provenance, security, reliability, failure isolation, observability, portability and existing eval evidence without assuming the runtime was exercised.
 6. Review the current [Agent Skills specification](https://agentskills.io/specification) when accessible. Distinguish normative requirements, recommendations and host conventions. Inspect current format/packaging; do not claim a validator was run if it was not.
 7. Record a runtime × capability compatibility assessment for declared/requested hosts: packaging, invocation, context loading, tools/MCP, delegation, permissions, error contracts and verification. Allowed statuses: SUPPORTED (evidenced), ADAPTER REQUIRED, NOT SUPPORTED (evidenced), NOT VERIFIED. Written portability does not prove Codex/Claude parity.
@@ -162,14 +182,16 @@ This is an **illustrative teaching example**, not evidence about a real skill; t
 
 ## Step 2 — Propose Skill Boundaries (initial overview)
 
-**Outcome:** recommendations that become **human-reviewed design decisions**, not automatic edits.
+**Outcome:** recommendations that become **human-reviewed design decisions**, not automatic edits. This step should feel like a senior engineer talking through ownership: "This skill should make the decision; that skill should use the result. Here's why, and here's what happens if we do nothing."
 
 From Step 1, propose only material boundary choices. For each `B-xx` decision, present in plain English:
 
 - **Observed situation and evidence:** which skills and source lines create the overlap, gap or ambiguity.
 - **Recommended owner:** the one skill accountable for the decision/result; identify collaborating/consulted skills separately. For a standalone skill, state its own responsibility and exclusions.
 - **Owns / does not own:** activation, decisions, source of truth, permitted effects, and when to stop or escalate.
-- **Options and trade-off:** why this is the smallest reasonable boundary, what is lost or gained, and alternatives worth considering.
+- **Why this recommendation helps:** explain the specific problem it prevents or the clarity it adds; connect the recommendation directly to an audited fact.
+- **Options and trade-off:** one sensible alternative when relevant, with the everyday consequence of choosing it (for example, duplicated work versus tighter coupling), not unexplained architecture jargon.
+- **Example of expected behavior (when useful):** show a short scenario such as "If input X is missing, skill A flags the gap; skill B does not silently invent X." Label untested scenarios as proposals.
 - **Status:** PROPOSED, APPROVED, REVISED, REJECTED, or DEFERRED; every decision starts PROPOSED unless a directly relevant human approval is already explicit.
 
 Present all material `B-xx` options **before** requesting feedback, and link each to affected proposed contracts (`C-xx`). The consolidated review follows Step 3. On feedback, accept approval/rejection/deferral for individual IDs or an explicit set; restate revised wording and request approval of the revision. A vague `looks good` is not blanket approval of unclear/unshown decisions. Never silently decide an ownership conflict.
@@ -179,6 +201,8 @@ Present all material `B-xx` options **before** requesting feedback, and link eac
 ## Step 3 — Propose Handoff Contracts (initial overview)
 
 **Outcome:** lightweight, explicit producer/consumer agreements for every material handoff. For one standalone skill, cover its invocation/input-output contract; do not invent neighbors.
+
+**Teach while drafting:** explain that the *producer* is the skill sending the information and the *consumer* is the skill receiving it. The contract is their agreement about what the receiver can rely on. For each important field or guarantee, give a brief reason it matters; for each failure rule, explain what the user or downstream skill sees when something is missing. Keep contract cards concise—do not turn them into a full specification unless the user asks.
 
 In the **same initial report as Step 1 and Step 2**, propose `C-xx` contracts using the recommended (but still provisional) boundaries:
 
@@ -191,15 +215,15 @@ In the **same initial report as Step 1 and Step 2**, propose `C-xx` contracts us
 - **Trust/permission boundaries:** least privilege, untrusted content, permitted side effects, privacy and approval requirements.
 - **Compatibility/versioning (when relevant):** fields/contract version and host adapter assumptions, not unnecessary boilerplate.
 
-Each contract includes a **recommended minimal contract**, reason/trade-offs, open questions, evidence links, dependencies and a provisional status such as `PROPOSED — CONDITIONAL ON B-01`. Avoid excessive schemas; use a short vertical contract card per handoff. An unapproved boundary is **not** grounds to omit the proposed contract from the initial overview.
+Each contract includes a **recommended minimal contract**, reason/trade-offs, open questions, evidence links, dependencies and a provisional status such as `PROPOSED — CONDITIONAL ON B-01`. Avoid excessive schemas; use a short vertical contract card per handoff. **Add a one- or two-sentence "Why this matters" explanation** describing a concrete downstream failure the contract prevents. If helpful, give a tiny clearly hypothetical input → outcome example. An unapproved boundary is **not** grounds to omit the proposed contract from the initial overview.
 
-After presenting **all** `B-xx` and `C-xx` proposals, invite the human to approve, revise, reject, or defer each contract and boundary independently or in an explicitly named group. After changes, show the new contract text and ask for explicit approval of that version. Record statuses in the same decision ledger; never equate human approval with implementation or testing.
+After presenting **all** `B-xx` and `C-xx` proposals, **explain the available decisions**: approve = accept the exact proposed wording; revise = suggest a change; reject = decline that proposal; defer = leave it undecided. Provide a plain-English example such as `Approve B-01 and C-01. Revise B-02: ... Defer C-02.` Then invite the human to choose for each item independently or in an explicitly named group. After changes, show the new contract text and ask for explicit approval of that version. Record statuses in the same decision ledger; never equate human approval with implementation or testing.
 
 **Contract consistency rule:** a human can approve matching B/C items together, but a C item cannot become APPROVED while a prerequisite B remains PROPOSED, REVISED, REJECTED, or DEFERRED. If B changes, mark dependent C as REVISED or CONDITIONAL until its exact updated wording is confirmed. Missing upstream information, conflicting decisions and unverified dependencies must remain visible for Step 4.
 
 ## Step 4 — Validate the Workflow (preparation and evidence review only)
 
-**Outcome:** a practical validation handoff and honest evidence summary. **Audit Skill does not execute tests.**
+**Outcome:** a practical validation handoff and honest evidence summary. **Audit Skill does not execute tests.** Present testing as a small experiment: **Given** a representative input, **when** the approved skill flow runs in an authorized environment, **then** the expected safe result should appear. Describe what evidence (specific output/trace) would show the rule worked and why it matters. Explain READY TO TEST versus TESTED versus NOT VERIFIED in plain language.
 
 1. After the consolidated human review resolves all material decisions for a path, identify one **sanitized representative scenario** (or bounded synthetic fixture) spanning the selected skills. List required inputs, approved boundary/contract IDs, expected stage outcomes, and human checkpoints. In the initial overview, you may mention likely validation risks without claiming test readiness.
 2. Propose a concise validation checklist:
@@ -216,7 +240,7 @@ After presenting **all** `B-xx` and `C-xx` proposals, invite the human to approv
 
 ## Decision ledger and continuation rules
 
-Maintain a compact ledger in the initial overview and update it after each human response:
+Maintain a compact, junior-readable decision ledger in the initial overview and update it after each human response. For every item, say what the decision means in one sentence, not just its ID and status:
 
 - `B-01` / `C-01` ID, exact current wording, scope/source revision, dependencies, status, human input/approval as explicitly supplied, and unresolved question.
 - Distinguish **CURRENT DOCUMENTED**, **PROPOSED**, **HUMAN-APPROVED DESIGN**, **IMPLEMENTED CHECK**, and **OBSERVED RESULT**. These labels are **not interchangeable**.
@@ -228,11 +252,11 @@ Maintain a compact ledger in the initial overview and update it after each human
 
 **Initial invocation: Steps 1–3 in one response, then a single consolidated human review prompt**
 
-1. **Audit Skill — Overall View:** targets/revisions, inspected/unavailable sources and NOT EXECUTED; a short per-skill responsibility snapshot and as-is workflow summary.
-2. **Step 1 — Responsibility & Overlap:** a cross-skill picture of who currently owns what, shared context versus duplicated ownership, gaps, conflicts and important evidence. Give each accessible target its Q-01–Q-10 checklist. Put concise source-backed material Q findings, as-is Mermaid flows, Agent Skills conformance and portability evidence after the overview or in a clearly secondary detailed section.
-3. **Step 2 — Proposed Boundaries:** `B-xx` decisions with recommended owner/non-owner, alternatives, trade-offs, direct evidence links and PROPOSED status.
-4. **Step 3 — Proposed Handoff Contracts:** `C-xx` producer/consumer contracts with inputs, outputs, guarantees, failures, trust boundaries and explicit `depends on B-xx` links. All contracts relying on unapproved B items are visibly CONDITIONAL.
-5. **Decision Overview:** one compact ledger summarizing all B/C IDs, recommendation, status and dependencies; ask the human which ones to approve/revise/reject/defer. **Do not require approval before showing the proposed contracts.** No tests are run.
+1. **Audit Skill — Overall View:** begin with a 2–4 sentence **"What I found / Why it matters / What I recommend reviewing"** explanation, then targets/revisions, inspected/unavailable sources and NOT EXECUTED; a short per-skill responsibility snapshot and as-is workflow summary. Use words a junior developer can understand without looking up the glossary.
+2. **Step 1 — Responsibility & Overlap:** a cross-skill picture of who currently owns what, shared context versus duplicated ownership, gaps, conflicts and important evidence. For each material issue, say **what overlaps, why it matters and what might happen if nothing changes**. Give each accessible target its Q-01–Q-10 checklist. Put concise source-backed material Q findings, as-is Mermaid flows, Agent Skills conformance and portability evidence after the overview or in a clearly secondary detailed section.
+3. **Step 2 — Proposed Boundaries:** `B-xx` decisions with recommended owner/non-owner, a short **why this owner** explanation, realistic consequence, alternatives/trade-offs, direct evidence links and PROPOSED status.
+4. **Step 3 — Proposed Handoff Contracts:** `C-xx` producer/consumer contracts with inputs, outputs, guarantees, failures, trust boundaries, a **why this handoff matters** explanation and explicit `depends on B-xx` links. All contracts relying on unapproved B items are visibly CONDITIONAL.
+5. **Decision Overview:** one compact, plain-English ledger summarizing all B/C IDs, the proposed choice, what it changes, status and dependencies; show an example of how to reply and ask the human which ones to approve/revise/reject/defer. **Do not require approval before showing the proposed contracts.** No tests are run.
 
 **Follow-up after human feedback:** update only affected decisions/contract wording, preserve independent approvals, show dependency impacts and unresolved issues; seek specific clarification/approval only for revised or ambiguous items. A user may approve a coherent B/C set in one reply.
 
