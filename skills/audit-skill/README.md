@@ -1,8 +1,10 @@
 # Audit Skill
 
-**Audit Skill gives you the whole engineering picture before asking for decisions.** It inspects the skills as they exist, recommends responsibility boundaries, drafts the corresponding handoff contracts, and presents all three parts **in one initial overview**.
+**Audit Skill is an engineering review taught at a junior-developer level.** Think of an experienced senior engineer examining a skill with you, pointing out what works, explaining risks in everyday language, and recommending the smallest sensible improvement.
 
-You can then approve, revise, reject, or defer **individual boundaries and contracts**, or approve a clearly identified compatible set. No automatic architectural decisions, edits, or test executions.
+It inspects skills as they exist, recommends responsibility boundaries, drafts the corresponding handoff contracts, and presents **all three parts in one initial overview**. You can then approve, revise, reject, or defer individual decisions. No automatic architectural decisions, edits, or test executions.
+
+**Audience:** Junior developers who know basic software development but are still learning agent skills, system boundaries, contracts, failures, and evaluation. The skill should **teach throughout the entire review**, not only in its ten-question checklist.
 
 ## Table of contents
 
@@ -27,7 +29,20 @@ Imagine four skills in a development workflow. They may each look fine individua
 - A missing requirement quietly turns into an assumption.
 - Everyone agrees with an architecture diagram but nobody has verified the workflow in Codex.
 
-If you approve skill boundaries before seeing the handoff contracts, you might miss how those decisions change the flow. **The new design deliberately shows Steps 1, 2, and 3 together**, before your first decision.
+If you approve skill boundaries before seeing the handoff contracts, you might miss how those decisions change the flow. **The design deliberately shows Steps 1, 2, and 3 together**, before your first decision.
+
+### How the senior-engineer mentoring style works
+
+For **every important part** of the audit—not just the Q-01–Q-10 findings—expect four answers:
+
+1. **What am I looking at?** A simple explanation of the behavior or design decision.
+2. **Why should I care?** A specific consequence such as duplicated decisions, lost information, accidental permissions or confusing failures.
+3. **What would a senior engineer recommend?** A concrete option, the reasoning behind it and any meaningful trade-off.
+4. **What can I do next?** Approve, revise, reject, defer or verify with a separate authorized check.
+
+Unfamiliar words should be explained in context, not used as substitutes for understanding. For example, a **skill boundary** is simply what that skill is responsible for and what it must not decide. A **handoff contract** describes what one skill promises to pass to another and what the receiver can safely expect.
+
+The language should be straightforward and respectful, never oversimplify away security or reliability, and never turn a recommendation into an automatic change.
 
 The key distinction is between **CURRENT DOCUMENTED**, **PROPOSED**, **HUMAN-APPROVED DESIGN**, **IMPLEMENTED CHECK**, and **OBSERVED RESULT**. Each means something different.
 
@@ -71,7 +86,7 @@ Begin with **Audit Skill — Overall View**, a skimmable summary of:
 - **Dependencies:** which proposed contract depends on which proposed boundary.
 - **Review ledger:** one place to see what you can approve/revise/reject/defer.
 
-The report also contains **source-backed supporting evidence**: per-skill Q-01–Q-10 coverage checklists, material findings, as-is Mermaid diagrams, Agent Skills format checks, and runtime compatibility limitations. The full ten six-field Q explanations may be expanded on request. This keeps a four-skill audit skimmable instead of burying the proposed architecture under dozens of repetitive fields.
+The report also contains **source-backed supporting evidence**: per-skill Q-01–Q-10 coverage checklists, material findings, as-is Mermaid diagrams, Agent Skills format checks, and runtime compatibility limitations. Significant findings should use short explanations of **what exists, what's missing, why it matters, and what to do next**. The full ten six-field Q explanations may be expanded on request. This keeps a four-skill audit skimmable instead of burying the proposed architecture under dozens of repetitive fields.
 
 **Nothing in this first report is automatically approved.**
 
@@ -83,18 +98,22 @@ For **one skill**, it assesses responsibility boundaries and internal/input-outp
 
 For **multiple skills**, it first assesses each independently, then compares:
 
-- **Unique ownership:** one skill performs a job and decides its result.
-- **Shared context:** two skills both use the same information, but have different responsibilities.
-- **Duplicated decision ownership:** two skills both claim to make the same authoritative decision.
-- **Conflict:** instructions or ownership claims disagree.
-- **Unowned responsibility:** the workflow needs a decision, but no skill owns it.
-- **Handoff gap:** producer and consumer disagree about information or failure behavior.
+- **Unique ownership:** one skill is clearly responsible for a job or decision.
+- **Shared context:** two skills read the same information for different reasons; this is often normal.
+- **Duplicated decision ownership:** two skills both claim to make the final decision; their answers could disagree.
+- **Conflict:** their instructions or responsibilities contradict each other.
+- **Unowned responsibility:** an important task or decision has no clear owner.
+- **Handoff gap:** one skill expects information another does not promise to supply.
+
+A senior engineer should explain the *consequence*, not just name the category. For example, two skills checking the same requirements is not necessarily wrong. But if both can independently declare them complete, the workflow could get conflicting answers. The report should explain how the actual inspected skills differ.
 
 Do not confuse an as-is flow with a proposed future architecture. Every material conclusion should have a real file/line source link.
 
 ## 5. Step 2 — Propose boundaries
 
-A recommendation is expressed as a named `B-xx` decision. It explains what exists, the recommended owner, what that skill should **not** own, alternatives and trade-offs.
+A recommendation is expressed as a named `B-xx` decision. **B means boundary:** a choice about who owns a particular job or decision. The reviewer explains what exists, the recommended owner, what that skill should **not** own, alternatives and trade-offs.
+
+Every proposed boundary should answer: **Which skill should decide? Which skill should only consume the result? Why is this division safer or simpler? What happens if we leave it unclear?**
 
 ### Example B-01 — Requirements clarity versus sprint readiness
 
@@ -102,7 +121,8 @@ A recommendation is expressed as a named `B-xx` decision. It explains what exist
 
 - **Observed concern:** Refine Requirements and Sprint Assessment may both inspect requirements.
 - **Recommendation:** Refine Requirements owns detailed requirements clarification. Sprint Assessment consumes that conclusion for sprint readiness and reports missing requirements without silently rewriting them.
-- **Alternative:** Both independently re-decide requirements clarity, potentially duplicating work and creating conflicts.
+- **Why it matters:** When two skills can both rewrite requirements, a later skill may not know which version is authoritative. Keeping one clear owner reduces conflicting answers.
+- **Alternative:** Both independently re-decide requirements clarity. That may give flexibility but could duplicate work and produce conflicting conclusions.
 - **Affects contracts:** C-01.
 - **Status:** PROPOSED.
 
@@ -110,7 +130,7 @@ The Audit Skill **does not pause here**. It proceeds to propose the affected con
 
 ## 6. Step 3 — Propose handoff contracts
 
-Each `C-xx` proposal describes the minimum useful agreement between producer and consumer:
+Each `C-xx` proposal describes the minimum useful agreement between **the producer (the skill sending information)** and **the consumer (the skill receiving it)**. **C means contract.** This is like agreeing on what a function accepts and returns, plus what happens when it cannot complete successfully.
 
 - Who produces the result and who consumes it.
 - When the handoff can happen.
@@ -145,6 +165,8 @@ Depends on: B-01
 Status: PROPOSED — CONDITIONAL ON B-01
 ```
 
+**Why this contract matters:** Imagine the first skill identifies an unanswered question, but the second skill never receives that information. The second skill might mark a ticket ready even though the requirement is unresolved. Preserving that question—and stopping safely when important data is missing—reduces the risk.
+
 This contract **appears in the first report**, even though B-01 is not approved yet. It is **not an implemented, enforced, or approved contract**.
 
 ## 7. Review and revise decisions together
@@ -160,11 +182,13 @@ Defer C-02.
 
 The skill should:
 
-1. Record the explicit decisions for the exact displayed wording.
-2. Mark B-02 **REVISED** and show its updated wording for your confirmation.
-3. Re-check any C-xx proposals that depend on B-02; show changed terms and request new approval.
-4. Preserve unrelated approvals; mark deferred/blocked dependencies clearly.
-5. Only move a path to validation preparation once its **relevant** boundaries and contracts are approved.
+1. Record **what you actually approved**, using the exact wording shown.
+2. Mark B-02 **REVISED** and show your updated wording for confirmation.
+3. Re-check any C-xx contracts affected by B-02, and explain *why* their fields or responsibilities might need to change.
+4. Keep unrelated approvals, while explaining that deferred decisions leave affected contracts undecided.
+5. Prepare validation only for paths whose relevant boundaries and contracts are approved.
+
+**Plain-English decision meanings:** `APPROVE` = accept the proposed wording; `REVISE` = change it before accepting; `REJECT` = do not adopt that proposal; `DEFER` = decide later. You should not have to understand any special command syntax to review the recommendations.
 
 **You may approve B-01 and C-01 together** if the wording is clear and consistent. The skill processes boundary approval first, then contract approval. If you revise B-01, C-01 must be checked against that revision rather than implicitly approved.
 
@@ -174,7 +198,9 @@ The decision ledger records IDs, wording, current source revision, dependencies 
 
 ## 8. Step 4 — Prepare validation
 
-After the relevant B and C items are approved, Audit Skill proposes a representative, sanitized scenario and an evidence-based checklist:
+After the relevant B and C items are approved, Audit Skill proposes a representative, sanitized scenario and an evidence-based checklist. Think of it as asking: **"If I give these skills this input, what result should I see, and what evidence would prove it?"**
+
+For example: **Given** a task with a missing required field, **when** the approved workflow runs in a separately authorized environment, **then** the next skill should clearly say `NEEDS HUMAN` or `BLOCKED`, rather than inventing the value. A **trace** is the record of what really happened during that run.
 
 - Did each skill make only the decisions it owns?
 - Did the handoff preserve required inputs, sources, unanswered questions and approval states?
@@ -204,6 +230,26 @@ The existing ten engineering checks remain the foundation of the audit. They are
 
 For every accessible skill, Audit Skill checks all ten and gives a short coverage checklist. When you request a detailed finding (or a significant gap needs explanation), the standard six fields are **Question → Check → Finding → Evidence → Status → Recommendation**.
 
+### Findings and recommendations should teach you something
+
+The entire audit uses the mentoring style, but it is especially important here. A **finding** says what the source shows, identifies an actual gap or uncertainty, and explains the *consequence*. A **recommendation** gives one clear improvement or verification step, explains *why it helps*, and says how you could recognize a better outcome.
+
+**Too vague (hypothetical):**
+
+> *Finding:* Output contract incomplete.
+>
+> *Recommendation:* Improve failure handling.
+
+**Better (hypothetical, not a real audit finding):**
+
+> *Finding:* The skill describes the fields it returns, so the next skill knows what kind of result to expect. But the inspected instructions do not say what should happen when a required input is missing. That matters because the next skill may treat an incomplete result as valid.
+>
+> *Recommendation:* Identify which inputs are required and define an explicit `NEEDS HUMAN` or `BLOCKED` result when one is absent. This makes the missing information visible instead of forcing the next skill to guess. Check the behavior in a separately authorized evaluation.
+
+Every **real** finding must cite the exact source and distinguish missing documentation from a proven runtime failure. If a criterion is sufficiently covered, the recommendation can be "No change justified" rather than inventing work.
+
+The [Q-01–Q-10 learning guide](references/coverage-checklist-examples.md) contains a junior-friendly explanation of each question. You can also request `Expand Q-05 like a senior engineer explaining it to a junior developer.`
+
 Evidence states:
 
 - **DOCUMENTED INSTRUCTIONS** = source claims a behavior.
@@ -229,6 +275,9 @@ Step 3 — all proposed C-xx handoff contracts,
 including their dependencies on B-xx decisions.
 
 Show source evidence and Q-01–Q-10 coverage.
+Explain findings, proposed boundaries and contracts at
+a junior-developer level: what, why, recommendation and
+next action. Act like a senior engineer coaching me.
 Do not pause for approvals between Steps 1–3.
 
 After presenting the entire picture, let me approve,
@@ -245,6 +294,8 @@ Inspect the current skill and its material references,
 propose any B-xx boundary improvements and any
 meaningful C-xx invocation/output contract.
 Show Steps 1–3 together, then ask for my review.
+Explain terms, the reason for recommendations and next
+steps as a senior engineer mentoring a junior developer.
 Do not fabricate neighboring skills or execute anything.
 ```
 
@@ -267,4 +318,4 @@ A multi-skill teaching example is in [Sprint Assessment worked example](referenc
 
 The four visible steps of this workflow are **not** four new SDI reasoning stages. Audit Skill may use SDI internally for scope, design, contracts, and trade-offs.
 
-**Mental model: inspect all skills → see boundaries and contracts together → approve/revise decisions → validate in a separate authorized run.**
+**Mental model:** A senior engineer helps you understand **what exists → why it matters → what they recommend → what you decide → how to verify it**. The workflow remains **inspect all skills → see boundaries and contracts together → approve/revise decisions → validate in a separate authorized run**.
