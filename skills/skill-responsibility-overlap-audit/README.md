@@ -9,7 +9,7 @@ Use [Senior Engineer → Junior Developer Communication Guideline](../../docs/se
 ## What it produces
 
 1. Individual reviews of the same **six considerations**: Inputs, Responsibilities, Outputs, Handoffs, Boundaries and Feedback. The first three receive deeper analysis; the last three identify future design questions.
-2. **Side-by-side comparisons** for two or more skills, with each material finding **inside its matching C1–C6 consideration row and skill column**—not in a separate Finding A/B/C section. Each finding has a report-local **F-xx ID** and five short, labeled lines: **Finding, Evidence, Assessment, Why, Recommendation** (KEEP / CLARIFY / REVISE / ADD / VERIFY). Tables split into smaller groups when needed.
+2. **Side-by-side comparisons** using the original readable C1–C6 rows and one column per skill. Material findings use **F-xx IDs** and concise **Finding / Evidence / Assessment / Why / Recommendation** sentences **within the matching cell** (KEEP / CLARIFY / REVISE / ADD / VERIFY), without added HTML or detached Finding A/B/C sections. When exact wording is long, one adjacent F-xx detail row can preserve readability.
 3. **Optional connection documentation proposals, per affected skill** when Handoffs, Boundaries, or Feedback reveal a material issue. Keep each skill independently usable with complete inputs, workflow and outputs; suggest passing the other skill's result as optional context only, never as an automatic invocation.
 4. Evidence-backed classification of legitimate shared behavior, complementary roles, duplication, conflicts and unclear ownership.
 5. **Optional coordinator assessment** when multiple skills have a material combined-workflow routing, sequencing, context or feedback problem. Explain why a separate coordinator is needed—or why optional handoff docs and copyable prompts are enough.
@@ -17,7 +17,7 @@ Use [Senior Engineer → Junior Developer Communication Guideline](../../docs/se
 
 Assessment labels describe preliminary engineering judgment, not evidence certainty, High/Medium/Low priority or approval. **KEEP** is a useful no-change result; **VERIFY** means collect evidence before proposing a fix. The final recommendations reference the F-xx identifiers inside the consideration rows without repeating every explanation.
 
-When a meaningful issue comes from ambiguous instructions, the **same table cell** may also include **Current wording → Concern → Recommended wording — PROPOSED**. This uses an exact sourced quotation, explains a plausible misinterpretation without claiming it happened, and proposes the smallest clear replacement for human review. It is optional, not a seventh consideration or a mandatory rewrite of every sentence. In Markdown tables, `<br>` separates labeled lines inside one cell.
+When a meaningful issue comes from ambiguous instructions, the matching C1–C6 row may also contain **Current wording → Concern → Recommended wording — PROPOSED**. For long exact quotes, put that detail in an **immediately adjacent table row** using the same F-xx ID. This is optional, not a seventh consideration, a new findings section, or a reason to rewrite well-written instructions. **No HTML tags are used.**
 
 It does **not** decide the future architecture, draft contracts, execute skills, make repository edits, or mark recommendations as approved.
 

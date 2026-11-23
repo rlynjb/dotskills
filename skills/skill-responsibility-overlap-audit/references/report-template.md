@@ -11,33 +11,43 @@ Use as an **output guide, not a source of facts**. Replace all bracketed placeho
 
 ## 2. Individual Skill Assessments
 
-**Put material findings directly inside each skill's consideration cell.** Use one `Consideration` column with `C1`–`C6` labels, and one column per skill. No separate "Finding A/B/C" section. For each material finding, use report-local `F-01`, `F-02`, etc., and keep the five fields on separate visual lines **within the cell** using Markdown `<br>`. These are templates, not actual audit claims.
+Keep the **original side-by-side comparison**. Use standard Markdown pipe tables with a short, **single physical line per row**—even when the text wraps naturally in a terminal. No HTML line-break tags, embedded newlines, or bullet lists inside cells. Every material finding belongs beside its C1–C6 consideration; do not create separate Finding A/B/C sections.
 
 **Primary considerations — analyze in detail**
 
 | Consideration | [Skill A] | [Skill B] |
 | --- | --- | --- |
-| 1. Inputs (C1) | [Short description of inputs; expand here if a material finding exists.] | [Short description of inputs; expand here if a material finding exists.] |
-| 2. Responsibilities (C2) | **F-01 (C2) — [Short title]**<br>**Finding:** [Relevant ownership finding.]<br>**Evidence:** [DOCUMENTED — direct source]<br>**Assessment:** KEEP<br>**Why:** [Why preserving this ownership helps.]<br>**Recommendation:** Keep as-is. | [Use F-02 (C2) with the same fields when meaningful; otherwise summarize current responsibilities.] |
-| 3. Outputs (C3) | [Concise supported output summary, or five fields for an important issue.] | [Concise supported output summary, or five fields for an important issue.] |
+| 1. Inputs (C1) | **F-01 (C1)** **Finding:** Discovery reads as mandatory. **Evidence:** DOCUMENTED [source]. **Assessment:** CLARIFY. **Why:** Could delay a valid draft. **Recommendation:** Permit a provisional draft with gaps recorded. | Accepts a ticket or idea; no upstream PRD is required. [Source] |
+| 2. Responsibilities (C2) | **F-02 (C2)** **Finding:** Owns initial product requirements. **Evidence:** DOCUMENTED [source]. **Assessment:** KEEP. **Why:** A complete PRD remains usable alone. **Recommendation:** Preserve ownership. | Reviews requirements against evidence and proposes clarifications. [Source] |
+| 3. Outputs (C3) | Produces a PRD with open questions. [Source] | Produces a requirements review with unresolved items. [Source] |
 
 **Supporting considerations — identify issues; defer detailed design**
 
 | Consideration | [Skill A] | [Skill B] |
 | --- | --- | --- |
-| 4. Handoffs (C4) | **F-03 (C4) — [Short title]**<br>**Finding:** [Handoff wording is ambiguous.]<br>**Evidence:** [DOCUMENTED phrase at source; risk INFERRED]<br>**Assessment:** CLARIFY<br>**Why:** [A consumer might assume an unintended prerequisite.]<br>**Recommendation:** [Propose a clearer optional handoff.]<br>**Current wording:** "[Exact sourced passage]"<br>**Concern:** [Specific misleading interpretation.]<br>**Recommended wording — PROPOSED:** "[Source-aligned revision.]" | [Concise handoff summary, or an F-xx with the same fields.] |
-| 5. Boundaries (C5) | [Source-backed boundary summary, or F-xx finding. If related to F-03, say `Related: F-03 (C4)` without repeating that note.] | [Source-backed ownership and authority; expand only when material.] |
-| 6. Feedback (C6) | [Source-backed feedback path; expand only when material.] | [Source-backed feedback path; expand only when material.] |
+| 4. Handoffs (C4) | Optional PRD context may be passed to refinement; no automatic invocation. [Source] | Consumes an existing PRD optionally; the standalone path remains available. [Source] |
+| 5. Boundaries (C5) | Drafts within authorization; cannot publish or approve new scope without permission. [Source] | Review-only; proposes changes rather than editing the PRD. [Source] |
+| 6. Feedback (C6) | Human owner reviews proposed updates. [Source] | Returns open questions and proposed changes to the owner. [Source] |
 
-**Layout rules**
+*All content above is a formatting illustration, not findings about real skills. Replace every placeholder with inspected evidence; omit F-xx when no significant finding exists.*
 
-- Material findings stay **in the row where they were discovered** and in the affected **skill's column**. The examples F-01 and F-03 above illustrate format only; assign sequential IDs to real findings in consideration order, then skill order. Keep IDs stable when revising the same report if the underlying finding has not changed.
-- Use **Finding / Evidence / Assessment / Why / Recommendation** for meaningful issues or useful KEEP judgments. Do not force five fields for every routine cell or assign fictitious findings simply to fill rows.
-- Add **Current wording / Concern / Recommended wording — PROPOSED** only for materially ambiguous or conflicting instructions. Quote the real text and link the exact source; distinguish DOCUMENTED wording from INFERRED risk. If the intended rule is not established, recommend VERIFY rather than invent a rewrite.
-- If one finding relates to another consideration, give it one **primary C-row** and use a brief **Related: F-xx (Cx)** link from other rows. Do not duplicate the full finding or invent a second ID solely for cross-reference.
-- When C4–C6 reveal a real planned optional connection, place the relevant proposal **inside those cells**: C4 for optional context and proposed handoff reference location, C5 for standalone boundaries and no auto-invocation, and C6 for proposed feedback/owner review. Mark nonimplemented integration **PLANNED / PROPOSED — NOT IMPLEMENTED** and missing proposed files **PLANNED — NOT CREATED**. Do not automatically create a shared dependency or a coordinator.
-- When multiple findings share one cell, label each with its own F-xx and put a short `<br><br>` separator between them. Keep each field to approximately one sentence where possible, but do not omit evidence or necessary quoted context just to shorten the cell. If a table becomes too wide or long, split the skill columns into smaller groups while retaining all findings.
-- For one skill, use the same C1–C6 progression with its mini-records in each consideration's block. If a host cannot render `<br>` inside Markdown tables, use consideration-first blocks containing skill-labeled mini-records **at that consideration**, not detached findings after the audit.
+**Optional adjacent wording detail — use only when exact text would overload the cell**
+
+| Consideration | [Skill A] | [Skill B] |
+| --- | --- | --- |
+| 1. Inputs (C1) | **F-01 (C1) — CLARIFY:** Discovery sounds mandatory; propose provisional drafting. [Source] | [Concise current behavior.] |
+| ↳ F-01 wording (C1) | **Current wording:** "[Exact source quote]." **Concern:** [Specific inferred misinterpretation.] **Recommended wording — PROPOSED:** "[Evidence-supported replacement]." | — |
+
+This is an **alternative illustration of the C1 row**, not a third required table or duplicated finding. In a real report, the adjacent detail row appears immediately under the corresponding C1–C6 row **in that same existing table**.
+
+**Rules for all six considerations**
+
+- For material items, use **F-01, F-02, ...** in the affected skill cell and brief **Finding / Evidence / Assessment / Why / Recommendation** sentences. KEEP is a valid outcome; do not force a change or a five-field record into every cell.
+- Keep each cell short and source-backed. Long exact wording may go into **one neighboring row** linked by its F-xx and Cx. Do not add a separate findings section, extra table columns, or formatted HTML.
+- Preserve source provenance: **DOCUMENTED** for source instructions, **INFERRED** for possible effects, **UNVERIFIED** when evidence is absent, and **PROPOSED** for recommended replacements. Do not invent quotes or observed execution.
+- For related considerations, say `Related: F-xx (Cx)` rather than repeating the entire finding. In later sections, reference F-xx instead of restating five fields.
+- Keep optional integration directions within C4–C6: handoff in C4, decision authority in C5, owner-reviewed feedback in C6. Mark potential integrations **PLANNED / PROPOSED — NOT IMPLEMENTED** and any absent suggested reference **PLANNED — NOT CREATED**. Neither skill must automatically invoke the other.
+- For four or more skills, break into groups of two or three skill columns, with an overall synthesis covering every selected skill. If the terminal cannot render Markdown tables acceptably, use **consideration-first vertical blocks** with the same skill and C/F identifiers—not raw markup.
 
 ## 3. Cross-Skill Responsibility & Overlap Findings
 

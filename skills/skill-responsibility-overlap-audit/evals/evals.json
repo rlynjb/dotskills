@@ -332,29 +332,29 @@
         "evals/files/requirements-review/SKILL.md",
         "evals/files/sprint-readiness/SKILL.md"
       ],
-      "expected_output": "A C1–C6 side-by-side report with material skill-specific findings embedded as F-01, F-02 etc in the relevant cells, with Markdown <br> line breaks and source-backed five-field entries. The competing clarity authority is explained under C2 or C5, not repeated in a detached findings section; Step 4 references F IDs.",
+      "expected_output": "A readable C1–C6 side-by-side Markdown report with concise, source-backed F-01/F-02 mini-records in the relevant skill cells, separated by sentences rather than HTML line breaks. Optional longer wording sits in a directly adjacent F-xx detail row. Step 4 references those IDs.",
       "assertions": [
-        "Each material F-xx appears inside its corresponding C1–C6 row and skill column with the five labeled fields.",
-        "No standalone Finding A/B/C section or duplicated five-field findings beneath the comparison.",
-        "Cross-skill effects are cross-referenced using F-xx and Cx rather than silently duplicating evidence.",
-        "The table retains the six considerations and remains scannable without five additional columns.",
-        "Stage 2 findings do not become approved contracts or actual runtime claims."
+        "Original side-by-side layout with one consideration per physical Markdown row and skill columns is preserved.",
+        "Material F-xx identifiers and Finding/Evidence/Assessment/Why/Recommendation are present inline in the correct skill cell; no HTML markup or literal line-break tags.",
+        "No detached Finding A/B/C section or duplicated five-field findings after the comparison.",
+        "Cross-skill effects are referenced by F-xx and Cx without invented evidence.",
+        "Source evidence and proposed Stage 2 changes remain clearly distinct from runtime observations."
       ]
     },
     {
       "id": 23,
-      "prompt": "Audit the discovery-brief and approval-evidence synthetic skills. Their wording could imply mandatory discovery and automatic requirement approval. Show exact Current wording, Concern, and Recommended wording — PROPOSED inside the relevant existing C-row/skill cells, alongside the five basic fields. Do not create separate wording review sections.",
+      "prompt": "Audit discovery-brief and approval-evidence. Show Current wording, Concern and Recommended wording — PROPOSED within the existing C-row skill cell if concise, or in an adjacent F-xx wording row when a quote is longer. Restore readable Markdown tables, without HTML.",
       "files": [
         "evals/files/discovery-brief/SKILL.md",
         "evals/files/approval-evidence/SKILL.md"
       ],
-      "expected_output": "C1/C5 cells contain relevant F-xx findings with five core labels plus the optional exact-quote/concern/proposed-wording labels in the same cell; evidence status differentiates documented text and inferred risk. Formal contracts and implementation remain deferred.",
+      "expected_output": "Clean two-skill comparison table with compact F-xx summaries in the relevant consideration cells; exact source quotation and proposed wording may appear in a directly adjacent F-xx detail row in the same table, never raw HTML or a detached finding section.",
       "assertions": [
-        "An exact quoted source phrase and its proposed change appear in the same C1–C6 cell as its finding ID.",
-        "The wording review does not form a new section or extra table column.",
-        "Does not claim inferred behavior was observed or imply that ticket provenance proves approval.",
-        "The recommended wording preserves required safety and human authorization.",
-        "Step 4 references the related F-xx without duplicating the full wording."
+        "Exact sourced Current wording and its proposed change are visibly connected to the same consideration and F-xx ID.",
+        "No literal HTML tags or extra columns, and no separate findings section.",
+        "Source text is DOCUMENTED, behavioral risk INFERRED unless runtime evidence exists, and replacement PROPOSED.",
+        "Recommended wording preserves existing approval and safety requirements.",
+        "Step 4 references original F-xx without duplicating long exact wording."
       ]
     },
     {
@@ -366,13 +366,43 @@
         "evals/files/ticket-drafting/SKILL.md",
         "evals/files/estimation-advisor/SKILL.md"
       ],
-      "expected_output": "Grouped side-by-side tables retain all four skills with findings placed inside their primary consideration cells. Related considerations use brief F-xx references; cross-skill synthesis covers material findings and Step 4 summarizes actionable decisions by F-xx without detached findings.",
+      "expected_output": "Grouped, readable Markdown tables cover four skills with concise inline F-xx finding summaries in their primary C1–C6 skill cells. Related considerations use F-xx references. An immediately adjacent detail row may hold a long quote. Step 4 references actionable findings without a detached finding section or HTML.",
       "assertions": [
-        "All four skills remain represented and all six considerations are assessed.",
-        "Material findings use stable F-xx and Cx IDs within rows, not detached blocks.",
-        "One primary row owns a finding; a related row references its F ID without full duplication.",
-        "Long tables are split into two- or three-skill groups while preserving comparable content.",
-        "No change to source skills, no runtime execution or approved architecture."
+        "All four skills and all six considerations remain represented.",
+        "Material F-xx and Cx IDs are inside or immediately adjacent to their primary consideration row, not detached below.",
+        "No HTML tags or forced multi-line content inside Markdown table cells.",
+        "Related consideration cross-references do not duplicate full findings.",
+        "Grouped two- or three-skill tables remain readable and preserve human-review and read-only boundaries."
+      ]
+    },
+    {
+      "id": 25,
+      "prompt": "Run skill-responsibility-overlap-audit on the supplied requirements-review and sprint-readiness synthetic skills in a plain-text terminal that displays raw HTML tags literally. Render the six-consideration side-by-side Markdown report with F-xx assessment, reason and recommendation fields. Prior formatting broke because field lines were separated by HTML markup. Keep the original table visual and show a clear C2 responsibilities finding.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/sprint-readiness/SKILL.md"
+      ],
+      "expected_output": "Two compact Markdown comparison tables with single-line pipe-table rows, C1–C6 labels and short, inline, readable F-xx finding sentences in the relevant cells. Uses no HTML tags or manually inserted line-break markup and no detached findings section. The actual ownership conflict is source-backed and results in a proposal for human review.",
+      "assertions": [
+        "No raw HTML tags, line-break markup or embedded table-cell newlines.",
+        "Only three table columns: Consideration, Skill A, Skill B; normal terminal wrapping is allowed.",
+        "Meaningful F-xx finding includes an assessment, evidence, why and recommendation tied to its Cx row.",
+        "No fabricated runtime claim, contract design, source edit or auto-approval.",
+        "Step 4 references F-xx without reprinting entire finding."
+      ]
+    },
+    {
+      "id": 26,
+      "prompt": "Audit the synthetic discovery-brief SKILL.md in a narrow terminal. An exact discovery-prerequisite quote and proposed revision are long. Keep the C1 Inputs finding visible in the same consideration group while preventing a giant broken HTML-filled cell. Show what to do when wording is lengthy.",
+      "files": [
+        "evals/files/discovery-brief/SKILL.md"
+      ],
+      "expected_output": "The C1 finding is summarized in a short source-backed Markdown cell or consideration-first block. Full exact wording and proposed replacement appear immediately after the C1 row in a single additional F-xx wording/detail row or adjacent block, without extra columns or raw HTML. Documentation and inferred risk are separated.",
+      "assertions": [
+        "Original Inputs consideration is clear and remains linked to F-xx.",
+        "Exact Current wording / Concern / Recommended wording are adjacent to the finding and not a detached section.",
+        "No raw HTML markup, mandatory discovery inference, or fabricated quote.",
+        "Human approval, no source mutation and Stage 2 investigation limits are retained."
       ]
     }
   ]
