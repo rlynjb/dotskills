@@ -17,6 +17,8 @@ Use [Senior Engineer → Junior Developer Communication Guideline](../../docs/se
 
 Assessment labels describe preliminary engineering judgment, not evidence certainty, High/Medium/Low priority or approval. **KEEP** is a useful no-change result; **VERIFY** means collect evidence before proposing a fix. The final recommendations consolidate actionable findings without repeating every explanation.
 
+When a meaningful issue comes from ambiguous instructions, the corresponding finding may also show **Current wording → Concern → Recommended wording — PROPOSED**. This uses an exact sourced quotation, explains a plausible misinterpretation without claiming it happened, and proposes the smallest clear replacement for human review. It is optional, not a seventh consideration or a mandatory rewrite of every sentence.
+
 It does **not** decide the future architecture, draft contracts, execute skills, make repository edits, or mark recommendations as approved.
 
 ## Example invocation

@@ -281,6 +281,49 @@
         "Evidence status is separate from assessment and priority.",
         "No extra mandatory columns, contracts, coordinator, edits or approvals."
       ]
+    },
+    {
+      "id": 19,
+      "prompt": "Use skill-responsibility-overlap-audit on the attached synthetic discovery-brief skill. Its SKILL.md permits starting provisionally but also says 'If you haven't done discovery yet, run discovery first.' Review this meaningful Inputs/Boundaries wording concern with the existing five finding fields and the optional Current wording, Concern, Recommended wording expansion. Keep it read-only.",
+      "files": [
+        "evals/files/discovery-brief/SKILL.md"
+      ],
+      "expected_output": "The exact 'run discovery first' passage is cited; the conflict with provisional drafting is explained in plain English as DOCUMENTED instructions with INFERRED risk of an unnecessary mandatory prerequisite. Assessment CLARIFY is justified and a proposed replacement permits provisional drafting with explicit assumptions and evidence gaps, leaving human approval intact. No extra audit consideration or execution.",
+      "assertions": [
+        "Includes the exact short Current wording from the fixture with source/section citation.",
+        "Concern describes a plausible misinterpretation without claiming the skill actually executed discovery.",
+        "Recommended wording is PROPOSED and keeps provisional draft and discovery-as-optional-context behavior supported by the fixture.",
+        "Uses the core Finding, Evidence, Assessment, Why and Recommendation fields without adding a seventh consideration.",
+        "No automatic execution, file edits, approval inference or formal contract."
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "Audit the attached approval-evidence synthetic skill. Assess the phrase 'CONFIRMED REQUIREMENT: from a ticket, approved specification, or stakeholder decision.' Propose a precise clarity revision if justified, without claiming ticket content is automatically approved.",
+      "files": [
+        "evals/files/approval-evidence/SKILL.md"
+      ],
+      "expected_output": "A sourced wording concern separates stated requirement provenance from actual human approval. Assessment CLARIFY or REVISE and a proposed replacement require independent owner authorization and make explicit that a ticket can contain draft/unapproved scope. Any predicted misuse remains INFERRED.",
+      "assertions": [
+        "Quotes the actual current phrase; identifies its location.",
+        "Distinguishes source provenance from authorization and explains why that matters.",
+        "Recommended wording preserves read-only behavior and no automatic approval.",
+        "No unsupported behavioral observation, source edit, new contract or invented owner approval."
+      ]
+    },
+    {
+      "id": 21,
+      "prompt": "Audit the attached clear-evidence synthetic skill. Its optional discovery and approval wording is already clear. Should the audit generate Current wording, Concern, Recommended wording sections just to fill a template?",
+      "files": [
+        "evals/files/clear-evidence/SKILL.md"
+      ],
+      "expected_output": "KEEP the clear standalone/optional input and authorization guidance with a concise reason. Do not force wording concern or recommended wording when no material ambiguity is evidenced.",
+      "assertions": [
+        "KEEP is supported by clear source wording and avoids unnecessary changes.",
+        "Does not generate a contrived Current wording/Concern/Recommended wording block.",
+        "Still gives appropriate evidence and human-review boundaries.",
+        "Does not invent runtime enforcement from written restrictions or modify files."
+      ]
     }
   ]
 }

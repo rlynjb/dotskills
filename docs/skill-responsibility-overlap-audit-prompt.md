@@ -90,6 +90,12 @@ For considerations 4–6, note observations and potential problems **without** d
 - `Recommendation:` Smallest justified next action; no change is valid. Human confirmation remains necessary for decisions.
 Place these in concise **per-skill vertical notes beneath** the side-by-side comparison. Do not add columns or generate one for every row. Evidence status, assessment, priority and approval have different meanings.
 
+**Optional instruction wording review — expand only meaningful wording concerns:**
+- `Current wording:` Quote the smallest exact ambiguous/conflicting passage from an **inspected** file, with a direct source link/lines. If inaccessible, mark NOT VERIFIED; do not invent a quotation.
+- `Concern:` Explain the plausible misleading interpretation, real consequence, and why the wording matters. The text itself may be DOCUMENTED while the predicted behavior is **INFERRED**, not OBSERVED.
+- `Recommended wording — PROPOSED:` Give a concise ready-to-copy replacement only when evidence supports intended behavior. Preserve permissions, mandatory prerequisites, required approvals, standalone use and scope. Otherwise use VERIFY and identify the question/owner to resolve before rewriting.
+Put these inside the relevant per-skill finding note for **any of the six considerations**, below the side-by-side summary. Never create a seventh consideration, new workflow step or three extra columns, and never rewrite merely stylistic wording. Step 4 references the earlier wording proposal rather than repeating it; nothing is edited by the audit.
+
 **Optional connection guidance when a supported issue exists in Handoffs, Boundaries, or Feedback:**
 - For **each affected skill separately**, propose documentation of **standalone use** (its own starting inputs, full workflow and outputs), an **optional handoff** (a partner's result can be provided as context when available), distinct **responsibilities**, clear **boundaries** (no unauthorized edits, publishing, decisions or automatic skill invocation), and **feedback** to the responsible owner as proposed changes/questions.
 - Neither skill requires or automatically runs the other. Present the possible paths as Skill A alone, Skill B alone, or Skill A followed by *optional* Skill B with human-reviewed updates.
@@ -136,7 +142,7 @@ Mark what cannot be verified from the available sources.
 
 ### Step 4 — Recommended Changes
 
-Consolidate material earlier **CLARIFY / REVISE / ADD / VERIFY** recommendations rather than repeat their full explanation; **KEEP** usually means no change. Prioritize suggestions separately as **High, Medium, or Low**.
+Consolidate material earlier **CLARIFY / REVISE / ADD / VERIFY** recommendations rather than repeat their full explanation, including any proposed wording. Refer back to Section 2 instead of reprinting before/after passages. **KEEP** usually means no change. Prioritize suggestions separately as **High, Medium, or Low**.
 
 For each recommendation, provide:
 
@@ -168,6 +174,7 @@ Keep recommendations separate from confirmed findings. Do not implement them.
 - **Four or more skills:** Compare in smaller side-by-side groups of two or three skills, then include an overall synthesis covering **every** selected skill and all material relationships.
 - **Cross-skill overlap:** Align the activity and each involved skill's role; include classification and workflow effect. Explicitly name affected skills for gaps.
 - **Supporting considerations 4–6:** For each real issue, give **per-skill** findings in the side-by-side cells, then show compact *proposed optional connection documentation* blocks for each affected skill directly below: Standalone use, Optional handoff, Responsibilities, Boundaries, Feedback, **Documentation placement, Stage 3 follow-up and Planning status**. Clearly distinguish a **planned SKILL.md note** from actual integration and a **potential reference file** from one that exists. Do not imply target files were changed.
+- **Meaningful wording concerns anywhere in considerations 1–6:** Add `Current wording / Concern / Recommended wording — PROPOSED` within the original per-skill finding note when justified. Quote the exact source; never turn an inferred risk into a claim of observed behavior.
 - **Section 5:** Consolidate actionable findings without duplicating their full reasoning. When a material combined-workflow coordination issue exists, include an **Optional coordinator assessment** with one of the three outcomes, grounded rationale, a simpler alternative, a human decision, and explicit preservation of standalone use.
 - Keep tables scannable; place evidence links, interpretation, and recommendations as short vertical notes below. If Markdown tables are not supported, use equivalent aligned comparison blocks. Do not invent data to fill cells.
 

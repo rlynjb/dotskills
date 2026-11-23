@@ -40,6 +40,14 @@ For **two or three skills**, use side-by-side tables. Keep long citations and ex
 
 Repeat only when meaningful; don't force a five-field record for every cell. **KEEP** can be the correct outcome. If a documented output and an inferred handoff differ in certainty, state both evidence statuses. No five extra table columns.
 
+**Optional instruction wording review — only if the finding concerns material wording ambiguity:**
+
+- *Current wording:* ["Exact short quote" from the inspected source, with direct file and line/section evidence.]
+- *Concern:* [What a reader or agent could incorrectly infer; why it matters. Label potential behavior **INFERRED** unless genuinely observed.]
+- *Recommended wording — PROPOSED:* [Minimal, ready-to-copy replacement preserving the verified intent and authority boundaries; or **VERIFY** the intended rule first if ambiguous.]
+
+Keep this **within** the relevant per-skill finding, not in another consideration or table. Do not expand healthy KEEP findings or style-only preferences into rewrites. A quote is DOCUMENTED; an untested consequence is INFERRED; the rewrite is PROPOSED and requires human review. Never invent source text, remove required safety prerequisites, or assume unclear approval status is resolved.
+
 **Proposed optional connection documentation — per affected skill (only if justified by a row 4–6 issue):**
 
 **Status for this section: PLANNED / PROPOSED — NOT IMPLEMENTED, NOT CONTRACTED, NOT VERIFIED.** This is a Stage 2 investigation record to guide Stage 3 design, *not* a claim that the skills already exchange information or call one another.
@@ -102,7 +110,7 @@ For each real overlap, align the involved skills, then explain it below.
 
 ## 5. Prioritized Recommendations
 
-**Summarize, don't repeat:** Consolidate material CLARIFY/REVISE/ADD and VERIFY work from earlier findings, with source links and independently assigned High/Medium/Low priorities. KEEP generally requires no implementation item. If no change is justified, say so.
+**Summarize, don't repeat:** Consolidate material CLARIFY/REVISE/ADD and VERIFY work from earlier findings, with source links and independently assigned High/Medium/Low priorities. For wording concerns, point to the proposed replacement in Section 2 rather than repeating the before/after text. KEEP generally requires no implementation item. If no change is justified, say so.
 
 - **Priority:** [High / Medium / Low]
 - **Finding:** [Source-linked skill/consideration and assessment label; refer back to section 2 instead of repeating the full rationale.]

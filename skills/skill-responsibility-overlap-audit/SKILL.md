@@ -62,6 +62,20 @@ For **meaningful findings in any of the six considerations**, help the reader un
 
 **Be proportionate:** Only expand material issues or useful strengths. Do not force five-field blocks for every table cell or repeat them in Steps 2 and 4. Keep table cells short, with relevant evidence/rationale below. Step 4 consolidates actionable CLARIFY/REVISE/ADD findings and meaningful VERIFY work (High/Medium/Low separately), referring to earlier findings rather than repeating them. KEEP requires no change ticket; briefly note worthwhile protections in the overview when useful.
 
+### Instruction wording review — conditional expansion of a finding
+
+When a **material issue** in **any of the six considerations** involves wording that could mislead an agent or human about inputs, responsibilities, outputs, handoffs, boundaries, or feedback, expand that finding's five-field assessment with a **short wording review**. This is not a seventh consideration, a new investigation step, or a mandatory review of every sentence.
+
+Use these additional fields **only when justified**:
+
+- **Current wording:** Quote the smallest **exact** relevant passage from the inspected source with a direct file/line or section link; preserve meaningful context and never invent or paraphrase a quote as if verbatim. If the actual text is inaccessible, say **NOT VERIFIED** and request/identify the source rather than fabricating a quotation.
+- **Concern:** Explain the specific possible misinterpretation or conflicting instruction and its practical consequence; distinguish documented text from the **INFERRED** behavioral risk. Wording that merely sounds awkward is not sufficient.
+- **Recommended wording — PROPOSED:** Supply a concise, ready-to-copy replacement **only when the intended behavior is supported**. Preserve permissions, approval limits, required safety/data prerequisites, standalone operation and original scope. If intent or authority is unclear, give a conditional option or **VERIFY** with a concrete question instead of silently choosing policy.
+
+**Placement:** Include the wording review inside the relevant **Section 2 per-skill finding note** immediately after the core Finding/Evidence/Assessment/Why/Recommendation fields, or near those fields if that reads better. Do **not** add three extra table columns, repeat it for every consideration, or reproduce the wording again in Step 4. In Step 4, refer to the wording proposal and its evidence, with priority and human confirmation.
+
+**Evidence rule:** An ambiguous phrase is **DOCUMENTED** if quoted from inspected instructions; the claim that it might cause a wrong tool call or decision is **INFERRED** unless verified by an authorized trace. A proposed rewrite is **PROPOSED**, not applied, approved, or validated. Explicitly note what remains a Stage 3 contract/design issue.
+
 ## Procedure — four investigation steps
 
 ### Step 1 — Individual skill review
@@ -80,7 +94,7 @@ Assess the same **six considerations**, in this order, for each accessible targe
 5. **Boundaries:** Unclear owners, human approval/authorization expectations, trust/security limits and responsibility leakage.
 6. **Feedback:** When work returns for clarification or revision; whether rework ownership is clear.
 
-After the six-consideration overview, include per-skill **Finding / Evidence / Assessment / Why / Recommendation** notes for meaningful findings, including useful KEEP decisions. Do not require a proposed change for every skill or consideration.
+After the six-consideration overview, include per-skill **Finding / Evidence / Assessment / Why / Recommendation** notes for meaningful findings, including useful KEEP decisions. When a finding concerns materially ambiguous instructions, add **Current wording / Concern / Recommended wording — PROPOSED** as an optional expansion. Do not require a proposed change for every skill or consideration.
 
 **If an issue appears under considerations 4–6**, examine whether the affected skills could document an **optional connection** rather than become tightly coupled. Show each affected skill's situation separately: how it can start and finish on its own, whether another skill's output is useful *when voluntarily supplied*, who owns each decision, what action is out of scope, and where proposed changes/questions return for human review.
 
@@ -114,7 +128,7 @@ Investigate orphaned activities, unavailable inputs/outputs, lost context, contr
 
 ### Step 4 — Recommended changes for human review
 
-**Consolidate earlier findings** instead of regenerating them. Group and deduplicate actionable CLARIFY / REVISE / ADD and material VERIFY decisions, and refer to their originating skill/consideration and evidence. KEEP usually means no change is needed. If no modifications are justified, explicitly say so. Priority (High/Medium/Low) is independent of the assessment label.
+**Consolidate earlier findings** instead of regenerating them. Group and deduplicate actionable CLARIFY / REVISE / ADD and material VERIFY decisions, and refer to their originating skill/consideration and evidence—including any proposed wording in Section 2. Do not reproduce full before/after wording again. KEEP usually means no change is needed. If no modifications are justified, explicitly say so. Priority (High/Medium/Low) is independent of the assessment label.
 
 Prioritize each actionable suggestion **High / Medium / Low** and include:
 
@@ -178,7 +192,7 @@ Use these seven headings, in order:
 - **One skill:** use a vertical assessment under all six labels; mark cross-skill findings not applicable.
 - **Two or three skills:** section 2 **must use side-by-side Markdown comparison tables**, with a `Consideration` column and a column for each skill. Align the six rows in the same order. Prefer two small tables: **Primary** (Inputs, Responsibilities, Outputs) and **Supporting** (Handoffs, Boundaries, Feedback). Keep cells compact, adding assessment labels where useful; provide five-field explanation in vertical notes below, not as five new columns.
 - **Four or more skills:** split into readable side-by-side groups of two or three skills, *and* provide an overall synthesis of all selected skills. Do not omit any skill or material overlap to keep a table narrow.
-- **Section 2:** use brief per-skill **Finding, Evidence, Assessment, Why, Recommendation** notes below the side-by-side comparison for meaningful strengths and issues, not every routine row. **Section 3:** compare the same overlapping activity across affected skills, with classification and impact. In section 4, name every affected skill.
+- **Section 2:** use brief per-skill **Finding, Evidence, Assessment, Why, Recommendation** notes below the side-by-side comparison for meaningful strengths and issues, not every routine row. When an actual instruction creates material ambiguity, add the optional **Current wording, Concern, Recommended wording — PROPOSED** expansion to that note; quote only inspected text, label the possible behavioral consequence INFERRED unless observed, and avoid unsupported rewrites. **Section 3:** compare the same overlapping activity across affected skills, with classification and impact. In section 4, name every affected skill.
 - **Section 2, Supporting table (rows 4–6):** show the observed issue, its evidence status, and its effect **for each skill**, not only for the relationship as a whole. Immediately below the table, add **Proposed optional connection documentation — per affected skill** when an optional handoff could address an evidenced issue. Give each affected skill its own short block covering **Standalone use / Optional handoff / Responsibility / Boundary / Feedback / Documentation placement / Stage 3 follow-up / Planning status**. Recommend a short planned `Optional Handoffs` note in each `SKILL.md` and name any *potential* local reference only when detailed guidance warrants it; mark missing proposed files **PLANNED — NOT CREATED**. Distinguish existing documented facts from future intent. In section 5, carry the recommendation and human decision; in section 7, defer formal contract details.
 - **Section 5:** consolidate earlier actionable recommendations without repeating their five-field explanations. When more than one skill has a material combined-workflow issue, include the **Optional coordinator assessment** under the related prioritized recommendation. Prefer NOT NEEDED if simple optional handoffs and suggested next-action commands suffice. If supported, recommend a separately invoked coordinator only for actual routing/sequencing/context/feedback coordination that does not fit the component skills. If evidence is missing, DEFER; never imply the coordinator was built or the host can dispatch skills automatically.
 - The recommended optional route must preserve three valid paths when supported: **Skill A alone**, **Skill B alone**, and **Skill A → optional Skill B review → owner-reviewed updates**. Do not state that all three paths work today without evidence. Neither skill is required to call, import, or execute the other.
