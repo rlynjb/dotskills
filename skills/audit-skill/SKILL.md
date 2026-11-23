@@ -103,17 +103,17 @@ Step 4  Prepare validation and review evidence
 
 A diagram is a **visual summary**, not a place for complete sentences. Diagrams must be legible for a junior developer even in narrow Markdown viewers. Preserve the actual workflow and evidence; **never shorten a label so much that the decision or action changes meaning**.
 
-1. **Use complete, short node labels.** Aim for **2–4 words per node**. Do not output clipped-looking fragments such as \`"Classify requirem"\` or \`"Four-step SDI ass"\`. Shorten the wording intentionally while preserving the meaning.
-2. **Wrap rather than shrink.** When a meaningful label needs two lines, use **quoted Mermaid labels** with explicit \`<br/>\` breaks, e.g., \`A["Classify<br/>requirements"]\`. Aim for **1–2 short lines** per node. Prefer this to reducing font size or using extremely narrow boxes.
-3. **Keep decisions clear.** Use a diamond for questions (\`D{"Next step<br/>requested?"}\`) and meaningful edge labels (\`|Yes|\`, \`|No|\`). Include stop, failure, optional handoff and human-review branches when documented. Do not drop an important action just to simplify layout.
+1. **Use complete, short node labels.** Aim for **2–4 words per node**. Do not output clipped-looking fragments such as `"Classify requirem"` or `"Four-step SDI ass"`. Shorten the wording intentionally while preserving the meaning.
+2. **Wrap rather than shrink.** When a meaningful label needs two lines, use **quoted Mermaid labels** with explicit `<br/>` breaks, e.g., `A["Classify<br/>requirements"]`. Aim for **1–2 short lines** per node. Prefer this to reducing font size or using extremely narrow boxes.
+3. **Keep decisions clear.** Use a diamond for questions (`D{"Next step<br/>requested?"}`) and meaningful edge labels (`|Yes|`, `|No|`). Include stop, failure, optional handoff and human-review branches when documented. Do not drop an important action just to simplify layout.
 4. **Split unwieldy flows.** Use a separate small diagram for each skill. If one skill's workflow is long, group steps by phase or show a high-level flow plus a focused detail diagram only when necessary. Avoid forcing full sentences or an entire multi-skill architecture into one narrow figure.
-5. **Explain nodes immediately below the Mermaid block.** Use a short **"Node explanations"** section: **node label → full action/decision in plain English**, including relevant conditions, source links and \`NOT VERIFIED\` notes where needed. This provides the **full text** even if a Markdown renderer clips a diagram. When a diagram has several nodes, cover every label whose wording is abbreviated or ambiguous; include a plain-text decision path when necessary to preserve branches.
+5. **Explain nodes immediately below the Mermaid block.** Use a short **"Node explanations"** section: **node label → full action/decision in plain English**, including relevant conditions, source links and `NOT VERIFIED` notes where needed. This provides the **full text** even if a Markdown renderer clips a diagram. When a diagram has several nodes, cover every label whose wording is abbreviated or ambiguous; include a plain-text decision path when necessary to preserve branches.
 6. **Check before responding.** Review the generated Mermaid source for incomplete/truncated words, unescaped quotes, overly long lines and clear arrows. If a rendering/preview tool is available, inspect it for clipped labels; otherwise do not claim a visual render was verified. Fix labels or rely on node explanations rather than shrinking text.
 7. **Ground the diagram.** Treat diagrams as **DOCUMENTED INSTRUCTIONS** unless a real execution trace proves behavior. Keep observed vs inferred paths and existing vs proposed designs distinct.
 
 **Illustrative only — not an audit of an actual skill:**
 
-\`\`\`mermaid
+```mermaid
 flowchart TD
     A["Resolve<br/>scope"] --> B["Classify<br/>requirements"]
     B --> C["Run SDI<br/>review"]
@@ -121,7 +121,7 @@ flowchart TD
     D --> E{"Next step<br/>requested?"}
     E -->|Yes| F["Prepare<br/>handoff"]
     E -->|No| G["End review"]
-\`\`\`
+```
 
 **Node explanations (illustrative):**
 - **Resolve scope** — Decide which request and materials the skill should assess.
