@@ -254,6 +254,46 @@
         "The explanatory text carries detailed meaning and distinguishes documented versus inferred steps.",
         "No font shrinking as the primary readability solution."
       ]
+    },
+    {
+      "id": 23,
+      "prompt": "Run audit-skill against one accessible agent skill. I am a junior developer and want to see a structured first report, not scattered observations. Show me exactly where the six considerations and four audit steps appear.",
+      "expected_output": "The report uses a skimmable overall view and a Step 1 Skill Responsibility & Overlap Assessment with all six numbered labels in order for the accessible skill: Inputs, Responsibilities, Outputs, Handoffs, Boundaries, Feedback. Each has Observed, Evidence and Open question. Supporting Q-01–Q-10 remains distinct. Steps 2 and 3 show provisional B/C recommendations before consolidated human review, and Step 4 is a short Validation Readiness (NOT EXECUTED) preview.",
+      "assertions": [
+        "Every accessible skill has all six consideration headings in exact order, even if one is NOT VERIFIED or NOT APPLICABLE.",
+        "Each of six considerations has Observed, Evidence and Open question fields with honest evidence/uncertainty.",
+        "Step 1 findings do not confuse current observations with B-xx or C-xx future proposals.",
+        "All Q-01–Q-10 supporting quality criteria remain separately assessed, not replaced by the six considerations.",
+        "Step 2 boundaries and Step 3 proposed contracts appear in the same initial report before one consolidated review.",
+        "Step 4 Validation Readiness appears in initial report labeled NOT EXECUTED and is not described as a completed live test.",
+        "Explanations are plain English, concise and helpful to a junior engineer."
+      ]
+    },
+    {
+      "id": 24,
+      "prompt": "Audit two connected agent skills. The second detects missing information from the first, but no return path is documented. Walk through the six considerations and propose an appropriate feedback route without claiming it exists.",
+      "expected_output": "Each skill receives the same six-consideration source-backed Step 1 worksheet. Feedback states that a return route is NOT FOUND IN INSPECTED SOURCES, with an open question. The cross-skill comparison identifies a feedback-routing gap. The proposed resolution in a B/C card specifies a possible trigger, recipient/owner, evidence returned, and stop/reassess/resume rule as conditional; does not invent observed runtime behavior.",
+      "assertions": [
+        "Step 1 Feedback is separate from approval/revision feedback to the auditing human.",
+        "Documented feedback is not invented when absent in source.",
+        "Cross-skill section identifies the source-backed consequence of missing feedback routing.",
+        "Step 2/3 route is clearly PROPOSED or CONDITIONAL, never CURRENT DOCUMENTED.",
+        "Feedback route identifies trigger, owner, returned information and continuation/stop decision.",
+        "Human review occurs after Steps 1–3 and Step 4 does not run anything."
+      ]
+    },
+    {
+      "id": 25,
+      "prompt": "Use audit-skill to inspect a standalone skill with no neighboring skills and only partial access to its referenced files. Apply the six-consideration and four-step report template.",
+      "expected_output": "Six consideration fields are shown; no invented downstream consumer, inter-skill feedback route or source evidence. Handoffs/Feedback appropriately say internal interface, NOT VERIFIED, or NOT APPLICABLE with reason. Boundary proposal and any standalone input/output contract are provisional. Step 4 says NOT EXECUTED with accurate blockers.",
+      "assertions": [
+        "All six headings present regardless of scope.",
+        "Missing file access is NOT VERIFIED, not asserted missing behavior or observed failure.",
+        "No fictitious neighboring skills, integration or feedback loops.",
+        "Current source evidence is separated from human-approved design and runtime observations.",
+        "Q-01–Q-10 remain visible as supporting checks.",
+        "One consolidated review, no early mandatory approval before viewing contract proposals."
+      ]
     }
   ]
 }
