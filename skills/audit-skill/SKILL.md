@@ -92,12 +92,46 @@ Step 4  Prepare validation and review evidence
 **Outcome:** a grounded view of the *as-is* design, without deciding its future architecture.
 
 1. Inventory for each target: purpose, when to invoke and not invoke, users, required inputs, context, dependencies, stages, delegated workers/tools, validation, outputs, side effects, stop/failure handling, ownership, human authority and handoffs. In the reader-facing overview, translate this into **"What this skill does / What it depends on / What it produces / What it must not decide"** rather than dumping technical inventory fields.
-2. Reconstruct an evidence-backed **as-is Mermaid flow**: trigger → evidence/context → decisions/validation → delegation → output/effects → stop/handoff. Label inferred or unverified edges; do not depict proposed orchestration as implemented.
+2. Reconstruct an evidence-backed **as-is Mermaid flow**: trigger → evidence/context → decisions/validation → delegation → output/effects → stop/handoff. Label inferred or unverified edges; do not depict proposed orchestration as implemented. Apply the **Mermaid readability rules** below; include text explanations so no meaning depends on a potentially clipped diagram.
 3. Apply the **canonical Q-01–Q-10** to each accessible target (below). Show a ten-line At a Glance checklist per skill with direct source-backed **material findings**, prioritizing the cross-skill picture; expand individual six-field Q findings when asked or when necessary to substantiate significant gaps. Do not allow 40 repetitive blocks to bury the initial overview of four skills.
 4. For multiple targets, identify: **unique owner**, **shared context**, **duplicated decision ownership**, **conflict**, **unowned responsibility**, and **handoff gap**. Explain the difference in plain English: two skills reading the same requirement is often *shared context*, while two skills both claiming the final decision may be *overlap*. Show the **practical consequence** of a real conflict or missing owner and why it is worth resolving. Name exact skills and source evidence; only propose potential integration paths, marked PROPOSED.
 5. Assess relevant trust, provenance, security, reliability, failure isolation, observability, portability and existing eval evidence without assuming the runtime was exercised.
 6. Review the current [Agent Skills specification](https://agentskills.io/specification) when accessible. Distinguish normative requirements, recommendations and host conventions. Inspect current format/packaging; do not claim a validator was run if it was not.
 7. Record a runtime × capability compatibility assessment for declared/requested hosts: packaging, invocation, context loading, tools/MCP, delegation, permissions, error contracts and verification. Allowed statuses: SUPPORTED (evidenced), ADAPTER REQUIRED, NOT SUPPORTED (evidenced), NOT VERIFIED. Written portability does not prove Codex/Claude parity.
+
+### Mermaid readability rules — required for every generated diagram
+
+A diagram is a **visual summary**, not a place for complete sentences. Diagrams must be legible for a junior developer even in narrow Markdown viewers. Preserve the actual workflow and evidence; **never shorten a label so much that the decision or action changes meaning**.
+
+1. **Use complete, short node labels.** Aim for **2–4 words per node**. Do not output clipped-looking fragments such as \`"Classify requirem"\` or \`"Four-step SDI ass"\`. Shorten the wording intentionally while preserving the meaning.
+2. **Wrap rather than shrink.** When a meaningful label needs two lines, use **quoted Mermaid labels** with explicit \`<br/>\` breaks, e.g., \`A["Classify<br/>requirements"]\`. Aim for **1–2 short lines** per node. Prefer this to reducing font size or using extremely narrow boxes.
+3. **Keep decisions clear.** Use a diamond for questions (\`D{"Next step<br/>requested?"}\`) and meaningful edge labels (\`|Yes|\`, \`|No|\`). Include stop, failure, optional handoff and human-review branches when documented. Do not drop an important action just to simplify layout.
+4. **Split unwieldy flows.** Use a separate small diagram for each skill. If one skill's workflow is long, group steps by phase or show a high-level flow plus a focused detail diagram only when necessary. Avoid forcing full sentences or an entire multi-skill architecture into one narrow figure.
+5. **Explain nodes immediately below the Mermaid block.** Use a short **"Node explanations"** section: **node label → full action/decision in plain English**, including relevant conditions, source links and \`NOT VERIFIED\` notes where needed. This provides the **full text** even if a Markdown renderer clips a diagram. When a diagram has several nodes, cover every label whose wording is abbreviated or ambiguous; include a plain-text decision path when necessary to preserve branches.
+6. **Check before responding.** Review the generated Mermaid source for incomplete/truncated words, unescaped quotes, overly long lines and clear arrows. If a rendering/preview tool is available, inspect it for clipped labels; otherwise do not claim a visual render was verified. Fix labels or rely on node explanations rather than shrinking text.
+7. **Ground the diagram.** Treat diagrams as **DOCUMENTED INSTRUCTIONS** unless a real execution trace proves behavior. Keep observed vs inferred paths and existing vs proposed designs distinct.
+
+**Illustrative only — not an audit of an actual skill:**
+
+\`\`\`mermaid
+flowchart TD
+    A["Resolve<br/>scope"] --> B["Classify<br/>requirements"]
+    B --> C["Run SDI<br/>review"]
+    C --> D["Summarize<br/>findings"]
+    D --> E{"Next step<br/>requested?"}
+    E -->|Yes| F["Prepare<br/>handoff"]
+    E -->|No| G["End review"]
+\`\`\`
+
+**Node explanations (illustrative):**
+- **Resolve scope** — Decide which request and materials the skill should assess.
+- **Classify requirements** — Identify relevant functional and nonfunctional requirements.
+- **Run SDI review** — Apply the skill's documented system-design reasoning steps.
+- **Summarize findings** — Explain the resulting assessment and unresolved questions.
+- **Next step requested?** — Continue to a handoff only when the request calls for it.
+- **Prepare handoff / End review** — Show the next step or stop without silently starting another skill.
+
+In a real audit, replace these sample nodes with the **actual source-backed flow** and cite inspected files. The Mermaid diagram and its explanations must agree.
 
 ### Canonical engineering questions — do not replace with a new questionnaire
 
