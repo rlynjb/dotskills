@@ -70,6 +70,12 @@ See [`catalog.json`](catalog.json) for machine-readable categories and exposure 
 
 ---
 
+## Shared communication guideline
+
+[Senior Engineer → Junior Developer Communication Guideline](docs/senior-engineer-mentoring-communication.md) gives REAZN, SLICE, and Skill Responsibility & Overlap Audit a consistent teaching voice: senior-level evidence and trade-off reasoning explained in plain English. It is **not another skill**. Each participating `SKILL.md` contains its own minimal rules, so the document is not required for standalone installation.
+
+---
+
 ## Quick start
 
 1. Choose a skill above and read its `SKILL.md`.

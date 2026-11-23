@@ -2,6 +2,10 @@
 
 A focused, **read-only Stage 2 investigation skill** for clarifying responsibilities before writing integration contracts. Works with one skill or any set of skills in a repository-aware coding agent.
 
+## Communication style
+
+Use [Senior Engineer → Junior Developer Communication Guideline](../../docs/senior-engineer-mentoring-communication.md) for clear, evidence-based explanation of significant findings. The audit skill also carries self-contained mentoring instructions in its `SKILL.md`: keep comparisons compact, define unfamiliar terms once, and explain what was found, why it matters, and what to check next beneath the comparison. This is a communication approach, not a separate teaching skill or extra audit step.
+
 ## What it produces
 
 1. Individual reviews of the same **six considerations**: Inputs, Responsibilities, Outputs, Handoffs, Boundaries and Feedback. The first three receive deeper analysis; the last three identify future design questions.

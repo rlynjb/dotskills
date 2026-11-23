@@ -1,5 +1,7 @@
 # SLICE
 
+**Communication style:** Senior-engineer delivery reasoning explained for a junior developer. See the reusable [mentoring communication guideline](../../docs/senior-engineer-mentoring-communication.md); the `SKILL.md` also contains the essential standalone rules. Keep existing ticket fields, one-pass behavior, and vertical formatting.
+
 **Tracker-agnostic delivery planning after requirements and design reasoning.**
 
 Use this skill to turn a feature brief or a [REAZN](../reazn/SKILL.md) assessment into a reviewable plan of **stories, subtasks, and an optional epic/parent**. It doesn't need Jira, an API connection, or a particular ticketing system.

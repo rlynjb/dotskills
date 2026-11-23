@@ -76,6 +76,17 @@
         "Slicing rationale explains independent tracking and completion evidence.",
         "INVEST is a Story-quality heuristic, not mandatory grading of a standalone technical Task."
       ]
+    },
+    {
+      "prompt": "Use slice on one approved feature: users can download their assessment as CSV. A supplied design note verifies existing API and UI support. Explain the proposed story and INVEST consideration in junior-friendly language without adding teaching sections or changing ticket labels; do not publish anything.",
+      "expected_output": "Compact, tracker-neutral delivery plan with one vertical Story, a concise everyday-language slicing rationale about one testable outcome, one INVEST field that explains practical significance, and traceable acceptance criteria. Maintains evidence limits and human review.",
+      "assertions": [
+        "One independent user outcome remains one story rather than split frontend/backend stories.",
+        "Explains in plain English why the story boundary and INVEST check matter.",
+        "Keeps existing ST-xx and AC-xx identifiers, field labels, and one-pass vertical output.",
+        "No new mentoring lesson sections, tables, quizzes, unsupported approvals, or tracker writes."
+      ],
+      "id": 9
     }
   ]
 }

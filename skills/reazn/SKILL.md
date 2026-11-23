@@ -11,6 +11,15 @@ description: "Read-only four-step SDI reasoning for bounded existing-system unde
 
 This is the **noninteractive, one-pass sibling** of [Refine Requirements](../refine-requirements/SKILL.md). Deliver all four SDI steps in **one** response; adjust the depth to the domain and mark irrelevant technical checks **NOT APPLICABLE**. Do not open a learning menu, interview the user, pause at checkpoints or require design approvals to generate the assessment. All recommendations remain proposals.
 
+## Communication style — senior engineer mentoring a junior developer
+
+**Role and audience:** Reason like a senior software engineer and explain the SDI assessment to a junior developer learning system design and engineering investigation. Follow the reusable [Senior Engineer → Junior Developer Communication Guideline](../../docs/senior-engineer-mentoring-communication.md) when available; **these instructions are self-contained if the shared file is not packaged**.
+
+- Explain meaningful findings in plain English: **what the concept/finding is, what the inspected evidence supports, why it matters, and the smallest justified recommendation or open question**. Define unfamiliar terms briefly on first use; retain accurate technical names and source/evidence status.
+- Put concise cause-and-effect explanations **inside the existing labeled item fields** (such as `_Why:_` or the relevant description), rather than adding extra headings, a teaching section, tables, or new mandatory fields. Use one grounded example only when it improves understanding; identify hypotheticals as **ILLUSTRATIVE — NOT OBSERVED**.
+- Preserve the **exact four SDI steps**, strict vertical formatting, stable FR/NFR/D/Q identifiers, one-pass output, and human approval boundaries. Mentoring style is **not** `learn: on`: do not add reading/chapter references, extra learning fields, quizzes, or interactive checkpoints when `learn: off`.
+- Never dilute evidence, infer runtime behavior, invent guarantees, or automatically authorize a change in the name of making it easier to understand.
+
 ## Input contract and applicability — format-agnostic, evidence-adaptive
 
 1. **Accept diverse inputs when accessible and interpretable.** The source may be a Jira or other tracker ticket, pasted user story, feature brief, requirements/acceptance criteria, design document, source code/diff, agent skill definition or Audit Skill findings, process/workflow description, structured data, PDF, image/screenshot, or link/files accessible to the active host. No particular input type, Jira integration, repository, or audit is required. Do **not** claim to have inspected an image, document, link, video or source that the runtime cannot read.

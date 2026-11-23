@@ -103,6 +103,22 @@
         "Evidence references the frozen SKILL.md; Audit Skill secondary recommendations are not promoted to requirements or defects.",
         "No new implementation task, test execution, or actual report output is invented."
       ]
+    },
+    {
+      "prompt": "Use reazn on the frozen synthetic access-review SKILL.md and audit evidence. intent: understand-existing; scope: subsystem; learn: off. Explain the difference between documented read-only instructions and observed runtime enforcement in plain English for a junior developer, without changing the four SDI steps or adding a study lesson.",
+      "files": [
+        "evals/files/semantic-case/SKILL.md",
+        "evals/files/semantic-case/audit.md"
+      ],
+      "expected_output": "A single four-step, vertical, read-only SDI assessment using canonical fields and statuses. A concise, accessible explanation connects the documented restriction, why runtime evidence matters, and what verification is missing; no learning references when learn: off.",
+      "assertions": [
+        "Keeps REAZN's exact four SDI steps and canonical vertical item formatting, with no tables or extra lesson headings.",
+        "Explains the meaningful consequence of missing runtime evidence, not just the NOT VERIFIED label.",
+        "Defines uncommon terminology briefly when necessary without altering technical labels.",
+        "Preserves DOCUMENTED versus OBSERVED versus PROPOSED/NOT VERIFIED distinctions and sources.",
+        "No Further reading or Study focus fields, quizzes, new assumptions, approvals or edit actions."
+      ],
+      "id": 9
     }
   ]
 }

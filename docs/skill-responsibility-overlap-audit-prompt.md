@@ -19,6 +19,8 @@ A reusable, evidence-based investigation prompt for one or more AI agent skills.
 
 Act as a senior software engineer performing an evidence-based investigation of a set of AI agent skills. Explain findings in clear, junior-friendly English.
 
+For meaningful findings, use the [shared senior-engineer mentoring communication guideline](senior-engineer-mentoring-communication.md): explain what was found, why it matters, the smallest justified recommendation, and the evidence/uncertainty. Briefly define unfamiliar terms; keep the existing report sections and side-by-side layout unchanged. Do not add teaching stages or conflate proposed design with implemented behavior.
+
 ### Target skills
 
 - **Skills to assess:** [Insert any skill names, directories, repository paths, or links]

@@ -1,5 +1,7 @@
 # REAZN
 
+**Communication style:** Senior-engineer reasoning for a junior-developer audience. See the reusable [mentoring communication guideline](../../docs/senior-engineer-mentoring-communication.md); the `SKILL.md` includes its own self-contained rules. Explanations stay within the existing four-step SDI format and do **not** enable `learn: on` or add teaching sections.
+
 **Input-agnostic, evidence-first engineering reasoning using the four-step System Design Interview (SDI) framework.**
 
 REAZN examines an existing system, assesses a requested change, or explores a new design. It produces **one read-only assessment**—not implementation tasks, source edits, or automatic approvals. A Jira ticket or code repository is **not required**.

@@ -218,6 +218,23 @@
         "Open contract, approval, and feedback decisions are deferred to Stage 3.",
         "No coordinator is built, no source file edited, and no automatic cross-skill invocation is claimed."
       ]
+    },
+    {
+      "prompt": "Audit the attached requirements-review and sprint-readiness synthetic skills for a junior developer who is learning engineering investigations. Explain the boundaries finding in plain English while preserving the side-by-side six-consideration layout and source evidence. Do not design contracts.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/sprint-readiness/SKILL.md"
+      ],
+      "expected_output": "Senior-level, evidence-based assessment explained for a junior developer: compact side-by-side comparison, short vertical explanation of what the authority issue is, why it matters, how documented versus inferred differs, and a bounded human-review recommendation. Does not inflate every finding into a teaching lesson.",
+      "assertions": [
+        "Preserves the original six considerations, four investigation steps and seven report sections.",
+        "Defines the relevant meaning of a boundary or duplicated decision authority in plain English when first needed.",
+        "Describes a concrete workflow consequence and minimum justified recommendation based on actual inspected source.",
+        "Shows direct evidence and does not confuse DOCUMENTED, INFERRED, and OBSERVED runtime results.",
+        "Keeps side-by-side cells concise and expands only material findings in vertical notes.",
+        "No extra mandatory five-heading lesson, contract design, auto-approval, or source edits."
+      ],
+      "id": 15
     }
   ]
 }
