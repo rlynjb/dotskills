@@ -77,24 +77,59 @@ There is **one consolidated human review stage**, not two sequential approval st
 
 ## 3. What the first report contains
 
-Begin with **Audit Skill — Overall View**, a skimmable summary of:
+The first report has a **repeatable structure**, not a collection of disconnected findings:
 
-- **Each skill today:** purpose, current responsibilities, outputs and any important uncertainties.
-- **How skills relate:** which responsibilities are unique, shared, duplicated, conflicting, or unowned.
-- **Proposed boundaries:** `B-01`, `B-02`, and so on, each with an accountable owner, exclusions and trade-offs.
-- **Proposed contracts:** `C-01`, `C-02`, and so on, showing how data should move and what must be preserved.
-- **Dependencies:** which proposed contract depends on which proposed boundary.
-- **Review ledger:** one place to see what you can approve/revise/reject/defer.
+1. **Audit Skill — Overall View:** What was inspected, the main concern, and what remains unknown.
+2. **Step 1 — Skill Responsibility & Overlap Assessment:** Examine **the same six considerations for each skill**: Inputs, Responsibilities, Outputs, Handoffs, Boundaries, Feedback. Then explain evidence-backed overlaps across skills.
+3. **Step 1 — Supporting Quality Checks:** Q-01–Q-10 coverage, material findings, as-is Mermaid diagrams, Agent Skills compliance and portability evidence. These support the six considerations; they do not replace them.
+4. **Step 2 — Proposed Skill Boundaries:** Decisions `B-01`, `B-02`, etc., with recommended owners, exclusions, reasons and alternatives.
+5. **Step 3 — Skill Integration Contracts — PROPOSED:** Contracts `C-01`, `C-02`, etc., showing inputs/outputs, guarantees, failures and relevant feedback paths. Link each contract to its provisional boundary decisions.
+6. **Consolidated Human Review:** One understandable list of decisions you may approve, revise, reject or defer.
+7. **Step 4 — Validation Readiness (NOT EXECUTED):** A short preview of what needs approval or verification; the detailed validation plan follows applicable approvals. Audit Skill never runs live tests.
 
-The report also contains **source-backed supporting evidence**: per-skill Q-01–Q-10 coverage checklists, material findings, as-is Mermaid diagrams, Agent Skills format checks, and runtime compatibility limitations. Significant findings should use short explanations of **what exists, what's missing, why it matters, and what to do next**. The full ten six-field Q explanations may be expanded on request. This keeps a four-skill audit skimmable instead of burying the proposed architecture under dozens of repetitive fields.
+**The six considerations answer "What is true or unknown about the current skills?" The four steps answer "Where am I in the audit process?"** Keep the Q-01–Q-10 checklist as supporting technical coverage rather than a second framework to memorize.
 
-**Nothing in this first report is automatically approved.**
+All significant findings should explain **what exists, why it matters and what the next justified action is**, using actual source links. The whole report remains readable for a junior developer; long technical detail is expandable on request.
+
+**Nothing in this first report is automatically approved or tested.**
 
 ## 4. Step 1 — Inspect responsibilities and overlap
 
 Audit Skill examines authorized source files, starting with `SKILL.md` and material references, including resources, scripts, agents, schemas, and existing eval evidence.
 
-For **one skill**, it assesses responsibility boundaries and internal/input-output contracts. It never invents a second skill simply to find an overlap.
+### The six considerations — the same six every time
+
+This is your **engineering investigation worksheet**. Treat each consideration like a small SDI Step 1 exercise: **Observe → Question assumptions → Validate before solving**. Do not start designing B-xx boundaries or C-xx contracts until the existing behavior and its evidence have been examined.
+
+1. **Inputs — What does the skill need?** Requests, documents, other skill outputs, tools or context. Which are required, optional or assumed?
+2. **Responsibilities — What does it own?** Its primary job and decisions. Another skill reading the same information does not automatically make ownership duplicated.
+3. **Outputs — What does it produce?** Expected artifacts, statuses, evidence, open questions or proposed decisions.
+4. **Handoffs — How is the result used next?** Who provides information, who receives it, and what must survive the transfer? For a standalone skill, focus on its input/output interface without inventing a downstream skill.
+5. **Boundaries — What cannot happen automatically?** Human sign-off, prohibited actions, security permissions, stop conditions or decisions outside the skill's authority.
+6. **Feedback — What happens when information needs reconsideration?** When a later step discovers a gap, conflict or changed requirement, is there a documented destination for that issue? What evidence returns, and does the workflow stop, continue or need a human? This is feedback **between stages**, not simply the human reviewing the Audit Skill report.
+
+**Use the same three fields beneath every consideration:**
+
+```markdown
+**01 — Inputs**
+_Observed:_ What the inspected files actually describe.
+_Evidence:_ [Real source file and relevant lines] or NOT VERIFIED.
+_Open question:_ An assumption to check, or None material identified.
+
+**02 — Responsibilities**
+_Observed:_ ...
+_Evidence:_ ...
+_Open question:_ ...
+
+... repeat for 03 Outputs, 04 Handoffs,
+05 Boundaries, 06 Feedback.
+```
+
+**What to do when information is missing:** If the inspected sources do not define a rule, say **NOT FOUND IN INSPECTED SOURCES**. If you cannot inspect enough evidence, say **NOT VERIFIED**. Neither statement proves that a running skill is broken. If an item genuinely does not apply, say why.
+
+This is a **format for understanding**, not a demand to fill every row with a problem. Keep each field concise, then explain the most important gaps in more depth.
+
+For **one skill**, Audit Skill assesses these six considerations, including its own input/output interface, without fabricating neighboring skills.
 
 For **multiple skills**, it first assesses each independently, then compares:
 
@@ -104,6 +139,7 @@ For **multiple skills**, it first assesses each independently, then compares:
 - **Conflict:** their instructions or responsibilities contradict each other.
 - **Unowned responsibility:** an important task or decision has no clear owner.
 - **Handoff gap:** one skill expects information another does not promise to supply.
+- **Feedback-routing gap:** a later skill knows something needs correction but has no documented route back to the skill or human responsible for deciding.
 
 A senior engineer should explain the *consequence*, not just name the category. For example, two skills checking the same requirements is not necessarily wrong. But if both can independently declare them complete, the workflow could get conflicting answers. The report should explain how the actual inspected skills differ.
 
@@ -245,6 +281,10 @@ For example: **Given** a task with a missing required field, **when** the approv
 - Did runtime permissions and human approval requirements hold?
 - Were relevant output formats and orchestration claims demonstrated by traces?
 
+**In the initial report:** Step 4 appears as a short **Validation Readiness (NOT EXECUTED)** section. It names approval blockers, unknown test environment/data, and a few behaviors that may eventually need verification. That section is **not** a claim that test preparation is approved or complete.
+
+**After the relevant boundaries and contracts are approved:** expand Step 4 into a specific, sanitized Given/When/Then scenario and evidence checklist.
+
 **Audit Skill itself does not run tests.** A separately authorized Codex or [Evaluate Skill](../evaluate-skill/SKILL.md) workflow can execute tests when its tool permissions and environment safety controls permit it. Check the evaluation runner's actual current status rather than assuming live end-to-end tests work.
 
 If genuine authorized trace evidence is supplied, Audit Skill may inspect it **read-only** and compare observed behavior to the approved contracts. READY TO TEST does **not** mean TESTED or PASSED.
@@ -305,12 +345,19 @@ Refine Requirements, Jira Ticket Decomposition,
 and Sprint Assessment.
 
 In the first response, give me one overview covering:
-Step 1 — current responsibilities, overlap and gaps;
-Step 2 — all proposed B-xx ownership boundaries;
-Step 3 — all proposed C-xx handoff contracts,
-including their dependencies on B-xx decisions.
+Step 1 — Skill Responsibility & Overlap Assessment:
+for EACH skill, use six explicit headings in this order:
+Inputs, Responsibilities, Outputs, Handoffs, Boundaries,
+Feedback, with Observed / Evidence / Open question.
+Then show cross-skill overlaps, gaps, Q-01–Q-10 checks,
+and readable as-is diagrams.
+Step 2 — all proposed B-xx ownership boundaries.
+Step 3 — all proposed C-xx handoff contracts and
+relevant feedback routes, linked to B-xx decisions.
+Show one consolidated human review section and a short
+Step 4 Validation Readiness (NOT EXECUTED) preview.
 
-Show source evidence and Q-01–Q-10 coverage.
+Use actual source links, not guessed evidence.
 Explain findings, proposed boundaries and contracts at
 a junior-developer level: what, why, recommendation and
 next action. Act like a senior engineer coaching me.
@@ -326,9 +373,12 @@ are approved. Do not run tests or edit files.
 
 ```text
 Use audit-skill on Refine Requirements.
-Inspect the current skill and its material references,
-propose any B-xx boundary improvements and any
-meaningful C-xx invocation/output contract.
+Inspect the current skill and its material references.
+Show the same six considerations (Inputs, Responsibilities,
+Outputs, Handoffs, Boundaries, Feedback) with source
+evidence and open questions, then propose any B-xx
+boundary improvement and meaningful C-xx input/output
+contract.
 Show Steps 1–3 together, then ask for my review.
 Explain terms, the reason for recommendations and next
 steps as a senior engineer mentoring a junior developer.
