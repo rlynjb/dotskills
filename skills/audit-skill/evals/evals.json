@@ -228,6 +228,32 @@
         "Does not claim written permission instruction equals enforced permission.",
         "Keeps overview readable, avoids repeated filler and jargon."
       ]
+    },
+    {
+      "id": 21,
+      "prompt": "Use audit-skill to inspect two skills with documented 7–9-step as-is workflows. Generate Mermaid diagrams. The step titles are long enough that a narrow Markdown viewer would clip them. The audience is a junior developer.",
+      "expected_output": "Separate legible Mermaid diagrams for each skill using short complete node titles, quoted labels and explicit <br/> breaks where useful; the diagram preserves actual source-backed branching and failures. Immediately below each chart is a Node explanations section that expands shortened labels in plain English with source links. No claims of visually testing a render without preview evidence.",
+      "assertions": [
+        "Mermaid nodes use short meaningful labels (roughly two to four words) instead of truncated text fragments.",
+        "Longer node titles use quoted labels with explicit <br/> breaks rather than globally shrinking text.",
+        "Each audited skill gets a separate diagram; overly long flows are simplified by grouping without losing documented decisions.",
+        "Node explanations below each diagram provide the complete meaning of abbreviated steps and relevant source evidence.",
+        "Decision branches, stops and documented failure conditions are preserved; no new workflow behavior is invented.",
+        "Reports DOCUMENTED INSTRUCTIONS or NOT VERIFIED appropriately, not OBSERVED RESULT without a real run.",
+        "Output remains junior-readable and keeps Steps 1–3 overview-first."
+      ]
+    },
+    {
+      "id": 22,
+      "prompt": "Audit a skill whose Mermaid as-is flow has long labels including 'Four-step SDI assessment' and 'Prepare handoff after human approval', plus a yes/no decision. Create a readable chart and preserve the meaning for a narrow UI.",
+      "expected_output": "Uses complete abbreviated titles such as 'Run SDI review' and 'Prepare handoff', wraps two-line labels where necessary, preserves conditional human approval and yes/no branches, and expands meaning immediately underneath in Node explanations.",
+      "assertions": [
+        "No clipped-looking labels like 'Four-step SDI ass' or 'User requests de'.",
+        "The approval condition is preserved even when the box title is shortened.",
+        "Quoted Mermaid node labels with optional <br/> are syntactically well-formed.",
+        "The explanatory text carries detailed meaning and distinguishes documented versus inferred steps.",
+        "No font shrinking as the primary readability solution."
+      ]
     }
   ]
 }
