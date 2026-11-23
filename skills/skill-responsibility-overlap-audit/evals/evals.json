@@ -404,6 +404,38 @@
         "No raw HTML markup, mandatory discovery inference, or fabricated quote.",
         "Human approval, no source mutation and Stage 2 investigation limits are retained."
       ]
+    },
+    {
+      "id": 27,
+      "prompt": "Audit the synthetic requirements-review and sprint-readiness skills. A previous audit incorrectly transposed the Primary section: each consideration became its own table, 'Consideration | 2. Responsibilities (C2)' appeared as a header, and skill names became rows. Keep the already-correct Supporting side-by-side orientation. Render C1–C3 and C4–C6 in two matching side-by-side tables and include material F-xx assessments.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/sprint-readiness/SKILL.md"
+      ],
+      "expected_output": "Section 2 has exactly one Primary table whose first column has C1, C2, C3 and whose remaining column headings are the two skills. One Supporting table uses the same skill column order with C4, C5, C6. Meaningful F-xx fields stay inside skill cells. No transposed per-consideration tables, HTML, or detached findings.",
+      "assertions": [
+        "Primary header is Consideration + both skill names, in the same order as Supporting.",
+        "C1 Inputs, C2 Responsibilities and C3 Outputs are first-column rows, never table headers.",
+        "No separate mini-table per C1/C2/C3 or rows named after the skills.",
+        "Supporting C4–C6 retains its working side-by-side presentation.",
+        "F-xx source evidence and CLARIFY/REVISE/KEEP decisions remain within their relevant skill cells; no runtime claims or skill edits."
+      ]
+    },
+    {
+      "id": 28,
+      "prompt": "Audit synthetic discovery-brief and approval-evidence skills in a terminal. One Primary C3 wording concern needs an exact quotation and a proposed replacement. Keep only two comparison tables total and insert the wording detail immediately under C3 in the SAME Primary table, without reintroducing its header or pivoting the skills into rows.",
+      "files": [
+        "evals/files/discovery-brief/SKILL.md",
+        "evals/files/approval-evidence/SKILL.md"
+      ],
+      "expected_output": "Primary table remains Consideration | discovery-brief | approval-evidence with C1–C3 rows; any needed F-xx wording detail follows the relevant C row inside that same Primary table. Supporting table retains the same skill columns C4–C6. No third wording table, copied header, HTML, or detached finding.",
+      "assertions": [
+        "Only two main comparison table headers for a two-skill audit: Primary and Supporting.",
+        "Any optional F-xx detail row is adjacent to its primary finding within the same table.",
+        "Skill names are only skill column headings, not first-column row labels.",
+        "Evidence status of quoted instructions and inferred consequences remain distinct.",
+        "All six considerations and Stage 2 human-review boundaries are preserved."
+      ]
     }
   ]
 }
