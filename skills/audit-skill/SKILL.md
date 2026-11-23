@@ -1,6 +1,6 @@
 ---
 name: audit-skill
-description: "Overview-first, evidence-backed audit of one or more agent skills: inspect responsibilities and overlap (Q-01–Q-10), present proposed boundaries AND provisional handoff contracts together, then guide human approve/revise/reject/defer decisions. Prepare validation separately. Read-only: no live execution, source edits, or inferred approvals."
+description: "Overview-first, junior-friendly audit of agent skills: explicitly investigate six considerations (inputs, responsibilities, outputs, handoffs, boundaries, feedback), assess Q-01–Q-10, propose ownership decisions and conditional contracts, and guide human review. Prepare validation separately. Read-only: no live execution, source edits, or inferred approvals."
 ---
 
 # Audit Skill
@@ -40,8 +40,9 @@ For each significant finding, recommendation, decision or contract, answer the r
 ## Workflow and human review
 
 ```text
-Step 1  Inspect responsibilities and overlap
-        Q-01–Q-10 + evidence + as-is workflows
+Step 1  Skill Responsibility & Overlap Assessment
+        Inputs / Responsibilities / Outputs / Handoffs
+        Boundaries / Feedback + Q-01–Q-10 + evidence
                            |
 Step 2  Recommend skill boundaries
         Owner / non-owner / decision authority
@@ -57,8 +58,9 @@ Step 3  Recommend handoff contracts (provisional)
              Approve / revise / reject / defer
               Individual items or explicit sets
                            |
-Step 4  Prepare validation and review evidence
-        Approved decisions + scenarios + trace review
+Step 4  Validate the Workflow (separate execution)
+        Initial readiness preview, then approved scenarios
+        + read-only review of genuine trace evidence
                            |
            Separate authorized Codex / Evaluate Skill run
 ```
@@ -91,13 +93,41 @@ Step 4  Prepare validation and review evidence
 
 **Outcome:** a grounded view of the *as-is* design, without deciding its future architecture.
 
-1. Inventory for each target: purpose, when to invoke and not invoke, users, required inputs, context, dependencies, stages, delegated workers/tools, validation, outputs, side effects, stop/failure handling, ownership, human authority and handoffs. In the reader-facing overview, translate this into **"What this skill does / What it depends on / What it produces / What it must not decide"** rather than dumping technical inventory fields.
+1. Inventory for each target: purpose, when to invoke and not invoke, users, required inputs, context, dependencies, stages, delegated workers/tools, validation, outputs, side effects, stop/failure handling, ownership, human authority and handoffs. **Always organize the reader-facing assessment using the six numbered considerations below**, rather than scattering those observations across unrelated quality questions.
 2. Reconstruct an evidence-backed **as-is Mermaid flow**: trigger → evidence/context → decisions/validation → delegation → output/effects → stop/handoff. Label inferred or unverified edges; do not depict proposed orchestration as implemented. Apply the **Mermaid readability rules** below; include text explanations so no meaning depends on a potentially clipped diagram.
 3. Apply the **canonical Q-01–Q-10** to each accessible target (below). Show a ten-line At a Glance checklist per skill with direct source-backed **material findings**, prioritizing the cross-skill picture; expand individual six-field Q findings when asked or when necessary to substantiate significant gaps. Do not allow 40 repetitive blocks to bury the initial overview of four skills.
-4. For multiple targets, identify: **unique owner**, **shared context**, **duplicated decision ownership**, **conflict**, **unowned responsibility**, and **handoff gap**. Explain the difference in plain English: two skills reading the same requirement is often *shared context*, while two skills both claiming the final decision may be *overlap*. Show the **practical consequence** of a real conflict or missing owner and why it is worth resolving. Name exact skills and source evidence; only propose potential integration paths, marked PROPOSED.
+4. For multiple targets, identify: **unique owner**, **shared context**, **duplicated decision ownership**, **conflict**, **unowned responsibility**, **handoff gap**, and relevant **feedback-routing gaps**. Explain the difference in plain English: two skills reading the same requirement is often *shared context*, while two skills both claiming the final decision may be *overlap*. Show the **practical consequence** of a real conflict, missing owner, missing handoff or unowned feedback path. Name exact skills and source evidence; only propose future integration or routing paths marked PROPOSED.
 5. Assess relevant trust, provenance, security, reliability, failure isolation, observability, portability and existing eval evidence without assuming the runtime was exercised.
 6. Review the current [Agent Skills specification](https://agentskills.io/specification) when accessible. Distinguish normative requirements, recommendations and host conventions. Inspect current format/packaging; do not claim a validator was run if it was not.
 7. Record a runtime × capability compatibility assessment for declared/requested hosts: packaging, invocation, context loading, tools/MCP, delegation, permissions, error contracts and verification. Allowed statuses: SUPPORTED (evidenced), ADAPTER REQUIRED, NOT SUPPORTED (evidenced), NOT VERIFIED. Written portability does not prove Codex/Claude parity.
+
+### Six considerations — mandatory Step 1 investigation and report structure
+
+Use the **same six numbered labels and order for every accessible target skill**. These are the beginner-friendly **organization of observations**, not six additional Q-01–Q-10 criteria and not a replacement for the engineering-quality checklist. They apply to single skills, unrelated skill comparisons and multi-skill workflows; do not assume a PRD, Jira, or upstream neighbor exists.
+
+1. **Inputs — What does this skill need?** Required and optional user input, source documents, previous-skill results, tools and context. Distinguish what the files explicitly require from assumptions about runtime access.
+2. **Responsibilities — What does it own?** Primary job, decisions the skill is accountable for, and what it merely examines or assists with. Shared reading of information does not automatically mean duplicated decision authority.
+3. **Outputs — What does it produce?** Deliverables, fields, evidence links, unresolved questions, status and whether results are advisory, drafts or authorized actions.
+4. **Handoffs — How is the result used next?** Identifiable producer/consumer when documented, how data moves, what must be preserved, missing dependencies and whether a next stage is actually defined. For standalone skills, examine the invocation/result interface without inventing a downstream consumer.
+5. **Boundaries — What must not happen automatically?** Human approvals, prohibited actions, permissions, trust boundaries, stop conditions and limits on who can decide or write. A written restriction is not proof of technical enforcement.
+6. **Feedback — What happens when something needs reconsideration?** Look for a *documented* return/escalation path when later work reveals missing, changed or conflicting information: **trigger → responsible recipient/owner → evidence/questions returned → stop/reassess/continue decision**. Distinguish feedback **between skills** from ordinary feedback from the user about this audit. If no multi-skill feedback path is relevant, explain why; do not invent one. A proposed route belongs in Step 2 or 3, not the factual as-is assessment.
+
+For **each of the six**, provide a compact, vertically formatted observation in this pattern:
+
+```markdown
+**01 — Inputs**
+_Observed:_ What the inspected skill currently requires or describes.
+_Evidence:_ [Actual inspected file and relevant lines] or NOT VERIFIED.
+_Open question:_ A specific assumption to check, or "None material identified."
+```
+
+Use the corresponding heading `02 — Responsibilities`, `03 — Outputs`, `04 — Handoffs`, `05 — Boundaries`, `06 — Feedback` and the **same three fields**. When a relevant item is not documented, write **NOT FOUND IN INSPECTED SOURCES** rather than pretending the behavior fails in real executions; when source access is insufficient, write **NOT VERIFIED**. When truly inapplicable, explain **NOT APPLICABLE** without fabricating dependencies.
+
+**Mental discipline for beginners: Observe → Question assumptions → Validate before solving.** Under `Observed`, describe *current documented behavior only*; under `Open question`, record what has not been established; under `Evidence`, show how you know. Do **not** put new ownership designs or proposed contracts in these six factual observations. Put suggestions in Step 2 (`B-xx`) and Step 3 (`C-xx`).
+
+For two or more targets, follow the six-consideration summaries with a short **Cross-skill Responsibility & Overlap** section showing **unique ownership, intentionally shared information, duplicated decisions, missing responsibilities, handoff gaps and feedback-routing gaps**, with direct evidence links. Use actual adjacent relationships where known, not a forced comparison of every possible pair.
+
+**Keep it skimmable:** usually one or two sentences per `Observed` and `Open question` field. Expand material issues with the existing senior-to-junior teaching guidance; avoid repeating the same observations verbatim in Q-01–Q-10. Every accessible skill gets all six labels even if an item is NOT VERIFIED or NOT APPLICABLE.
 
 ### Mermaid readability rules — required for every generated diagram
 
@@ -246,6 +276,7 @@ In the **same initial report as Step 1 and Step 2**, propose `C-xx` contracts us
 - **Outputs/postconditions:** the minimum result format, success states and ownership of the next decision.
 - **Invariants/guarantees:** what must survive unchanged (for example, ticket identity, original source, uncertainties and human approval state); distinguish desired guarantees from implemented checks.
 - **Failure/stop behavior:** missing or conflicting inputs, invalid outputs, unavailable downstream skill, partial success, retry/timeout if relevant, and `NEEDS HUMAN` / `BLOCKED` versus continuation. **Never resolve missing requirements or approvals by inventing defaults.**
+- **Feedback routing (when relevant):** what causes a return or escalation, which skill or human owns the reconsideration, what issue/evidence is sent back, and what permits work to resume. Separate **CURRENT DOCUMENTED** routes from **PROPOSED** routes; do not enumerate every hypothetical loop.
 - **Trust/permission boundaries:** least privilege, untrusted content, permitted side effects, privacy and approval requirements.
 - **Compatibility/versioning (when relevant):** fields/contract version and host adapter assumptions, not unnecessary boilerplate.
 
@@ -259,7 +290,7 @@ After presenting **all** `B-xx` and `C-xx` proposals, **explain the available de
 
 **Outcome:** a practical validation handoff and honest evidence summary. **Audit Skill does not execute tests.** Present testing as a small experiment: **Given** a representative input, **when** the approved skill flow runs in an authorized environment, **then** the expected safe result should appear. Describe what evidence (specific output/trace) would show the rule worked and why it matters. Explain READY TO TEST versus TESTED versus NOT VERIFIED in plain language.
 
-1. After the consolidated human review resolves all material decisions for a path, identify one **sanitized representative scenario** (or bounded synthetic fixture) spanning the selected skills. List required inputs, approved boundary/contract IDs, expected stage outcomes, and human checkpoints. In the initial overview, you may mention likely validation risks without claiming test readiness.
+1. After the consolidated human review resolves all material decisions for a path, identify one **sanitized representative scenario** (or bounded synthetic fixture) spanning the selected skills. List required inputs, approved boundary/contract IDs, expected stage outcomes, and human checkpoints. **In the initial report, show a brief named `Step 4 — Validation Readiness (NOT EXECUTED)` section** with known blockers and 1–3 *possible* checks only. Do not design a full executable test plan or mark READY TO TEST before the relevant boundaries/contracts are approved.
 2. Propose a concise validation checklist:
    - Each skill activates for the correct responsibility; no duplicate or unauthorized decisions.
    - Required fields, source references and unresolved questions survive every handoff without fabrication.
@@ -282,21 +313,25 @@ Maintain a compact, junior-readable decision ledger in the initial overview and 
 - If they defer an essential decision, explain what contract or validation step remains blocked. Other independent decisions may proceed.
 - When the user supplies new facts without corroborating source, note `USER-PROVIDED — NOT VERIFIED` and request/recommend a verification path without blocking unrelated decisions.
 
-## Output shape by turn — overview first
+## Output shape by turn — overview first, six considerations inside four steps
 
-**Initial invocation: Steps 1–3 in one response, then a single consolidated human review prompt**
+**Initial invocation: one complete Steps 1–3 overview, then one consolidated human review; show a brief Step 4 readiness preview.** Use these headings and sequence so a beginner always knows where they are in the investigation:
 
-1. **Audit Skill — Overall View:** begin with a 2–4 sentence **"What I found / Why it matters / What I recommend reviewing"** explanation, then targets/revisions, inspected/unavailable sources and NOT EXECUTED; a short per-skill responsibility snapshot and as-is workflow summary. Use words a junior developer can understand without looking up the glossary.
-2. **Step 1 — Responsibility & Overlap:** a cross-skill picture of who currently owns what, shared context versus duplicated ownership, gaps, conflicts and important evidence. For each material issue, say **what overlaps, why it matters and what might happen if nothing changes**. Give each accessible target its Q-01–Q-10 checklist. Put concise source-backed material Q findings, as-is Mermaid flows, Agent Skills conformance and portability evidence after the overview or in a clearly secondary detailed section.
-3. **Step 2 — Proposed Boundaries:** `B-xx` decisions with recommended owner/non-owner, a short **why this owner** explanation, realistic consequence, alternatives/trade-offs, direct evidence links and PROPOSED status.
-4. **Step 3 — Proposed Handoff Contracts:** `C-xx` producer/consumer contracts with inputs, outputs, guarantees, failures, trust boundaries, a **why this handoff matters** explanation and explicit `depends on B-xx` links. All contracts relying on unapproved B items are visibly CONDITIONAL.
-5. **Decision Overview:** one compact, plain-English ledger summarizing all B/C IDs, the proposed choice, what it changes, status and dependencies; show an example of how to reply and ask the human which ones to approve/revise/reject/defer. **Do not require approval before showing the proposed contracts.** No tests are run.
+1. **Audit Skill — Overall View:** 2–4 sentences explaining what was inspected, what appears important, why it matters and what remains uncertain. Include exact source revisions, inaccessible material and `NOT EXECUTED`. State clearly that Steps 1–3 include observed facts versus provisional proposals.
+2. **Step 1 — Skill Responsibility & Overlap Assessment:** for **each accessible skill**, show the six numbered subheadings **01 Inputs / 02 Responsibilities / 03 Outputs / 04 Handoffs / 05 Boundaries / 06 Feedback** with `Observed`, `Evidence`, `Open question`. Then show **Cross-skill Responsibility & Overlap** (for 2+ skills) and a readable **as-is Mermaid diagram with node explanations**. Keep all current-state descriptions source-backed.
+3. **Step 1 — Supporting Quality Checks (Q-01–Q-10):** ten ordered evidence-backed status lines per accessible target and short expanded material findings. Include the Agent Skills standard and host-compatibility assessment when relevant. These are **supporting evidence**, not competing headings for the six considerations.
+4. **Step 2 — Proposed Skill Boundaries:** `B-xx` owner/non-owner decisions with source-backed reason, impact, meaningful alternative/trade-off and `PROPOSED` status. This is **future design**, not the Step 1 as-is result.
+5. **Step 3 — Proposed Handoff Contracts:** `C-xx` producer/consumer contracts describing inputs/outputs, invariants, failure behavior, human/trust boundaries and relevant **feedback-routing rules**. Show `depends on B-xx` and `PROPOSED — CONDITIONAL ON B-xx` where applicable. Collect these logical contract cards under the heading **Skill Integration Contracts — PROPOSED**, not as automatically created files.
+6. **Consolidated Human Review:** one junior-readable decision ledger covering B/C IDs, plain-English implications, status/dependencies and a sample `Approve / Revise / Reject / Defer` reply. **Do not request approval before Steps 1–3 are shown.**
+7. **Step 4 — Validation Readiness (NOT EXECUTED):** a small initial preview of which approved decisions, environment/data and evidence would be required, plus 1–3 candidate behaviors to verify. Label pending approvals/unknown runtime evidence accurately. **Do not execute or claim validation passed.** If a user asks only for Step 1, omit Steps 2–4 and approval prompts.
 
-**Follow-up after human feedback:** update only affected decisions/contract wording, preserve independent approvals, show dependency impacts and unresolved issues; seek specific clarification/approval only for revised or ambiguous items. A user may approve a coherent B/C set in one reply.
+**These are two logical engineering deliverables, not automatically written documents:** Step 1 produces a **Skill Responsibility & Overlap Assessment**; Step 3 produces **proposed Skill Integration Contracts**. After explicit design approvals, the latter can be described as *human-approved design* (never silently as implemented or tested).
 
-**Step 4 (when relevant material B/C decisions are approved):** approved ledger → validation readiness and scenarios → separate test/evaluation handoff → evidence limits; add read-only observed-vs-expected findings if actual authorized traces are supplied. Do not claim execution without genuine evidence.
+**Follow-up after human feedback:** update only affected B/C decisions, their dependencies, contract wording, feedback routes and pending readiness conditions. Preserve independent approvals; request specific confirmation only for revised or ambiguous items.
 
-**Focused follow-up:** discuss the selected Q/B/C item with source references and dependency impact; do not regenerate unrelated findings unless source evidence changed. A user requesting `audit only` may stop after Step 1, and a user requesting an overview can see Steps 1–3 without making any approval decision.
+**Step 4 after relevant B/C approvals:** approved ledger → representative sanitized test scenario → observable Given/When/Then expectations → separate authorized test/evaluation handoff → read-only evidence review when actual traces are supplied. Do not claim execution without real evidence.
+
+**Focused follow-up:** explain the selected consideration `01–06`, quality check `Q-xx`, boundary `B-xx` or contract `C-xx` with source evidence and the next justified verification action. Do not regenerate unrelated sections without changed evidence.
 
 ## Engineering reasoning and safety
 
