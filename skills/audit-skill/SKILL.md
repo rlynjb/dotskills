@@ -315,7 +315,7 @@ Maintain a compact, junior-readable decision ledger in the initial overview and 
 
 ## Output shape by turn — overview first, six considerations inside four steps
 
-**Initial invocation: one complete Steps 1–3 overview, then one consolidated human review; show a brief Step 4 readiness preview.** Use these headings and sequence so a beginner always knows where they are in the investigation:
+**Initial invocation: one complete Steps 1–3 overview, then one consolidated human review; show a brief Step 4 readiness preview.** Use these headings and sequence so a beginner always knows where they are in the investigation. Follow the consistent [report structure example](references/report-structure.md) for section and field labels; it is a **template, not prefilled evidence**, and does not authorize a file write:
 
 1. **Audit Skill — Overall View:** 2–4 sentences explaining what was inspected, what appears important, why it matters and what remains uncertain. Include exact source revisions, inaccessible material and `NOT EXECUTED`. State clearly that Steps 1–3 include observed facts versus provisional proposals.
 2. **Step 1 — Skill Responsibility & Overlap Assessment:** for **each accessible skill**, show the six numbered subheadings **01 Inputs / 02 Responsibilities / 03 Outputs / 04 Handoffs / 05 Boundaries / 06 Feedback** with `Observed`, `Evidence`, `Open question`. Then show **Cross-skill Responsibility & Overlap** (for 2+ skills) and a readable **as-is Mermaid diagram with node explanations**. Keep all current-state descriptions source-backed.
@@ -343,4 +343,4 @@ Additional boundaries:
 - No architecture decision is approved through inference, checkmarks, or prior examples. Don't confuse the person chatting with a team approver.
 - Do not invent source lines, loaded references, agent worker execution, trace identifiers, or platform parity.
 - Boundary/contract **proposals** may be presented together without prior approval. Human approval is needed before treating them as finalized or preparing a path as READY TO TEST; permissions for runtime actions or source writes are separate and must be enforced by the host/tools.
-- For training examples, consult [coverage checklist examples](references/coverage-checklist-examples.md). For a multi-skill case, consult [Sprint Assessment worked example](references/sprint-assessment-audit.md). Neither is evidence about the target being audited.
+- For teaching examples, consult [coverage checklist examples](references/coverage-checklist-examples.md); for consistent output layout, consult [report structure](references/report-structure.md); and for a multi-skill scenario, consult [Sprint Assessment worked example](references/sprint-assessment-audit.md). They are examples/templates, **not evidence** about the audited targets.
