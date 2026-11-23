@@ -10,7 +10,8 @@
         "Q-01 through Q-10 each have a source-backed coverage status.",
         "Initial report shows Steps 1, 2, and 3 before inviting decisions.",
         "Proposed contracts do not imply approved boundaries.",
-        "No run, write, fabricated host enforcement, or automatic approval."
+        "No run, write, fabricated host enforcement, or automatic approval.",
+        "Initial skill profile and B/C proposals explain what, why and next action in junior-friendly terms."
       ]
     },
     {
@@ -22,7 +23,8 @@
         "Shared context is distinguished from duplicated authority.",
         "B-xx recommendations include owner, non-owner and trade-offs.",
         "C-xx contracts are shown in the same initial response without waiting for B approval.",
-        "Decisions remain proposed; the response does not stop at an early gate."
+        "Decisions remain proposed; the response does not stop at an early gate.",
+        "Material overlaps have source-backed explanations of why they matter; ownership choices give a reason, not just a label."
       ]
     },
     {
@@ -34,7 +36,8 @@
         "All ten Q checks are still assessed per accessible skill.",
         "Material findings have direct source links.",
         "At least one justified boundary/contract recommendation or explicit no-change status is included.",
-        "No approval request before complete Steps 1–3."
+        "No approval request before complete Steps 1–3.",
+        "Report stays skimmable but explains the most important findings and recommendations in plain English."
       ]
     },
     {
@@ -56,7 +59,8 @@
         "C-01 is present in first response.",
         "C-01 specifies input/output, invariants, failure paths and authority.",
         "B-01 remains proposed until human approval.",
-        "No early sequential approval pause."
+        "No early sequential approval pause.",
+        "The B/C explanation includes why the contract solves a real handoff risk, without excessive jargon."
       ]
     },
     {
@@ -67,7 +71,8 @@
         "Combined explicit approvals work without forcing two turns.",
         "No dependent C becomes approved before its B is accepted.",
         "Deferred path remains blocked, unrelated path is allowed.",
-        "No automatic live evaluation, repository changes, or policy bypass."
+        "No automatic live evaluation, repository changes, or policy bypass.",
+        "Human review response explains the meaning and downstream effect of each approval/deferral."
       ]
     },
     {
@@ -110,7 +115,8 @@
         "READY TO TEST is not TESTED or PASSED.",
         "Validation checks missing info, contract continuity, authorization and failure isolation.",
         "Does not execute a test during Audit Skill.",
-        "Separate runtime permissions and tool constraints still apply."
+        "Separate runtime permissions and tool constraints still apply.",
+        "Validation plan explains expected behavior and evidence using a simple Given/When/Then scenario."
       ]
     },
     {
@@ -155,6 +161,72 @@
         "Material changes invalidate assumed continued approval.",
         "No new implementation status is inferred.",
         "No automatic reevaluation or live test."
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "Use audit-skill on two unrelated agent skills where both read the same configuration but only one owns configuration changes. Explain the Step 1 overlap to a junior developer.",
+      "expected_output": "Explains clearly that shared input is not automatically duplicated decision ownership, names the actual owner and evidence, and describes the risk if both could change the same source; stays read-only.",
+      "assertions": [
+        "Uses plain English: what is shared, who decides, why it matters.",
+        "Avoids falsely calling shared context a defect.",
+        "Cites relevant source lines and notes unverified behavior.",
+        "Includes next step only if a genuine ownership gap exists."
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "Review a multi-skill workflow and recommend B-01 about who can mark work complete. Explain the recommendation to a junior engineer who is new to skill boundaries.",
+      "expected_output": "A B-01 card with source evidence, recommended owner and excluded responsibility, the reason it prevents conflicting authority, one meaningful alternative/trade-off, a short behavior example, and PROPOSED status.",
+      "assertions": [
+        "Explains skill boundary in everyday words.",
+        "Provides concrete why and what happens if ignored.",
+        "Names owner and non-owner, not just a vague best practice.",
+        "Does not finalize or implement the proposed boundary."
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "Propose C-01 for one skill passing assessment results to another. The user is a junior engineer unfamiliar with 'producer', 'consumer' and 'invariant'.",
+      "expected_output": "A small provisional handoff contract with plain-English definitions, specific inputs/outputs, preserved information, failure behavior, a short scenario showing why missing data matters, and explicit B dependency.",
+      "assertions": [
+        "Defines producer and consumer when first used.",
+        "Explains invariant as information/condition that must stay true.",
+        "States why inputs/failure rules matter to the next skill.",
+        "Keeps contract conditional and does not invent observed execution."
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "After presenting B-01, B-02, C-01 and C-02, ask for the user's review in a way suitable for a junior developer.",
+      "expected_output": "Consolidated readable decision list with short meanings, dependencies, approve/revise/reject/defer explanations, a sample response and no default approval.",
+      "assertions": [
+        "Human can decide by ID or clearly named set.",
+        "Approval statuses have plain-English meanings.",
+        "Explains how a boundary revision affects dependent contract proposals.",
+        "Does not add unnecessary technical ceremony or premature approval."
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "All relevant decisions are approved. Plan Step 4 validation for a skill workflow that must preserve open questions. Explain to a junior engineer and do not execute.",
+      "expected_output": "Given/When/Then testing example with a missing-question fixture, expected stop behavior, specific evidence to inspect in a separate authorized run, and honest READY TO TEST versus TESTED distinction.",
+      "assertions": [
+        "Explains why the validation case matters, not just test names.",
+        "Specifies observable outcomes/trace evidence.",
+        "Separates documented expectation from observed result.",
+        "No live execution or invented passing status."
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "Audit a skill whose purpose, triggers, contract and permission restrictions are well documented with supporting evidence. Explain findings and recommendations to a junior engineer.",
+      "expected_output": "Mentoring-style positive findings explain which safeguards are actually supported and why useful; no fabricated gaps or meaningless action recommendations.",
+      "assertions": [
+        "Acknowledges what works with specific source evidence.",
+        "Recommends no change when genuinely justified.",
+        "Does not claim written permission instruction equals enforced permission.",
+        "Keeps overview readable, avoids repeated filler and jargon."
       ]
     }
   ]
