@@ -92,6 +92,44 @@ Step 4  Prepare validation and review evidence
 - **Q-09 — Evals & observability:** Are evaluation cases, existing runs/traces, grading, known gaps and regression evidence identified accurately?
 - **Q-10 — Lifecycle & portability:** Are ownership, versions, review/rollback, dependencies and claimed harness compatibility supported?
 
+
+### Senior-engineer teaching guidance for the ten questions
+
+The **canonical question text and IDs above stay unchanged**. The notes below explain what a junior developer should learn from a finding and what a practical recommendation might address; they are not extra checklist items or preset audit outcomes. Apply only to **actual inspected evidence**. Each detailed Q finding must teach the reader **what is happening, why it matters, and what to do next**, without assuming they already understand the terminology.
+
+- **Q-01 — Purpose & boundaries**
+  - *Finding focus:* Can someone tell what this skill is responsible for, when to use it, and what it must not do? Explain any ambiguous ownership in everyday terms.
+  - *Recommendation focus:* Suggest a clear one-sentence responsibility and explicit exclusions; explain how this prevents the wrong skill from making a decision.
+- **Q-02 — Activation & discovery**
+  - *Finding focus:* Explain how the agent discovers or invokes the skill, and whether it could choose it for the wrong task. Separate documented triggers from observed invocation.
+  - *Recommendation focus:* Name the trigger or invocation rule to clarify, and how to check later that the correct skill was selected.
+- **Q-03 — Structure, inputs & dependencies**
+  - *Finding focus:* Identify which files, inputs, tools or environment settings are needed, and which are missing or only assumed. Explain what would be unavailable if a dependency is absent.
+  - *Recommendation focus:* Specify the missing input/dependency or a safe fallback, and how to confirm it is actually accessible.
+- **Q-04 — Workflow & orchestration**
+  - *Finding focus:* Walk through the skill's decision flow in plain language: what happens first, who decides, when it delegates, and when it stops. Explain confusing or unowned decisions.
+  - *Recommendation focus:* Suggest a clearer decision rule, step or human check, and explain how it prevents duplicated or unauthorized action.
+- **Q-05 — Contracts & outputs**
+  - *Finding focus:* State what the skill promises to receive and return, what must remain true (an *invariant*), and how missing/invalid data is handled. Explain how an unclear contract could affect a consumer.
+  - *Recommendation focus:* Identify the smallest required field, guarantee or failure response to define; say which producer/consumer it helps and how to verify the agreement later.
+- **Q-06 — Context & trust**
+  - *Finding focus:* Explain where information comes from, what happens when sources disagree or are stale, and whether external text is treated as evidence rather than instructions.
+  - *Recommendation focus:* Suggest a source-priority, citation, conflict or trust-boundary rule; explain how it prevents an unsupported answer or unsafe instruction.
+- **Q-07 — Permissions & effects**
+  - *Finding focus:* Explain what the skill may change, what it merely says it won't change, and what the host/tool/server actually prevents. Avoid describing written restrictions as enforced security.
+  - *Recommendation focus:* Name the permission, approval or enforcement evidence needed; explain how to confirm the intended restriction without assuming it works.
+- **Q-08 — Failure & stop behavior**
+  - *Finding focus:* Describe what the skill does when evidence, tools or downstream steps fail; explain what an unresolved/partial result would mean to someone relying on it.
+  - *Recommendation focus:* Suggest an explicit stop, escalation, retry or partial-result rule appropriate to this skill, and the expected safe outcome.
+- **Q-09 — Evals & observability**
+  - *Finding focus:* Distinguish written test cases, actual recorded runs and usable traces (records of what happened). Explain which claimed behaviors have never been observed.
+  - *Recommendation focus:* Recommend the smallest meaningful test/trace to obtain in a separately authorized evaluation, including the observable pass condition.
+- **Q-10 — Lifecycle & portability**
+  - *Finding focus:* Explain who maintains the skill, what changed between versions, and which harnesses are merely named versus supported by evidence.
+  - *Recommendation focus:* Suggest a maintainer/version/rollback practice or targeted compatibility check; explain what future regression or migration risk it reduces.
+
+**Do not copy these coaching notes word-for-word into findings.** Turn them into precise explanations of the skill actually inspected. When the inspected evidence supports a criterion completely and no improvement is justified, explain the observed safeguard and use `Recommendation: None justified from inspected evidence`; do not manufacture a gap just to teach a lesson.
+
 ### Checklist and finding contract
 
 - `- [x]` / `Status: PRESENT` means the **applicable claim** has sufficient evidence of the appropriate type, not approval or runtime verification.
@@ -100,19 +138,27 @@ Step 4  Prepare validation and review evidence
 - In Q-07 and Q-09, do not mark runtime enforcement or reliability PRESENT from prompt-only statements or unrun eval definitions.
 - For each target, show Q-01 through Q-10 **in order**; no invented scoring, approval, or production-readiness label.
 
-When presenting a detailed Q finding, use these **six fields in order**, with italic labels and a direct source link in Evidence:
+When presenting a detailed Q finding, use these **six fields in order**, with italic labels and a direct source link in Evidence. **Teach like a patient senior engineer reviewing a design with a junior developer:**
+
+- **Finding (usually 2–3 short sentences):** Start with what the source *does establish*, then identify the specific missing, conflicting or unverified part, then explain **why that matters** to correct behavior, collaboration, safety or maintenance. When the criterion is PRESENT, explain the useful safeguard instead of inventing a concern.
+- **Recommendation (usually 1–3 short sentences):** Give **one concrete next action** (the rule, input, output, handoff, check or evidence to add/inspect), explain **why this action helps**, and give a simple way to tell whether it worked when useful. Favor the smallest meaningful improvement; do not design a whole system without being asked.
+- **Language:** Use plain English and define essential terms briefly on first use (e.g., `invariant` means information that must stay unchanged; `handoff` means one skill passing work or information to another). Keep the explanation specific to the audited skill and avoid unexplained jargon, motivational filler, vague advice such as "improve reliability," and invented implementation details.
+- **Evidence/uncertainty:** Keep verified links and evidence level in `Evidence`. Distinguish **missing in inspected sources** from **proven failing at runtime**; recommend gathering evidence rather than changing behavior when the gap is simply unverified.
+- **Skimmability:** The first overall Steps 1–3 report still leads with short Q-01–Q-10 checklists and only material expanded findings. These teaching requirements apply whenever detailed findings are shown; do **not** print all ten long teaching examples for every target by default.
+
+Use this six-field format:
 
 ```markdown
 **Q-05 — Contracts & outputs**
 _Question:_ Are required inputs, outputs, validation, invariants, ownership and failed handoffs defined?
 _Check:_ ☐
-_Finding:_ The output is documented; required-input failure handling was not found.
-_Evidence:_ DOCUMENTED INSTRUCTIONS — [verified path and lines]; runtime NOT VERIFIED.
+_Finding:_ The skill lists the fields it plans to return, which gives the next skill a starting point. However, I could not find instructions for what happens when a required input is absent. That matters because the next skill might mistake an incomplete result for a complete one.
+_Evidence:_ DOCUMENTED INSTRUCTIONS — [verified source path and lines]; runtime NOT VERIFIED.
 _Status:_ PARTIAL
-_Recommendation:_ Define missing-input behavior before approving a handoff contract.
+_Recommendation:_ Define which inputs are required and an explicit NEEDS HUMAN or BLOCKED response when one is missing. This lets the next skill stop safely instead of guessing; verify the rule in a separately authorized evaluation.
 ```
 
-This is an example, **not** a real finding. The initial report must still assess all ten criteria for every accessible skill; show the checklist and material evidence first, and offer or provide detailed six-field findings without displacing the Steps 1–3 overview. Show the Agent Skills compliance and host compatibility reviews separately from Q-01–Q-10.
+This is an **illustrative teaching example**, not evidence about a real skill; the placeholder source link must be replaced with a genuine citation in an actual audit. The initial report still assesses all ten criteria for every accessible skill; show the checklist and material evidence first, and expand six-field findings when relevant or requested without displacing the Steps 1–3 overview. Show Agent Skills compliance and host compatibility reviews separately from Q-01–Q-10.
 
 ## Step 2 — Propose Skill Boundaries (initial overview)
 
