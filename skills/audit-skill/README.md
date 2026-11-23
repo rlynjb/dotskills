@@ -109,6 +109,42 @@ A senior engineer should explain the *consequence*, not just name the category. 
 
 Do not confuse an as-is flow with a proposed future architecture. Every material conclusion should have a real file/line source link.
 
+### Make Mermaid workflows easy to read
+
+An **as-is workflow diagram** shows the steps a skill currently documents. It should be readable at a glance, including in a narrow Markdown window. **Do not cram whole sentences into small boxes or leave cut-off words.**
+
+Use this approach:
+
+- **Short, complete node titles:** aim for **2–4 words** per box, preserving the actual meaning.
+- **Manual line breaks when needed:** use `<br/>` inside quoted Mermaid labels to split longer ideas across two short lines.
+- **Do not shrink the font as the primary fix:** smaller text often makes the chart harder to read.
+- **One diagram per skill:** split a long flow into a summary and a focused detail diagram when necessary.
+- **Explain the nodes underneath:** give the full action or decision in plain English, with source links for actual audit claims. This also helps when a viewer clips the figure.
+- **Keep branching and evidence accurate:** preserve decisions, stops, documented failure paths and `NOT VERIFIED` cases; do not make up a simpler workflow just to get a prettier chart.
+
+**Illustrative Mermaid diagram (not a verified skill workflow):**
+
+```mermaid
+flowchart TD
+    A["Resolve<br/>scope"] --> B["Classify<br/>requirements"]
+    B --> C["Run SDI<br/>review"]
+    C --> D["Summarize<br/>findings"]
+    D --> E{"Next step<br/>requested?"}
+    E -->|Yes| F["Prepare<br/>handoff"]
+    E -->|No| G["End review"]
+```
+
+**Node explanations:**
+
+- **Resolve scope:** Identify the request and which materials are relevant.
+- **Classify requirements:** Distinguish the types of requirements being assessed.
+- **Run SDI review:** Perform the documented system-design reasoning steps.
+- **Summarize findings:** Produce the assessment and flag unanswered questions.
+- **Next step requested?:** Check whether the user requested additional work.
+- **Prepare handoff / End review:** Either explain the next stage or finish without automatically starting another skill.
+
+These explanations carry the **complete meaning** even when the chart is rendered at a small width. For a real audit, use the inspected source and line links rather than copying the illustrative nodes.
+
 ## 5. Step 2 — Propose boundaries
 
 A recommendation is expressed as a named `B-xx` decision. **B means boundary:** a choice about who owns a particular job or decision. The reviewer explains what exists, the recommended owner, what that skill should **not** own, alternatives and trade-offs.
