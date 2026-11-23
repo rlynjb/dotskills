@@ -37,6 +37,7 @@ For **two or three skills**, use side-by-side tables. Keep long citations and ex
 - *Responsibilities:* [What Skill A owns; what remains with Skill B.]
 - *Boundaries:* [No automatic invocation, unauthorized edit/publish/approval, or change to another skill's decisions.]
 - *Feedback:* [Report proposed changes and open questions to the correct human owner; no silent upstream edits.]
+- *Documentation placement:* [PROPOSED: `SKILL.md` only, or `SKILL.md` plus own `references/<source>-to-<destination>-handoff.md` if transfer details are substantial. Explain why. Preserve essential rules in `SKILL.md`.]
 - *Evidence / open design question:* [Direct links; note gaps and who needs to confirm.]
 
 **[Skill B] — PROPOSED wording, NOT YET IMPLEMENTED**
@@ -45,6 +46,7 @@ For **two or three skills**, use side-by-side tables. Keep long citations and ex
 - *Responsibilities:* [What Skill B owns and must not overwrite.]
 - *Boundaries:* [No required/autonomous invocation or unauthorized side effects.]
 - *Feedback:* [What Skill B returns as suggestions/questions for Skill A's owner to review.]
+- *Documentation placement:* [PROPOSED: `SKILL.md` only, or `SKILL.md` plus its own optional `references/<source>-to-<destination>-handoff.md`, with a reason. A reverse-feedback file uses the opposite direction.]
 - *Evidence / open design question:* [Direct links; note gaps and who needs to confirm.]
 
 **Illustrative workflow choices — not verified by this template:**
@@ -53,6 +55,8 @@ For **two or three skills**, use side-by-side tables. Keep long citations and ex
 - Run **Skill A**, optionally supply its result to **Skill B**, then let the responsible human owner review any suggested updates.
 
 If either skill currently **requires** the other's output, do not label standalone use as supported. Record the dependency as-is and propose any optionalization **conditionally**. If there is no relevant issue, omit these recommendation blocks; do not fabricate a connection. Documented boundaries do not prove runtime restrictions.
+
+**File placement decision:** Prefer a brief `Optional handoffs` section inside each affected `SKILL.md`. Use a skill-local reference only if field mappings, examples, conflict-resolution guidance or conditional cases make the explanation substantial. Name single-direction files `<source>-to-<destination>-handoff.md` (plural `handoffs` only for several transitions); reuse existing suitable files when possible. The owning skill's `SKILL.md` can link to its **own** reference and say when to read it. Never require a shared file or partner skill to understand or run standalone. All paths and edits in this template are **PROPOSED**, not completed.
 
 **Evidence and interpretation (vertical notes):**
 
@@ -88,6 +92,7 @@ For each real overlap, align the involved skills, then explain it below.
 - **Finding:** [Problem and linked evidence.]
 - **Proposed change:** [Ownership/documentation proposal only; when appropriate, cite the per-skill proposed optional handoff, boundary, and feedback wording from section 2.]
 - **Standalone integrity:** [Does each skill retain its own inputs, outputs and workflow? If not evidenced, what needs human confirmation?]
+- **Documentation location:** [Per affected skill: `SKILL.md` only, or `SKILL.md` plus optional directionally named local reference; reason; reuse existing suitable files.]
 - **Benefit / trade-off:** [Including cost of change.]
 - **Human confirmation:** [Required? Who, if known?]
 

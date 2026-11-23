@@ -85,6 +85,12 @@ For considerations 4–6, note observations and potential problems **without** d
 - Neither skill requires or automatically runs the other. Present the possible paths as Skill A alone, Skill B alone, or Skill A followed by *optional* Skill B with human-reviewed updates.
 - Label all suggested wording **PROPOSED, NOT IMPLEMENTED** and provide direct evidence. If current files truly require another skill's output, report that fact; standalone support must remain **UNVERIFIED** or *conditional on a separate design change*, not assumed. Do not create a connection for unrelated skills or weaken necessary approval/security requirements.
 
+**Where to document proposed optional connections (per affected skill):**
+1. Prefer a short section directly in each skill's own `SKILL.md`. Keep independent inputs, complete workflow/outputs, ownership, boundaries, optional use of partner output and feedback there even if a reference is added.
+2. Suggest a separate **skill-local** `references/` file only if field mappings, conditional cases, worked examples or conflict handling make the explanation substantial. The corresponding `SKILL.md` should link to that **own optional** reference with a clear read condition. Do not introduce a mandatory shared file or automatic skill invocation.
+3. Name a one-direction reference `<source>-to-<destination>-handoff.md` (for example `prd-to-refinement-handoff.md`); use `handoffs` for a file spanning multiple transitions. Reverse feedback may use `<destination>-to-<source>-handoff.md`. Derive names from the actual skills; example paths are illustrative.
+4. Reuse an existing suitable file instead of duplicating it. In the report, give `Documentation location: SKILL.md only` **or** `SKILL.md + references/<direction>-handoff.md`, a short complexity-based rationale, and `Status: PROPOSED` for **each** affected skill. Do not create files, claim they exist, or draft formal contracts during the audit.
+
 ### Step 2 — Cross-Skill Responsibility & Overlap Analysis
 
 For each overlapping capability, record:
@@ -124,6 +130,7 @@ For each recommendation, provide:
 - **Expected benefit/trade-off:** Why the change may help and any downside.
 - **Human confirmation required:** Yes/no, with the decision owner if known.
 - **Optional connection wording, when relevant:** Proposed documentation for **each affected skill** under Standalone use, Optional handoff, Responsibilities, Boundaries, Feedback—preserving standalone inputs, outputs and workflow and requiring no automatic cross-skill invocation.
+- **Documentation placement, per skill:** Recommend `SKILL.md` only by default, or `SKILL.md` plus a locally owned, directional `references/<source>-to-<destination>-handoff.md` if substantial details justify a reference. Explain the trade-off without creating the files.
 
 Keep recommendations separate from confirmed findings. Do not implement them.
 
@@ -143,7 +150,7 @@ Keep recommendations separate from confirmed findings. Do not implement them.
 - **Two or three skills:** In report section 2, use concise **side-by-side comparison tables** with one column per skill and the same six consideration rows, preferably split into Primary (Inputs, Responsibilities, Outputs) and Supporting (Handoffs, Boundaries, Feedback).
 - **Four or more skills:** Compare in smaller side-by-side groups of two or three skills, then include an overall synthesis covering **every** selected skill and all material relationships.
 - **Cross-skill overlap:** Align the activity and each involved skill's role; include classification and workflow effect. Explicitly name affected skills for gaps.
-- **Supporting considerations 4–6:** For each real issue, give **per-skill** findings in the side-by-side cells, then show compact *proposed optional connection documentation* blocks for each affected skill directly below: Standalone use, Optional handoff, Responsibilities, Boundaries and Feedback. Do not imply target files were changed.
+- **Supporting considerations 4–6:** For each real issue, give **per-skill** findings in the side-by-side cells, then show compact *proposed optional connection documentation* blocks for each affected skill directly below: Standalone use, Optional handoff, Responsibilities, Boundaries, Feedback **and Documentation placement** (`SKILL.md` only versus `SKILL.md` plus a separate optional, directional reference, with reason). Do not imply target files were changed.
 - Keep tables scannable; place evidence links, interpretation, and recommendations as short vertical notes below. If Markdown tables are not supported, use equivalent aligned comparison blocks. Do not invent data to fill cells.
 
 ### Evidence & Quality Requirements

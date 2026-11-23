@@ -44,6 +44,26 @@ When the audit finds handoff, boundary, or feedback issues, it may recommend **w
 
 If inspection shows a skill actually requires a partner's output, the report must **not** pretend it already supports standalone use. Changing a documented required dependency would be a separate design decision. Security or authorization rules may also require enforcement beyond documentation.
 
+### Where to document an optional handoff
+
+**Default: keep it in each affected `SKILL.md`.** The core rules belong there: standalone inputs and outputs, what each skill owns, a short optional-handoff condition, approval/permission limits, and feedback to the responsible human owner.
+
+**Add an optional local reference only when warranted** by substantial mapping rules, examples, conditional handoffs or conflict-resolution guidance. A skill should point to **its own** reference, never require a shared file or another skill's installation to function. Prefer self-explanatory direction names:
+
+```text
+skills/
+├── prd-development/
+│   ├── SKILL.md
+│   └── references/
+│       └── prd-to-refinement-handoff.md     # Only if detailed
+└── refine-requirements/
+    ├── SKILL.md
+    └── references/
+        └── refinement-to-prd-handoff.md     # Only if detailed
+```
+
+This tree is **illustrative**, not a requirement to create files. For a short connection, the two `SKILL.md` files are enough. Use `handoff` for one transition or `handoffs` for multiple transitions within a single file; inspect existing references before suggesting duplicates. The audit recommends file placement and wording **per affected skill**, but does not edit target skills or create their handoff files.
+
 ## How this differs from other DotSkills skills
 
 - **This skill:** investigates current responsibilities and gaps only; stops before integration design.

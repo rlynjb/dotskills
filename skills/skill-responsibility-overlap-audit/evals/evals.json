@@ -121,6 +121,38 @@
         "Does not convert mandatory safety, approval or information requirements into optional dependencies by fiat.",
         "No code edits, formal contracts, or automatic partner invocation."
       ]
+    },
+    {
+      "id": 9,
+      "prompt": "Audit the synthetic brief-planning and evidence-refinement skills. There is only a brief optional PRD-context handoff and owner-reviewed feedback; recommend where the documentation should live. Do not edit files or draft contracts.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "For each skill, propose a short SKILL.md section containing standalone workflow and optional handoff rules. No unnecessary shared file or new references; proposals and rationale are explicit, and the counterpart need not be installed or invoked.",
+      "assertions": [
+        "Each affected skill has its own documentation placement recommendation, not one generic shared file.",
+        "Short optional connections default to SKILL.md only and explain why a reference is unnecessary.",
+        "Essential independent inputs, workflow, outputs, boundaries and feedback remain in each SKILL.md.",
+        "No automatic cross-skill invocation, implementation change or formal contract is proposed as completed.",
+        "The result retains side-by-side considerations and clear evidence/uncertainty distinctions."
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Audit the supplied brief-planning and evidence-refinement skills and recommend documentation organization for a PROPOSED optional integration that would include eight context-field mappings, three conditional handoff scenarios, several examples, and reconciliation guidance. The extra details are proposals from the user, not present in the attached SKILL.md files. Provide per-skill placement recommendations only; do not create files or specify formal schemas.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "For each affected skill, keep core standalone/optional-handoff instructions in its SKILL.md, and conditionally recommend optional, locally owned references with directional names only where longer details warrant it (e.g. brief-planning/references/brief-to-refinement-handoff.md and evidence-refinement/references/refinement-to-brief-handoff.md). Distinguish source-evidenced behavior from user-proposed details; no mandatory shared file, formal contract or automatic invocation.",
+      "assertions": [
+        "Per-skill decision explicitly explains SKILL.md essentials versus optional reference for substantial details.",
+        "Proposed filenames identify direction and belong inside their respective owning skill packages.",
+        "No required shared file or cross-skill import is introduced.",
+        "Documentation and file paths are PROPOSED rather than represented as existing files.",
+        "Formal field schemas and executable integration behavior are deferred."
+      ]
     }
   ]
 }
