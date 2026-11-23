@@ -1,6 +1,6 @@
 # REAZN
 
-**Communication style:** Senior-engineer reasoning for a junior-developer audience. See the reusable [mentoring communication guideline](../../docs/senior-engineer-mentoring-communication.md); the `SKILL.md` includes its own self-contained rules. Explanations stay within the existing four-step SDI format and do **not** enable `learn: on` or add teaching sections.
+**Communication style:** Senior-engineer reasoning for a junior-developer audience. See the reusable [mentoring communication guideline](../../docs/senior-engineer-mentoring-communication.md); the `SKILL.md` links to this one guideline and retains only REAZN-specific output requirements. The shared file must be accessible when the skill runs. Explanations stay within the existing four-step SDI format and do **not** enable `learn: on` or add teaching sections.
 
 **Input-agnostic, evidence-first engineering reasoning using the four-step System Design Interview (SDI) framework.**
 

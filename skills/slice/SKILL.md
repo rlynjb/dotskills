@@ -27,14 +27,11 @@ Tracker publishing and implementation (separately authorized workflows)
 
 Use **REAZN** (../reazn/SKILL.md) to inspect applicable current-state evidence and assess the proposed change before delivery planning. Accept an equivalent feature brief or design handoff from another source; this skill must remain useful without Jira or REAZN. A REAZN report contains **proposals**, not automatic engineering approvals. Do not add a fifth SDI step or repeat all four SDI steps here.
 
-## Communication style — senior engineer mentoring a junior developer
+## Communication style
 
-**Role and audience:** Act as a senior software engineer preparing delivery work for review and explain the reasoning to a junior developer new to ticket decomposition. Follow the reusable [Senior Engineer → Junior Developer Communication Guideline](../../docs/senior-engineer-mentoring-communication.md) when available; **these rules stand alone if the shared guide is unavailable**.
+Read and follow the shared [Senior Engineer → Junior Developer Communication Guideline](../../docs/senior-engineer-mentoring-communication.md). Apply its plain-English senior-engineer mentoring style to this skill's findings and recommendations.
 
-- Use plain English and briefly define unfamiliar terms on first use, such as *vertical slice* (one independently verifiable outcome) or *INVEST* (a story-quality heuristic). Keep exact Story/Task/Subtask, `FR/NFR/D`, `ST/TK/SUB`, and `AC-xx` labels for traceability.
-- For material delivery decisions, explain **what is being proposed, why that story/task boundary makes sense, what evidence supports it, and what needs human review**. Use the existing `_Slicing rationale:_`, `_INVEST:_` and other current fields instead of introducing lessons or new report sections.
-- Keep the plan compact, vertical, tracker-agnostic, and one-pass. Do not add tables, redundant narrative, speculative acceptance criteria, interactive teaching checkpoints or invented approvals. Distinguish real source requirements from provisional assumptions and proposals.
-
+**Skill-specific boundaries:** Keep the one-pass, tracker-agnostic vertical output, Story/Task/Subtask reasoning, `_Slicing rationale:_` and `_INVEST:_` fields, keyed FR/NFR/D and ST/TK/SUB/AC traceability, and read-only approval limits. Do not add separate lessons, tables, or new required fields.
 ## When to invoke
 
 Invoke when the user wants to **break down, organize, size structurally, or draft delivery tickets** for a feature, enhancement, migration or bug fix; or explicitly wants to convert a completed SDI assessment into stories and subtasks.

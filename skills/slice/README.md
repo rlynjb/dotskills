@@ -1,6 +1,6 @@
 # SLICE
 
-**Communication style:** Senior-engineer delivery reasoning explained for a junior developer. See the reusable [mentoring communication guideline](../../docs/senior-engineer-mentoring-communication.md); the `SKILL.md` also contains the essential standalone rules. Keep existing ticket fields, one-pass behavior, and vertical formatting.
+**Communication style:** Senior-engineer delivery reasoning explained for a junior developer. See the reusable [mentoring communication guideline](../../docs/senior-engineer-mentoring-communication.md); the `SKILL.md` links to the shared guideline while keeping SLICE-specific output rules. The reference must be accessible when the skill runs. Keep existing ticket fields, one-pass behavior, and vertical formatting.
 
 **Tracker-agnostic delivery planning after requirements and design reasoning.**
 

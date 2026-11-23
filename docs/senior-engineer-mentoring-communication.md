@@ -31,14 +31,20 @@ These are *explanation prompts*, **not five mandatory headings or five repeated 
 - Avoid long definitions, jargon-heavy paragraphs, repeated explanations, excessive praise, and patronizing or school-like phrasing.
 - Keep the skill's own structure and output labels **exactly as specified**. Do not add a lesson, quiz, teaching checkpoint, or a new output section unless requested.
 
-## Applying this guideline without changing skill behavior
+## Applying the guideline to any skill
 
-- **Skill Responsibility & Overlap Audit:** Keep the six considerations and side-by-side comparison layout. Define Handoffs, Boundaries, and Feedback in simple language. Keep cells compact; place meaningful findings and rationale in short **vertical explanations beneath** the comparison. Do not convert Stage 2 proposals into Stage 3 contracts.
-- **REAZN:** Explain the meaning and reason behind SDI findings, verified patterns, contracts, risks, and recommendations **inside the existing four-step labeled format**. Keep its strict vertical layout, FR/NFR/D/Q labels, one-pass behavior, and evidence status. This is **not** `learn: on`; when `learn: off`, do not add book/chapter recommendations or extra learning fields.
-- **SLICE:** Explain Story/Task/Subtask decisions, vertical slicing, INVEST trade-offs, slicing rationale, and acceptance criteria in everyday terms **inside the current ticket plan**. Keep the existing labels, ID/AC traceability, compact vertical format, and one-pass read-only behavior.
+- Follow the skill's own purpose, input/output requirements, format, and approval rules. The communication guideline changes **how results are explained**, not what work the skill performs.
+- Explain meaningful findings, trade-offs, and next actions within the skill's existing report fields and headings.
+- Preserve required identifiers, evidence/status labels, tables or no-table rules, level of detail, and human decision gates.
+- Scale explanation to the situation: a short reason for simple findings, more detail only for significant ambiguity or risk.
+- Do not add mandatory lessons, quizzes, extra report sections, new tools, or separate teaching stages.
 
-## Portability and ownership
+## Source of truth and portability
 
-This document is a **shared authoring reference**, not a runtime dependency. Each participating `SKILL.md` must include a short, self-sufficient version of these rules so the skill remains usable when packaged separately from the DotSkills `docs/` folder.
+This Markdown document is the **single canonical communication guideline** for DotSkills. It is not an Agent Skill, adapter, or separate workflow. Any current or future skill may reference it without being added to this file.
 
-Skill-specific task rules, safety restrictions, evidence standards, approval gates, learning options, and output contracts **take precedence** over this guideline. If the user requests deeper technical detail, provide it without changing the underlying evidence or pretending work was executed.
+Inside the DotSkills repository, a skill can simply link to `../../docs/senior-engineer-mentoring-communication.md` and instruct the agent to read it when relevant. **No adapter or packaging automation is required for this repository-local use.**
+
+If a skill is installed outside DotSkills without the `docs/` folder, that relative link will not resolve. Include a copy of the guideline with the skill and update its link when distributing it separately; this is a packaging concern, **not a reason to duplicate the writing rules across every canonical `SKILL.md`**. The agent must actually read an accessible reference; a link alone does not force a host to load it.
+
+Skill-specific task, output, security, evidence, learning and approval rules take precedence. An optional request for deeper technical detail may expand the explanation without changing the skill's responsibilities or claiming work was executed.

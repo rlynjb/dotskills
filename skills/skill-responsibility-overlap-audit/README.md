@@ -4,7 +4,7 @@ A focused, **read-only Stage 2 investigation skill** for clarifying responsibili
 
 ## Communication style
 
-Use [Senior Engineer → Junior Developer Communication Guideline](../../docs/senior-engineer-mentoring-communication.md) for clear, evidence-based explanation of significant findings. The audit skill also carries self-contained mentoring instructions in its `SKILL.md`: keep comparisons compact, define unfamiliar terms once, and explain what was found, why it matters, and what to check next beneath the comparison. This is a communication approach, not a separate teaching skill or extra audit step.
+Use [Senior Engineer → Junior Developer Communication Guideline](../../docs/senior-engineer-mentoring-communication.md) for clear, evidence-based explanation of significant findings. The audit's `SKILL.md` simply references this guideline and retains only the task-specific formatting and evidence boundaries. The referenced file must be accessible to the agent. This is a communication approach, not a separate teaching skill or extra audit step.
 
 ## What it produces
 
