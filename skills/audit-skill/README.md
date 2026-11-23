@@ -77,7 +77,7 @@ There is **one consolidated human review stage**, not two sequential approval st
 
 ## 3. What the first report contains
 
-The first report has a **repeatable structure**, not a collection of disconnected findings:
+The first report has a **repeatable structure**, not a collection of disconnected findings. You can view the complete [Audit Skill report template](references/report-structure.md) to see these exact headings and the fields that appear beneath them:
 
 1. **Audit Skill — Overall View:** What was inspected, the main concern, and what remains unknown.
 2. **Step 1 — Skill Responsibility & Overlap Assessment:** Examine **the same six considerations for each skill**: Inputs, Responsibilities, Outputs, Handoffs, Boundaries, Feedback. Then explain evidence-backed overlaps across skills.
@@ -99,7 +99,7 @@ Audit Skill examines authorized source files, starting with `SKILL.md` and mater
 
 ### The six considerations — the same six every time
 
-This is your **engineering investigation worksheet**. Treat each consideration like a small SDI Step 1 exercise: **Observe → Question assumptions → Validate before solving**. Do not start designing B-xx boundaries or C-xx contracts until the existing behavior and its evidence have been examined.
+This is your **engineering investigation worksheet**. Treat each consideration like a small SDI Step 1 exercise: **Observe → Question assumptions → Validate before solving**. The [report template](references/report-structure.md) shows how to use this worksheet for each skill and how it fits within the four steps. Do not start designing B-xx boundaries or C-xx contracts until the existing behavior and its evidence have been examined.
 
 1. **Inputs — What does the skill need?** Requests, documents, other skill outputs, tools or context. Which are required, optional or assumed?
 2. **Responsibilities — What does it own?** Its primary job and decisions. Another skill reading the same information does not automatically make ownership duplicated.
