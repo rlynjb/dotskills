@@ -36,7 +36,7 @@
     {
       "name": "audit-skill",
       "category": "methodology",
-      "purpose": "Junior-developer-friendly, overview-first, read-only audit: explain Q-01–Q-10 responsibilities/overlaps with evidence; recommend B-xx boundaries and provisional C-xx contracts together with why/trade-offs; guide human decisions and validation preparation.",
+      "purpose": "Junior-friendly, overview-first, read-only audit: six structured considerations (inputs, responsibilities, outputs, handoffs, boundaries, feedback), source-backed Q-01–Q-10 checks, proposed B-xx ownership and C-xx contracts, consolidated human review and separate validation readiness.",
       "source": "dotskills",
       "path": "skills/audit-skill",
       "reference_count": 0
