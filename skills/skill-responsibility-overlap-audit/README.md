@@ -9,15 +9,15 @@ Use [Senior Engineer → Junior Developer Communication Guideline](../../docs/se
 ## What it produces
 
 1. Individual reviews of the same **six considerations**: Inputs, Responsibilities, Outputs, Handoffs, Boundaries and Feedback. The first three receive deeper analysis; the last three identify future design questions.
-2. **Side-by-side comparisons** for two or more skills, so ownership and differences are visible in the same rows. Large sets are split into groups with an overall synthesis. Meaningful findings receive five compact vertical fields: **Finding, Evidence, Assessment, Why, Recommendation**, with assessment choices **KEEP / CLARIFY / REVISE / ADD / VERIFY**.
+2. **Side-by-side comparisons** for two or more skills, with each material finding **inside its matching C1–C6 consideration row and skill column**—not in a separate Finding A/B/C section. Each finding has a report-local **F-xx ID** and five short, labeled lines: **Finding, Evidence, Assessment, Why, Recommendation** (KEEP / CLARIFY / REVISE / ADD / VERIFY). Tables split into smaller groups when needed.
 3. **Optional connection documentation proposals, per affected skill** when Handoffs, Boundaries, or Feedback reveal a material issue. Keep each skill independently usable with complete inputs, workflow and outputs; suggest passing the other skill's result as optional context only, never as an automatic invocation.
 4. Evidence-backed classification of legitimate shared behavior, complementary roles, duplication, conflicts and unclear ownership.
 5. **Optional coordinator assessment** when multiple skills have a material combined-workflow routing, sequencing, context or feedback problem. Explain why a separate coordinator is needed—or why optional handoff docs and copyable prompts are enough.
 6. Missing responsibilities/gaps, High/Medium/Low recommendations, and questions for human review.
 
-Assessment labels describe preliminary engineering judgment, not evidence certainty, High/Medium/Low priority or approval. **KEEP** is a useful no-change result; **VERIFY** means collect evidence before proposing a fix. The final recommendations consolidate actionable findings without repeating every explanation.
+Assessment labels describe preliminary engineering judgment, not evidence certainty, High/Medium/Low priority or approval. **KEEP** is a useful no-change result; **VERIFY** means collect evidence before proposing a fix. The final recommendations reference the F-xx identifiers inside the consideration rows without repeating every explanation.
 
-When a meaningful issue comes from ambiguous instructions, the corresponding finding may also show **Current wording → Concern → Recommended wording — PROPOSED**. This uses an exact sourced quotation, explains a plausible misinterpretation without claiming it happened, and proposes the smallest clear replacement for human review. It is optional, not a seventh consideration or a mandatory rewrite of every sentence.
+When a meaningful issue comes from ambiguous instructions, the **same table cell** may also include **Current wording → Concern → Recommended wording — PROPOSED**. This uses an exact sourced quotation, explains a plausible misinterpretation without claiming it happened, and proposes the smallest clear replacement for human review. It is optional, not a seventh consideration or a mandatory rewrite of every sentence. In Markdown tables, `<br>` separates labeled lines inside one cell.
 
 It does **not** decide the future architecture, draft contracts, execute skills, make repository edits, or mark recommendations as approved.
 

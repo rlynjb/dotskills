@@ -11,87 +11,37 @@ Use as an **output guide, not a source of facts**. Replace all bracketed placeho
 
 ## 2. Individual Skill Assessments
 
-For **two or three skills**, use side-by-side tables. Keep long citations and explanation below the table.
+**Put material findings directly inside each skill's consideration cell.** Use one `Consideration` column with `C1`–`C6` labels, and one column per skill. No separate "Finding A/B/C" section. For each material finding, use report-local `F-01`, `F-02`, etc., and keep the five fields on separate visual lines **within the cell** using Markdown `<br>`. These are templates, not actual audit claims.
 
-**Primary considerations — detailed**
-
-| Consideration | [Skill A] | [Skill B] |
-| --- | --- | --- |
-| 1. Inputs | [Required/optional, sources] | [Required/optional, sources] |
-| 2. Responsibilities | [Owned activities/decisions] | [Owned activities/decisions] |
-| 3. Outputs | [Artifacts/decisions] | [Artifacts/decisions] |
-
-**Supporting considerations — issues only**
+**Primary considerations — analyze in detail**
 
 | Consideration | [Skill A] | [Skill B] |
 | --- | --- | --- |
-| 4. Handoffs | [Current handoff and issue, if any] | [Current handoff and issue, if any] |
-| 5. Boundaries | [Current ownership/authority and issue] | [Current ownership/authority and issue] |
-| 6. Feedback | [Current revision path and issue] | [Current revision path and issue] |
+| 1. Inputs (C1) | [Short description of inputs; expand here if a material finding exists.] | [Short description of inputs; expand here if a material finding exists.] |
+| 2. Responsibilities (C2) | **F-01 (C2) — [Short title]**<br>**Finding:** [Relevant ownership finding.]<br>**Evidence:** [DOCUMENTED — direct source]<br>**Assessment:** KEEP<br>**Why:** [Why preserving this ownership helps.]<br>**Recommendation:** Keep as-is. | [Use F-02 (C2) with the same fields when meaningful; otherwise summarize current responsibilities.] |
+| 3. Outputs (C3) | [Concise supported output summary, or five fields for an important issue.] | [Concise supported output summary, or five fields for an important issue.] |
 
-**Meaningful per-skill assessment notes (only for consequential findings):**
+**Supporting considerations — identify issues; defer detailed design**
 
-**[Skill] — [Consideration number: finding title]**
-- *Finding:* [What the sources describe or leave unclear.]
-- *Evidence:* [DOCUMENTED / OBSERVED / INFERRED / UNVERIFIED / NOT ASSESSED, plus direct links or explicit evidence gap.]
-- *Assessment:* [KEEP / CLARIFY / REVISE / ADD / VERIFY.]
-- *Why:* [Plain-English reason or consequence.]
-- *Recommendation:* [Smallest next step, including keep as-is or targeted verification, with human review for changes.]
+| Consideration | [Skill A] | [Skill B] |
+| --- | --- | --- |
+| 4. Handoffs (C4) | **F-03 (C4) — [Short title]**<br>**Finding:** [Handoff wording is ambiguous.]<br>**Evidence:** [DOCUMENTED phrase at source; risk INFERRED]<br>**Assessment:** CLARIFY<br>**Why:** [A consumer might assume an unintended prerequisite.]<br>**Recommendation:** [Propose a clearer optional handoff.]<br>**Current wording:** "[Exact sourced passage]"<br>**Concern:** [Specific misleading interpretation.]<br>**Recommended wording — PROPOSED:** "[Source-aligned revision.]" | [Concise handoff summary, or an F-xx with the same fields.] |
+| 5. Boundaries (C5) | [Source-backed boundary summary, or F-xx finding. If related to F-03, say `Related: F-03 (C4)` without repeating that note.] | [Source-backed ownership and authority; expand only when material.] |
+| 6. Feedback (C6) | [Source-backed feedback path; expand only when material.] | [Source-backed feedback path; expand only when material.] |
 
-Repeat only when meaningful; don't force a five-field record for every cell. **KEEP** can be the correct outcome. If a documented output and an inferred handoff differ in certainty, state both evidence statuses. No five extra table columns.
+**Layout rules**
 
-**Optional instruction wording review — only if the finding concerns material wording ambiguity:**
-
-- *Current wording:* ["Exact short quote" from the inspected source, with direct file and line/section evidence.]
-- *Concern:* [What a reader or agent could incorrectly infer; why it matters. Label potential behavior **INFERRED** unless genuinely observed.]
-- *Recommended wording — PROPOSED:* [Minimal, ready-to-copy replacement preserving the verified intent and authority boundaries; or **VERIFY** the intended rule first if ambiguous.]
-
-Keep this **within** the relevant per-skill finding, not in another consideration or table. Do not expand healthy KEEP findings or style-only preferences into rewrites. A quote is DOCUMENTED; an untested consequence is INFERRED; the rewrite is PROPOSED and requires human review. Never invent source text, remove required safety prerequisites, or assume unclear approval status is resolved.
-
-**Proposed optional connection documentation — per affected skill (only if justified by a row 4–6 issue):**
-
-**Status for this section: PLANNED / PROPOSED — NOT IMPLEMENTED, NOT CONTRACTED, NOT VERIFIED.** This is a Stage 2 investigation record to guide Stage 3 design, *not* a claim that the skills already exchange information or call one another.
-
-**[Skill A] — PROPOSED wording, NOT YET IMPLEMENTED**
-- *Standalone use:* [Existing starting inputs, complete workflow and own outputs; if unverified or currently dependent, say so.]
-- *Optional handoff:* [When another skill's existing output is available, it may be supplied as **optional context**. The skill never requires or auto-runs its partner.]
-- *Responsibilities:* [What Skill A owns; what remains with Skill B.]
-- *Boundaries:* [No automatic invocation, unauthorized edit/publish/approval, or change to another skill's decisions.]
-- *Feedback:* [Report proposed changes and open questions to the correct human owner; no silent upstream edits.]
-- *Documentation placement:* [PROPOSED `Optional Handoffs` note in this skill's `SKILL.md`. If substantial details justify it, name a proposed skill-local `references/<source>-to-<destination>-handoff.md`; if absent, label **PLANNED — NOT CREATED**. Otherwise say **SKILL.md only**.]
-- *Stage 3 follow-up:* [The still-undecided handoff fields, compatibility/approval requirements, feedback routing, and verification questions; do not draft contracts here.]
-- *Planning status:* [PLANNED / PROPOSED — NOT IMPLEMENTED or explicitly evidenced current state.]
-- *Evidence / open design question:* [Direct links; note gaps and who needs to confirm.]
-
-**[Skill B] — PROPOSED wording, NOT YET IMPLEMENTED**
-- *Standalone use:* [How Skill B starts, finishes and produces useful outputs without Skill A.]
-- *Optional handoff:* [If Skill A's output exists, Skill B may consume it as context, not as a prerequisite.]
-- *Responsibilities:* [What Skill B owns and must not overwrite.]
-- *Boundaries:* [No required/autonomous invocation or unauthorized side effects.]
-- *Feedback:* [What Skill B returns as suggestions/questions for Skill A's owner to review.]
-- *Documentation placement:* [PROPOSED `Optional Handoffs` note in this skill's `SKILL.md`. Use a directionally named local reference **only for substantial guidance**; indicate whether it exists or is **PLANNED — NOT CREATED**. Reverse feedback uses the opposite direction.]
-- *Stage 3 follow-up:* [Formal details and human decisions still needed before integration.]
-- *Planning status:* [PLANNED / PROPOSED — NOT IMPLEMENTED or explicitly evidenced current state.]
-- *Evidence / open design question:* [Direct links; note gaps and who needs to confirm.]
-
-**Illustrative workflow choices — not verified by this template:**
-- Run **Skill A alone**.
-- Run **Skill B alone**.
-- Run **Skill A**, optionally supply its result to **Skill B**, then let the responsible human owner review any suggested updates.
-
-If either skill currently **requires** the other's output, do not label standalone use as supported. Record the dependency as-is and propose any optionalization **conditionally**. If there is no relevant issue, omit these recommendation blocks; do not fabricate a connection. Documented boundaries do not prove runtime restrictions.
-
-**File placement decision:** In this Stage 2 report, recommend a brief **planned** `Optional Handoffs` section inside each affected `SKILL.md`, so a future reviewer understands the direction without assuming the connection already works. Use a **proposed** skill-local reference only if field mappings, examples, conflict-resolution guidance or conditional cases make the explanation substantial. Name single-direction files `<source>-to-<destination>-handoff.md` (plural `handoffs` only for several transitions); reuse existing suitable files when possible. The owning skill's `SKILL.md` can link to its **own** reference and say when to read it. Never require a shared file or partner skill to understand or run standalone. All paths and edits in this template are **PROPOSED**, not completed.
-
-**Evidence and interpretation:** Use the per-skill five-field notes above for material findings; keep any other source references concise. Do not repeat the same evidence or rationale in a second list.
-
-For **one skill**, use the six considerations as vertical labeled sections instead; state that cross-skill comparisons are not applicable.
-
-For **four or more skills**, repeat concise side-by-side groups of two or three, then summarize *every skill* in an overall ownership synthesis. Only group skills based on relevant comparisons; do not drop other material relationships.
+- Material findings stay **in the row where they were discovered** and in the affected **skill's column**. The examples F-01 and F-03 above illustrate format only; assign sequential IDs to real findings in consideration order, then skill order. Keep IDs stable when revising the same report if the underlying finding has not changed.
+- Use **Finding / Evidence / Assessment / Why / Recommendation** for meaningful issues or useful KEEP judgments. Do not force five fields for every routine cell or assign fictitious findings simply to fill rows.
+- Add **Current wording / Concern / Recommended wording — PROPOSED** only for materially ambiguous or conflicting instructions. Quote the real text and link the exact source; distinguish DOCUMENTED wording from INFERRED risk. If the intended rule is not established, recommend VERIFY rather than invent a rewrite.
+- If one finding relates to another consideration, give it one **primary C-row** and use a brief **Related: F-xx (Cx)** link from other rows. Do not duplicate the full finding or invent a second ID solely for cross-reference.
+- When C4–C6 reveal a real planned optional connection, place the relevant proposal **inside those cells**: C4 for optional context and proposed handoff reference location, C5 for standalone boundaries and no auto-invocation, and C6 for proposed feedback/owner review. Mark nonimplemented integration **PLANNED / PROPOSED — NOT IMPLEMENTED** and missing proposed files **PLANNED — NOT CREATED**. Do not automatically create a shared dependency or a coordinator.
+- When multiple findings share one cell, label each with its own F-xx and put a short `<br><br>` separator between them. Keep each field to approximately one sentence where possible, but do not omit evidence or necessary quoted context just to shorten the cell. If a table becomes too wide or long, split the skill columns into smaller groups while retaining all findings.
+- For one skill, use the same C1–C6 progression with its mini-records in each consideration's block. If a host cannot render `<br>` inside Markdown tables, use consideration-first blocks containing skill-labeled mini-records **at that consideration**, not detached findings after the audit.
 
 ## 3. Cross-Skill Responsibility & Overlap Findings
 
-For each real overlap, align the involved skills, then explain it below.
+For each real overlap, align the involved skills and reference the originating **F-xx (Cx)** cells; explain only the relationship or impact not already stated there.
 
 | Activity | [Skill A] | [Skill B] | Classification |
 | --- | --- | --- | --- |
@@ -110,10 +60,10 @@ For each real overlap, align the involved skills, then explain it below.
 
 ## 5. Prioritized Recommendations
 
-**Summarize, don't repeat:** Consolidate material CLARIFY/REVISE/ADD and VERIFY work from earlier findings, with source links and independently assigned High/Medium/Low priorities. For wording concerns, point to the proposed replacement in Section 2 rather than repeating the before/after text. KEEP generally requires no implementation item. If no change is justified, say so.
+**Summarize, don't repeat:** Consolidate material CLARIFY/REVISE/ADD and VERIFY work by the **F-xx identifiers in C1–C6 table cells**, with independent High/Medium/Low priorities. For wording concerns, point to the replacement in that cell rather than repeating it. KEEP generally requires no implementation item. If no change is justified, say so.
 
 - **Priority:** [High / Medium / Low]
-- **Finding:** [Source-linked skill/consideration and assessment label; refer back to section 2 instead of repeating the full rationale.]
+- **Finding:** [F-xx, C1–C6, affected skill and assessment; refer to that table cell rather than repeating its five fields or recommended wording.]
 - **Proposed change:** [Ownership/documentation proposal only; when appropriate, cite the per-skill proposed optional handoff, boundary, and feedback wording from section 2.]
 - **Standalone integrity:** [Does each skill retain its own inputs, outputs and workflow? If not evidenced, what needs human confirmation?]
 - **Documentation location:** [Per affected skill: proposed `Optional Handoffs` note in `SKILL.md`, plus a potential optional, directionally named local reference only if warranted; say whether that file actually exists.]

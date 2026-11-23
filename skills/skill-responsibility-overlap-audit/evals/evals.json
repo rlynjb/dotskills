@@ -324,6 +324,56 @@
         "Still gives appropriate evidence and human-review boundaries.",
         "Does not invent runtime enforcement from written restrictions or modify files."
       ]
+    },
+    {
+      "id": 22,
+      "prompt": "Compare requirements-review and sprint-readiness using Skill Responsibility & Overlap Audit. The report must keep all material F-xx findings with labeled Finding/Evidence/Assessment/Why/Recommendation in the exact C1–C6 row and skill cell they belong to—not in separate Finding A/B/C blocks. Keep the side-by-side comparison.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/sprint-readiness/SKILL.md"
+      ],
+      "expected_output": "A C1–C6 side-by-side report with material skill-specific findings embedded as F-01, F-02 etc in the relevant cells, with Markdown <br> line breaks and source-backed five-field entries. The competing clarity authority is explained under C2 or C5, not repeated in a detached findings section; Step 4 references F IDs.",
+      "assertions": [
+        "Each material F-xx appears inside its corresponding C1–C6 row and skill column with the five labeled fields.",
+        "No standalone Finding A/B/C section or duplicated five-field findings beneath the comparison.",
+        "Cross-skill effects are cross-referenced using F-xx and Cx rather than silently duplicating evidence.",
+        "The table retains the six considerations and remains scannable without five additional columns.",
+        "Stage 2 findings do not become approved contracts or actual runtime claims."
+      ]
+    },
+    {
+      "id": 23,
+      "prompt": "Audit the discovery-brief and approval-evidence synthetic skills. Their wording could imply mandatory discovery and automatic requirement approval. Show exact Current wording, Concern, and Recommended wording — PROPOSED inside the relevant existing C-row/skill cells, alongside the five basic fields. Do not create separate wording review sections.",
+      "files": [
+        "evals/files/discovery-brief/SKILL.md",
+        "evals/files/approval-evidence/SKILL.md"
+      ],
+      "expected_output": "C1/C5 cells contain relevant F-xx findings with five core labels plus the optional exact-quote/concern/proposed-wording labels in the same cell; evidence status differentiates documented text and inferred risk. Formal contracts and implementation remain deferred.",
+      "assertions": [
+        "An exact quoted source phrase and its proposed change appear in the same C1–C6 cell as its finding ID.",
+        "The wording review does not form a new section or extra table column.",
+        "Does not claim inferred behavior was observed or imply that ticket provenance proves approval.",
+        "The recommended wording preserves required safety and human authorization.",
+        "Step 4 references the related F-xx without duplicating the full wording."
+      ]
+    },
+    {
+      "id": 24,
+      "prompt": "Compare four synthetic skills: requirements-review, sprint-readiness, ticket-drafting, and estimation-advisor. Use small grouped tables when needed, but retain row-level F-xx notes in cells and stable C1–C6 IDs. Demonstrate how a finding connected to multiple considerations is cross-referenced without duplicating the full finding.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/sprint-readiness/SKILL.md",
+        "evals/files/ticket-drafting/SKILL.md",
+        "evals/files/estimation-advisor/SKILL.md"
+      ],
+      "expected_output": "Grouped side-by-side tables retain all four skills with findings placed inside their primary consideration cells. Related considerations use brief F-xx references; cross-skill synthesis covers material findings and Step 4 summarizes actionable decisions by F-xx without detached findings.",
+      "assertions": [
+        "All four skills remain represented and all six considerations are assessed.",
+        "Material findings use stable F-xx and Cx IDs within rows, not detached blocks.",
+        "One primary row owns a finding; a related row references its F ID without full duplication.",
+        "Long tables are split into two- or three-skill groups while preserving comparable content.",
+        "No change to source skills, no runtime execution or approved architecture."
+      ]
     }
   ]
 }
