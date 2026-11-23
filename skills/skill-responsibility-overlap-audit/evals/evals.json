@@ -235,6 +235,52 @@
         "No extra mandatory five-heading lesson, contract design, auto-approval, or source edits."
       ],
       "id": 15
+    },
+    {
+      "id": 16,
+      "prompt": "Audit brief-planning and evidence-refinement. Explain one well-supported responsibility to KEEP while comparing all six considerations side by side, using per-skill Finding, Evidence, Assessment, Why, Recommendation notes.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Evidence-backed KEEP for a sound standalone responsibility with 'keep as-is' and clear reason; meaningful five-field notes below a compact side-by-side comparison, without forced changes.",
+      "assertions": [
+        "Uses a valid KEEP recommendation for a supported responsibility.",
+        "Provides five fields only for meaningful findings.",
+        "Source evidence status and assessment label are distinct.",
+        "No invented defect, approval, contract, source edit or automatic invocation."
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "Audit requirements-review and sprint-readiness; both claim final requirements clarity. Show practical reasoning and a clear recommended revision or clarification as the reader encounters the finding; Step 4 should not duplicate all notes.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/sprint-readiness/SKILL.md"
+      ],
+      "expected_output": "The documented competing ownership receives a grounded CLARIFY or REVISE assessment and practical Why; Step 4 consolidates an actionable human-reviewed suggestion once with independent priority.",
+      "assertions": [
+        "Evidence from both skills supports the conflict.",
+        "Assessment and Why explain an actual consequence.",
+        "Prioritization is distinct from assessment.",
+        "Step 4 consolidates rather than repeats five-field explanation.",
+        "Retains six considerations and Stage 2 boundary."
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "Audit requirements-review and ticket-drafting; ticket-drafting needs acceptance criteria but no confirmed producer is shown. Explain what can be recommended based on incomplete evidence without inventing a missing implementation.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/ticket-drafting/SKILL.md"
+      ],
+      "expected_output": "A meaningful VERIFY assessment identifies source/owner evidence needed before suggesting ADD or REVISE; current expected inputs are DOCUMENTED but cross-skill guarantees remain unverified.",
+      "assertions": [
+        "Insufficient evidence leads to VERIFY rather than assuming a runtime failure.",
+        "The note gives a specific verification question/action.",
+        "Evidence status is separate from assessment and priority.",
+        "No extra mandatory columns, contracts, coordinator, edits or approvals."
+      ]
     }
   ]
 }

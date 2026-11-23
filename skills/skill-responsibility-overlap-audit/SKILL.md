@@ -41,6 +41,27 @@ Read and follow the shared [Senior Engineer → Junior Developer Communication G
 - Preserve legitimate shared context. Two skills reading the same input is not automatically duplicated decision ownership.
 - Do not silently promote a human review recommendation to an approved design.
 
+## Meaningful finding assessment — reason about keep versus change
+
+For **meaningful findings in any of the six considerations**, help the reader understand what to keep, clarify or change **while reviewing that consideration**. Use five consistent fields in concise **vertical notes beneath** side-by-side tables (or beneath the consideration for a single skill):
+
+- **Finding:** What is documented/observed, missing or unclear in the inspected skill.
+- **Evidence:** Direct source path with precise lines/section when possible, plus **DOCUMENTED / OBSERVED / INFERRED / UNVERIFIED** (or NOT ASSESSED when inaccessible). Distinguish facts from interpretations.
+- **Assessment:** Exactly one preliminary engineering judgment: **KEEP, CLARIFY, REVISE, ADD, or VERIFY**.
+- **Why:** The practical reason, benefit, risk or consequence. Explain it in plain English.
+- **Recommendation:** The smallest justified next step, including "keep as-is" when appropriate. Any modification remains PROPOSED and subject to human review.
+
+**Assessment meanings:**
+- **KEEP:** Preserve an appropriate documented responsibility or behavior within inspected scope; explain why it works. Do not infer actual runtime success.
+- **CLARIFY:** Explain ambiguous wording, responsibilities or ownership more precisely; don't claim the underlying behavior is broken.
+- **REVISE:** Reconsider conflicting or problematic documented instructions/decision ownership; identify the trade-off and human decision.
+- **ADD:** Propose a demonstrably missing responsibility or guidance grounded in the inspected scope; never add requirements merely from missing evidence.
+- **VERIFY:** Evidence is insufficient. Specify which source, owner decision or separately authorized check to obtain **before deciding** whether to change anything.
+
+**Keep labels distinct:** Assessment is not evidence status, approval, or priority. UNVERIFIED often calls for VERIFY, not an assumed defect; two skills sharing context may deserve KEEP. Do not manufacture an issue to fill a row.
+
+**Be proportionate:** Only expand material issues or useful strengths. Do not force five-field blocks for every table cell or repeat them in Steps 2 and 4. Keep table cells short, with relevant evidence/rationale below. Step 4 consolidates actionable CLARIFY/REVISE/ADD findings and meaningful VERIFY work (High/Medium/Low separately), referring to earlier findings rather than repeating them. KEEP requires no change ticket; briefly note worthwhile protections in the overview when useful.
+
 ## Procedure — four investigation steps
 
 ### Step 1 — Individual skill review
@@ -58,6 +79,8 @@ Assess the same **six considerations**, in this order, for each accessible targe
 4. **Handoffs:** Documented/implicit producer-consumer relationships; missing or repeated information.
 5. **Boundaries:** Unclear owners, human approval/authorization expectations, trust/security limits and responsibility leakage.
 6. **Feedback:** When work returns for clarification or revision; whether rework ownership is clear.
+
+After the six-consideration overview, include per-skill **Finding / Evidence / Assessment / Why / Recommendation** notes for meaningful findings, including useful KEEP decisions. Do not require a proposed change for every skill or consideration.
 
 **If an issue appears under considerations 4–6**, examine whether the affected skills could document an **optional connection** rather than become tightly coupled. Show each affected skill's situation separately: how it can start and finish on its own, whether another skill's output is useful *when voluntarily supplied*, who owns each decision, what action is out of scope, and where proposed changes/questions return for human review.
 
@@ -83,13 +106,15 @@ For each *material* shared capability, identify the activity, involved skills, e
 - **Conflicting:** responsibilities or instructions contradict one another.
 - **Unclear:** ownership or rationale is not established.
 
-Check all material relationships across the selected skills; do not pretend a multi-skill comparison is a single native Audit Skill run if its available mode is narrower. Do not manufacture pairwise conflicts to fill a matrix. Distinguish an overlap from a handoff: a downstream consumer reading an upstream output may be expected behavior.
+Check all material relationships across the selected skills; do not pretend a multi-skill comparison is a single native Audit Skill run if its available mode is narrower. Do not manufacture pairwise conflicts to fill a matrix. Distinguish an overlap from a handoff: a downstream consumer reading an upstream output may be expected behavior. Reference the earlier per-skill assessments without duplicating their full explanations.
 
 ### Step 3 — Missing responsibilities and gaps
 
 Investigate orphaned activities, unavailable inputs/outputs, lost context, contradictory guidance, ambiguous decision authority, undocumented dependencies, missing human review, and feedback-routing gaps. For each, identify affected skills, evidence/unknowns, and potential effect. Describe a possible gap as **UNVERIFIED** when source coverage does not establish it.
 
 ### Step 4 — Recommended changes for human review
+
+**Consolidate earlier findings** instead of regenerating them. Group and deduplicate actionable CLARIFY / REVISE / ADD and material VERIFY decisions, and refer to their originating skill/consideration and evidence. KEEP usually means no change is needed. If no modifications are justified, explicitly say so. Priority (High/Medium/Low) is independent of the assessment label.
 
 Prioritize each actionable suggestion **High / Medium / Low** and include:
 
@@ -151,11 +176,11 @@ Use these seven headings, in order:
 ### Adaptive layout: side by side for two or more skills
 
 - **One skill:** use a vertical assessment under all six labels; mark cross-skill findings not applicable.
-- **Two or three skills:** section 2 **must use side-by-side Markdown comparison tables**, with a `Consideration` column and a column for each skill. Align the six rows in the same order. Prefer two small tables: **Primary** (Inputs, Responsibilities, Outputs) and **Supporting** (Handoffs, Boundaries, Feedback).
+- **Two or three skills:** section 2 **must use side-by-side Markdown comparison tables**, with a `Consideration` column and a column for each skill. Align the six rows in the same order. Prefer two small tables: **Primary** (Inputs, Responsibilities, Outputs) and **Supporting** (Handoffs, Boundaries, Feedback). Keep cells compact, adding assessment labels where useful; provide five-field explanation in vertical notes below, not as five new columns.
 - **Four or more skills:** split into readable side-by-side groups of two or three skills, *and* provide an overall synthesis of all selected skills. Do not omit any skill or material overlap to keep a table narrow.
-- **Section 3:** compare the same overlapping activity across the affected skills in aligned columns; include classification and impact. In section 4, explicitly name every affected skill.
+- **Section 2:** use brief per-skill **Finding, Evidence, Assessment, Why, Recommendation** notes below the side-by-side comparison for meaningful strengths and issues, not every routine row. **Section 3:** compare the same overlapping activity across affected skills, with classification and impact. In section 4, name every affected skill.
 - **Section 2, Supporting table (rows 4–6):** show the observed issue, its evidence status, and its effect **for each skill**, not only for the relationship as a whole. Immediately below the table, add **Proposed optional connection documentation — per affected skill** when an optional handoff could address an evidenced issue. Give each affected skill its own short block covering **Standalone use / Optional handoff / Responsibility / Boundary / Feedback / Documentation placement / Stage 3 follow-up / Planning status**. Recommend a short planned `Optional Handoffs` note in each `SKILL.md` and name any *potential* local reference only when detailed guidance warrants it; mark missing proposed files **PLANNED — NOT CREATED**. Distinguish existing documented facts from future intent. In section 5, carry the recommendation and human decision; in section 7, defer formal contract details.
-- **Section 5:** when more than one skill has a material combined-workflow issue, include the **Optional coordinator assessment** under the related prioritized recommendation. Prefer NOT NEEDED if simple optional handoffs and suggested next-action commands suffice. If supported, recommend a separately invoked coordinator only for actual routing/sequencing/context/feedback coordination that does not fit the component skills. If evidence is missing, DEFER; never imply the coordinator was built or the host can dispatch skills automatically.
+- **Section 5:** consolidate earlier actionable recommendations without repeating their five-field explanations. When more than one skill has a material combined-workflow issue, include the **Optional coordinator assessment** under the related prioritized recommendation. Prefer NOT NEEDED if simple optional handoffs and suggested next-action commands suffice. If supported, recommend a separately invoked coordinator only for actual routing/sequencing/context/feedback coordination that does not fit the component skills. If evidence is missing, DEFER; never imply the coordinator was built or the host can dispatch skills automatically.
 - The recommended optional route must preserve three valid paths when supported: **Skill A alone**, **Skill B alone**, and **Skill A → optional Skill B review → owner-reviewed updates**. Do not state that all three paths work today without evidence. Neither skill is required to call, import, or execute the other.
 - Keep each table cell concise. Put evidence links, caveats, rationale and recommendations in short **vertical notes immediately following** the relevant comparison, not in giant cells.
 - Match depth and labels for all skills. Where evidence is missing say **NOT DOCUMENTED**, **UNVERIFIED**, or **NOT ASSESSED** as applicable; do not populate empty cells with invented behavior.

@@ -29,6 +29,17 @@ For **two or three skills**, use side-by-side tables. Keep long citations and ex
 | 5. Boundaries | [Current ownership/authority and issue] | [Current ownership/authority and issue] |
 | 6. Feedback | [Current revision path and issue] | [Current revision path and issue] |
 
+**Meaningful per-skill assessment notes (only for consequential findings):**
+
+**[Skill] — [Consideration number: finding title]**
+- *Finding:* [What the sources describe or leave unclear.]
+- *Evidence:* [DOCUMENTED / OBSERVED / INFERRED / UNVERIFIED / NOT ASSESSED, plus direct links or explicit evidence gap.]
+- *Assessment:* [KEEP / CLARIFY / REVISE / ADD / VERIFY.]
+- *Why:* [Plain-English reason or consequence.]
+- *Recommendation:* [Smallest next step, including keep as-is or targeted verification, with human review for changes.]
+
+Repeat only when meaningful; don't force a five-field record for every cell. **KEEP** can be the correct outcome. If a documented output and an inferred handoff differ in certainty, state both evidence statuses. No five extra table columns.
+
 **Proposed optional connection documentation — per affected skill (only if justified by a row 4–6 issue):**
 
 **Status for this section: PLANNED / PROPOSED — NOT IMPLEMENTED, NOT CONTRACTED, NOT VERIFIED.** This is a Stage 2 investigation record to guide Stage 3 design, *not* a claim that the skills already exchange information or call one another.
@@ -64,10 +75,7 @@ If either skill currently **requires** the other's output, do not label standalo
 
 **File placement decision:** In this Stage 2 report, recommend a brief **planned** `Optional Handoffs` section inside each affected `SKILL.md`, so a future reviewer understands the direction without assuming the connection already works. Use a **proposed** skill-local reference only if field mappings, examples, conflict-resolution guidance or conditional cases make the explanation substantial. Name single-direction files `<source>-to-<destination>-handoff.md` (plural `handoffs` only for several transitions); reuse existing suitable files when possible. The owning skill's `SKILL.md` can link to its **own** reference and say when to read it. Never require a shared file or partner skill to understand or run standalone. All paths and edits in this template are **PROPOSED**, not completed.
 
-**Evidence and interpretation (vertical notes):**
-
-- **[Skill A] — [Claim, status]:** [Direct file/line link]. [Why it matters.]
-- **[Skill B] — [Claim, status]:** [Direct file/line link]. [Why it matters.]
+**Evidence and interpretation:** Use the per-skill five-field notes above for material findings; keep any other source references concise. Do not repeat the same evidence or rationale in a second list.
 
 For **one skill**, use the six considerations as vertical labeled sections instead; state that cross-skill comparisons are not applicable.
 
@@ -94,8 +102,10 @@ For each real overlap, align the involved skills, then explain it below.
 
 ## 5. Prioritized Recommendations
 
+**Summarize, don't repeat:** Consolidate material CLARIFY/REVISE/ADD and VERIFY work from earlier findings, with source links and independently assigned High/Medium/Low priorities. KEEP generally requires no implementation item. If no change is justified, say so.
+
 - **Priority:** [High / Medium / Low]
-- **Finding:** [Problem and linked evidence.]
+- **Finding:** [Source-linked skill/consideration and assessment label; refer back to section 2 instead of repeating the full rationale.]
 - **Proposed change:** [Ownership/documentation proposal only; when appropriate, cite the per-skill proposed optional handoff, boundary, and feedback wording from section 2.]
 - **Standalone integrity:** [Does each skill retain its own inputs, outputs and workflow? If not evidenced, what needs human confirmation?]
 - **Documentation location:** [Per affected skill: proposed `Optional Handoffs` note in `SKILL.md`, plus a potential optional, directionally named local reference only if warranted; say whether that file actually exists.]
