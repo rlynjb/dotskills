@@ -19,47 +19,51 @@ It never edits the target skills, writes formal implementation files into them, 
 
 ```text
 Use skill-integration-contracts on:
-- skills/first-skill
-- skills/second-skill
+- [path to a target skill or skill document]
+- [another target skill path, if applicable]
+- [additional target skill paths, if applicable]
 
 Stage 1 architecture: [optional link]
 Stage 2 audit: [optional report with F-xx (Cx) findings]
 Optional coordinator candidate: [existing SKILL.md or design file path, if available]
 
-Design the minimal optional handoff and human approval boundaries.
-Preserve both skills' standalone inputs, workflow and outputs.
+Design the minimal applicable standalone or cross-skill contracts.
+Consider direct handoffs versus optional coordination only if relevant.
+Preserve each skill's independent entry and output where supported.
 Show IC-xx contracts and D-xx decisions with direct source evidence.
 Do not edit skills, implement a coordinator, or execute evaluations.
 ```
 
-For a single skill, ask for its standalone entry/exit contract. For multiple independent skills, the tool considers **only meaningful intended connections** and can recommend that no integration contract is needed.
+The bracketed paths are placeholders: include **only actual, accessible files relevant to the scope**. The number of target skills is **not fixed**. For one skill, design its standalone entry/exit contract without inventing a partner. For multiple skills, examine only meaningful intended connections. This workflow is **skill- and domain-agnostic**; named project skills elsewhere in the documentation are examples, not mandatory inputs.
 
 ## Inputting an optional coordinator candidate — Stage 3
 
-If Stage 2 identified a meaningful routing, sequencing, context-preservation or feedback issue, **you can provide an existing coordinator file as an additional input** when running Stage 3. Label it `Optional coordinator candidate`, **separate from the two target skills** being integrated.
+If the scope, supplied evidence or a Stage 2 audit raises a material **routing, sequencing, context-preservation or feedback** concern, an **existing** coordinator `SKILL.md` or design file **may** be supplied as an **additional input**. Label it `Optional coordinator candidate` and distinguish it from the **target skill(s)** whose standalone and integration contracts are being designed.
 
-- **Coordinator file already exists:** Supply its actual `SKILL.md` path or existing design-document path, plus the target skill paths and any Stage 2 audit. The file is evidence of a **candidate design**, not proof that the coordinator is needed, approved, installed or executable.
-- **Only a Stage 2 coordinator recommendation exists:** Supply the two target skills and the Stage 2 audit; **do not invent a third path or create a coordinator first**. Stage 3 can still assess whether simple handoffs are sufficient.
-- **Stage 3 decision:** Compare manual/user-selected handoffs with a separately invoked optional coordinator, examine each skill's standalone path, and propose only justified `IC-xx` routing contracts and `D-xx` human decisions. A coordinator may be **NOT NEEDED**, **CONDITIONAL / PROPOSED**, or **DEFERRED**; it is not assumed to be the chosen design.
-- **Stage 4 follow-through:** Implement a coordinator or routing mechanism **only when the specific design is approved**. If actual automatic dispatch is required, verify and implement the relevant host/tool support rather than treating `SKILL.md` wording as executable dispatch. Stage 5 tests observed behavior.
+- **Coordinator file exists:** Supply its actual path and any available prior audit/architecture material. Inspect it as **candidate design evidence**, not proof that a coordinator is necessary, approved, installed or executable.
+- **Only a coordinator recommendation exists:** Supply the target skill path(s) and any actual Stage 2 findings or other evidence. **Do not invent a coordinator path or create a file** simply to complete the input list.
+- **No coordination concern:** Omit the coordinator entirely. A standalone-only review does not require a second skill or coordinator. For a multi-skill review, a simple user-selected handoff may be enough.
+- **Stage 3 decision:** When applicable, compare minimal direct/user-chosen handoffs with an optional coordinator, preserve standalone paths, and propose proportionate `IC-xx` contracts and `D-xx` human decisions. Outcomes may be NOT NEEDED, a CONDITIONAL PROPOSAL, or DEFERRED; the candidate file is not approval.
+- **Stage 4 follow-through:** Implement only the **explicitly approved** contracts/routing approach. If automatic dispatch is part of the approved design, independently verify and implement host/tool support; a `SKILL.md` instruction alone is not a running dispatcher. Stage 5 evaluates observed behavior.
 
-### Example — two skills and an existing coordinator file
+### Generic invocation — any relevant skill set
 
 ```text
 Use skill-integration-contracts on:
-- [actual path to skill A/SKILL.md]
-- [actual path to skill B/SKILL.md]
+- [target skill path]
+- [another target skill path, if applicable]
+- [additional target skill paths, if applicable]
 
-Stage 2 audit: [actual audit report path]
-Optional coordinator candidate: [actual path to coordinator SKILL.md or design document]
+Stage 2 audit: [audit report, if available]
+Optional coordinator candidate: [existing coordinator SKILL.md or design file, if available]
 
-Compare direct optional handoffs against the candidate coordinator.
-Carry forward material Stage 2 findings and preserve standalone paths.
-Propose only justified IC-xx contracts and D-xx human decisions.
-Do not implement, invoke or assume the coordinator is approved.
+Assess only meaningful standalone and producer-consumer boundaries.
+Where justified, compare direct handoffs with optional coordinator routing.
+Carry forward evidence and human approval boundaries.
+Propose IC-xx contracts and D-xx decisions; do not implement changes.
 ```
 
-All bracketed paths are placeholders; supply actual accessible files. If no coordinator file exists, omit that line rather than substituting a nonexistent path.
+Omit inapplicable lines; the template is **not** a fixed two-skill or three-skill workflow. The coordinator candidate is a distinct optional **source of evidence**, never automatically an additional component to deploy.
 
 ## Optional Contract Quality Review
 
