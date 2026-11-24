@@ -87,18 +87,44 @@ Write **one vertical card per material connection** using the reading order belo
 
 **C. Technical contract**
 
-State the precise applicable guarantees using concise vertical bullets. Introduce technical terms with their plain-English meaning when first useful; retain the formal terminology, exact required/optional distinctions and approval conditions. Label a guarantee CURRENT DOCUMENTED, NEW PROPOSAL or UNVERIFIED ENFORCEMENT when the distinction matters; support factual claims with direct source links.
+Group the exact applicable guarantees under the following stable dimension headings and guiding questions, in the order shown. Keep the original dimension numbers when skipping inapplicable dimensions; do not print empty headings or invent requirements to complete the list. Use concise vertical subfield bullets, not a flat list or wide table. Separate source-backed current behavior, new proposal and unverified enforcement where material; link factual claims to evidence. Explain unfamiliar concepts at first useful occurrence. Avoid duplicating a rule across dimensions.
 
-- **Ownership (producer / consumer / owner):** [Who supplies and consumes information, who verifies it, and who authorizes consequential decisions.]
-- **Trigger and standalone path:** [When the handoff is optional or required, any material branch condition, and how independent use is preserved where supported; distinguish actual required prerequisites.]
-- **Inputs (interface):** [Required versus optional handoff information; source identity/revision, provenance and unresolved questions when relevant.]
-- **Outputs / postconditions (what successful completion guarantees):** [Minimum usable result and what the receiver can rely on.]
-- **Preconditions (what must be true first) / invariants (what must stay true):** [Necessary preconditions and preserved properties, e.g. source identity, unresolved questions and approval state.]
-- **Failure and feedback:** [Missing, conflicting or invalid inputs → safe continuation / BLOCKED / NEEDS HUMAN; responsible owner, return trigger and permission to resume; fault isolation when relevant.]
-- **Trust / approval / permitted effects:** [Who can propose, edit, publish or approve; untrusted source handling; documented instructions versus unverified runtime enforcement.]
-- **Observability / compatibility (if relevant):** [Necessary evidence, IDs/revisions or status fields, host assumptions and compatibility constraints. Do not promise unverified functionality.]
+**1. Interface — What do we exchange?**
 
-Explain unfamiliar terms in context only where they help the reader understand the consequence of a guarantee; for example, preserving a standalone path is an invariant only if that is a real proposed guarantee. Do not repeat the conceptual rationale or scenario in every bullet. Include a contract-specific trade-off here only if it has not already been explained in A.
+- **Producer / consumer:** [Who provides and receives the information; omit artificial counterpart for standalone scope.]
+- **Trigger / entry:** [Who chooses or initiates the handoff; optional or required; relevant standalone route.]
+- **Required input:** [Minimum necessary starting or handoff information, distinguishing the two when relevant.]
+- **Optional context:** [Additional information that MAY be supplied; preserve genuine optionality.]
+- **Output:** [Expected result or artifact and format; reserve behavioral guarantees about it for dimension 2.]
+
+**2. Behavioral Guarantees — What must be true before, after and throughout?**
+
+- **Preconditions (before):** [Conditions that must hold before the selected operation; do not mistake optional upstream context for a prerequisite.]
+- **Postconditions (after successful completion):** [What the result guarantees, not merely its name or format.]
+- **Invariants (what must remain true):** [Properties preserved at relevant boundaries, e.g. standalone capability where supported, source identity, unresolved status and human approval state.]
+
+**3. Ownership, Security & Authority — Who controls what?**
+
+- **Responsibilities:** [Each skill's domain ownership and verification responsibility, rather than duplicating the Interface producer/consumer labels.]
+- **Authority / approval:** [Who may propose, approve, reject or authorize material changes.]
+- **Permissions / trust:** [Allowed and prohibited effects; source content treated as data; host/tool enforcement needs versus documented instructions.]
+
+**4. Reliability & Feedback — What happens when something goes wrong or needs revision?**
+
+- **Failure behavior:** [Material missing, conflicting, stale or invalid information; safe continuation/provisional results versus BLOCKED or NEEDS HUMAN; fault isolation when relevant.]
+- **Feedback / recovery:** [Specific trigger, responsible recipient, approval boundary, resume/stop condition and what may be revisited; no invented loop or automatic dispatch.]
+
+**5. Observability & Traceability — How can we understand and trace what happened?**
+
+- **Evidence / traceability:** [Minimum source/requirement IDs, links, inspected revisions, decision status, evidence limitations or error reasons needed to understand a result. Only describe actual trace availability; do not promise unverified telemetry or runtime testing.]
+
+**6. Compatibility & Evolution — How do we preserve compatibility as things change?**
+
+- **Compatibility / evolution:** [Supported prose, excerpts, formats or revisions; meaningful consumer/host expectations; changes that could break a contract and any needed migration/revision boundary. Do not invent schemas, mandatory version infrastructure or host capabilities.]
+
+**Requirement wording:** Use lightweight requirement language inspired by RFC 2119/8174: **MUST** = mandatory guarantee; **MUST NOT** = prohibited behavior; **SHOULD** = recommended behavior with justified exceptions; **MAY** = genuinely optional behavior. Use these uppercase terms sparingly for actual obligations or permissions, not descriptive facts or evidence labels. Name the responsible actor, applicable condition and observable outcome where material. Do not turn a recommendation into a mandatory rule or an optional input into a prerequisite. A proposed MUST is a design term, not evidence of human approval, implementation, enforcement or test success.
+
+Explain why a term or guarantee matters only if the reader cannot already understand it from A/B. For example, an invariant is a property that must remain true at the relevant boundaries; preserving an independently usable path is an invariant when supported by the intended design. Keep the actual contract proportional to the connection. Do not repeat the conceptual rationale, walkthrough or evidence narrative in every dimension.
 
 **D. Evidence and decisions**
 
@@ -124,10 +150,32 @@ In this proposed example, a developer chooses to supply an existing planning doc
 
 **C. Technical contract**
 
-- **Trigger / inputs:** The developer chooses whether to supply the planning document; normal required starting information must still be available.
-- **Outputs:** Refined requirements and unresolved questions.
-- **Invariant (what must stay true):** Both supported entry paths remain available; a missing optional document alone must not block execution.
-- **Approval:** Any proposed change to an owned product decision returns to the authorized owner for review rather than silently changing it.
+**1. Interface — What do we exchange?**
+
+- **Trigger / required input:** The developer chooses refinement with sufficient normal starting information.
+- **Optional context:** The developer MAY supply an existing planning document.
+- **Output:** Refined requirements and unresolved questions.
+
+**2. Behavioral Guarantees — What must be true before, after and throughout?**
+
+- **Precondition:** The refinement skill MUST have enough information to identify the feature before assessing it.
+- **Postcondition:** A successful result MUST distinguish unresolved questions from established requirements.
+- **Invariant:** The supported standalone entry MUST remain available.
+
+**3. Ownership, Security & Authority — Who controls what?**
+
+- **Authority:** The refinement skill MUST NOT independently authorize a change to a product decision owned by someone else.
+
+**4. Reliability & Feedback — What happens when something goes wrong or needs revision?**
+
+- **Failure behavior:** A missing optional planning document alone MUST NOT block refinement when its required inputs are available.
+- **Feedback:** Material proposed product changes MUST return to the responsible owner for review before an authorized revision.
+
+**5. Observability & Traceability — How can we understand and trace what happened?**
+
+- **Traceability:** When supplied, source references and unresolved decision statuses MUST be preserved in the result.
+
+In this illustration, no additional compatibility or evolution guarantee has been established; omit dimension 6 rather than inventing one. All MUST/MAY terms are illustrative proposed agreements, not approval or observed implementation.
 
 **D. Evidence and decisions**
 
