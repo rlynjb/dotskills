@@ -401,6 +401,132 @@
         "Source citations do not duplicate per contract group.",
         "No invented YouTube links, speaker details or execution evidence."
       ]
+    },
+    {
+      "id": 26,
+      "prompt": "Use skill-integration-contracts on product-framing and evidence-refinement with no optional review parameters.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Original four-step, seven-section Stage 3 design with IC/D proposals and no industry, CQ or conference coverage or source tables.",
+      "assertions": [
+        "Industry review is off by default.",
+        "IC/D human design decision gate remains intact.",
+        "No additional contracts, schemas, runtime tests or implementation actions introduced."
+      ]
+    },
+    {
+      "id": 27,
+      "prompt": "Use skill-integration-contracts on product-framing and evidence-refinement with industry_framework_review: relevant. Draft the minimal optional handoff first, then review only applicable industry framework perspectives.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/stage2-audit.md"
+      ],
+      "expected_output": "Section 5 includes industry coverage of only material selected framework questions against the actual proposed IC-xx card and direct official publisher sources. No CQ or conference tables.",
+      "assertions": [
+        "Relevant selection is justified by actual inspected handoff and proposed terms.",
+        "Questions review IC contracts not the individual skills.",
+        "Each selected source shows type, publisher/version, topic and official URL.",
+        "No unrequested CQ or conference coverage.",
+        "No claim of certified standards compliance or behaviorally tested integration."
+      ]
+    },
+    {
+      "id": 28,
+      "prompt": "Design a single skill's standalone entry/exit IC and run industry_framework_review: on. Show all five types of industry frameworks proportionately.",
+      "files": [
+        "evals/files/product-framing/SKILL.md"
+      ],
+      "expected_output": "Section 5 considers all five industry references, explicitly marks a genuinely irrelevant item NOT APPLICABLE, compares the one justified IC in a two-column table, and lists official publisher links.",
+      "assertions": [
+        "All five considered without treating them all as formal standards.",
+        "One contract column; no invented second skill or cross-skill handoff.",
+        "No new IC card for each of the five frameworks.",
+        "Preserves explicit D decisions and design-only status."
+      ]
+    },
+    {
+      "id": 29,
+      "prompt": "Stage 3 contract design with industry_frameworks: [aws-agentic-ai-lens, cmu-sei-atam] on optional product-framing → evidence-refinement, with no other optional mode.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Only AWS Agentic AI Lens and CMU SEI ATAM adapted Stage 3 design questions appear in the Section 5 industry comparison; their official sources are included. No ISO/NIST/OWASP rows and no CQ/conference review.",
+      "assertions": [
+        "Explicit subset wins and preserves canonical order.",
+        "ATAM-inspired quality scenarios do not count as a completed ATAM assessment.",
+        "AWS source is architecture guidance, not AWS deployment evidence.",
+        "No unrequested quality or conference rows."
+      ]
+    },
+    {
+      "id": 30,
+      "prompt": "Use quality_review: on, review_lenses: [security-and-trust], and industry_frameworks: [nist-ai-rmf, owasp-agentic-top10-2026] on product-framing and evidence-refinement. Separate human approval from host enforcement.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/stage2-audit.md"
+      ],
+      "expected_output": "Section 5 order: CQ-01–CQ-06 first, named security conference lens and matched readings second, NIST/OWASP industry coverage and official sources third, then Section 6 D-xx human decisions. All views refer to the same IC/D decision and actual evidence.",
+      "assertions": [
+        "Stable seven numbered report sections.",
+        "No duplicate findings or new industry IDs.",
+        "NIST and OWASP are separate voluntary/governance and community threat sources, not certifications.",
+        "Conference slides and framework URLs are not treated as evidence of target implementation.",
+        "Written permission rule is not treated as actual host enforcement."
+      ]
+    },
+    {
+      "id": 31,
+      "prompt": "For a three-step proposed workflow product-framing -> evidence-refinement -> ticket-construction, apply industry_framework_review: relevant. Respect ticket-construction's existing required human publication approval.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/ticket-construction/SKILL.md",
+        "evals/files/stage2-audit.md"
+      ],
+      "expected_output": "Only material industry framework rows against actual two IC handoffs, preserving a genuine required publication gate while not making optional product context mandatory.",
+      "assertions": [
+        "Applies review to intended connections, not all-to-all skill pairs.",
+        "Human approval owner remains an unresolved D decision if not evidenced.",
+        "No mandatory coordinator or unsafe relaxing of a real required safety gate.",
+        "Official sources linked to selected frameworks."
+      ]
+    },
+    {
+      "id": 32,
+      "prompt": "Draft conditional Stage 3 contracts for evidence-refinement when the named producer source is unavailable, with industry_framework_review: relevant. The user wants exact producer fields despite missing evidence.",
+      "files": [
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Conditional IC-xx with NOT VERIFIED for unsupported producer field assumptions; selective industry review, source links when relevant, and D-xx question for needed human evidence.",
+      "assertions": [
+        "No invented producer schema or Stage 2 F-xx.",
+        "No fabricated success or security enforcement.",
+        "Missing source is explicitly identified without treating every absent trace as a defect.",
+        "Industry review doesn't make conditional proposals approved."
+      ]
+    },
+    {
+      "id": 33,
+      "prompt": "Apply industry_frameworks: [iso-25010, aws-agentic-ai-lens] to a workflow containing several material IC-xx contracts; keep a readable comparison and one official-source table.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/ticket-construction/SKILL.md",
+        "evals/files/coordinator-routing/SKILL.md"
+      ],
+      "expected_output": "Two selected framework question rows repeated in IC coverage groups with at most two contract columns, a single consolidated official publisher source table, and no unsupported runtime guarantees.",
+      "assertions": [
+        "No over-wide all-contract comparison table.",
+        "Only selected ISO and AWS rows.",
+        "ISO public abstract not treated as available full normative text.",
+        "Single source table without duplicate publisher rows per group.",
+        "No implementation or evaluation performed."
+      ]
     }
   ]
 }
