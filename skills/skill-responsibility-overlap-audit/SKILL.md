@@ -36,6 +36,15 @@ Read and follow the shared [Senior Engineer → Junior Developer Communication G
 
 - Link directly to real source paths and precise lines or sections whenever available; **no evidence-key tables**. Never invent links or line numbers.
 - Mark significant claims **DOCUMENTED** (stated in inspected files), **OBSERVED** (genuine supplied runtime trace/result), **INFERRED** (reasoned but not established), or **UNVERIFIED** (not enough evidence). Code that implements a check is not proof that it executed.
+
+**Evidence limitation versus actionable VERIFY.** UNVERIFIED (or NOT VERIFIED) is an evidence status; VERIFY is a recommendation requiring a concrete reason. Because Stage 2 is read-only, runtime traces may not be available. **Do not create F-xx VERIFY solely because a clearly documented optional handoff or coordinator instruction was not observed executing.** Record that ordinary evidence limitation once in the Executive Summary, and if important briefly qualify C4. Do not turn the same missing trace into a prioritized issue or mandatory Stage 5 scenario.
+
+**Decision rule for C4/C5/C6:**
+- **Clear documented optional handoff:** State DOCUMENTED, and use KEEP only when a meaningful safeguard warrants an F-xx. Runtime may remain NOT VERIFIED; it is not automatically a defect.
+- **Ambiguous or conflicting handoff instructions or ownership:** Use CLARIFY or REVISE with source-backed reasoning.
+- **Material reason to verify execution:** Use VERIFY when the skill **explicitly claims automatic execution or a runtime guarantee without supporting evidence**, the user **explicitly requests execution assurance**, or a **concrete consequential permission, security, data-integrity or reliability risk** needs testing. Name the claim/risk and the exact trace, host permission evidence or separately authorized check required. Do not claim an unverified behavior has failed.
+
+An existing handoff document is DOCUMENTED, not PLANNED; only **new** proposed changes are PLANNED / PROPOSED. A documented coordinator route is not proof of a running orchestrator, but absence of traces alone does not establish that the route is broken or that another coordinator is needed. Preserve genuine security/authorization VERIFY findings where risk warrants them.
 - Use **NOT DOCUMENTED IN INSPECTED SOURCES** when inspected material lacks a rule; use **NOT ASSESSED** for inaccessible targets. Missing documentation alone does not prove a runtime defect.
 - Explain important findings as: **what exists → why it matters → what is worth checking or changing**. Use clear junior-friendly language and distinguish facts from proposals.
 - Preserve legitimate shared context. Two skills reading the same input is not automatically duplicated decision ownership.
@@ -58,7 +67,7 @@ Read and follow the shared [Senior Engineer → Junior Developer Communication G
 
 **Critical boundaries:** Q-05 inventories currently documented contracts/gaps, but never drafts Stage 3 interface, invariant or failure contracts. Q-07 does not treat written permission claims as enforced host/tool permissions. Q-09 distinguishes defined eval cases from actual executed results, and this skill **does not run evaluations or profile traces**.
 
-**Stage handoffs:** In Section 7, list grounded **Contract design questions — Stage 3** and optional **Validation candidates — Stage 5 (PROPOSED, NOT EXECUTED)**. Candidate checks may say Given / When / Then and what output or trace would establish success, dependent on human approval and authorized execution; do not claim READY TO TEST, TESTED, or PASS. Keep design/implementation and validation in their separate stages.
+**Stage handoffs:** In Section 7, list grounded Stage 3 contract design questions and justified Stage 5 validation candidates (PROPOSED, NOT EXECUTED). A candidate requires a material finding, explicit assurance request or relevant unresolved decision; **not merely the absence of traces for a clearly documented handoff**. Explain the future Given / When / Then evidence without claiming READY TO TEST, TESTED or PASS.
 
 **Incremental learning:** Add future conference or research topics to the optional lenses reference, with named source, applicability, evidence needed and C/Q mapping. Speaker takeaways are not automatically AAIF requirements or proof that a skill works.
 
@@ -84,7 +93,7 @@ Immediately **after the Primary table**, expand its material findings in short v
 
 Each field must be on **its own Markdown bullet line**, outside a pipe table. Use the basic **Finding, Evidence, Assessment, Why, Recommendation** fields for material findings; append Current wording, Concern, Recommended wording — PROPOSED only for meaningful instruction ambiguity. Routine C-rows need no extra blocks. KEEP may justify no change.
 
-**Assessment labels:** KEEP = preserve supported behavior; CLARIFY = remove ambiguous wording or ownership; REVISE = reconsider a documented conflict; ADD = propose a source-backed missing responsibility; VERIFY = gather missing evidence before deciding. Evidence statuses DOCUMENTED / OBSERVED / INFERRED / UNVERIFIED / NOT ASSESSED are different from assessments, priority, and human approval. A quote is DOCUMENTED when inspected; its possible effect is INFERRED without runtime proof. Do not invent sources or claim implementation.
+**Assessment labels:** KEEP = preserve supported behavior; CLARIFY = remove ambiguous wording or ownership; REVISE = reconsider a documented conflict; ADD = propose a source-backed missing responsibility; VERIFY = gather missing evidence **only when materially justified** by an explicit runtime claim, user-requested assurance or consequential risk. Evidence status is independent of assessment, priority and approval. Do not automatically turn ordinary UNVERIFIED execution into an F-xx VERIFY.
 
 **Traceability:** Assign F-01, F-02, ... in consideration order and skill order; retain stable IDs on revisions for unchanged findings. Put the short F-xx pointer in the appropriate C1–C6 table cell, and repeat that ID as the vertical block heading just below the relevant table. A cross-related row can say `Related: F-xx (Cx)` without copying the explanation. Step 4 consolidates actionable items by F-xx, with priority, instead of repeating the text.
 
@@ -104,7 +113,7 @@ Assess the same **six considerations**, in this order, for each accessible targe
 
 **Supporting — identify issues; defer design:**
 
-4. **Handoffs:** Documented/implicit producer-consumer relationships; missing or repeated information.
+4. **Handoffs:** Documented/implicit producer-consumer relationships; missing or repeated information. Do not call unavailable execution traces a handoff defect by default.
 5. **Boundaries:** Unclear owners, human approval/authorization expectations, trust/security limits and responsibility leakage.
 6. **Feedback:** When work returns for clarification or revision; whether rework ownership is clear.
 
@@ -118,7 +127,7 @@ Within each C1–C6 row, include only a short observation and any **F-xx · KEEP
 - **Boundaries:** Document authority to edit files, publish results, make decisions, or invoke other skills. A documented restriction is not proof of runtime enforcement.
 - **Feedback:** Propose returning findings or unresolved questions to the responsible skill's owner or human reviewer; do not silently modify the other skill's artifacts.
 
-**Stage 2 planning status — not integrated:** Treat optional handoff wording as a **proposed direction for future integration**, not a live integration. The purpose is to leave a clear record for the reviewer and for Stage 3: what the two skills might exchange, each skill's ownership and standalone path, and what still needs to be designed or approved. Explicitly label this **PLANNED / PROPOSED — NOT IMPLEMENTED, NOT CONTRACTED, NOT VERIFIED**. Do not assert the other skill can be invoked, that an optional handoff reference exists, or that an end-to-end sequence works unless directly supported by evidence.
+**Stage 2 evidence states — documented vs proposed:** Existing inspected handoff files or instructions are DOCUMENTED, not PLANNED. New proposed integration changes are PLANNED / PROPOSED — NOT IMPLEMENTED or CONTRACTED. Runtime execution without traces remains NOT VERIFIED, but this expected limit is not a standalone F-xx finding. Document the actual optional context, independent owners and human review; never imply an automatic execution engine solely from instructions.
 
 **Important:** This is a **recommendation for documentation**, not an automatic change to target skills. Do not presume standalone use already works if a skill currently documents a required dependency, and do not rewrite a truly mandatory safety or data prerequisite as optional. Report the actual documented dependency and mark any independence proposal as conditional on human design review. Do not manufacture an optional handoff when the skills are unrelated. A feedback or security issue may need controls beyond explanatory wording; identify those limits.
 
@@ -176,7 +185,7 @@ If two or more independently usable skills have a **material combined-workflow p
 Use a small decision rule, backed by evidence:
 1. **NOT NEEDED:** A short optional handoff in each `SKILL.md`, existing reference guidance, or copyable next-action prompts are sufficient. Recommend the simpler approach; do not add a skill.
 2. **OPTIONAL COORDINATOR RECOMMENDED:** A real combined user goal or documented workflow requires repeated choice of starting point, sequencing across skills, preservation of IDs/revisions/sources/questions, explicit human review of proposed changes, or a return path that is awkward or error-prone to manage manually. Explain the specific coordination burden and why existing handoff documentation alone is insufficient.
-3. **DEFER / UNVERIFIED:** The need for orchestration, available harness capabilities, authority, or current execution evidence is unknown. Propose what to verify before choosing a coordinator.
+3. **DEFER / UNVERIFIED:** A material coordination need, authorization, or applicable host capability is unresolved. Name the specific decision or evidence needed. **Missing traces alone are not a coordination problem or a generic F-xx VERIFY.**
 
 When recommending one, include a **brief proposed responsibility boundary**, not a complete coordinator implementation:
 
@@ -184,7 +193,7 @@ When recommending one, include a **brief proposed responsibility boundary**, not
 - **What it owns:** Decide where the combined flow starts based on supplied context; present the next skill/action; coordinate the intended order; preserve source links, document/version identifiers, requirement IDs, findings and open questions; route proposed changes back to the responsible owner; surface human approval stops; summarize results and unresolved items.
 - **What it does NOT own:** Product/technical decisions belonging to component skills, rewriting an upstream artifact without owner authorization, bypassing a user's explicit choice or approval, silently making a skill mandatory, or claiming runtime/tool/permission enforcement.
 - **Suggested pattern:** Prefer **routing followed by a short sequential workflow** for a simple PRD → refinement → owner-reviewed update loop. Consider a worker-agent supervisor only if independently justified; reserve a state machine or durable executor for real multi-session recovery and retry requirements. Do not prescribe an orchestrator framework in this audit.
-- **Execution reality:** A coordinator `SKILL.md` is a set of instructions, not proof of automatic dispatch, durability or multi-agent support. The host may need explicit user commands, copyable next-action prompts or separately authorized tool calls. Mark runtime claims **NOT VERIFIED** without traces.
+- **Execution reality:** A coordinator `SKILL.md` contains instructions, not proof of automatic dispatch, durability or multi-agent support. Mark unsupported execution claims NOT VERIFIED; ordinary absence of traces belongs in evidence limits, not a generic F-xx VERIFY or coordinator recommendation.
 - **Alternative and trade-off:** Compare with manual, user-driven invocation using copyable prompts and optional handoff files. State the extra maintenance and possible misrouting risk of adding another skill. Keep the smallest adequate design.
 
 In the audit report's **Section 5 — Prioritized Recommendations**, add **Optional coordinator assessment** when a multi-skill coordination concern is material. Give **Decision (NOT NEEDED / OPTIONAL COORDINATOR RECOMMENDED / DEFER)**, **Evidence**, **Problem**, **Minimal proposed responsibilities**, **Alternative**, **Trade-off**, **Independent use preserved**, and **Human confirmation**. If not recommended, a single concise reason is enough; do not generate an unnecessary proposed coordinator skeleton. Keep any formal dispatch/routing contract, schemas, enforcement, and implementation in later approved stages. **Never create a coordinator during the audit.**

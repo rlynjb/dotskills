@@ -89,6 +89,12 @@ Examine **six considerations** for each skill.
 
 For considerations 4–6, note observations and potential problems **without** designing detailed interfaces, schemas, runtime controls, retry policies, or feedback orchestration.
 
+**Runtime evidence limit versus actionable VERIFY (especially C4):**
+- Clear documented optional handoffs without inspected traces should be summarized as DOCUMENTED, with execution NOT VERIFIED once in Executive Summary evidence limits. **Do not create generic F-xx VERIFY merely because the written handoff was not observed running.**
+- For actual ambiguous wording or ownership use CLARIFY/REVISE with source evidence.
+- Use VERIFY only for an unsupported explicit automatic dispatch/runtime guarantee, an explicit user request for execution assurance, or a concrete consequential authorization/security/reliability risk; name the specific trace, host permission evidence or authorized future test needed. Unverified is not a demonstrated failure.
+- Existing handoff files are DOCUMENTED, not PLANNED. Missing traces do not prove an orchestrator is absent or needed.
+
 **Per-finding engineering assessment — separate lines, not inline table fields:**
 - Keep both C1–C3 Primary and C4–C6 Supporting tables **compact**. Each cell gets a brief observation plus F-xx/assessment pointer when meaningful.
 - **Immediately after the table containing a material finding**, provide an `**F-xx (Cx) — Skill · Assessment**` heading and then each relevant field on **its own Markdown bullet line**: `- **Finding:**`, `- **Evidence:**`, `- **Assessment:**`, `- **Why:**`, `- **Recommendation:**`.
@@ -153,7 +159,7 @@ For each recommendation, provide:
 - **Human confirmation required:** Yes/no, with the decision owner if known.
 - **Optional connection wording, when relevant:** Proposed documentation for **each affected skill** under Standalone use, Optional handoff, Responsibilities, Boundaries, Feedback—preserving standalone inputs, outputs and workflow and requiring no automatic cross-skill invocation.
 - **Documentation placement and planning status, per skill:** Recommend a brief proposed `Optional Handoffs` note in `SKILL.md` (not an implemented integration); optionally identify a local, directional `references/<source>-to-<destination>-handoff.md` as **PLANNED — NOT CREATED** if substantial details justify it. Explain the trade-off and carry open contracts/approval/feedback items to Stage 3 without creating files.
-- **Optional coordinator decision for combined-workflow issues:** Check whether an explicitly invoked routing/sequencing skill is worth investigating, after considering documentation and manual next-action prompts. State NOT NEEDED, OPTIONAL COORDINATOR RECOMMENDED, or DEFER/UNVERIFIED, with evidence, minimal responsibilities, alternative, trade-off, and human confirmation. Do not create or require it.
+- **Optional coordinator decision for combined-workflow issues:** Recommend an optional coordinator only for an evidenced material coordination burden after evaluating simpler handoffs and manual prompts. State NOT NEEDED, OPTIONAL COORDINATOR RECOMMENDED or DEFER/UNVERIFIED with evidence and human confirmation. **Missing traces alone do not establish a coordination gap or generic VERIFY.**
 
 Keep recommendations separate from confirmed findings. Do not implement them.
 
@@ -184,7 +190,7 @@ Keep recommendations separate from confirmed findings. Do not implement them.
 - **Full/subset Q review requested:** Use `quality-review-questions.md`. Assess ten Qs in canonical order or only requested IDs. After the Supporting table and its F-xx notes, show `Quality review coverage (optional)` as brief vertical lines with statuses, evidence and F-xx/Cx references. Do not generate duplicate findings.
 - **Lenses requested:** Use `review-lenses.md` to ask topic-specific questions mapped to existing considerations. A lens-only review does not trigger the ten-question coverage checklist.
 - **Evidence safeguards:** Q-05 identifies current contract gaps, not finalized new contracts. Q-07 separates documented permissions from enforced permissions. Q-09 separates existing eval definitions from run evidence.
-- **Section 7:** Record supported Stage 3 contract-design questions and up to three Stage 5 Given/When/Then verification candidates when useful; label them PROPOSED / NOT EXECUTED. Do not run tests, claim READY TO TEST, or approve a design.
+- **Section 7:** Record supported Stage 3 contract-design questions and up to three Stage 5 Given/When/Then verification candidates when materially justified or explicitly requested; label them PROPOSED / NOT EXECUTED. Do not add candidates merely for ordinary unavailable traces or claim READY TO TEST.
 
 ### Evidence & Quality Requirements
 

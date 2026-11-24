@@ -38,6 +38,12 @@ review_lenses: [context-engineering, evaluation-and-observability]
 Keep the core report layout; do not edit source files or run evaluations.
 ```
 
+## Handoffs: evidence limitations versus findings
+
+Stage 2 distinguishes documented handoff instructions from observed execution. **Absent traces alone are a scope limitation**, not a defect, mandatory F-xx VERIFY, or reason to add a coordinator. Mention the limitation once in the Executive Summary.
+
+Use KEEP for a meaningful, clearly documented safeguard; CLARIFY/REVISE for actual wording or responsibility ambiguity; VERIFY for unsupported explicit automatic-execution claims, user-requested assurance or a concrete material security/approval/reliability risk. Any VERIFY should identify specific evidence to inspect later under authorization, not claim that execution failed.
+
 ## Example invocation
 
 ```text

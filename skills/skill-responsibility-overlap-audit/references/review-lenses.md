@@ -43,7 +43,7 @@ Optional, expandable quality-review questions for `skill-responsibility-overlap-
 - **Inspect:** Eval definitions, trace/run outputs where supplied, judge criteria, regression history and version/host details.
 - **Map to:** C3 Outputs; C6 Feedback. Q-09.
 - **Conference takeaways:** Kurtis Van Gent and Haoyu Wang's EvalBench session; Joah Gerstenberg, “Cut the Noise: Building a Code Reviewer You Can Trust,” `cut-the-noise-joah-gerstenberg-agntcon-2026-1.pdf` (synthesis cites pp. 11–14, 21–25, emphasizing human review usefulness and precision).
-- **Boundary:** Suggest candidate checks, but never execute or claim a passing evaluation in this audit.
+- **Boundary:** Suggest verification candidates only for material unsupported runtime claims, explicit requests for assurance or concrete security/reliability concerns. Ordinary unavailable traces are a scope limitation, not an automatic F-xx VERIFY. Never execute or claim a passing evaluation in this audit.
 
 ## Lens: lifecycle-and-portability
 
