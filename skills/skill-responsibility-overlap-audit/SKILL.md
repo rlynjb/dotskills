@@ -50,7 +50,7 @@ An existing handoff document is DOCUMENTED, not PLANNED; only **new** proposed c
 - Preserve legitimate shared context. Two skills reading the same input is not automatically duplicated decision ownership.
 - Do not silently promote a human review recommendation to an approved design.
 
-## Optional quality-review questions and conference lenses
+## Optional quality-review questions, conference lenses and industry frameworks
 
 **Default: core investigation only.** The six considerations (C1–C6), four investigation steps, seven report headings, compact Primary/Supporting tables and vertical F-xx findings do not change. Do not load optional reference files or print Q coverage during an ordinary responsibility/overlap audit.
 
@@ -60,6 +60,8 @@ An existing handoff document is DOCUMENTED, not PLANNED; only **new** proposed c
 - `quality_questions: Q-06,Q-07` or an explicit subset request: check **only** the selected Q IDs in canonical order.
 - `review_lenses: [context-engineering, security-and-trust]` or another named lens: consult [review-lenses.md](references/review-lenses.md). `review_lenses: relevant` means choose only lenses justified by the actual inspected skill and explain why they apply. A lens request alone **does not** turn on all Q questions.
 - When Q and lenses are both requested, **deduplicate** the same concern into one F-xx finding and cross-reference Q-xx/lens names. Never create two findings for the same source problem merely because two review perspectives identified it.
+
+**Independent industry-framework option (off by default):** `industry_framework_review: relevant` selects only context-supported frameworks; `industry_framework_review: on` briefly considers all five, noting inapplicable frameworks; `industry_frameworks: [aws-agentic-ai-lens, cmu-sei-atam]` explicitly selects only those IDs and takes precedence. Read [industry-framework-review-lenses.md](references/industry-framework-review-lenses.md) only when this mode is requested. It does **not** turn on Q review or conference review, and it must not generate generic findings merely for coverage.
 
 **Preserve the working layout:** Place a material quality/lens issue in the relevant C1–C6 table cell as a **short F-xx pointer**. Explain it using the usual Finding / Evidence / Assessment / Why / Recommendation vertical bullets directly after the corresponding Primary or Supporting table. Add Current wording / Concern / Recommended wording — PROPOSED only when real source wording is consequential. No giant cells, HTML line breaks, new consideration, eighth numbered report section, or mandatory extra fields.
 
@@ -80,6 +82,13 @@ An existing handoff document is DOCUMENTED, not PLANNED; only **new** proposed c
 **Conference Sources & Further Reading (optional; required when lenses run):** Immediately after **Review Lens Coverage** inside report Section 2, include a Markdown table: **Lens / Topic | Conference session & speaker | PDF | YouTube**. Choose 1–3 relevant source talks per selected lens from [review-lenses.md](references/review-lenses.md), consolidate repeat sessions, and give topic, exact session title, speaker and a **direct saved PDF** link. Add YouTube **only if matched in the user's title/speaker video index**; otherwise show `—`. Include these links in the generated report even when a lens produces no material F-xx finding. If `review_lenses: relevant` selects no lenses, explain and omit both empty tables. Omit this table when lenses are off.
 
 **Source distinction:** Inspected skill files and supplied real runtime evidence support F-xx findings; conference PDFs/videos support **review questions and further learning**, not proof that a skill enforces security, dispatched another skill or passed evaluation. Speaker takeaways are not official AAIF/MCP requirements. Matched video links were read from the user's index, not independently watched.
+
+**Industry Framework Review Coverage (optional):** When industry mode is explicitly requested, append two compact views **inside Section 2 after** core C1–C6/F-xx notes, optional Quality Review Coverage, and optional conference Review Lens Coverage + Conference Sources & Further Reading (whichever were enabled).
+
+- **Coverage:** `Industry Framework Review Coverage (optional)` is a Markdown comparison table with first column `Framework & investigation questions` containing each **selected framework name, full adapted Stage 2 questions and C/Q mapping** from [industry-framework-review-lenses.md](references/industry-framework-review-lenses.md); remaining columns compare one or two real target skills. For 3+ skills use groups of at most two skill columns, repeating selected rows. Each cell states `PRESENT / PARTIAL / MISSING / NOT VERIFIED / NOT APPLICABLE` with a **direct inspected skill source** or evidence gap and **existing F-xx (Cx)** only if a material finding exists. Full reasoning remains once in the Cx vertical finding, not the table.
+- **Official references:** Immediately below coverage, include `Official Industry Framework Sources & Further Reading (optional)` with `Framework / type | Topic or official section | Publisher & version | Official URL`. Use real links from the new reference for **only selected** frameworks. Distinguish formal ISO/IEC product-quality standard, AWS vendor guidance, voluntary NIST AI RMF, CMU SEI's architecture-analysis method and community OWASP security guidance.
+- **No certification:** This comparison is a **read-only Stage 2 investigation**, not ISO certification, NIST compliance, an AWS Well-Architected assessment, a completed ATAM evaluation, an OWASP vulnerability test, implementation or Stage 5 validation. Industry publications justify review questions; only inspected target files and real supplied runs justify findings. Never invent measured results, mandatory controls or a new F/IF ID scheme.
+- **Independent options:** Industry mode alone must not activate Q-01–Q-10 or the conference lenses. If all are enabled, output order is `Core C1–C6 → Q → Conference lenses and sources → Industry framework coverage and official sources` inside the original seven numbered sections. Deduplicate overlapping concerns to **one** source-backed F-xx (Cx).
 
 **Critical boundaries:** Q-05 inventories currently documented contracts/gaps, but never drafts Stage 3 interface, invariant or failure contracts. Q-07 does not treat written permission claims as enforced host/tool permissions. Q-09 distinguishes defined eval cases from actual executed results, and this skill **does not run evaluations or profile traces**.
 
@@ -219,7 +228,7 @@ In the audit report's **Section 5 — Prioritized Recommendations**, add **Optio
 Use these seven headings, in order:
 
 1. **Executive Summary** — scope, skill count, top findings, evidence limits.
-2. **Individual Skill Assessments** — six considerations for each selected skill; optional Quality Review Coverage, Review Lens Coverage and Conference Sources & Further Reading all remain inside Section 2.
+2. **Individual Skill Assessments** — six considerations per target; optional Quality Review Coverage, Conference Review Lens Coverage with source readings, and Industry Framework Review Coverage with official publisher references remain inside Section 2.
 3. **Cross-Skill Responsibility & Overlap Findings** — classifications and effects.
 4. **Missing Responsibilities & Gaps** — including uncertainty.
 5. **Prioritized Recommendations** — High / Medium / Low, proposals only.
@@ -232,7 +241,7 @@ Use these seven headings, in order:
 - **Primary:** `Consideration | Skill A | Skill B` with three main rows: C1 Inputs, C2 Responsibilities, C3 Outputs.
 - **Supporting:** identical skill headers and order, with three main rows: C4 Handoffs, C5 Boundaries, C6 Feedback.
 - **All table cells:** one **short observation** per skill, with `F-xx · Assessment` and a short direct source label where relevant. **Do not print Finding/Evidence/Why/Recommendation or any exact wording quote in full inside table cells.**
-- **Immediately after each C1–C6 table:** give detailed material F-xx findings on separate bullet lines, never inside giant cells or detached findings tables. After Supporting findings, add Quality Review Coverage only when requested, then Review Lens Coverage and Conference Sources & Further Reading when lenses are requested, preserving existing F-xx (Cx) links.
+- **Immediately after each C1–C6 table:** put detailed material F-xx notes on separate bullet lines. After Supporting findings, add only selected optional views: Quality Review Coverage, Conference Review Lens Coverage with source readings, then Industry Framework Review Coverage with official sources. Reuse F-xx (Cx); no eighth report section or extra findings table.
 
 **Layout example (not actual findings):**
 

@@ -30,6 +30,23 @@ The **default** remains the established six-consideration, four-step, seven-sect
 - **Conference sources:** Lens-enabled reports now include a **Conference Sources & Further Reading** table right after Review Lens Coverage, with session topic, title, speaker, direct PDF link and matched YouTube link when available. These readings explain the review lenses, not the audited skill's observed behavior.
 - **Both:** Within Section 2, show C1–C6 findings, optional Quality Review Coverage, optional Review Lens Coverage, and its conference source table in that order. Reuse F-xx (Cx) and never infer runtime enforcement or passing evals from instructions alone.
 
+**Industry framework review (third optional perspective):** [Industry Framework Review Lenses](references/industry-framework-review-lenses.md) supplements the core audit with **ISO/IEC 25010:2023**, **AWS Well-Architected Agentic AI Lens**, **NIST AI RMF**, **CMU SEI ATAM**, and **OWASP Agentic Top 10 (2026)**. These are different kinds of industry references, not five formal certification standards.
+
+- `industry_framework_review: relevant` — select the smallest source-justified set and explain selection.
+- `industry_framework_review: on` — consider all five briefly, marking inapplicable categories.
+- `industry_frameworks: [aws-agentic-ai-lens, cmu-sei-atam]` — select only the named framework IDs.
+- Without this parameter the new reference and tables stay **off**; it does not trigger Q or conference review automatically.
+
+**Report output:** Section 2 includes **Industry Framework Review Coverage** after the other optional reviews if requested, then **Official Industry Framework Sources & Further Reading** with type, publisher/version, topic and direct official links. Issues point back to existing **F-xx (Cx)** source-backed findings; no extra certification verdict, test run or Stage 3 contract is implied.
+
+```text
+Use skill-responsibility-overlap-audit on:
+- PRD Development
+- Refine Requirements
+
+industry_framework_review: relevant
+```
+
 **Stage 3 / Stage 5 preparation:** Section 7 can include brief contract questions and proposed `Given / When / Then` validation candidates, explicitly **NOT EXECUTED**. Designing contracts and running evals remain separate activities.
 
 ```text
@@ -120,6 +137,9 @@ The smaller scope is deliberate: first investigate **who owns what**, then addre
 
 - [SKILL.md](SKILL.md) — installable skill instructions.
 - [Report template](references/report-template.md) — aligned comparison layout.
+- [Quality Review Questions](references/quality-review-questions.md) — optional Q-01–Q-10.
+- [Conference Review Lenses](references/review-lenses.md) — optional AGNTCon/MCPCon perspectives.
+- [Industry Framework Review Lenses](references/industry-framework-review-lenses.md) — optional industry framework analysis and official sources.
 - [Evaluation cases](evals/evals.json) — static expected-behavior cases; not evidence of an evaluation run.
 - [Copyable original prompt](../../docs/skill-responsibility-overlap-audit-prompt.md) — standalone non-installable prompt.
 
