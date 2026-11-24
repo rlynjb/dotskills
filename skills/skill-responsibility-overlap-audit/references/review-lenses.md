@@ -1,73 +1,92 @@
-# Conference-Derived Review Lenses
+# Conference-Derived Review Lenses — Stage 2
 
-Optional, expandable quality-review questions for `skill-responsibility-overlap-audit`. These are **suggestions inspired by the user's saved AGNTCon/MCPCon 2026 conference synthesis**, not official AAIF requirements, security certifications or evidence that a skill ran correctly.
+Optional, expandable **investigation perspectives** for `skill-responsibility-overlap-audit`, not another skill or a new required report dimension. These are speaker takeaways from the user's **AGNTCon/MCPCon North America 2026** session PDFs, **not official AAIF/MCP requirements or proof of runtime behavior**.
 
-**Immediate source:** `collaborative-agent-skill-workflow.md` (saved November 1, 2026), section “Conference evidence behind the process.” The file is in the user's ChatGPT Library and is **not automatically included in a standalone coding-agent distribution**. Session references and slide-page pointers below come from that synthesis; check original slides if independent verification is needed.
+**Source provenance:** The user’s saved Google Drive session-note folder contains the slide PDFs linked below. The original `collaborative-agent-skill-workflow.md` conference synthesis supplied the earlier lens mapping; the listed PDF content was inspected again in November 2026. Matching YouTube links come from the saved `AGNTCon_MCPCon_2026_YouTube_PDF_Map.xlsx` title/speaker match, and were **not independently watched or checked for ongoing playback**. If no video is matched, provide PDF only; do not invent video URLs.
 
 ## How to apply
 
-- Load only on explicit request for one or more named lenses, or for **relevant lenses** when their applicability is established by inspected skill content. Default: none.
-- Keep C1–C6 tables unchanged; route each material lens concern to its most relevant Cx and an existing-form F-xx vertical finding. When lenses are requested, add a separate **Review Lens Coverage (optional)** comparison table within report Section 2, after Supporting findings or after Quality Review Coverage when both are requested. It is a diagnostic index, not a new numbered section, Q score or required finding.
-- Include only named lenses, or source-supported applicable lenses when `review_lenses: relevant` and state brief selection reasons. The lens table's first column contains the exact source-defined Review questions and C/Q mapping; skill columns provide short evidence-backed diagnoses and **F-xx (Cx)** only when there is a material existing finding. For three or more skills compare groups of at most two skill columns; named but inapplicable lenses get NOT APPLICABLE with reasons.
-- If Q-01–Q-10 review is also requested, consolidate overlapping Q and lens concerns into the **same F-xx (Cx)**, with Quality Review Coverage first and Review Lens Coverage second. Lens-only does not trigger Q coverage. Do not duplicate full findings or invent F-xx purely to populate cells.
-- Cite the actual audited skill's evidence, not just a conference takeaway. Distinguish DOCUMENTED from OBSERVED and INFERRED. Never claim a prompt-only permission is enforced.
+- **Default off.** Load only for an explicit named `review_lenses: [context-engineering, security-and-trust]` or `review_lenses: relevant` request. In `relevant` mode choose only lenses justified by inspected skill material and briefly explain applicability; if none apply, explain and omit empty tables.
+- Preserve **C1–C6**, the **four Stage 2 investigation steps** and **seven report sections**. Put any material issue in the relevant Cx table cell as an **F-xx** pointer and explain it once in its existing vertical Finding/Evidence/Assessment/Why/Recommendation note. A lens is a source of investigation questions, not a second set of numbered findings.
+- Within **Section 2**, place optional **Quality Review Coverage** first if Q-01–Q-10 was enabled, then **Review Lens Coverage (optional)**. Its first column uses the selected lens name, full `Review questions`, and `Map to` C/Q references; skill columns have short evidence-backed observations and existing **F-xx (Cx)** only when genuinely material. With 3+ skills use at most two skill columns per lens table and repeat selected lens rows.
+- **Immediately after lens coverage**, output **Conference Sources & Further Reading (optional)**: a separate compact Markdown table with **Lens / Topic | Session title & speaker | PDF | YouTube (when matched)**. Include the most relevant 1–3 source presentations **for each selected lens**, consolidate repeated sessions, and include direct links from the entries below. Even a lens with no material F-xx can provide reading if it was explicitly selected. Do not print this table for a default or Q-only run.
+- **Source separation:** The inspected target skill, its cited files and supplied execution traces are evidence for F-xx. Conference sessions are *learning/rationale sources*, never evidence that a target skill enforces security, has a runtime failure, or passes an evaluation. Conference links must appear in the generated report, not merely in this reference.
+- **Q mapping:** The referenced Q-01–Q-10 IDs describe related **optional** quality questions, **not questions separately assessed** in a lens-only run. Do not silently activate Q review or turn missing execution traces into generic VERIFY findings.
+- **Boundary:** This Stage 2 audit investigates current responsibilities and makes human-reviewed proposals. It does not finalize input/output, behavior, approval, failure or orchestration contracts (Stage 3), edit skills, implement a coordinator or run tests. Preserve independent starting paths where actually documented; do not invent optional handoffs.
 
 ## Lens: context-engineering
 
-- **Applicable to:** Skills accepting retrieved documents, tickets, repository context, memory, or cross-skill artifacts.
-- **Review questions:** Are provenance, revisions, evidence gaps and contradictions preserved? Is the source of truth identified? Are instructions found inside untrusted documents treated as data rather than authority?
-- **Inspect:** Input evidence rules, source links, freshness/contradiction handling and any provided context traces.
-- **Map to:** C1 Inputs; C5 Boundaries. Q-03, Q-06.
-- **Conference takeaway:** Shub Argha, “Trustworthy Context Is Untrusted by Default,” `trustworthy-context-is-untrusted-by-default.pdf` (synthesis cites pp. 11–16, 21–22). Unnati Mishra's AGENTS.md talk also addresses stale instructions.
+- **Applicable to:** Skills accepting retrieved documents, tickets, repository context, memory, or other skills' artifacts.
+- **Review questions:** Are provenance, revisions, evidence gaps and contradictions preserved? Is the source of truth identified? Are instructions found inside untrusted documents treated as data rather than authority? Does a consumer treat another skill's output as evidence rather than silently inheriting its decision authority?
+- **Targeted follow-ups:** Is a handoff passing more context than needed? Is shared input correctly distinguished from duplicated responsibility? These are questions to investigate, not a requirement to mandate a new context schema.
+- **Inspect:** Input and handoff instructions, producer/consumer responsibilities, source links or revisions, permission language and supplied traces (if available).
+- **Map to:** C1 Inputs; C4 Handoffs; C5 Boundaries. Q-03, Q-06.
+- **Stage 2 boundary:** Do not claim a context-security failure or costly handoff from an absent run trace; do not define a new interface contract in Stage 2.
+- **Conference sessions & reading:
+  - **Topic:** Provenance and untrusted stored context. **Session:** Trustworthy Context Is Untrusted by Default. **Speaker:** Shub Argha. **PDF:** [Saved presentation](https://drive.google.com/file/d/19aoCF7WZ2GfVi7vb5ISZHIPKkQOtjjz1/view). **YouTube:** No matched video link in saved index.
+  - **Topic:** Narrow, explicit handoffs; separate context from authority. **Session:** Don't Share the Database: Interface Contracts Between Isolated AI Agents. **Speaker:** Martin Bliss. **PDF:** [Saved presentation](https://drive.google.com/file/d/1E4J2rfYLoN-H9wnK_K3f6bGshiwmDUmo/view). **YouTube:** No matched video link in saved index.
+  - **Topic:** Agent-facing interfaces and examples versus excessive instructions. **Session:** Patterns for Shifting from MCP as a Basic API to MCP as Agent Integration Interface. **Speaker:** James Ward and Alexander Ioffe. **PDF:** [Saved presentation](https://drive.google.com/file/d/1a37Vr3kwddeoA-z1rNlsrjUQS-nUHuOZ/view). **YouTube:** [Matched session video](https://www.youtube.com/watch?v=Okw9oLIB-GU).
 
 ## Lens: security-and-trust
 
-- **Applicable to:** Tools, writes, external access, credentials, untrusted text, human approvals or boundary crossings.
-- **Review questions:** What is the real permission boundary? Is least privilege enforced by tool/host/server controls? How does the skill handle untrusted instructions, missing approval and unauthorized effects?
-- **Inspect:** Skill boundaries, tool permissions where accessible, relevant security fixtures and actual supplied traces.
-- **Map to:** C1 Inputs; C5 Boundaries; C6 Feedback. Q-06, Q-07.
-- **Conference takeaways:** Shub Argha's context-trust talk; Michael Larson, “Shipping Agent Skills Safely: CI/CD, Evals, and Guardrails,” `shipping_agent_skills_safely.pdf` (synthesis cites pp. 6–11, including scan/review/sandbox).
+- **Applicable to:** Skills with tool access, delegated work, optional coordinators, writes, external data, credentials, or human approvals.
+- **Review questions:** What is the real permission boundary? Is least privilege enforced by tool/host/server controls? How does the skill handle untrusted instructions, missing approval and unauthorized effects? If one skill or coordinator delegates to another, who authorizes the next action and what authority actually transfers?
+- **Targeted follow-ups:** Look for unintended authority escalation, cross-skill rewriting or publishing, approval treated as implicit, and tool definitions that may drift after approval. A written rule is not proof of actual enforcement.
+- **Inspect:** Documented approval owners and side effects, coordinator/delegation descriptions, available host/tool permissions or manifests, mutable tool references, and real supplied security evidence.
+- **Map to:** C1 Inputs; C4 Handoffs; C5 Boundaries; C6 Feedback. Q-06, Q-07.
+- **Stage 2 boundary:** Report grounded authority ambiguity or risk; do not prescribe OAuth, cryptographic delegation, runtime controls or security implementation in Stage 2.
+- **Conference sessions & reading:
+  - **Topic:** Delegation boundaries, who acts under whose authority. **Session:** When Agents Spawn Agents: Securing Recursive Delegation in Multi-Agent Systems. **Speaker:** Anishma Mavuram. **PDF:** [Saved presentation](https://drive.google.com/file/d/1_jXpA_vFEBAAPYeklZmliAs9jNWZTyWx/view). **YouTube:** [Matched session video](https://www.youtube.com/watch?v=glxs_6J-7sQ).
+  - **Topic:** Mutable tool definitions and renewed approval. **Session:** MCP Rug Pulls in the Wild: Live Attacks and How to Stop Them. **Speaker:** Charit Upadhyay and Advait Patel. **PDF:** [Saved presentation](https://drive.google.com/file/d/1X38wcquvL67JnJm_00zHY0E8rTjyTDrc/view). **YouTube:** [Matched session video](https://www.youtube.com/watch?v=EgkuEPUci24).
+  - **Topic:** Identity and least-privilege authority when agents call tools. **Session:** Stop Running Agents as Service Accounts: User-Scoped Access for Enterprise Tool Calls. **Speaker:** Masato Kozuka. **PDF:** [Saved presentation](https://drive.google.com/file/d/1pFtRiB7w-_B4G10fbOwEZvq5PcAqf80Z/view). **YouTube:** No matched video link in saved index.
 
 ## Lens: reliability-and-workflow
 
-- **Applicable to:** Multi-step skills, handoffs, error states, partial outputs and human escalation.
-- **Review questions:** Are conditions for proceeding, stopping or returning clear? Are failed/missing handoffs surfaced rather than hidden? Does a proposed coordinator actually solve an evidenced coordination issue?
-- **Inspect:** Documented state changes, failure paths, conditional inputs, status outputs and supplied journey traces.
+- **Applicable to:** Skills with multiple steps, optional handoffs, missing inputs, partial results, human escalation or coordinator proposals.
+- **Review questions:** Are conditions for proceeding, stopping or returning clear? Are failed/missing handoffs surfaced rather than hidden? Does a proposed coordinator actually solve an evidenced coordination issue? When a result is incomplete, blocked, pending or needs human input, is the next responsible owner identifiable?
+- **Targeted follow-ups:** Can each skill still start and finish on its own when optional context is unavailable? Does the coordinator own only routing/context continuity, or does it wrongly take over domain decisions? Distinguish a documented optional handoff from an actually implemented dispatch.
+- **Inspect:** Documented steps, handoff clauses, completion/error labels, return/feedback paths, human gates, coordinator responsibilities, and supplied journey traces if available.
 - **Map to:** C2 Responsibilities; C4 Handoffs; C5 Boundaries; C6 Feedback. Q-04, Q-05, Q-08.
-- **Conference takeaway:** Kurtis Van Gent and Haoyu Wang, “Building an Agentic Eval Pipeline: Battle-Tested Lessons with EvalBench,” `mcpcon-na-26-building-an-agentic-eval-pipeline_-battle-tested-lessons-with-evalbench-agntcon-2026.pdf` (synthesis cites pp. 8–12, 15, 18, 20, including critical user journeys).
-- **Boundary:** Identify open questions in Stage 2; contract/failure policy design belongs to Stage 3.
+- **Stage 2 boundary:** Stage 2 identifies missing or conflicting ownership/status evidence. Stage 3 defines the precise error, interface or dispatch contract; Stage 4 implements it.
+- **Conference sessions & reading:
+  - **Topic:** Completion, additional-input, asynchronous and progress states. **Session:** Agentic Messaging Primitives in MCP. **Speaker:** Caitie McCaffrey. **PDF:** [Saved presentation](https://drive.google.com/file/d/1OwyNvZGpIFDnc9KchDq5uER9DpgzLG4g/view). **YouTube:** [Matched session video](https://www.youtube.com/watch?v=iNV5-YkPHW4&t=21711s).
+  - **Topic:** Separate agent reasoning from controlled workflow execution. **Session:** Non-Deterministic Minds, Deterministic Tools. **Speaker:** Adrian Warman. **PDF:** [Saved presentation](https://drive.google.com/file/d/1NNGBWE4u2cm0Ia4qAmUXPonxEKnxTwdf/view). **YouTube:** No matched video link in saved index.
+  - **Topic:** Narrow, explicit handoffs; separate context from authority. **Session:** Don't Share the Database: Interface Contracts Between Isolated AI Agents. **Speaker:** Martin Bliss. **PDF:** [Saved presentation](https://drive.google.com/file/d/1E4J2rfYLoN-H9wnK_K3f6bGshiwmDUmo/view). **YouTube:** No matched video link in saved index.
 
 ## Lens: evaluation-and-observability
 
-- **Applicable to:** Skills claiming reliable results, evaluation coverage, traceability, deployment readiness or measurable cost.
-- **Review questions:** Are critical user journeys, fixtures, baselines and evaluation criteria clear? Are output, trajectory and outcome distinguished? Are eval definitions separated from actual runs, tool traces, token cost and failure evidence?
-- **Inspect:** Eval definitions, trace/run outputs where supplied, judge criteria, regression history and version/host details.
-- **Map to:** C3 Outputs; C6 Feedback. Q-09.
-- **Conference takeaways:** Kurtis Van Gent and Haoyu Wang's EvalBench session; Joah Gerstenberg, “Cut the Noise: Building a Code Reviewer You Can Trust,” `cut-the-noise-joah-gerstenberg-agntcon-2026-1.pdf` (synthesis cites pp. 11–14, 21–25, emphasizing human review usefulness and precision).
-- **Boundary:** Suggest verification candidates only for material unsupported runtime claims, explicit requests for assurance or concrete security/reliability concerns. Ordinary unavailable traces are a scope limitation, not an automatic F-xx VERIFY. Never execute or claim a passing evaluation in this audit.
+- **Applicable to:** Skills claiming reliable outcomes, evaluation coverage, production-readiness, traceability, dispatch correctness or measurable cost; also material multi-skill duplication claims.
+- **Review questions:** Are critical user journeys, fixtures, baselines and evaluation criteria clear? Are output, trajectory and outcome distinguished? Are eval definitions separated from actual runs, tool traces, token cost and failure evidence? Is an apparently redundant skill or additional layer backed by a concrete responsibility or meaningful outcome rather than a speculative cost claim?
+- **Targeted follow-ups:** Are findings material and actionable rather than generic VERIFY noise? Does a supposed token or latency burden have actual evidence, or is it a hypothesis for later measurement? Check whether a specialized skill adds a distinct responsibility before recommending removal.
+- **Inspect:** Existing test definitions versus runs, supplied trajectories and outcome evidence, actual source-based responsibility boundaries, material duplicate behaviors, and recorded review decisions.
+- **Map to:** C2 Responsibilities; C3 Outputs; C6 Feedback. Q-09.
+- **Stage 2 boundary:** Do not run evals, calculate invented scores or mark unseen behavior as failed. Missing execution traces for a documented handoff are ordinarily a scope note; recommend Stage 5 verification only with a material trigger.
+- **Conference sessions & reading:
+  - **Topic:** Critical user journeys and costs of over-broad skills. **Session:** Building an Agentic Eval Pipeline: Battle-Tested Lessons with EvalBench. **Speaker:** Kurtis Van Gent and Haoyu Wang. **PDF:** [Saved presentation](https://drive.google.com/file/d/1us0-hWJPMvH7dw2ZGoCvbRRUtJBFSyBf/view). **YouTube:** No matched video link in saved index.
+  - **Topic:** Finding precision, actionable review outcomes and noise. **Session:** Cut the Noise: Building a Code Reviewer You Can Trust. **Speaker:** Joah Gerstenberg. **PDF:** [Saved presentation](https://drive.google.com/file/d/1_jUfEJLY9lntZOvls2RWl-65oT_te4Zt/view). **YouTube:** No matched video link in saved index.
+  - **Topic:** Tool/skill discovery overhead and mistaken domain routing. **Session:** The MCP Cold-Start Problem: When Your Agent Has 100 Tools and Has to Pick One. **Speaker:** Karthik Karunanithi. **PDF:** [Saved presentation](https://drive.google.com/file/d/1AT1V9r0LR0E8LeXN6A7AOqfNcgwoYjX4/view). **YouTube:** [Matched session video](https://www.youtube.com/watch?v=eB9I4Ixx2wc&t=7652s).
 
 ## Lens: lifecycle-and-portability
 
-- **Applicable to:** Updated, shared, versioned or cross-harness skills.
-- **Review questions:** Is there one current source of truth, with recorded owner/version? Are linked resources present? Are claimed hosts actually tested? Is review, rollback and release evidence available?
-- **Inspect:** SKILL.md, references, commit history, actual host evidence, release notes and CI outcomes if accessible.
-- **Map to:** Cross-cutting C2, C4, C5 as applicable. Q-03, Q-10.
-- **Conference takeaways:** Michael Larson's skill-release talk (version/evaluate/review/release); Unnati Mishra, “AGENTS.md Is the New CONTRIBUTING.md,” `agents.md-is-the-new-contributing.md-2.pdf` (synthesis cites pp. 8–10, 15, 18–20); Chris Knuteson, “Stop Writing Agents, Declare Them,” `declarative-agents-release-story-v2.pdf` (synthesis cites pp. 2, 5, 8, 18).
-- **Boundary:** Passing file-format CI is not proof of cross-host runtime compatibility.
+- **Applicable to:** Shared, updated or versioned skills; monorepos with multiple instruction files; cross-harness or coordinator claims.
+- **Review questions:** Is there one current source of truth, with recorded owner/version? Are linked resources present? Are claimed hosts actually tested? Is review, rollback and release evidence available? Do multiple skills or instruction files repeat conflicting or stale versions of the same boundary rule?
+- **Targeted follow-ups:** Are SKILL.md, AGENTS.md or adapter instructions duplicating authority rather than pointing to one canonical source? Are tool/host assumptions explicitly documented versus verified, especially when versions change?
+- **Inspect:** SKILL.md and linked references, neighboring instruction/adapter files, source-control revisions, documented owners and host/dependency claims, available CI/runtime evidence.
+- **Map to:** Cross-cutting C2 Responsibilities; C4 Handoffs; C5 Boundaries. Q-03, Q-10.
+- **Stage 2 boundary:** File-format checks and successful CI do not prove cross-host runtime compatibility. Recommend the smallest source-of-truth clarification, not an unrequested release system.
+- **Conference sessions & reading:
+  - **Topic:** One source of truth; concise instructions and stale-rule detection. **Session:** AGENTS.md Is the New CONTRIBUTING.md: A Field Report from One Year of Agent-Friendly Monorepos. **Speaker:** Unnati Mishra. **PDF:** [Saved presentation](https://drive.google.com/file/d/1ICV_vH6Q5qAAu-2sodIs03Ffbxv6Tl4P/view). **YouTube:** No matched video link in saved index.
+  - **Topic:** Effective agent definitions, ownership, version and release provenance. **Session:** Stop Writing Agents, Declare Them: Declarative Agent Architecture in Production. **Speaker:** Chris Knuteson. **PDF:** [Saved presentation](https://drive.google.com/file/d/1f9v2ZupSLbcik_AkKJgtfVu9mmVZ5jjI/view). **YouTube:** No matched video link in saved index.
+  - **Topic:** Skill versioning, portability assumptions and review/scan boundaries. **Session:** Shipping Agent Skills Safely: CI/CD, Evals, and Guardrails. **Speaker:** Michael Larson. **PDF:** [Saved presentation](https://drive.google.com/file/d/1eU_vKOAiG-8nZzbYNWaTBZE-TvFxw6j3/view). **YouTube:** No matched video link in saved index.
 
 ## Add future learning without changing the core audit
 
-For a new, sourced review lens, use a short vertical entry:
+Only add a sourced topic when its applicability, Stage 2 question, C/Q relationship and actual evidence needed are clear. Preserve the five optional lenses unless a separate user decision justifies changing them.
 
-- **Name:** Reusable lens title.
-- **When relevant:** Skills/capabilities to which it applies.
-- **Investigation question:** Specific unknown to investigate.
-- **Evidence needed:** Files, traces, permissions or decisions required.
-- **C/Q mapping:** Existing C1–C6 and optionally Q-01–Q-10.
-- **Source:** Speaker, session, slide/document, page/date, link when verified.
-- **Evidence caution:** What cannot be established without actual runtime evidence.
-- **Output:** A normal F-xx finding only when meaningful.
+- **Source fields:** Topic, exact session title, speaker, saved PDF link and matched YouTube link when available; make actual output links direct and readable.
+- **Analysis fields:** Specific review question, what to inspect in the target skill, relevant Cx or Q reference, and what the source cannot establish about the target.
+- **Output:** Normal F-xx only if a meaningful source-backed issue exists; optional Further Reading stays separate from finding evidence.
 
-Do not add a seventh consideration, another default report section, mandatory extra Qs, or an unrequested adapter.
+Never add a seventh consideration, another numbered report section, mandatory extra Qs, an automatic coordinator, security controls or unrequested evaluation.
 
-**Public schedule context:** https://events.linuxfoundation.org/agntcon-mcpcon-north-america/program/schedule/ . This is schedule context, not independent verification of specific deck claims.
+**Session context:** [AGNTCon/MCPCon 2026 saved session folder](https://drive.google.com/drive/folders/1xoTFt4SqFKQjf-rXu1OihsKhg7jAylzN) (source collection, not evidence of session attendance).
