@@ -527,6 +527,161 @@
         "Single source table without duplicate publisher rows per group.",
         "No implementation or evaluation performed."
       ]
+    },
+    {
+      "id": 34,
+      "prompt": "Run Stage 3 on product-framing and evidence-refinement without implementation_alignment_review. Propose a handoff as normal.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Original seven-section integration-design report, IC and D proposals with no post-implementation alignment summary.",
+      "assertions": [
+        "Default design mode remains a four-step, seven-section Stage 3 proposal.",
+        "Does not silently use the separate implementation alignment format.",
+        "Does not edit targets or run evaluations."
+      ]
+    },
+    {
+      "id": 35,
+      "prompt": "implementation_alignment_review: on. Compare the human-approved synthetic IC-01/D-01 v1 against product-framing and the aligned-handoff fixture. Read the actual files; no diff or runtime trace is supplied.",
+      "files": [
+        "evals/files/approved-handoff-contract.md",
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/aligned-handoff/SKILL.md"
+      ],
+      "expected_output": "Five-section read-only alignment report. All material approved guarantees represented in the inspected current source may be ALIGNED — DOCUMENTED SOURCE, with exact IC/D and file evidence; missing diff means the reviewer cannot claim which wording was newly introduced. Runtime dispatch/permission behavior remains NOT VERIFIED.",
+      "assertions": [
+        "Exact human-approved IC-01/D-01 v1 is identified, not conflated with runtime implementation approval.",
+        "ALIGNED means only inspected documentary/source consistency.",
+        "No invented commit SHA, file line number, runtime PASS or automatic dispatcher.",
+        "Five alignment sections, not default seven design sections.",
+        "Proportionate Stage 5 candidates when actual execution guarantees require them."
+      ]
+    },
+    {
+      "id": 36,
+      "prompt": "implementation_alignment_review: on. Check approved IC-01/D-01 v1 against partial-handoff/SKILL.md. Include the specific missing guarantee and smallest next step.",
+      "files": [
+        "evals/files/approved-handoff-contract.md",
+        "evals/files/partial-handoff/SKILL.md"
+      ],
+      "expected_output": "PARTIALLY ALIGNED for source provenance and unresolved-question continuity, with concrete approved clause and inspected target citation; recommends smallest Stage 4 wording correction without rewriting approved IC/D.",
+      "assertions": [
+        "Optional entry and human owner may be ALIGNED independently.",
+        "Missing preservation of source and unresolved questions is not silently marked ALIGNED.",
+        "No forced new design approval for a simple implementation omission.",
+        "No edits or invented executed tests.",
+        "Rerun against same approved design after Stage 4 correction."
+      ]
+    },
+    {
+      "id": 37,
+      "prompt": "implementation_alignment_review: on. Inspect approved IC-01 and D-01 against mismatched-handoff/SKILL.md. Determine routing for mandatory PRD and automated approval.",
+      "files": [
+        "evals/files/approved-handoff-contract.md",
+        "evals/files/mismatched-handoff/SKILL.md"
+      ],
+      "expected_output": "Source-backed MISMATCH for mandatory upstream dependency, claimed automatic dispatch and agent self-approval. Return to Stage 4 to restore approved optional/human boundaries; don't misrepresent documentary dispatch as actual runtime.",
+      "assertions": [
+        "Contradiction is grounded in approved baseline and target source.",
+        "Stage 4 correction recommended to match unchanged approved design.",
+        "If user wants mandatory dispatch instead, route to a separate Stage 3 revised contract/human approval.",
+        "No auto-fixing or test execution.",
+        "No assumption that claimed dispatcher executed."
+      ]
+    },
+    {
+      "id": 38,
+      "prompt": "implementation_alignment_review: on. User says 'approved' but supplies only current evidence-refinement skill instructions and a proposed design with no exact IC-xx and human D-xx approval.",
+      "files": [
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/stage2-audit.md"
+      ],
+      "expected_output": "APPROVED BASELINE NOT VERIFIED, clear missing exact IC/D human signoff and source/version; no false ALIGNED verdict to approved design, optional clearly labeled provisional comment only.",
+      "assertions": [
+        "Proposed audit recommendations are not treated as approved contracts.",
+        "No fabricated D-xx approval, dates, revisions or full compliance.",
+        "No purported approved contract guarantee comparison table.",
+        "Requests approved design source/version before authoritative comparison."
+      ]
+    },
+    {
+      "id": 39,
+      "prompt": "implementation_alignment_review: on. Approved IC-01/D-01 v1 and synthetic human-design-decision record are provided; record D-02 publication authority is not approved. Compare aligned-handoff/SKILL.md and distinguish approval scope.",
+      "files": [
+        "evals/files/approved-handoff-contract.md",
+        "evals/files/human-design-decision.md",
+        "evals/files/aligned-handoff/SKILL.md"
+      ],
+      "expected_output": "Compares only the exact approved IC-01/D-01 baseline. D-02 remains unapproved/conditional; neither source-aligned wording nor a prior human D-01 approval grants publication authority.",
+      "assertions": [
+        "Approval of one D-xx does not automatically approve D-02.",
+        "Human approval applies only to the exact version and terms.",
+        "Source alignment does not grant merge/publish/tool runtime permissions.",
+        "No invented upgraded D-02 status."
+      ]
+    },
+    {
+      "id": 40,
+      "prompt": "implementation_alignment_review: on and quality_review: on and review_lenses: relevant and industry_framework_review: on. Check synthetic approved v1 against current aligned-handoff.",
+      "files": [
+        "evals/files/approved-handoff-contract.md",
+        "evals/files/aligned-handoff/SKILL.md"
+      ],
+      "expected_output": "Alignment-only five-section report with a brief note that CQ/conference/industry design-review flags were not run. No automatic redesign, framework tables or approved contract edits.",
+      "assertions": [
+        "Alignment mode takes precedence over optional design-review flags.",
+        "No CQ table, conference reading table or official framework coverage in alignment mode.",
+        "No unauthorized contract revision or new D-xx approval inferred.",
+        "Clear route for separate design review if desired."
+      ]
+    },
+    {
+      "id": 41,
+      "prompt": "implementation_alignment_review: on. Compare approved v1 against aligned-handoff/SKILL.md. Only current files are provided; user insists this proves Stage 4 implementation happened at a specific commit.",
+      "files": [
+        "evals/files/approved-handoff-contract.md",
+        "evals/files/aligned-handoff/SKILL.md"
+      ],
+      "expected_output": "Source-aligned verdict with explicit caveat that missing base/head/diff cannot establish which code change introduced wording. Does not fabricate the claimed revision or observed tests.",
+      "assertions": [
+        "Differentiate current-document evidence from change-history evidence.",
+        "No fabricated commit SHA, code diff or implementation date.",
+        "Do not downgrade aligned source simply because a trace is absent.",
+        "Stage 5 behavioral verification remains separate."
+      ]
+    },
+    {
+      "id": 42,
+      "prompt": "implementation_alignment_review: on. The inspected source contradicts v1 optional handoff, and the product owner now wants mandatory PRD orchestration instead. Explain which stage handles that change.",
+      "files": [
+        "evals/files/approved-handoff-contract.md",
+        "evals/files/mismatched-handoff/SKILL.md"
+      ],
+      "expected_output": "Record MISMATCH against approved v1, but route desired contract change to separate Stage 3 redesign/new human D-xx approval before Stage 4; do not quietly alter the approved baseline to call current source ALIGNED.",
+      "assertions": [
+        "Approved design version remains immutable for current comparison.",
+        "Change of intended guarantee requires new design decision and approval.",
+        "Does not conflate Stage 4 implementation correction with Stage 3 contract redesign.",
+        "No implementation or runtime testing in alignment pass."
+      ]
+    },
+    {
+      "id": 43,
+      "prompt": "implementation_alignment_review: on. Run a repeated source-alignment check after a Stage 4 fix, comparing approved v1 to aligned-handoff/SKILL.md. Previous partial-handoff version was reviewed but no diff is available now.",
+      "files": [
+        "evals/files/approved-handoff-contract.md",
+        "evals/files/partial-handoff/SKILL.md",
+        "evals/files/aligned-handoff/SKILL.md"
+      ],
+      "expected_output": "Treat aligned-handoff as the current revision, retain approved v1 baseline and note that a true base/head diff is unavailable. Current source may align; previous missing source-continuity clause may be described from the supplied earlier fixture, without claiming tests passed.",
+      "assertions": [
+        "Same approved design baseline for iterative re-review.",
+        "No automatic revision to IC/D or creation of second source-of-truth.",
+        "Current source takes precedence for current alignment; earlier partial state remains historical context.",
+        "Results don't prove runtime dispatch or host permissions."
+      ]
     }
   ]
 }
