@@ -71,7 +71,7 @@ This is **ASCII text**, meant to remain readable directly in chat without render
 
 ## 4. Proposed Integration Contract Cards
 
-Write **one vertical card per material connection**. Don't create one card per category, and don't fill irrelevant fields.
+Write **one vertical card per material connection**. Make each card easy to skim directly in chat: use a clear IC-xx title, short bold field labels and concise bullets; separate adjacent cards with whitespace or a horizontal rule. Use one or two sentences per field where possible, and nested bullets only when distinct items need separation. Preserve material guarantees and evidence; omit irrelevant fields and avoid repeating the same explanation in multiple sections. Don't use a wide table for contract cards or create one card per category.
 
 **IC-01 — [Source skill] → [Target skill]**
 
@@ -86,13 +86,17 @@ Write **one vertical card per material connection**. Don't create one card per c
 - **Trust / approval / permitted effects:** [Who can propose, edit, publish or approve; documented instructions vs runtime enforcement assumptions.]
 - **Observability / compatibility (if relevant):** [Minimum evidence/IDs, optional format revisions and known host assumptions; don't promise unverified functionality.]
 - **Why / trade-off:** [Concrete downstream failure prevented, alternative and cost of extra requirements; link to a material Section 3 pattern only when it affects the guarantee.]
-- **Dependencies:** [Describe each actual prerequisite or unresolved design decision in plain English: what is required or needs deciding, and why it affects this contract. Distinguish required prerequisites from optional context and mark unresolved blockers. For a design decision, include its `D-xx — descriptive title/question` only if the same decision appears in Section 6 and links back to this IC-xx. Never output a bare key. If none are identified, write `None identified`, qualifying material evidence limits.]
+- **Dependencies:** [Describe each actual prerequisite or unresolved design decision in plain English: what is required or needs deciding, and why it affects this contract. Distinguish required prerequisites from optional context and mark unresolved blockers. For each design decision, show `D-xx — descriptive title/question (Section 6)` and a brief **Why it matters** explanation. Use separate nested bullets for multiple dependencies. The same decision must appear in Section 6 and link back to this IC-xx. Never output a bare key. If none are identified, write `None identified`, qualifying material evidence limits.]
 - **Status:** [PROPOSED / CONDITIONAL — NEEDS HUMAN / APPROVED — DESIGN ONLY, according to explicit approval and unresolved required decisions, independently of the dependency description. Never claim implemented or tested.]
 
 **Illustrative excerpt (not a required handoff or fixed decision ID):**
 
-- **Dependencies:** D-01 — Decide whether the forward handoff is optional or required. This determines whether the receiving skill must wait for upstream output or can proceed independently. D-01 must also appear with this title in the Section 6 ledger and identify the affected IC-xx.
-- **Status:** CONDITIONAL — NEEDS HUMAN (if the unresolved decision blocks finalizing the contract).
+- **Dependencies:**
+  - **D-01 — Adopt the optional forward handoff** (Section 6).
+  - **Why it matters:** Determines whether the receiving skill can use upstream output when supplied while retaining its standalone entry path.
+- **Status:** CONDITIONAL — NEEDS HUMAN.
+
+In this example, D-01 is an unresolved decision that blocks finalizing this contract. The actual Section 6 ledger must use the same decision title and identify the affected contract. These explanatory instructions are not part of the generated card.
 
 For cards without identified dependencies, show **Dependencies: None identified** and the independently justified **Status**. Absence of dependencies does not constitute approval. The card must remain understandable without looking up the ledger; Section 6 supplies full decision rationale, alternatives and approval details.
 
