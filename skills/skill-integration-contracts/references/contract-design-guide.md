@@ -4,7 +4,7 @@ This reference supports `skill-integration-contracts`. It is **not** a separate 
 
 ## Optional source alignment check after Stage 4
 
-The skill can be rerun with `implementation_alignment_review: on` to assess **current source-level alignment** with specific, human-approved Stage 3 `IC-xx`/`D-xx` designs after Stage 4 implementation. This is a **separate, read-only mode**, not the normal design pass; see [implementation-alignment-review.md](implementation-alignment-review.md) for approval prerequisites, the four comparison statuses, stage routing and the separate five-section report. Missing runtime traces do not by themselves make aligned documented wording defective. Stage 5 remains responsible for executed verification.
+The skill can be rerun with `implementation_alignment_review: on` for an **adaptive, read-only source review** after Stage 4. Verified approved IC/D terms support Approved Design Alignment; an independent proposal without verified approval supports Provisional Design Alignment; source without independent design supports Source-Based Integration Assessment. Missing approval limits verdicts and validation basis, not the five-section report or justified Stage 5 candidates. See [implementation-alignment-review.md](implementation-alignment-review.md) for mode-specific verdicts and routing. Missing runtime traces alone do not establish a source defect. Stage 5 is separately authorized executed verification; testing documented behavior is not proof of approved-contract compliance.
 
 ## The distinction between Stage 2 and Stage 3
 
