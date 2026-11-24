@@ -26,8 +26,8 @@ It does **not** decide the future architecture, draft contracts, execute skills,
 The **default** remains the established six-consideration, four-step, seven-section audit. It does not load extra questions or generate a new quality checklist.
 
 - **Ten questions:** `quality_review: on` asks Q-01–Q-10, using [quality-review-questions.md](references/quality-review-questions.md); `quality_questions: Q-06,Q-07` reviews only those Qs. Coverage is an optional **side-by-side table** within report Section 2, displaying **every selected question's complete wording**, each skill's status and evidence, and any related F-xx (Cx) findings. Significant questions use the **same** existing F-xx finding format instead of a second findings system.
-- **Conference-derived lenses:** `review_lenses: [context-engineering, security-and-trust]` chooses named perspectives from [review-lenses.md](references/review-lenses.md). A request for “relevant lenses” selects only documented-applicable ones and gives a reason; this does not automatically run all ten Qs.
-- **Both:** Keep issues deduplicated, mapped to C1–C6, and source-backed. Never infer actual tool permission enforcement or a passing eval from instructions or test definitions.
+- **Conference-derived lenses:** Use `review_lenses: [context-engineering, security-and-trust]` or `review_lenses: relevant`. Named lenses or source-supported relevant lenses appear in a new **Review Lens Coverage** comparison table within Section 2, with the source's diagnostic questions, C/Q mappings, per-skill evidence, and any existing **F-xx (Cx)** findings. This does not turn on Q-01–Q-10 automatically.
+- **Both:** Within Section 2, show C1–C6 first, then **Quality Review Coverage**, then **Review Lens Coverage**, all linked to the same existing material F-xx (Cx) notes. Never infer enforced permissions or a passing eval from instructions alone.
 
 **Stage 3 / Stage 5 preparation:** Section 7 can include brief contract questions and proposed `Given / When / Then` validation candidates, explicitly **NOT EXECUTED**. Designing contracts and running evals remain separate activities.
 

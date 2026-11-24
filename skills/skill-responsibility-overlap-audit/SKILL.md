@@ -69,6 +69,14 @@ An existing handoff document is DOCUMENTED, not PLANNED; only **new** proposed c
 
 **Cross-references:** Map any material Q concern back to the existing C1–C6 row and F-xx vertical note. Do not generate a second F-xx for the same issue or repeat its explanation in a Q cell. For example, `**PARTIAL** — [SKILL.md §Boundaries](source-url); F-03 (C5)`. A Q with no material finding still gets its accurate status and evidence, without an invented F-xx. A lens-only audit never triggers this table; an ordinary default audit has no Q table.
 
+**Review Lens Coverage (optional):** When named lenses or `review_lenses: relevant` are requested, add **Review Lens Coverage (optional)** inside report Section 2, after Supporting C4–C6 findings; when the user also requests Quality Review Coverage, put **the Q table first, then the lens table**. Do not add an eighth numbered section or change the default six-consideration layout.
+
+**Comparison table:** The first column is `Lens & diagnostic questions`, followed by one or two audited skills as columns. Each selected row contains the **original lens name, complete Review questions text, and C1–C6/Q-xx mapping from [review-lenses.md](references/review-lenses.md)**. Each skill cell contains a **brief evidence-backed diagnosis**, direct source or evidence limit, and when supported an **existing F-xx (Cx)** pointer with assessment such as `F-03 (C5) · CLARIFY — approval owner unclear. [source]`. Without a material finding, use `No material issue identified — [source]`, `NOT APPLICABLE — [reason]`, or `NOT ASSESSED — [unavailable source]`, **not invented F-xx IDs**.
+
+**Selection and formatting:** Include only named lenses or source-relevant lenses when `review_lenses: relevant`, with a brief reason for selection. For an explicitly named but inapplicable lens, mark the relevant target NOT APPLICABLE. If no relevant lenses apply, state why rather than creating an empty table. For one skill use one skill column; for three or more use groups of at most two skill columns and repeat the selected lens rows so every skill is covered. Use one Markdown line per table row; avoid HTML breaks, nested lists and lengthy diagnosis within cells.
+
+**Root-cause navigation, no duplicated findings:** The lens table is a **diagnostic index**, not a second detailed findings section. Keep full Finding/Evidence/Assessment/Why/Recommendation and any exact wording/concern/proposal in the original Cx-linked vertical F-xx notes under the Primary or Supporting table. Point to the **same F-xx (Cx)** from lens and Q coverage whenever both identify the same issue, and distinguish possible root causes as INFERRED unless verified. A lens-only run does not print the ten-question Q coverage table, and ordinary absent execution traces do not justify a new VERIFY finding. Default `review_lenses: none` shows no lens coverage.
+
 **Critical boundaries:** Q-05 inventories currently documented contracts/gaps, but never drafts Stage 3 interface, invariant or failure contracts. Q-07 does not treat written permission claims as enforced host/tool permissions. Q-09 distinguishes defined eval cases from actual executed results, and this skill **does not run evaluations or profile traces**.
 
 **Stage handoffs:** In Section 7, list grounded Stage 3 contract design questions and justified Stage 5 validation candidates (PROPOSED, NOT EXECUTED). A candidate requires a material finding, explicit assurance request or relevant unresolved decision; **not merely the absence of traces for a clearly documented handoff**. Explain the future Given / When / Then evidence without claiming READY TO TEST, TESTED or PASS.
@@ -207,7 +215,7 @@ In the audit report's **Section 5 — Prioritized Recommendations**, add **Optio
 Use these seven headings, in order:
 
 1. **Executive Summary** — scope, skill count, top findings, evidence limits.
-2. **Individual Skill Assessments** — six considerations for every selected skill; requested Q coverage stays within Section 2.
+2. **Individual Skill Assessments** — all six considerations for each selected skill; optional Quality Review Coverage and Review Lens Coverage comparisons remain within this Section 2.
 3. **Cross-Skill Responsibility & Overlap Findings** — classifications and effects.
 4. **Missing Responsibilities & Gaps** — including uncertainty.
 5. **Prioritized Recommendations** — High / Medium / Low, proposals only.
@@ -216,11 +224,11 @@ Use these seven headings, in order:
 
 ### Adaptive layout: same compact comparison for Primary and Supporting
 
-**Core Section 2 has two C1–C6 comparison tables, always with skills as columns (an explicitly requested Q coverage table is an additional, separate comparison below them):**
+**Core Section 2 always has two C1–C6 comparison tables with skills as columns; optional Q and/or lens coverage tables are additional comparisons below them, not replacements:**
 - **Primary:** `Consideration | Skill A | Skill B` with three main rows: C1 Inputs, C2 Responsibilities, C3 Outputs.
 - **Supporting:** identical skill headers and order, with three main rows: C4 Handoffs, C5 Boundaries, C6 Feedback.
 - **All table cells:** one **short observation** per skill, with `F-xx · Assessment` and a short direct source label where relevant. **Do not print Finding/Evidence/Why/Recommendation or any exact wording quote in full inside table cells.**
-- **Immediately after each C1–C6 table:** provide detailed F-xx blocks for that table's **material** findings, each field as a real, separate Markdown bullet line. No third **wording-detail** table or detached Findings A/B/C section. When a Q review is requested, its **separate Quality Review Coverage comparison table** follows the Supporting table and its findings.
+- **Immediately after each C1–C6 table:** provide detailed material F-xx blocks, each field on a separate Markdown bullet line. Do not create extra wording-detail tables or detached Findings sections. After the Supporting notes, add optional **Quality Review Coverage** if requested and then optional **Review Lens Coverage** if requested, retaining the same F-xx (Cx) pointers.
 
 **Layout example (not actual findings):**
 

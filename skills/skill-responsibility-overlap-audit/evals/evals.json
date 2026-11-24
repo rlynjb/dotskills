@@ -734,6 +734,83 @@
         "Lens-only does not trigger Q-01–Q-10 automatically.",
         "No extra numbered section or made-up evidence."
       ]
+    },
+    {
+      "id": 49,
+      "prompt": "Run skill-responsibility-overlap-audit on discovery-brief and approval-evidence with review_lenses: [context-engineering, security-and-trust]. Show a consolidated lens diagnostic comparison for scattered findings.",
+      "files": [
+        "evals/files/discovery-brief/SKILL.md",
+        "evals/files/approval-evidence/SKILL.md"
+      ],
+      "expected_output": "Lens-only Section 2 includes Review Lens Coverage with the two selected lens rows, original review questions, C/Q mappings, source-backed skill summaries, and references to real F-xx (Cx) findings. No Q coverage table.",
+      "assertions": [
+        "Lens row names, questions and C/Q mappings are present.",
+        "Two skill columns compare evidence and reference existing material F-xx.",
+        "No redundant findings or unnecessary Q coverage.",
+        "Seven headings and C1–C6 original tables preserved."
+      ]
+    },
+    {
+      "id": 50,
+      "prompt": "Run quality_review: on and review_lenses: [security-and-trust, reliability-and-workflow] on requirements-review and approval-evidence. Show one shared approval finding via Cx, quality Q and lens references.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/approval-evidence/SKILL.md"
+      ],
+      "expected_output": "Section 2 shows C1–C6 core, Quality Review Coverage, then Review Lens Coverage. Same real F-xx (Cx) cross-referenced without duplicated explanations.",
+      "assertions": [
+        "Q coverage precedes lens coverage.",
+        "One issue has same F-xx (Cx) across all three views.",
+        "Lens has actual source diagnostic questions.",
+        "No execution claims or extra numbered section."
+      ]
+    },
+    {
+      "id": 51,
+      "prompt": "Run review_lenses: relevant on brief-planning and evidence-refinement. Do not force all five lenses; avoid generic VERIFY for unobserved documented handoffs.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Only applicable lenses are shown with brief selection reasons; some cells can say No material issue identified with evidence and no F-xx.",
+      "assertions": [
+        "Applicable lens choice is justified.",
+        "No forced five lens rows.",
+        "Missing traces do not cause a default VERIFY finding.",
+        "No Q table in lens-only mode."
+      ]
+    },
+    {
+      "id": 52,
+      "prompt": "Run review_lenses: [context-engineering, lifecycle-and-portability] on four skills; keep the optional lens comparison readable.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/approval-evidence/SKILL.md"
+      ],
+      "expected_output": "Four skills shown in lens coverage groups of at most two skill columns, each repeating selected lens rows and mapping to actual F-xx (Cx) findings or NOT APPLICABLE.",
+      "assertions": [
+        "All four skills are covered.",
+        "Two skill columns per group maximum.",
+        "Source lens questions and C/Q mappings in each group.",
+        "No HTML/multiline cells or fabricated issues."
+      ]
+    },
+    {
+      "id": 53,
+      "prompt": "Run ordinary core audit on brief-planning and evidence-refinement without quality_review or review_lenses.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Only original six considerations and seven headings, no Quality Review Coverage or Review Lens Coverage.",
+      "assertions": [
+        "No lens table by default.",
+        "No Q table by default.",
+        "Core table and vertical findings unchanged.",
+        "No invented F-xx."
+      ]
     }
   ]
 }

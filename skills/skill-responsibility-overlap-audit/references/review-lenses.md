@@ -7,8 +7,9 @@ Optional, expandable quality-review questions for `skill-responsibility-overlap-
 ## How to apply
 
 - Load only on explicit request for one or more named lenses, or for **relevant lenses** when their applicability is established by inspected skill content. Default: none.
-- Keep C1–C6 comparison tables unchanged. Route a material concern to an F-xx finding under its most relevant C-row. A lens is an investigation prompt, not a new report section, Q status, or reason to manufacture a problem.
-- If Q-01–Q-10 review is also requested, merge overlapping lens/Q concerns into **one** F-xx finding and cross-reference the applicable Q; otherwise do not print a Q checklist.
+- Keep C1–C6 tables unchanged; route each material lens concern to its most relevant Cx and an existing-form F-xx vertical finding. When lenses are requested, add a separate **Review Lens Coverage (optional)** comparison table within report Section 2, after Supporting findings or after Quality Review Coverage when both are requested. It is a diagnostic index, not a new numbered section, Q score or required finding.
+- Include only named lenses, or source-supported applicable lenses when `review_lenses: relevant` and state brief selection reasons. The lens table's first column contains the exact source-defined Review questions and C/Q mapping; skill columns provide short evidence-backed diagnoses and **F-xx (Cx)** only when there is a material existing finding. For three or more skills compare groups of at most two skill columns; named but inapplicable lenses get NOT APPLICABLE with reasons.
+- If Q-01–Q-10 review is also requested, consolidate overlapping Q and lens concerns into the **same F-xx (Cx)**, with Quality Review Coverage first and Review Lens Coverage second. Lens-only does not trigger Q coverage. Do not duplicate full findings or invent F-xx purely to populate cells.
 - Cite the actual audited skill's evidence, not just a conference takeaway. Distinguish DOCUMENTED from OBSERVED and INFERRED. Never claim a prompt-only permission is enforced.
 
 ## Lens: context-engineering
