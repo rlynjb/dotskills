@@ -81,13 +81,15 @@ Zero material deviations is valid; don't fabricate warnings to fill the section.
 
 ### 5. Stage 5 Candidates — NOT EXECUTED
 
+**Required output format:** Render this section in full in every alignment-mode report. Use the three visible blocks below in order: **What we are doing here**, **How to proceed with Stage 5** (four numbered steps), and **Validation candidate cards**. Do not collapse this section into a table or key-only list, even on a concise rerun or when previous reports used such a table. Instructions in this reference specify the content of the generated report, not optional background for the reviewing agent. If no candidate is justified, retain both explanatory blocks and state the reason instead of inventing a card.
+
 **What we are doing here:** The alignment review checks whether the implementation reflects the approved design in source. Stage 5 — Validation & Iteration checks whether the implemented skills actually behave according to the approved contracts when exercised. A source-level ALIGNED verdict does not establish behavioral correctness, tool-level enforcement or workflow readiness. This section prepares the handoff to that separate validation stage; it does not execute any evaluation.
 
 **What a V-xx candidate means:** `V-xx` is a report-local validation scenario identifier, not an industry-defined test type. Give every candidate a descriptive title that explains the behavior under review, rather than displaying a bare key. The Given–When–Then pattern is an established way to structure behavioral scenarios: Given = initial state and test setup, When = the action performed, Then = the observable assertions that should hold. Expected evidence is what the future evaluator will inspect to determine whether those assertions passed; it is not evidence already collected.
 
 #### How to proceed with Stage 5
 
-Explain the next steps concisely, adapted to the actual approved scope and Section 4 routing:
+Render all four numbered steps below as user-facing instructions, concisely adapted to the actual approved scope and Section 4 routing:
 
 1. **Confirm the validation scope and prerequisites.** Use the exact approved IC/D version and inspected implementation revision. Resolve any required Stage 4 corrections or missing approval baseline before claiming validation readiness for affected terms; unaffected approved terms may be scoped separately. Approval of a design is not authorization to execute tests or modify production artifacts.
 2. **Check coverage and choose the smallest useful level.** Map material approved guarantees to existing verified evidence and candidate scenarios. Start with standalone behavior where applicable, then the approved skill-to-skill integration, then representative end-to-end workflow paths only when that broader scope is separately approved and relevant. Include meaningful success, missing/conflicting input, optional handoff, ownership/approval, and feedback or recovery cases where the contract calls for them. Do not require every category or a full workflow run to validate one connection. Identify material coverage gaps instead of asserting completeness.
@@ -96,7 +98,7 @@ Explain the next steps concisely, adapted to the actual approved scope and Secti
 
 #### Validation candidate cards
 
-Use concise **vertical Markdown cards**, separated by whitespace; no wide table or key-only list. Each card must stand on its own and answer what is being tested, how it would be tested, what must pass, and how the result would be demonstrated. Include the following fields in order:
+Use concise **vertical Markdown cards**, separated by whitespace; no table (including a compact three-column table), key-only list, or prose-only summary. Render each of the seven fields below with its exact readable label; Given and When remain separate. Each card must stand on its own and answer what is being tested, how it would be tested, what must pass, and how the result would be demonstrated. Include the following fields in order:
 
 **V-01 — [Descriptive scenario title]**
 
@@ -109,6 +111,8 @@ Use concise **vertical Markdown cards**, separated by whitespace; no wide table 
 - **Status:** NOT EXECUTED. [State any prerequisite correction, approval or evidence access needed before the case can run.]
 
 Reuse actual earlier V-xx candidates and their identifiers when their scope and meaning are unchanged. Refine their descriptions and assertions without silently changing the approved IC/D baseline. If splitting a candidate into meaningful subcases or adding a justified candidate, make the relationship explicit and use distinct identifiers; do not manufacture a fixed V-01–V-04 catalog or renumber unchanged candidates. Check that every reference resolves to the actual report/baseline or supplied earlier evidence. When no prior candidates exist, create only the necessary report-local IDs. If no additional Stage 5 candidate is justified, say `No additional Stage 5 candidate justified` with the reason. If the approved baseline is missing, explain the blocker; do not present provisional scenarios as validation of approved terms. Candidate design is not an executed test, PASS result, or permission to run.
+
+**Final output check (before delivering the report):** Verify that the actual rendered Section 5 includes the explanatory blocks and four next steps, every justified V-xx has its descriptive title and all seven named fields, and every candidate is NOT EXECUTED. If the answer still contains a candidate table or missing labels, rewrite Section 5 before returning it. Keep the earlier approved design and evidence scope unchanged.
 
 **Illustrative candidate (synthetic, not a fixed V-01 definition or an actual result):**
 
