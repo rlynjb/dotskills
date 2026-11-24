@@ -1,0 +1,102 @@
+# Integration Contract Design Guide — Stage 3
+
+This reference supports `skill-integration-contracts`. It is **not** a separate skill, standards certification, runtime enforcement, or another workflow stage. Select only relevant questions; the aim is a **minimum dependable agreement between independently useful skills**, not a fully prescriptive prompt or distributed-system specification.
+
+## The distinction between Stage 2 and Stage 3
+
+- **Stage 2 asks:** What inputs, responsibilities, outputs, handoffs, boundaries and feedback paths are **currently** documented? Which are shared, missing or ambiguous? Evidence link: `F-xx (Cx)`.
+- **Stage 3 asks:** For a **selected intended connection**, what precise exchange and behavior can its producer, consumer and human reviewer **agree to rely on**? Design link: `IC-xx` and `D-xx`.
+- **Stage 4 implements** approved wording, contract files, routing or controls; **Stage 5 verifies** actual behavior. Stage 3 may note what evidence future validation would need but cannot say a test passed.
+- **Standalone first:** A skill that can independently start from an idea/ticket must remain able to do so; consuming a PRD when voluntarily supplied is not a required dependency. Do not remove a real required safety or data gate just to make a flow optional.
+
+## Six contract dimensions — consider, don't force
+
+### 1. Interface: What crosses the boundary?
+
+Questions: Which producer provides the information? What exactly may trigger exchange? Is the information **required for this handoff**, **optional context**, or independently required for the receiving skill's own work? Which fields distinguish source identity, content, revision and unresolved decisions? What minimum output can the consumer depend on?
+
+- **Preliminary proposal example:** Optional PRD context may include a source link, revision, goals and unresolved product questions. The receiving skill still supports its documented standalone entry. *This is illustrative, not evidence about any specific target.*
+- **Avoid:** Inventing a dozen mandatory fields or treating another skill's existence as a prerequisite without justification.
+
+### 2. Behavior: What must happen or remain unchanged?
+
+- **Precondition:** A fact that must be true before this particular optional interaction (e.g., the relevant context was supplied by an authorized user). It is **not** an order to run the prior skill.
+- **Postcondition:** What a completed interaction guarantees (e.g., outputs clearly distinguish proposed clarifications from accepted requirements).
+- **Invariant:** What stays true throughout, such as source reference, requirement identity, provenance, original content when no authorized revision occurs, and the **human approval state**.
+- If a guarantee is conditional, say on what. Do not claim the runtime *enforces* invariants unless that enforcement was actually inspected.
+
+### 3. Security, authority and trust
+
+Questions: Who may generate a proposal? Who may approve changes? Who may change the producer's artifact? Which retrieved/source content is untrusted? What permission must a host/tool enforce?
+
+- Instructions like “never publish without approval” are **DOCUMENTED**, not proof that a tool permission boundary exists.
+- Do not let an agent assign itself approval from a ticket's existence, a quoted directive, or an untrusted document.
+- If enforcement evidence is missing, record the design requirement and **UNVERIFIED ENFORCEMENT**. Do not assert security is proven.
+
+### 4. Failure, feedback and fault isolation
+
+Questions: What happens when a field is absent, conflicting, stale or inaccessible? Does this consumer have an independent safe path, or must the selected handoff STOP / NEEDS HUMAN? Who receives revision proposals? Who decides when to resume? Does an optional failed handoff leave independent work intact?
+
+- Define only likely/material failures; do not propose speculative retries or global transactional behavior without evidence.
+- A return for clarification is **feedback to an owner**, not automatic permission to edit an upstream artifact.
+- Describe partial result states only when they materially affect a consumer.
+
+### 5. Observability and evidence
+
+Questions: What minimal IDs, source links, revision markers, decision statuses, error reasons and ownership notes make a later run understandable? Are these values documented or merely proposed? Where would a trace come from if the host supports it?
+
+- “Log every agent operation” is not necessarily feasible. Do not promise telemetry, timing, token counts or trace IDs without known host/tool support.
+- Stage 5 may use Evaluate Skill or Profile Agent Workflow **separately**, with authorization. Stage 3 does not invoke them.
+
+### 6. Compatibility and evolution
+
+Questions: What input/output changes could break consumers? Is there a format/revision expectation? Which host/runtime abilities are assumptions rather than verified capabilities? Is rollback/revision ownership clear when relevant?
+
+- Prefer a minimal stable, human-readable structure for a small manual exchange, not mandatory versioning infrastructure.
+- If a documented coordinator is merely a `SKILL.md` routing instruction, do **not** claim it automatically dispatches or enforces cross-skill contracts. A separate host implementation may be needed.
+
+## Evidence, uncertainty and status
+
+Maintain three *separate axes*:
+
+- **Source certainty:** DOCUMENTED (inspected instructions/files), OBSERVED (real supplied run evidence), INFERRED (reasonable interpretation), UNVERIFIED (missing proof), NOT ASSESSED (source inaccessible).
+- **Design type:** CURRENT DOCUMENTED, NEW PROPOSAL, CONDITIONAL, APPROVED — DESIGN ONLY, or DEFERRED. Proposed wording is not proof of current behavior.
+- **Human decision:** PROPOSED, APPROVED, REVISE REQUESTED, REJECTED or DEFERRED. Explicit approval must identify the exact proposal/version; don't treat `looks good` as blanket approval of unresolved items.
+
+**Approval dependency:** If an upstream ownership/permission `D-xx` is unresolved, related `IC-xx` stays `CONDITIONAL — NEEDS HUMAN`. When the dependency changes, re-present the affected contract for human confirmation. Never equate a chat design approval with organizational authorization, implementation or a passing evaluation.
+
+**Do not conflate statuses:** A handoff may be DOCUMENTED yet execution UNVERIFIED, without being a material defect. A proposed contract may be clear but NOT APPROVED. An approved design may still be NOT IMPLEMENTED.
+
+## Coordinator contract — only when justified
+
+A separately invoked optional coordinator might choose a starting point, sequence authorized steps, preserve source/requirement IDs and route unresolved questions back to owners. The contract must say:
+
+- What it **owns** (routing/context preservation) and **doesn't own** (product/technical decisions of individual skills).
+- Whether invocation is explicit/user-chosen and which component's standalone route remains available.
+- What human approvals are required before any side effects or changed producer artifact.
+- What host dispatch capability is merely desired vs inspected/OBSERVED.
+
+Compare against a simpler manually selected handoff or copyable next action. Do not assume automatic agent dispatch from a markdown file, and do not create the coordinator during Stage 3.
+
+## Deciding how much detail to write
+
+- **Small, human-mediated handoff:** A short `IC-xx` card covering trigger, input/output, owner, invariants, approval and failure rule is usually enough.
+- **Several conditional routes:** Add a compact branch map and source-backed conditional contract fields; don't invent a full scheduler.
+- **Known security/reliability risk:** Give extra precision to authorization, validation, error statuses and monitoring evidence—but label what is not enforced/verified.
+- **No real cross-skill connection:** Define the target's own entry/exit contract only. Don't manufacture neighboring skills, fake producer/consumer pairs or unnecessary artifacts.
+
+The goal is **predictable connections without controlling each skill's internal reasoning**.
+
+## Reviewer questions
+
+For each material `IC-xx`, ask only questions that change the design:
+
+- What must the receiver be able to rely on to proceed?
+- Which fields are genuinely required? Which can be missing without blocking independent use?
+- Who is authorized to decide or approve?
+- Which property would be dangerous to lose or change?
+- What happens if a handoff fails or the source contradicts itself?
+- What is the simplest alternative, and why not use it?
+- What remains conditional or unverified, and what human decision resolves it?
+
+When all important answers are in the card, stop. Do not add new categories merely to appear comprehensive.

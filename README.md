@@ -58,6 +58,10 @@ Skills are grouped by use.
   **Purpose:** Focused read-only investigation of skill inputs, ownership, outputs, handoffs, boundaries, and feedback. Shows two or more skills side by side; identifies overlap and gaps **before** contract design.  
   **What you'll learn:** Comparing evidence across skills, separating shared context from duplicated decisions, identifying unowned responsibilities, and forming proposals for human review.
 
+- **Skill:** [skill-integration-contracts](skills/skill-integration-contracts/SKILL.md)  
+  **Purpose:** Stage 3 read-only integration design: turn Stage 2 findings and current skill evidence into minimal producer-consumer contracts, clear ownership/approval boundaries, optional handoffs, and a human decision ledger before implementation.  
+  **What you'll learn:** Interface and behavioral contracts, pre/postconditions and invariants, reliability and trust boundaries, design trade-offs, and traceable integration decisions.
+
 ---
 
 ### Decision support

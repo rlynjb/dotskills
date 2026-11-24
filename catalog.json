@@ -51,6 +51,15 @@
       "exposed": true
     },
     {
+      "name": "skill-integration-contracts",
+      "category": "methodology",
+      "purpose": "Read-only Stage 3 integration design: transform source-backed Stage 2 responsibility findings and actual skill behavior into minimal optional producer-consumer contracts, decision/approval gates, failure/feedback guarantees and Stage 4 handoffs; never edits or executes target skills.",
+      "source": "dotskills",
+      "path": "skills/skill-integration-contracts",
+      "reference_count": 0,
+      "exposed": true
+    },
+    {
       "name": "context-engineering",
       "category": "methodology",
       "purpose": "Diagnose and improve how a target skill selects, verifies, expands, and stops using context.",
