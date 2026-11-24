@@ -106,6 +106,8 @@ Compare against a simpler manually selected handoff or copyable next action. Do 
 
 ## Explaining relevant interaction patterns
 
+**Chat-view diagrams:** If a material interaction needs a diagram, use a short **ASCII-only** flow in a fenced `text` block. Prefer vertical layouts with simple arrows and clear human decision labels; don't use Mermaid, diagram markup, rendered charts, or very wide graphs. If concise prose is sufficient, skip the diagram. An ASCII arrow is a proposed or documented route, never proof of automatic dispatch.
+
 Section 3 can describe a **material pattern in an actual or intended interaction** without treating the pattern as a required implementation, industry standard or observed runtime behavior. **Inspect first; name patterns only if they help explain a supported or explicitly proposed relationship**. Some useful examples:
 
 - **Direct/optional handoff:** A producer's result is passed to a consumer by a user or authorized workflow. Clarify when the handoff is chosen and whether the consumer can start independently. Do not silently make optional context required.

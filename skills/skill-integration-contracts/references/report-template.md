@@ -38,29 +38,34 @@ Describe **only the connection(s) actually under review**; a local interaction i
 - **Why standalone skills matter — include only when relevant:** [One or two team-facing sentences **only if** independent invocation, optional handoff or selective re-entry is supported by the evidence or is a justified design choice. Explain the practical branching/iteration benefit, and retain contract, actual prerequisite and human-approval boundaries. If standalone use is unsupported, contradictory or not relevant, describe the real dependency/uncertainty instead; **do not assert flexibility as a fact**.]
 - **Simpler path vs coordinator — only if a coordination choice is material:** [NOT NEEDED / CONDITIONAL PROPOSAL / DEFER, with evidence and trade-off. Feedback alone does not require a coordinator.]
 - **Human checkpoints — when applicable:** [Actual/proposed approval boundaries; distinguish a suggestion from an authorized change.]
-- **Diagram — only when it clarifies an actual relevant branch/return path:** [Use a small scoped diagram, omit absent branches and label proposed routing; never force this example into unrelated reports.]
+- **ASCII diagram — only when it clarifies an actual relevant branch/return path:** [Use **plain ASCII** inside a fenced `text` code block. Keep short node labels and a narrow, vertical layout suitable for chat. Use simple ASCII arrows/connectors (`|`, `v`, `-->`, `+--`); **never Mermaid or render-dependent diagrams**. Omit absent branches and label proposed routing. If prose is enough, omit the diagram entirely.]
 
-**Illustrative example — use only for a supported conditional-feedback scenario:**
+**Illustrative plain-ASCII example — use only when a material feedback path applies:**
 
 ```text
-[Skill A: available output] -- optional, chosen handoff --> [Skill B: review result]
-                                                               |
-                                           [Material question or proposed change?]
-                                               /                       \
-                                             NO                        YES
-                                             |                          |
-                                      [Continue as chosen]     [Owner reviews proposal]
-                                                                            |
-                                                               [Revision authorized?]
-                                                                   /           \
-                                                                 NO            YES
-                                                                 |              |
-                                                         [Defer/continue] [Update owned artifact]
-                                                                                  |
-                                                                  [Revisit affected step if needed]
+[Skill A result]
+       |
+       | optional, user-chosen handoff
+       v
+[Skill B result]
+       |
+       v
+{Material change needed?}
+  | No  --> [Continue selected path]
+  |
+  + Yes --> [Owner reviews proposal]
+                  |
+                  v
+           {Revision approved?}
+             | No  --> [Defer / continue]
+             |
+             + Yes --> [Update owned artifact]
+                            |
+                            +--> [Revisit affected step
+                                  only if necessary]
 ```
 
-This example is **not a mandatory stage or loop**; an absent issue or unapproved revision never forces a return. Documented instructions do not prove automatic dispatch or actual execution. For standalone-only scopes or one-way handoffs without material feedback, **omit the loop and use a short factual interaction description**.
+This is **ASCII text**, meant to remain readable directly in chat without rendering. It is **not a mandatory stage or loop**. If no material feedback path is supported, use a shorter one-way ASCII flow if useful, or simply describe the interaction in prose. Do not imply that a Markdown skill file executes dispatch, that an upstream revision was approved, or that an observed run occurred.
 
 **Conditional, team-ready rationale (include only when the inspected interaction supports it):** "These skills can be used independently, with explicit handoffs when chosen. That lets us return a material finding to the responsible owner and revisit only affected work, without forcing one rigid sequence. Contracts and approvals still govern every connection." Adapt the statement to actual capabilities; never present it as a generic guarantee about all skills.
 
