@@ -34,13 +34,28 @@ Describe **only the connection(s) actually under review**; a local interaction i
 - **Intended connection / standalone entry:** [Actual producer → consumer or one skill's own entry/exit; optional versus genuinely required context; avoid inventing a partner or independent behavior.]
 - **Relevant interaction pattern — only if explanatory value:** [Name the **evidenced or explicitly proposed** behavior, e.g. direct handoff, conditional next-step branch, human approval gate, justified sequence, fan-out/fan-in, optional coordinator or conditional feedback. In **one or two sentences**, state **what initiates the path, what happens/which owner chooses, why it helps, and one material trade-off or constraint**. Label PROPOSED or NOT VERIFIED where appropriate; no pattern catalogue or mandatory new architecture. If no distinct pattern matters, **omit this item**.]
 - **Proposed decision owner:** [Who produces, consumes, clarifies or approves a consequential change; do not guess.]
-- **Conditional feedback route — include only when material:** [Identify an evidenced or specifically proposed return for clarification/revision: triggering finding, owner, approval requirement, what may change if authorized, and whether to revisit the affected step or continue without changes. Label a newly suggested loop PROPOSED. If no meaningful feedback path applies, **omit this bullet and the loop illustration**.]
+- **Conditional feedback route — include only when material:** [Identify an evidenced or specifically proposed return for clarification/revision: triggering finding, owner, approval requirement, what may change if authorized, and whether to revisit the affected step or continue without changes. Label a newly suggested loop PROPOSED. If no meaningful feedback path applies, **omit this bullet and the feedback branch, but retain the required map for a meaningful cross-skill handoff**.]
 - **Why standalone skills matter — include only when relevant:** [One or two team-facing sentences **only if** independent invocation, optional handoff or selective re-entry is supported by the evidence or is a justified design choice. Explain the practical branching/iteration benefit, and retain contract, actual prerequisite and human-approval boundaries. If standalone use is unsupported, contradictory or not relevant, describe the real dependency/uncertainty instead; **do not assert flexibility as a fact**.]
 - **Simpler path vs coordinator — only if a coordination choice is material:** [NOT NEEDED / CONDITIONAL PROPOSAL / DEFER, with evidence and trade-off. Feedback alone does not require a coordinator.]
 - **Human checkpoints — when applicable:** [Actual/proposed approval boundaries; distinguish a suggestion from an authorized change.]
-- **ASCII diagram — only when it clarifies an actual relevant branch/return path:** [Use **plain ASCII** inside a fenced `text` code block. Keep short node labels and a narrow, vertical layout suitable for chat. Use simple ASCII arrows/connectors (`|`, `v`, `-->`, `+--`); **never Mermaid or render-dependent diagrams**. Omit absent branches and label proposed routing. If prose is enough, omit the diagram entirely.]
+- **ASCII interaction map — required for meaningful cross-skill integrations:** [Include a compact map in a fenced `text` code block for meaningful scoped documented or proposed integrations, even a simple direct or optional forward handoff. Combine related connections in one readable map where practical; group complex scopes only if necessary. Show participants, handoff direction, relevant trigger and owner, optional/required context, and applicable decision/approval/feedback paths. Use short labels, narrow vertical layout and simple ASCII connectors (`|`, `v`, `-->`, `+--`); **never Mermaid or render-dependent diagrams**. Identify documented versus proposed routing. Explain the map in prose, not instead of it. When no meaningful return is supported, omit only that return branch, not the map. For standalone-only scope without a meaningful cross-skill connection, a diagram is optional when useful. If no meaningful connection is established, state the evidence/scope limit; do not invent one.]
 
-**Illustrative plain-ASCII example — use only when a material feedback path applies:**
+**Illustrative plain-ASCII example — simple optional forward handoff (adapt to actual scope):**
+
+```text
+[Producer skill result]
+       |
+       | optional, user-chosen context
+       v
+[Consumer skill]
+       ^
+       |
+[Standalone starting inputs, if supported]
+```
+
+Use a one-way map when no return path is supported. The standalone entry shown here is illustrative, not a requirement to add one to every design.
+
+**Illustrative plain-ASCII example — add a conditional return only when a material feedback path applies:**
 
 ```text
 [Skill A result]
@@ -65,7 +80,7 @@ Describe **only the connection(s) actually under review**; a local interaction i
                                   only if necessary]
 ```
 
-This is **ASCII text**, meant to remain readable directly in chat without rendering. It is **not a mandatory stage or loop**. If no material feedback path is supported, use a shorter one-way ASCII flow if useful, or simply describe the interaction in prose. Do not imply that a Markdown skill file executes dispatch, that an upstream revision was approved, or that an observed run occurred.
+These are **ASCII interaction maps**, meant to remain readable directly in chat without rendering. A meaningful cross-skill integration always gets a map, but the illustrated feedback loop is not mandatory. If no material feedback path is supported, include the shorter one-way map adapted to the actual connection. Prose must accompany rather than replace a required map. Do not imply that a Markdown skill file executes dispatch, that an upstream revision was approved, or that an observed run occurred.
 
 **Conditional, team-ready rationale (include only when the inspected interaction supports it):** "These skills can be used independently, with explicit handoffs when chosen. That lets us return a material finding to the responsible owner and revisit only affected work, without forcing one rigid sequence. Contracts and approvals still govern every connection." Adapt the statement to actual capabilities; never present it as a generic guarantee about all skills.
 
