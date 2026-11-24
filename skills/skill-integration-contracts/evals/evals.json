@@ -916,6 +916,37 @@
         "When no dependencies are identified, show None identified with any evidence limit and separate approval status, not automatic approval.",
         "No extra numbered report sections, duplicate contract cards or runtime execution claims."
       ]
+    },
+    {
+      "id": 59,
+      "prompt": "Run Stage 3 integration design on synthetic product-framing and evidence-refinement, with the supplied Stage 2 audit. Give a junior-friendly contract card whose Technical Contract uses standard engineering vocabulary, consistent dimension headings, and precise agreement wording.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/stage2-audit.md"
+      ],
+      "expected_output": "Section 4C uses the applicable six stable dimension headings and plain-English questions, in fixed order with original numbering. Short bullets group interface, behavioral guarantees, ownership/authority, reliability/feedback, observability/traceability and compatibility/evolution without redundant terms. Selective MUST/MUST NOT/SHOULD/MAY wording preserves optional PRD context and human authority, with current evidence separate from proposed obligations.",
+      "assertions": [
+        "The applicable headings match the stable titles and guiding questions and keep their original dimension numbers/order; no flat ungrouped label list or added report sections.",
+        "Interface separates required inputs, optional context, trigger and output; behavioral guarantees distinguish preconditions, postconditions and invariants with short contextual definitions.",
+        "Ownership/security/authority, failure/feedback, traceability and compatibility are grouped under their appropriate dimensions when relevant; no duplicated obligations or unsupported requirements.",
+        "Normative wording is selective, with a named actor and conditions where needed; MUST does not imply approval or runtime enforcement, SHOULD permits justified exceptions, and MAY does not become a mandatory prerequisite.",
+        "Actual evidence and decision dependencies remain traceable; preserve standalone operation, human approval and seven sections."
+      ]
+    },
+    {
+      "id": 60,
+      "prompt": "Design a short standalone entry/exit contract for the synthetic product-framing skill only. Use the Section 4C technical contract dimensions, but avoid unnecessary detail or any invented external dependency.",
+      "files": [
+        "evals/files/product-framing/SKILL.md"
+      ],
+      "expected_output": "A proportional standalone card uses only relevant stable dimension headings, preserving their numbering and order, with concise technical terms and appropriate obligation language. No forced compatibility or telemetry terms, invented partner or dependency, or mandatory walkthrough.",
+      "assertions": [
+        "Inapplicable dimension headings and subfields are omitted; remaining headings retain their canonical numbers/titles and plain-English questions.",
+        "No fake producer/consumer, invented feedback loop, host support, schema, telemetry, or mandatory dependency merely to populate a dimension.",
+        "No speculative MUST terms or implied approval; precise supported guarantees and evidence limits remain clear.",
+        "A–D structure remains, B omitted if not useful; seven report sections and separate Dependencies/Status remain intact."
+      ]
     }
   ]
 }
