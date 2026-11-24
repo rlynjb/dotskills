@@ -15,21 +15,23 @@ The skill can be rerun with `implementation_alignment_review: on` to assess **cu
 
 ## Six contract dimensions — consider, don't force
 
-### 1. Interface: What crosses the boundary?
+These are the stable presentation headings for Section 4C, shown with their guiding questions and original numbers in order. Omit any dimension that adds no material guarantee; keep the remaining numbers unchanged. These labels organize the existing contract dimensions (including the behavior, security/authority/trust, failure/feedback/fault-isolation, observability/evidence and compatibility/evolution terminology used by the optional review lenses). They do not change CQ-xx IDs or their canonical questions, or require every dimension to appear in every card. Use short subfield bullets. Keep Interface about the exchanged information, Behavior about what must hold true, Ownership about authority, Reliability about exception/return handling, Observability about evidence, and Compatibility about supported forms and changes. Place each agreement once; cross-reference only when necessary.
+
+### 1. Interface — What do we exchange?
 
 Questions: Which producer provides the information? What exactly may trigger exchange? Is the information **required for this handoff**, **optional context**, or independently required for the receiving skill's own work? Which fields distinguish source identity, content, revision and unresolved decisions? What minimum output can the consumer depend on?
 
 - **Preliminary proposal example:** Optional PRD context may include a source link, revision, goals and unresolved product questions. The receiving skill still supports its documented standalone entry. *This is illustrative, not evidence about any specific target.*
 - **Avoid:** Inventing a dozen mandatory fields or treating another skill's existence as a prerequisite without justification.
 
-### 2. Behavior: What must happen or remain unchanged?
+### 2. Behavioral Guarantees — What must be true before, after and throughout?
 
 - **Precondition:** A fact that must be true before this particular optional interaction (e.g., the relevant context was supplied by an authorized user). It is **not** an order to run the prior skill.
 - **Postcondition:** What a completed interaction guarantees (e.g., outputs clearly distinguish proposed clarifications from accepted requirements).
-- **Invariant:** What stays true throughout, such as source reference, requirement identity, provenance, original content when no authorized revision occurs, and the **human approval state**.
+- **Invariant:** A property preserved at the relevant contract boundaries, such as source reference, requirement identity, provenance, original content when no authorized revision occurs, and the **human approval state**. State where it holds; do not imply continuous runtime enforcement without evidence.
 - If a guarantee is conditional, say on what. Do not claim the runtime *enforces* invariants unless that enforcement was actually inspected.
 
-### 3. Security, authority and trust
+### 3. Ownership, Security & Authority — Who controls what?
 
 Questions: Who may generate a proposal? Who may approve changes? Who may change the producer's artifact? Which retrieved/source content is untrusted? What permission must a host/tool enforce?
 
@@ -37,7 +39,7 @@ Questions: Who may generate a proposal? Who may approve changes? Who may change 
 - Do not let an agent assign itself approval from a ticket's existence, a quoted directive, or an untrusted document.
 - If enforcement evidence is missing, record the design requirement and **UNVERIFIED ENFORCEMENT**. Do not assert security is proven.
 
-### 4. Failure, feedback and fault isolation
+### 4. Reliability & Feedback — What happens when something goes wrong or needs revision?
 
 Questions: What happens when a field is absent, conflicting, stale or inaccessible? Does this consumer have an independent safe path, or must the selected handoff STOP / NEEDS HUMAN? Who receives revision proposals? Who decides when to resume? Does an optional failed handoff leave independent work intact?
 
@@ -45,19 +47,25 @@ Questions: What happens when a field is absent, conflicting, stale or inaccessib
 - A return for clarification is **feedback to an owner**, not automatic permission to edit an upstream artifact.
 - Describe partial result states only when they materially affect a consumer.
 
-### 5. Observability and evidence
+### 5. Observability & Traceability — How can we understand and trace what happened?
 
 Questions: What minimal IDs, source links, revision markers, decision statuses, error reasons and ownership notes make a later run understandable? Are these values documented or merely proposed? Where would a trace come from if the host supports it?
 
 - “Log every agent operation” is not necessarily feasible. Do not promise telemetry, timing, token counts or trace IDs without known host/tool support.
 - Stage 5 may use Evaluate Skill or Profile Agent Workflow **separately**, with authorization. Stage 3 does not invoke them.
 
-### 6. Compatibility and evolution
+### 6. Compatibility & Evolution — How do we preserve compatibility as things change?
 
 Questions: What input/output changes could break consumers? Is there a format/revision expectation? Which host/runtime abilities are assumptions rather than verified capabilities? Is rollback/revision ownership clear when relevant?
 
 - Prefer a minimal stable, human-readable structure for a small manual exchange, not mandatory versioning infrastructure.
 - If a documented coordinator is merely a `SKILL.md` routing instruction, do **not** claim it automatically dispatches or enforces cross-skill contracts. A separate host implementation may be needed.
+
+## Precise contract wording — lightweight requirement language
+
+Use lightweight requirement language inspired by RFC 2119/8174: **MUST** = mandatory guarantee; **MUST NOT** = prohibited behavior; **SHOULD** = recommended behavior with justified exceptions; **MAY** = genuinely optional behavior. Use these uppercase terms sparingly for actual obligations or permissions, not descriptive facts or evidence labels. Name the responsible actor, applicable condition and observable outcome where material. Do not turn a recommendation into a mandatory rule or an optional input into a prerequisite. A proposed MUST is a design term, not evidence of human approval, implementation, enforcement or test success.
+
+For background, see [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) and [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174). These inform the wording convention; this is not a claim that skill contracts are standardized by those RFCs or that the report certifies conformance. Prefer short, testable obligations over generic statements. For example, `The refinement skill MUST NOT modify source artifacts during a read-only refinement` is a proposed prohibition if the design warrants it; `The developer MAY supply a PRD excerpt` preserves choice. Separate mandatory terms, justified recommendations and optional permissions; never use normative vocabulary to silently expand scope or human authority.
 
 ## Optional Contract Quality Review (CQ-01–CQ-06)
 
@@ -128,7 +136,7 @@ Section 4 is a guided design explanation for a junior developer, not a flat inve
 
 - **A — Understanding:** Say what the connection changes, why it helps, and what problem or trade-off the developer should understand first.
 - **B — Practical walkthrough (only if useful):** Use one hypothetical representative input and show who chooses the handoff, what the receiver does, and the outcome or relevant alternate branch. Do not invent automatic dispatch or treat the example as observed behavior. Use ASCII only for a material chat-friendly diagram that adds clarity beyond Section 3.
-- **C — Technical contract:** Keep exact guarantees and formal vocabulary, briefly explaining unfamiliar terms in context (e.g., an invariant is a property that must remain true across valid paths). Use concise vertical bullets; make it clear what is required versus optional. Explain why a guarantee matters when that is not already obvious from A/B, not as a generic lesson for every field.
+- **C — Technical contract:** Use the applicable numbered dimensions and guiding questions above, with short subfield bullets and precise formal vocabulary. Briefly explain unfamiliar terms in context (e.g., an invariant is a property that must remain true at relevant boundaries). Use MUST, MUST NOT, SHOULD and MAY selectively; make it clear what is required versus optional. Explain why a guarantee matters when that is not already obvious from A/B, not as a generic lesson for every field.
 - **D — Evidence and decisions:** Connect the proposal to inspected source and real Stage 2 findings, distinguish current documented behavior, new proposal and unverified enforcement, and identify what remains unchanged. Keep direct links, named decision dependencies mapped to Section 6, and separate approval status. Do not fabricate missing evidence.
 
 The goal is to reduce the reader's need to assemble the design mentally, **not to add four long explanations to every card**. For simple connections or standalone entry/exit contracts, a compact A/C/D is sufficient; add B only when it materially improves comprehension. Keep evidence near claims and consolidate the rationale in D, not a repeated audit. A/B do not replace C's enforceable terms or D's approval boundary. This changes presentation, not the four-step SDI design procedure or seven-section report.
