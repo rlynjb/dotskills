@@ -24,6 +24,7 @@ Use skill-integration-contracts on:
 
 Stage 1 architecture: [optional link]
 Stage 2 audit: [optional report with F-xx (Cx) findings]
+Optional coordinator candidate: [existing SKILL.md or design file path, if available]
 
 Design the minimal optional handoff and human approval boundaries.
 Preserve both skills' standalone inputs, workflow and outputs.
@@ -32,6 +33,33 @@ Do not edit skills, implement a coordinator, or execute evaluations.
 ```
 
 For a single skill, ask for its standalone entry/exit contract. For multiple independent skills, the tool considers **only meaningful intended connections** and can recommend that no integration contract is needed.
+
+## Inputting an optional coordinator candidate — Stage 3
+
+If Stage 2 identified a meaningful routing, sequencing, context-preservation or feedback issue, **you can provide an existing coordinator file as an additional input** when running Stage 3. Label it `Optional coordinator candidate`, **separate from the two target skills** being integrated.
+
+- **Coordinator file already exists:** Supply its actual `SKILL.md` path or existing design-document path, plus the target skill paths and any Stage 2 audit. The file is evidence of a **candidate design**, not proof that the coordinator is needed, approved, installed or executable.
+- **Only a Stage 2 coordinator recommendation exists:** Supply the two target skills and the Stage 2 audit; **do not invent a third path or create a coordinator first**. Stage 3 can still assess whether simple handoffs are sufficient.
+- **Stage 3 decision:** Compare manual/user-selected handoffs with a separately invoked optional coordinator, examine each skill's standalone path, and propose only justified `IC-xx` routing contracts and `D-xx` human decisions. A coordinator may be **NOT NEEDED**, **CONDITIONAL / PROPOSED**, or **DEFERRED**; it is not assumed to be the chosen design.
+- **Stage 4 follow-through:** Implement a coordinator or routing mechanism **only when the specific design is approved**. If actual automatic dispatch is required, verify and implement the relevant host/tool support rather than treating `SKILL.md` wording as executable dispatch. Stage 5 tests observed behavior.
+
+### Example — two skills and an existing coordinator file
+
+```text
+Use skill-integration-contracts on:
+- [actual path to skill A/SKILL.md]
+- [actual path to skill B/SKILL.md]
+
+Stage 2 audit: [actual audit report path]
+Optional coordinator candidate: [actual path to coordinator SKILL.md or design document]
+
+Compare direct optional handoffs against the candidate coordinator.
+Carry forward material Stage 2 findings and preserve standalone paths.
+Propose only justified IC-xx contracts and D-xx human decisions.
+Do not implement, invoke or assume the coordinator is approved.
+```
+
+All bracketed paths are placeholders; supply actual accessible files. If no coordinator file exists, omit that line rather than substituting a nonexistent path.
 
 ## Optional Contract Quality Review
 
