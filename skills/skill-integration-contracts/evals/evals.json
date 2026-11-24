@@ -599,13 +599,13 @@
         "evals/files/evidence-refinement/SKILL.md",
         "evals/files/stage2-audit.md"
       ],
-      "expected_output": "APPROVED BASELINE NOT VERIFIED, clear missing exact IC/D human signoff and source/version; no false ALIGNED verdict to approved design, optional clearly labeled provisional comment only.",
+      "expected_output": "APPROVED BASELINE NOT VERIFIED with missing exact approval/terms. Automatically select provisional alignment if independent specific proposed terms exist, otherwise source-based assessment. Complete five sections including source-backed coverage, gaps, routing and justified named Stage 5 candidates.",
       "assertions": [
-        "Proposed audit recommendations are not treated as approved contracts.",
-        "No fabricated D-xx approval, dates, revisions or full compliance.",
-        "No purported approved contract guarantee comparison table.",
-        "Requests approved design source/version before authoritative comparison.",
-        "Section 5 identifies the missing approved baseline as a blocker and does not represent provisional candidates as validation of approved guarantees."
+        "No fabricated approval, terms, IDs or evidence; no ALIGNED/PARTIALLY ALIGNED verdict without independently verified approved design.",
+        "Select provisional comparison only for independent specific proposed terms; otherwise source-based assessment, not source-to-itself alignment.",
+        "All five sections are populated with evidence; missing approval limits authoritative claims and does not stop review.",
+        "Section 2 uses appropriate statuses and source citations; no purported approved-clause table.",
+        "Section 5 contains instructional blocks and complete named cards for justified expectations with explicit unverified approval basis and NOT EXECUTED."
       ]
     },
     {
@@ -619,10 +619,10 @@
       "expected_output": "Compares only the exact approved IC-01/D-01 baseline. D-02 remains unapproved/conditional; neither source-aligned wording nor a prior human D-01 approval grants publication authority.",
       "assertions": [
         "Approval of one D-xx does not automatically approve D-02.",
-        "Human approval applies only to the exact version and terms.",
-        "Source alignment does not grant merge/publish/tool runtime permissions.",
+        "Human approval applies only to exact version and terms.",
+        "Source alignment does not grant merge/publish/runtime permissions.",
         "No invented upgraded D-02 status.",
-        "Stage 5 candidates are limited to the verified approved IC-01/D-01 scope; unapproved D-02 publication authority is not treated as ready for behavioral validation of an approved design."
+        "If unapproved material is assessed, label it separately as provisional or source-based; each Stage 5 candidate uses its actual basis. Unapproved publication authority is not approved design or permission to execute."
       ]
     },
     {
@@ -970,6 +970,38 @@
         "No actual skill invocation, test execution, fabricated runtime evidence, broader workflow approval or automatic implementation.",
         "The actual rendered Section 5 includes the visible 'What we are doing here' and 'How to proceed with Stage 5' blocks with four actionable steps before the candidate cards, even when the previous report was a compact table.",
         "No candidate table, combined Given/When field or bare V-xx list replaces any required card; all seven named fields appear for every justified candidate."
+      ]
+    },
+    {
+      "id": 62,
+      "prompt": "implementation_alignment_review: on. Fresh session: inspect only current synthetic product-framing and evidence-refinement skills. No earlier IC/D, independent proposal or approval is available. Review integration and provide all five sections including Stage 5 instructions and candidates. No execution.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "SOURCE-BASED INTEGRATION ASSESSMENT, APPROVED BASELINE NOT VERIFIED; all five sections, source-backed behavior, consistency/gaps/limits, routing and named source-based candidates. No invented contract or approval.",
+      "assertions": [
+        "Select Mode 3 without prior chat or inferring approval from implementation.",
+        "Section 2 uses DOCUMENTED / INCONSISTENT / GAP IDENTIFIED / NOT VERIFIED with real source evidence; no ALIGNED verdict or invented conflict.",
+        "Missing approval does not suppress Sections 3–5 or invent a Stage 4 defect.",
+        "Section 5 includes both explanatory blocks, four next steps and complete named Given–When–Then cards for material documented expectations, with Basis: CURRENT DOCUMENTED SOURCE — APPROVAL NOT VERIFIED and NOT EXECUTED.",
+        "Separately authorized behavioral tests are distinct from approved-contract compliance; no writes, tests or invented evidence."
+      ]
+    },
+    {
+      "id": 63,
+      "prompt": "implementation_alignment_review: on. Independent proposed design (not approved): receiving skill may use a product brief when supplied but must retain direct standalone entry without one; human product owner must approve any product-scope revision. Compare these terms to supplied synthetic product-framing and mismatched-handoff sources. No approval available; do not execute.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/mismatched-handoff/SKILL.md"
+      ],
+      "expected_output": "PROVISIONAL DESIGN ALIGNMENT, APPROVED BASELINE NOT VERIFIED; proposal-relative verdicts, actual contradictions, routing and proposal-based candidates in all five sections.",
+      "assertions": [
+        "Select Mode 2 based on separately supplied proposal, not source as its own baseline.",
+        "Use CONSISTENT WITH PROPOSAL / PARTIALLY CONSISTENT / MISMATCH against proposal / NOT VERIFIED as supported; no ALIGNED verdict or fabricated IC/D.",
+        "Identify actual proposal contradiction with source citations, not an approved-contract violation.",
+        "All five sections including instructional Stage 5 blocks and named cards explicitly based on proposal, approval unverified, NOT EXECUTED.",
+        "Appropriate design clarification/correction before consequential change; separate execution authorization and no claim of approved-contract compliance."
       ]
     }
   ]
