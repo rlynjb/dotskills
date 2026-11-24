@@ -25,7 +25,7 @@ It does **not** decide the future architecture, draft contracts, execute skills,
 
 The **default** remains the established six-consideration, four-step, seven-section audit. It does not load extra questions or generate a new quality checklist.
 
-- **Ten questions:** `quality_review: on` asks Q-01–Q-10, using [quality-review-questions.md](references/quality-review-questions.md); `quality_questions: Q-06,Q-07` reviews only those Qs. Coverage is a short optional vertical checklist within report Section 2. Significant questions use the **same** existing F-xx finding format instead of a second findings system.
+- **Ten questions:** `quality_review: on` asks Q-01–Q-10, using [quality-review-questions.md](references/quality-review-questions.md); `quality_questions: Q-06,Q-07` reviews only those Qs. Coverage is an optional **side-by-side table** within report Section 2, displaying **every selected question's complete wording**, each skill's status and evidence, and any related F-xx (Cx) findings. Significant questions use the **same** existing F-xx finding format instead of a second findings system.
 - **Conference-derived lenses:** `review_lenses: [context-engineering, security-and-trust]` chooses named perspectives from [review-lenses.md](references/review-lenses.md). A request for “relevant lenses” selects only documented-applicable ones and gives a reason; this does not automatically run all ten Qs.
 - **Both:** Keep issues deduplicated, mapped to C1–C6, and source-backed. Never infer actual tool permission enforcement or a passing eval from instructions or test definitions.
 

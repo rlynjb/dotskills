@@ -671,6 +671,69 @@
         "Targets a permission/authorization check rather than generic missing traces.",
         "Does not claim an approval bypass occurred or run tests."
       ]
+    },
+    {
+      "id": 45,
+      "prompt": "Run skill-responsibility-overlap-audit on requirements-review and sprint-readiness with quality_review: on. The user needs side-by-side comparison of Q-01–Q-10 including the actual canonical question wording and related F-xx links, not an ID-only vertical checklist.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/sprint-readiness/SKILL.md"
+      ],
+      "expected_output": "Default two C1–C6 comparison tables are preserved, with meaningful vertical F-xx notes. Immediately after Supporting findings, an optional Quality Review Coverage Markdown table includes ten rows, each canonical Q-xx ID + title + exact full question as first-column text; the other two columns hold the assessed skills' status, concise evidence and meaningful existing F-xx (Cx) references.",
+      "assertions": [
+        "All ten Q-01–Q-10 appear in canonical order with full original question wording, not merely titles/IDs.",
+        "Quality question is the first column, with the two audited skills as columns and statuses/source links grounded in source evidence.",
+        "Any F-xx references point to actually produced Cx findings; do not invent an F-xx for every Q.",
+        "Existing Primary/Supporting C1–C6 layout, vertical finding notes and seven report headings remain intact.",
+        "No raw HTML, invented evaluation runs, or new approval claims."
+      ]
+    },
+    {
+      "id": 46,
+      "prompt": "Run quality_questions: Q-06,Q-07 for discovery-brief and approval-evidence, but do not run the entire quality review. Show the full wording of each requested question, side-by-side statuses, and related finding references only when supported.",
+      "files": [
+        "evals/files/discovery-brief/SKILL.md",
+        "evals/files/approval-evidence/SKILL.md"
+      ],
+      "expected_output": "Within report Section 2, a two-row quality comparison table appears after Supporting findings. The Q-06 and Q-07 rows include their canonical full questions, per-skill evidence-backed status and optional existing F-xx references. Other eight Q rows are absent.",
+      "assertions": [
+        "Q-06 and Q-07 only, in correct order, with exact canonical question texts.",
+        "Both skill columns include status and concise source/evidence limit.",
+        "No Q coverage expansion to all ten and no invented F-xx for normal lack of traces.",
+        "Preserves normal C1–C6 tables, F-xx notes and read-only safety boundary."
+      ]
+    },
+    {
+      "id": 47,
+      "prompt": "Audit brief-planning, evidence-refinement, ticket-drafting, and requirements-review with quality_review: on. Render quality question text and status comparisons without an unreadable four-skill-wide question table.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/ticket-drafting/SKILL.md",
+        "evals/files/requirements-review/SKILL.md"
+      ],
+      "expected_output": "A grouped quality coverage comparison using at most two skill columns per table, repeating the canonical full question text in Q-01–Q-10 order and covering every audited skill with status/evidence/F-xx when material. Core multi-skill synthesis still covers all four.",
+      "assertions": [
+        "Every selected skill is covered by the Q review, grouped in tables with at most two skill columns.",
+        "Every Q row includes its full canonical question, in order, in each skill group.",
+        "No lost or duplicated material F-xx findings.",
+        "No HTML/multiline table cells or alternate C1–C6 orientation."
+      ]
+    },
+    {
+      "id": 48,
+      "prompt": "Run the default responsibility-and-overlap audit on brief-planning and evidence-refinement, then separately apply review_lenses: security-and-trust without quality_review. Does the optional full-question Q coverage table appear?",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Default and lens-only modes do not output any Quality Review Coverage table. The core six-consideration report remains and the selected lens is applied through existing considerations/F-xx findings only.",
+      "assertions": [
+        "No Q coverage table when Q review is not explicitly requested.",
+        "The core two C1–C6 tables remain, with ordinary F-xx findings as appropriate.",
+        "Lens-only does not trigger Q-01–Q-10 automatically.",
+        "No extra numbered section or made-up evidence."
+      ]
     }
   ]
 }

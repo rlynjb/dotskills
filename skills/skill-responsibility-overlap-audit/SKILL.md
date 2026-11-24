@@ -63,7 +63,11 @@ An existing handoff document is DOCUMENTED, not PLANNED; only **new** proposed c
 
 **Preserve the working layout:** Place a material quality/lens issue in the relevant C1–C6 table cell as a **short F-xx pointer**. Explain it using the usual Finding / Evidence / Assessment / Why / Recommendation vertical bullets directly after the corresponding Primary or Supporting table. Add Current wording / Concern / Recommended wording — PROPOSED only when real source wording is consequential. No giant cells, HTML line breaks, new consideration, eighth numbered report section, or mandatory extra fields.
 
-**Q-01–Q-10 coverage (optional):** For a full/subset Q review only, after the Supporting table and any related F-xx notes within **Section 2**, add a small `Quality review coverage (optional)` block grouped by inspected skill: one concise vertical line per selected Q with `PRESENT`, `PARTIAL`, `MISSING`, `NOT VERIFIED` or `NOT APPLICABLE`, source/evidence limit and any linked F-xx (Cx). Use the definitions in the reference. Never score a skill or claim production readiness. For lens-only review, list applied lenses briefly without a Q checklist.
+**Q-01–Q-10 coverage (optional, table format):** When a full or subset quality review is explicitly requested, append **Quality Review Coverage (optional)** **inside report Section 2, immediately after the Supporting C4–C6 table and its F-xx notes**. Show a **Markdown comparison table**, not a vertical Q-ID checklist. Its first column is **Quality question**, containing **each selected Q-xx ID, original title, and the complete canonical question verbatim** from [quality-review-questions.md](references/quality-review-questions.md). Remaining columns are audited skills in a consistent order. Each skill's cell contains **one concise** `PRESENT / PARTIAL / MISSING / NOT VERIFIED / NOT APPLICABLE` **status**, a direct source link or explicit evidence limitation, and an **F-xx (Cx) reference only when a material finding exists**. Use `—` rather than inventing a finding. Preserve Q-number ordering; full mode shows all Q-01–Q-10, subset mode shows only requested Q IDs.
+
+**Comparison layout:** For two skills use `Quality question | Skill A | Skill B`; for one skill use `Quality question | Skill A`; for three or more skills, divide into groups of **at most two skill columns** and repeat the applicable Q rows so no skill is omitted and the question text remains readable. The Quality Review Coverage table is an **explicit opt-in exception** to the two default C1–C6 comparison tables; it is NOT a new consideration, report section heading, or a wording-detail table. Keep one physical Markdown line per table row, allow normal wrapping, and **never** use HTML line-break tags, multiline cell content, or lists inside cells.
+
+**Cross-references:** Map any material Q concern back to the existing C1–C6 row and F-xx vertical note. Do not generate a second F-xx for the same issue or repeat its explanation in a Q cell. For example, `**PARTIAL** — [SKILL.md §Boundaries](source-url); F-03 (C5)`. A Q with no material finding still gets its accurate status and evidence, without an invented F-xx. A lens-only audit never triggers this table; an ordinary default audit has no Q table.
 
 **Critical boundaries:** Q-05 inventories currently documented contracts/gaps, but never drafts Stage 3 interface, invariant or failure contracts. Q-07 does not treat written permission claims as enforced host/tool permissions. Q-09 distinguishes defined eval cases from actual executed results, and this skill **does not run evaluations or profile traces**.
 
@@ -212,11 +216,11 @@ Use these seven headings, in order:
 
 ### Adaptive layout: same compact comparison for Primary and Supporting
 
-**Multi-skill Section 2 has two comparison tables, always with skills as columns:**
+**Core Section 2 has two C1–C6 comparison tables, always with skills as columns (an explicitly requested Q coverage table is an additional, separate comparison below them):**
 - **Primary:** `Consideration | Skill A | Skill B` with three main rows: C1 Inputs, C2 Responsibilities, C3 Outputs.
 - **Supporting:** identical skill headers and order, with three main rows: C4 Handoffs, C5 Boundaries, C6 Feedback.
 - **All table cells:** one **short observation** per skill, with `F-xx · Assessment` and a short direct source label where relevant. **Do not print Finding/Evidence/Why/Recommendation or any exact wording quote in full inside table cells.**
-- **Immediately after each table:** provide detailed F-xx blocks for that table's **material** findings, each field as a real, separate Markdown bullet line. That keeps field text on new lines without rotating or breaking tables. No third wording table, no detached Findings A/B/C section.
+- **Immediately after each C1–C6 table:** provide detailed F-xx blocks for that table's **material** findings, each field as a real, separate Markdown bullet line. No third **wording-detail** table or detached Findings A/B/C section. When a Q review is requested, its **separate Quality Review Coverage comparison table** follows the Supporting table and its findings.
 
 **Layout example (not actual findings):**
 
