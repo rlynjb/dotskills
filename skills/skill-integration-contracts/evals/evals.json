@@ -776,6 +776,67 @@
         "Coordinator remains conditional and not mandatory.",
         "Rationale is scoped to target skills, not a universal claim."
       ]
+    },
+    {
+      "id": 50,
+      "prompt": "Stage 3 on product-framing and evidence-refinement, with no requested return route. The source supports an optional direct handoff. Explain material interaction choice and its trade-off in Section 3, and tie to appropriate IC-xx guarantees without inventing feedback.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Section 3 describes a meaningful user-chosen optional handoff, its owner, why independence helps and its trade-off; Section 4 encodes optional trigger/provenance in an existing IC, and Section 5 omits redundant pattern boilerplate.",
+      "assertions": [
+        "Source-grounded direct handoff pattern explained briefly; no forced conditional feedback loop.",
+        "Section 4 includes actual pattern-related guarantees in existing IC-xx rather than a new pattern-only contract.",
+        "Section 5 adds only material cross-connection consequences, not a second explanation.",
+        "No invented automatic dispatch or mandatory upstream prerequisite.",
+        "Maintains seven numbered sections and human design approval."
+      ]
+    },
+    {
+      "id": 51,
+      "prompt": "Stage 3 compares evidence-refinement to ticket-construction. The latter allows provisional drafts but requires approved requirements and human review before publication. Identify any relevant interaction/approval pattern and ownership.",
+      "files": [
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/ticket-construction/SKILL.md"
+      ],
+      "expected_output": "A relevant human-gated transition is explained in plain English when material, including provisional versus publishable outcome and owner. IC-xx carries the actual approved-input and publication guarantees; cross-cutting claims only if relevant.",
+      "assertions": [
+        "Explains human approval gate as a relevant interaction rather than a feedback loop by default.",
+        "Does not equate producing provisional drafts to authorization to publish.",
+        "Does not invent automatic invocation or implement a host permission system.",
+        "No duplicate pattern card or unsupported claim of runtime enforcement."
+      ]
+    },
+    {
+      "id": 52,
+      "prompt": "A user supplies product-framing, evidence-refinement and ticket-construction files and asks if the skills automatically run concurrently as a fan-out/fan-in graph. No actual tool execution or aggregation is documented. Evaluate the requested pattern carefully.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/ticket-construction/SKILL.md"
+      ],
+      "expected_output": "State that fan-out/fan-in is not documented or observed by these sources. If requested as a proposed architecture, show it only conditionally with the need for an aggregation owner, necessary decisions, and unverified dispatch; do not misrepresent it as implemented.",
+      "assertions": [
+        "No fabricated fan-out, parallel dispatch, join semantics or automatic agent orchestration.",
+        "Labels a proposed pattern as PROPOSED/CONDITIONAL, not documented or approved.",
+        "Only applicable guarantee/decision questions added, not every pattern in a glossary.",
+        "Existing simple/manual option considered; maintains standalone and human authority where supported."
+      ]
+    },
+    {
+      "id": 53,
+      "prompt": "Stage 3 for product-framing alone. No additional skills or material interaction patterns exist. Produce an entry/exit agreement without a catalogue of orchestration patterns or an unnecessary diagram.",
+      "files": [
+        "evals/files/product-framing/SKILL.md"
+      ],
+      "expected_output": "Section 3 states the actual standalone entry, result and owner briefly. No named orchestration pattern, fan-out, coordinator, feedback or pattern trade-off is invented. Subsequent sections reflect only actual scope.",
+      "assertions": [
+        "Zero irrelevant pattern explanations is acceptable.",
+        "No invented consumer or cross-skill IC just to satisfy examples.",
+        "No redundant Section 5 discussion or pattern ID series.",
+        "All seven default sections remain in place and no runtime execution claims."
+      ]
     }
   ]
 }

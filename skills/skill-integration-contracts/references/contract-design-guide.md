@@ -104,6 +104,22 @@ A separately invoked optional coordinator might choose a starting point, sequenc
 
 Compare against a simpler manually selected handoff or copyable next action. Do not assume automatic agent dispatch from a markdown file, and do not create the coordinator during Stage 3.
 
+## Explaining relevant interaction patterns
+
+Section 3 can describe a **material pattern in an actual or intended interaction** without treating the pattern as a required implementation, industry standard or observed runtime behavior. **Inspect first; name patterns only if they help explain a supported or explicitly proposed relationship**. Some useful examples:
+
+- **Direct/optional handoff:** A producer's result is passed to a consumer by a user or authorized workflow. Clarify when the handoff is chosen and whether the consumer can start independently. Do not silently make optional context required.
+- **Conditional next-step selection:** The available evidence, scope or human choice determines which relevant work happens next. State the meaningful condition and owner; don't invent a mandatory all-skills sequence.
+- **Human-gated transition:** A proposal is reviewed before an artifact change or publication. Specify the authorized reviewer and what remains provisional. Written instructions do not prove tool-level enforcement.
+- **Sequential steps:** A downstream activity uses an upstream result when that dependency is actually relevant. Explain required versus optional ordering; don't assume that an instruction automatically dispatches another skill.
+- **Fan-out/fan-in:** Several consumers receive context or several results are aggregated. Only describe when the inspected or intended workflow genuinely uses multiple recipients or an aggregation owner. Do not imply concurrency, consensus, durable state or runtime support from a diagram.
+- **Conditional feedback/re-entry:** A material issue returns to the responsible owner for a decision, possibly followed by a targeted revision. No issue or no authorized change means no forced loop.
+- **Optional coordinator:** A distinct actor may choose routes, preserve identifiers or present next steps when justified. Compare against simpler manual handoffs; an instruction file alone cannot prove host dispatch.
+
+For a **relevant** pattern, Section 3 gives a **brief plain-English explanation**: *what initiates the interaction → who acts/decides → why it is useful → a real trade-off/constraint*. Explain the evidence level and link actual source, Stage 2 F-xx, IC-xx or D-xx when those IDs exist. **Omit pattern talk entirely** for unrelated, unverified or trivial cases; a standalone-only review may simply state its entry and result. Do not create extra pattern IDs, a fixed checklist or one contract per pattern.
+
+**Division of report responsibilities:** Section 3 explains the route and reason. **Section 4** specifies the applicable interface/behavior/approval/failure guarantees in **existing connection-based IC-xx cards**. **Section 5** analyzes **material cross-cutting** consequences or alternatives **only when not already covered in Section 4**. Avoid explaining the same pattern in three places. Stage 4 implements approved design, and Stage 5 verifies runtime behavior.
+
 ## Deciding how much detail to write
 
 - **Small, human-mediated handoff:** A short `IC-xx` card covering trigger, input/output, owner, invariants, approval and failure rule is usually enough.

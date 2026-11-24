@@ -32,6 +32,7 @@ For a single skill, use a short vertical profile instead of inventing a second t
 Describe **only the connection(s) actually under review**; a local interaction is not necessarily the full workflow. **Choose details based on inspected source, supplied findings, justified design proposals or explicit user intent**, and identify DOCUMENTED vs PROPOSED paths. Keep the existing broader architecture intact unless a change is explicitly designed and approved.
 
 - **Intended connection / standalone entry:** [Actual producer → consumer or one skill's own entry/exit; optional versus genuinely required context; avoid inventing a partner or independent behavior.]
+- **Relevant interaction pattern — only if explanatory value:** [Name the **evidenced or explicitly proposed** behavior, e.g. direct handoff, conditional next-step branch, human approval gate, justified sequence, fan-out/fan-in, optional coordinator or conditional feedback. In **one or two sentences**, state **what initiates the path, what happens/which owner chooses, why it helps, and one material trade-off or constraint**. Label PROPOSED or NOT VERIFIED where appropriate; no pattern catalogue or mandatory new architecture. If no distinct pattern matters, **omit this item**.]
 - **Proposed decision owner:** [Who produces, consumes, clarifies or approves a consequential change; do not guess.]
 - **Conditional feedback route — include only when material:** [Identify an evidenced or specifically proposed return for clarification/revision: triggering finding, owner, approval requirement, what may change if authorized, and whether to revisit the affected step or continue without changes. Label a newly suggested loop PROPOSED. If no meaningful feedback path applies, **omit this bullet and the loop illustration**.]
 - **Why standalone skills matter — include only when relevant:** [One or two team-facing sentences **only if** independent invocation, optional handoff or selective re-entry is supported by the evidence or is a justified design choice. Explain the practical branching/iteration benefit, and retain contract, actual prerequisite and human-approval boundaries. If standalone use is unsupported, contradictory or not relevant, describe the real dependency/uncertainty instead; **do not assert flexibility as a fact**.]
@@ -72,21 +73,21 @@ Write **one vertical card per material connection**. Don't create one card per c
 - **Purpose:** [Why this specific handoff helps.]
 - **Sources / Stage 2 link:** [Direct source links, revision and real `F-xx (Cx)` if available; distinguish DOCUMENTED from INFERRED.]
 - **Producer / consumer / owner:** [Who supplies, who reviews, who authorizes; distinguish producer's domain ownership from consumer's.]
-- **Trigger and standalone path:** [When optional/required handoff occurs; how each skill can still run independently or what truly required prerequisite exists.]
+- **Trigger and standalone path:** [When optional/required handoff occurs; how each skill can still run independently or what truly required prerequisite exists; include any **material pattern-specific routing/branch condition** from Section 3 without re-explaining the pattern.]
 - **Inputs:** [Only genuinely required fields for this handoff vs optional context; source/revision, provenance and unresolved questions when applicable.]
 - **Outputs / postconditions:** [Minimum usable result and what successful completion promises.]
 - **Preconditions / invariants:** [What must be true before a handoff; what must remain unchanged, e.g. source ID, unresolved decisions, approval status.]
 - **Failure and feedback:** [Missing/conflicting inputs → safe continuation / BLOCKED / NEEDS HUMAN; owner to whom changes are proposed; when work can resume.]
 - **Trust / approval / permitted effects:** [Who can propose, edit, publish or approve; documented instructions vs runtime enforcement assumptions.]
 - **Observability / compatibility (if relevant):** [Minimum evidence/IDs, optional format revisions and known host assumptions; don't promise unverified functionality.]
-- **Why / trade-off:** [Concrete downstream failure prevented, alternative and cost of extra requirements.]
+- **Why / trade-off:** [Concrete downstream failure prevented, alternative and cost of extra requirements; link to a material Section 3 pattern only when it affects the guarantee.]
 - **Dependencies and status:** [Related `D-xx`; `PROPOSED` or `CONDITIONAL — NEEDS HUMAN` until explicit sign-off; never claim implemented.]
 
 For one skill, name `IC-01 — [Skill] standalone entry/exit`; don't invent a producer. When a contract is not relevant, omit it rather than inserting empty fields.
 
 ## 5. Cross-Cutting Guarantees & Trade-offs
 
-Capture only material constraints **not already clear** in contract cards.
+Capture only material constraints **not already clear** in contract cards. When Section 3 identifies a relevant interaction pattern, Section 5 discusses its **cross-connection consequences** (such as shared ownership, coupling, failures, authorization or context provenance) **only if** they are material and not already addressed by the specific IC-xx cards. Do not repeat a pattern glossary, recreate its diagram or add an extra framework just because a pattern has a name.
 
 - **Authorization and trust:** [Source/evidence; expected human approval; host/tool enforcement NOT VERIFIED when not inspected.]
 - **Reliability and feedback:** [A meaningful failure/partial-result rule and which consumer is affected.]
