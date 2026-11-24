@@ -729,6 +729,53 @@
         "Preserves optional context and owner authority.",
         "Does not infer need for coordinator from feedback alone."
       ]
+    },
+    {
+      "id": 47,
+      "prompt": "Use Stage 3 on synthetic product-framing and evidence-refinement with independent entry and optional context, but the requested design is a simple one-way handoff with no material finding, owner-return requirement or feedback issue. Do not introduce a hypothetical feedback loop.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Section 3 describes the actual one-way optional connection and independent entry when relevant, but omits conditional feedback loop prose, branch diagram and unneeded owner-revision scenario. No invented feedback route simply because a pair of skills was provided.",
+      "assertions": [
+        "No fabricated conditional feedback route, diagram or obligatory human revision cycle.",
+        "Independent use may be stated only where supported by the supplied skill files.",
+        "No generic presentation-ready feedback-loop boilerplate when no return condition applies.",
+        "No coordinator is invented or deployed to solve a nonexistent routing problem.",
+        "Seven design sections preserved and all contract/approval boundaries remain correct."
+      ]
+    },
+    {
+      "id": 48,
+      "prompt": "Design Stage 3 for synthetic ticket-construction only. Its current source explicitly requires an authorized human publication decision; the user does not request branching or upstream feedback. Assess actual constraints rather than claiming fully standalone optional execution.",
+      "files": [
+        "evals/files/ticket-construction/SKILL.md"
+      ],
+      "expected_output": "Section 3 accurately describes the standalone skill's actual entry, mandatory human publication gate and known constraints. Omit unrelated flexibility-benefit and feedback-loop examples; do not incorrectly downgrade real safety/permission prerequisites.",
+      "assertions": [
+        "No unsupported claim that all steps are optional or can be skipped.",
+        "No generic standalone-flexibility motivational paragraph or forced return path.",
+        "Preserves actual human publication requirement and documentary versus enforced distinction.",
+        "Does not create another skill or coordinator to complete a diagram."
+      ]
+    },
+    {
+      "id": 49,
+      "prompt": "Stage 3 on synthetic product-framing and evidence-refinement with a supplied finding explicitly requesting a product-owner revision and optional return for clarification. Show concise applicable feedback and independent-use rationale, without a mandatory rerun.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/stage2-audit.md"
+      ],
+      "expected_output": "Section 3 includes a source/proposal-labeled conditional feedback route and brief standalone rationale because actual context justifies both. No-change and rejection paths continue or defer; only authorized owner revisions may trigger targeted re-entry.",
+      "assertions": [
+        "Applicability is grounded in actual supplied findings or explicit intended design.",
+        "Meaningful owner-approved return and no-change forward path, no perpetual loop.",
+        "Distinguishes documented from proposed feedback and from observed runtime behavior.",
+        "Coordinator remains conditional and not mandatory.",
+        "Rationale is scoped to target skills, not a universal claim."
+      ]
     }
   ]
 }

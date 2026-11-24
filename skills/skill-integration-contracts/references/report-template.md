@@ -29,37 +29,39 @@ For a single skill, use a short vertical profile instead of inventing a second t
 
 ## 3. Proposed Interaction & Ownership Map
 
-Describe the **specific connection(s) under review**, not necessarily the whole product or engineering workflow. A two-skill interaction can be a local part of a larger multi-skill architecture. Keep existing high-level architecture intact unless a change is explicitly proposed and approved.
+Describe **only the connection(s) actually under review**; a local interaction is not necessarily the full workflow. **Choose details based on inspected source, supplied findings, justified design proposals or explicit user intent**, and identify DOCUMENTED vs PROPOSED paths. Keep the existing broader architecture intact unless a change is explicitly designed and approved.
 
-- **Intended connection:** [Producer → consumer; user/authorized workflow trigger; required vs optional context; explicit standalone entry and complete result for each relevant skill.]
-- **Proposed decision owner:** [Who produces, consumes, proposes changes, authorizes a revision, and resolves returned questions; don't guess authority.]
-- **Conditional feedback route (only if material):** [Which finding/question triggers feedback; to which responsible owner/artifact it returns; what that owner can approve, reject or defer; when an authorized revision is made; whether **only the affected skill/phase** needs another pass. If no actionable issue or no authorized revision, continue by the chosen forward path.]
-- **Why standalone skills matter:** [One or two team-friendly sentences explaining how independent entry, optional handoffs, and targeted re-entry allow branching, feedback and future workflow changes **without a rigid mandatory skill sequence**. Do **not** equate flexibility with absent contracts, waived prerequisites or bypassed human approval.]
-- **Simpler path vs coordinator:** [NOT NEEDED / CONDITIONAL PROPOSAL / DEFER; is manual/user-selected routing sufficient? A feedback loop alone does not require a coordinator.]
-- **Human checkpoints:** [What requires explicit approval; distinguish a skill's proposed changes from the owner's authorized artifact revision.]
-- **Diagram when useful (adapt to actual connections, including a standalone-only path):**
+- **Intended connection / standalone entry:** [Actual producer → consumer or one skill's own entry/exit; optional versus genuinely required context; avoid inventing a partner or independent behavior.]
+- **Proposed decision owner:** [Who produces, consumes, clarifies or approves a consequential change; do not guess.]
+- **Conditional feedback route — include only when material:** [Identify an evidenced or specifically proposed return for clarification/revision: triggering finding, owner, approval requirement, what may change if authorized, and whether to revisit the affected step or continue without changes. Label a newly suggested loop PROPOSED. If no meaningful feedback path applies, **omit this bullet and the loop illustration**.]
+- **Why standalone skills matter — include only when relevant:** [One or two team-facing sentences **only if** independent invocation, optional handoff or selective re-entry is supported by the evidence or is a justified design choice. Explain the practical branching/iteration benefit, and retain contract, actual prerequisite and human-approval boundaries. If standalone use is unsupported, contradictory or not relevant, describe the real dependency/uncertainty instead; **do not assert flexibility as a fact**.]
+- **Simpler path vs coordinator — only if a coordination choice is material:** [NOT NEEDED / CONDITIONAL PROPOSAL / DEFER, with evidence and trade-off. Feedback alone does not require a coordinator.]
+- **Human checkpoints — when applicable:** [Actual/proposed approval boundaries; distinguish a suggestion from an authorized change.]
+- **Diagram — only when it clarifies an actual relevant branch/return path:** [Use a small scoped diagram, omit absent branches and label proposed routing; never force this example into unrelated reports.]
+
+**Illustrative example — use only for a supported conditional-feedback scenario:**
 
 ```text
-[Skill A: standalone entry/output] -- chosen optional context --> [Skill B: standalone entry/output]
+[Skill A: available output] -- optional, chosen handoff --> [Skill B: review result]
                                                                |
-                                                   [Finding requires a change?]
-                                                      /                 \
-                                                    NO                  YES
-                                                    |                    |
-                                            [Continue as chosen]   [Owner reviews proposal]
-                                                                         |
-                                                              [Revision authorized?]
-                                                                 /            \
-                                                                NO            YES
-                                                                |              |
-                                                       [Continue / defer]  [Owner updates artifact]
+                                           [Material question or proposed change?]
+                                               /                       \
+                                             NO                        YES
+                                             |                          |
+                                      [Continue as chosen]     [Owner reviews proposal]
+                                                                            |
+                                                               [Revision authorized?]
+                                                                   /           \
+                                                                 NO            YES
+                                                                 |              |
+                                                         [Defer/continue] [Update owned artifact]
                                                                                   |
-                                                                    [Revisit affected step if needed]
+                                                                  [Revisit affected step if needed]
 ```
 
-**Interpretation:** This is a **conditional feedback path**, not a loop every invocation must traverse. The upstream artifact changes only with appropriate authorization; revisiting the affected step is optional and purpose-driven. Each skill remains independently useful where its actual prerequisites permit. The diagram is **illustrative**—not evidence of automatic dispatch, an executed loop, or a coordinator implementation. Omit unnecessary branches for a simple/standalone-only scope.
+This example is **not a mandatory stage or loop**; an absent issue or unapproved revision never forces a return. Documented instructions do not prove automatic dispatch or actual execution. For standalone-only scopes or one-way handoffs without material feedback, **omit the loop and use a short factual interaction description**.
 
-**Presentation-ready rationale (adapt rather than recite):** "We keep skills independently useful and define their handoffs explicitly. That lets a workflow branch or return a finding to the responsible owner, then revisit only what needs to change—without forcing every skill into one fixed execution sequence. Contracts and human approval still govern the connection."
+**Conditional, team-ready rationale (include only when the inspected interaction supports it):** "These skills can be used independently, with explicit handoffs when chosen. That lets us return a material finding to the responsible owner and revisit only affected work, without forcing one rigid sequence. Contracts and approvals still govern every connection." Adapt the statement to actual capabilities; never present it as a generic guarantee about all skills.
 
 ## 4. Proposed Integration Contract Cards
 
