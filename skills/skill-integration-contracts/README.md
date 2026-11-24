@@ -191,10 +191,21 @@ The seven stable headings are **Executive Summary**, **Current Skill Boundaries 
 
 - **A. Understanding the proposed integration** — what is proposed, why it matters, and the problem it solves.
 - **B. How it would work in practice** — a short, clearly hypothetical walkthrough when it adds understanding; optional ASCII only when a material route is clearer that way. Omit B when the concept is already clear.
-- **C. Technical contract** — precise applicable guarantees, with short plain-English explanations of technical terms where useful. Preserve required/optional inputs, ownership, behavior, failures and approval boundaries.
+- **C. Technical contract** — precise applicable guarantees organized by six stable contract dimensions, with short plain-English questions, concise subfield bullets, and context-specific explanations of technical terms.
 - **D. Evidence and decisions** — distinguish documented behavior and Stage 2 evidence from the proposed changes and unverified enforcement; include direct links, decision dependencies and status.
 
 This is a reading hierarchy inside Section 4, not extra report stages. Keep simple cards compact, avoid repeating the audit or walkthrough, and retain engineering rigor. See the [Section 4 template and example](references/report-template.md#4-proposed-integration-contract-cards).
+
+**Section 4C — Consistent engineering vocabulary:** Use only applicable dimensions, in the following order and with their original numbers (skip irrelevant headings):
+
+- **1. Interface — What do we exchange?**
+- **2. Behavioral Guarantees — What must be true before, after and throughout?**
+- **3. Ownership, Security & Authority — Who controls what?**
+- **4. Reliability & Feedback — What happens when something goes wrong or needs revision?**
+- **5. Observability & Traceability — How can we understand and trace what happened?**
+- **6. Compatibility & Evolution — How do we preserve compatibility as things change?**
+
+Use lightweight RFC-inspired **MUST / MUST NOT / SHOULD / MAY** wording for meaningful mandatory, prohibited, recommended or optional terms respectively, without overstating approval or runtime enforcement. Preconditions (before), postconditions (successful result) and invariants (what stays true at relevant boundaries) sit together under Behavioral Guarantees. Avoid duplicate guarantees, invented fields, required upstream skills or unnecessary telemetry. The six dimensions are a communication vocabulary, not a new checklist or mandatory schema.
 
 **Self-contained dependencies:** **Dependencies** and **Status** are separate. State each prerequisite or decision in plain English and why it affects the contract; distinguish optional context from required prerequisites. A D-xx decision reference includes its title/question and maps to the same decision in Section 6, which links back to the affected IC-xx. Never use an unexplained key. If no dependencies are identified, say **None identified**. Contract approval status remains independent.
 
