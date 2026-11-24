@@ -169,9 +169,11 @@ The alignment mode uses a **separate five-section report**, not the default seve
 2. **Contract Alignment Coverage** — one material guarantee per row and **ALIGNED / PARTIALLY ALIGNED / MISMATCH / NOT VERIFIED** source-level verdict.
 3. **Material Gaps & Evidence Limits** — source-backed differences and the smallest proposed correction.
 4. **Next Stage & Iteration Handoff** — Stage 4 source fixes, separate Stage 3 design revisions needing human approval, or Stage 5 testing.
-5. **Stage 5 Candidates — NOT EXECUTED** — only justified runtime tests to carry forward.
+5. **Stage 5 Candidates — NOT EXECUTED** — a junior-friendly explanation of behavioral validation, practical next steps and named Given–When–Then candidate cards tied to the approved contract.
 
 A contract can be **ALIGNED — DOCUMENTED SOURCE** while its runtime execution remains **NOT VERIFIED**. The mode never treats a missing trace alone as a failed implementation.
+
+**Reading Section 5:** `V-xx` is a validation candidate ID, not a universal test category. Each card includes a descriptive scenario title, contract guarantee, validation level, **Given — Test setup**, **When — Execution**, **Then — Assertions**, **Expected evidence**, and **Status: NOT EXECUTED**. Reuse relevant existing candidate IDs when unchanged. Check coverage of approved guarantees, start with the smallest justified standalone/integration/end-to-end scope, and convert candidates to executable evaluations in a separate authorized Stage 5 task (Evaluate Skill where supported, or an appropriate controlled test). Collect actual evidence before recording PASS/FAIL/INCONCLUSIVE; profiling is supplementary. Missing evidence is not a pass. No automatic test execution or broader design approval follows from this report. See the [Section 5 candidate template and example](references/implementation-alignment-review.md#5-stage-5-candidates--not-executed).
 
 **Iteration loop:** Approve IC/D in Stage 3 → implement in Stage 4 → run this alignment review → correct Stage 4 mismatches and rerun the same approved design. If the approved **design must change**, revise it in a separate Stage 3 design pass and get specific new approval before implementing that change. Stage 5 performs actual behavioral evaluations.
 
@@ -214,7 +216,7 @@ Use lightweight RFC-inspired **MUST / MUST NOT / SHOULD / MAY** wording for mean
 - `F-xx` = findings from that audit, used only if an actual report supplies them.
 - `IC-xx` = newly proposed integration contract cards.
 - `D-xx` = human design decisions and their statuses.
-- `V-xx` = candidate checks for separately authorized Stage 5 work.
+- `V-xx` = named validation scenario candidates for separately authorized Stage 5 work; their IDs do not define fixed test categories.
 - `CQ-xx` = optional Stage 3 Contract Quality Review questions.
 
 **Status guidance:** PROPOSED means suggested, CONDITIONAL — NEEDS HUMAN means dependent on an unresolved ownership/permission decision, APPROVED — DESIGN ONLY means a human explicitly accepted an exact design version. None imply that integration is implemented or the agent actually ran.
