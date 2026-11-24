@@ -71,36 +71,76 @@ This is **ASCII text**, meant to remain readable directly in chat without render
 
 ## 4. Proposed Integration Contract Cards
 
-Write **one vertical card per material connection**. Make each card easy to skim directly in chat: use a clear IC-xx title, short bold field labels and concise bullets; separate adjacent cards with whitespace or a horizontal rule. Use one or two sentences per field where possible, and nested bullets only when distinct items need separation. Preserve material guarantees and evidence; omit irrelevant fields and avoid repeating the same explanation in multiple sections. Don't use a wide table for contract cards or create one card per category.
+Write **one vertical card per material connection** using the reading order below: **understanding → practical application (optional) → technical details → evidence and decisions**. The audience is a junior developer learning how the integration fits together. Keep clear IC-xx titles, short bold field labels, concise bullets, and whitespace or a horizontal rule between cards. Do not use a wide table for contract cards. These are subsections inside Section 4, not new report sections. Preserve material guarantees and evidence; omit irrelevant fields, use the walkthrough only when it adds understanding, and avoid repeating the same explanation across layers.
 
-**IC-01 — [Source skill] → [Target skill]**
+### IC-01 — [Descriptive contract title]
 
-- **Purpose:** [Why this specific handoff helps.]
-- **Sources / Stage 2 link:** [Direct source links, revision and real `F-xx (Cx)` if available; distinguish DOCUMENTED from INFERRED.]
-- **Producer / consumer / owner:** [Who supplies, who reviews, who authorizes; distinguish producer's domain ownership from consumer's.]
-- **Trigger and standalone path:** [When optional/required handoff occurs; how each skill can still run independently or what truly required prerequisite exists; include any **material pattern-specific routing/branch condition** from Section 3 without re-explaining the pattern.]
-- **Inputs:** [Only genuinely required fields for this handoff vs optional context; source/revision, provenance and unresolved questions when applicable.]
-- **Outputs / postconditions:** [Minimum usable result and what successful completion promises.]
-- **Preconditions / invariants:** [What must be true before a handoff; what must remain unchanged, e.g. source ID, unresolved decisions, approval status.]
-- **Failure and feedback:** [Missing/conflicting inputs → safe continuation / BLOCKED / NEEDS HUMAN; owner to whom changes are proposed; when work can resume.]
-- **Trust / approval / permitted effects:** [Who can propose, edit, publish or approve; documented instructions vs runtime enforcement assumptions.]
-- **Observability / compatibility (if relevant):** [Minimum evidence/IDs, optional format revisions and known host assumptions; don't promise unverified functionality.]
-- **Why / trade-off:** [Concrete downstream failure prevented, alternative and cost of extra requirements; link to a material Section 3 pattern only when it affects the guarantee.]
-- **Dependencies:** [Describe each actual prerequisite or unresolved design decision in plain English: what is required or needs deciding, and why it affects this contract. Distinguish required prerequisites from optional context and mark unresolved blockers. For each design decision, show `D-xx — descriptive title/question (Section 6)` and a brief **Why it matters** explanation. Use separate nested bullets for multiple dependencies. The same decision must appear in Section 6 and link back to this IC-xx. Never output a bare key. If none are identified, write `None identified`, qualifying material evidence limits.]
-- **Status:** [PROPOSED / CONDITIONAL — NEEDS HUMAN / APPROVED — DESIGN ONLY, according to explicit approval and unresolved required decisions, independently of the dependency description. Never claim implemented or tested.]
+**Connection:** [Producer skill → consumer skill; or named standalone entry/exit.]
 
-**Illustrative excerpt (not a required handoff or fixed decision ID):**
+**A. Understanding the proposed integration**
 
+[In one short paragraph, explain what we are proposing, what problem it solves, why the consumer benefits, and the main trade-off or alternative if material. Start with the reader's mental model, not the technical specification. Identify the proposal as such; do not imply current implementation.]
+
+**B. How it would work in practice — only when helpful**
+
+[One representative, clearly labeled hypothetical/proposed scenario. Use short prose or a few steps: starting situation/input → trigger and who chooses/initiates → information passed and how the receiving skill uses it → outcome. Show an alternate standalone, missing-input, failure or human-review path only if it matters. If a diagram adds clarity beyond Section 3, use narrow ASCII in a fenced `text` block only. Omit this whole subsection if A already gives a sufficient mental picture. Do not invent execution traces, automatic dispatch, source fields or actual approvals.]
+
+**C. Technical contract**
+
+State the precise applicable guarantees using concise vertical bullets. Introduce technical terms with their plain-English meaning when first useful; retain the formal terminology, exact required/optional distinctions and approval conditions. Label a guarantee CURRENT DOCUMENTED, NEW PROPOSAL or UNVERIFIED ENFORCEMENT when the distinction matters; support factual claims with direct source links.
+
+- **Ownership (producer / consumer / owner):** [Who supplies and consumes information, who verifies it, and who authorizes consequential decisions.]
+- **Trigger and standalone path:** [When the handoff is optional or required, any material branch condition, and how independent use is preserved where supported; distinguish actual required prerequisites.]
+- **Inputs (interface):** [Required versus optional handoff information; source identity/revision, provenance and unresolved questions when relevant.]
+- **Outputs / postconditions (what successful completion guarantees):** [Minimum usable result and what the receiver can rely on.]
+- **Preconditions (what must be true first) / invariants (what must stay true):** [Necessary preconditions and preserved properties, e.g. source identity, unresolved questions and approval state.]
+- **Failure and feedback:** [Missing, conflicting or invalid inputs → safe continuation / BLOCKED / NEEDS HUMAN; responsible owner, return trigger and permission to resume; fault isolation when relevant.]
+- **Trust / approval / permitted effects:** [Who can propose, edit, publish or approve; untrusted source handling; documented instructions versus unverified runtime enforcement.]
+- **Observability / compatibility (if relevant):** [Necessary evidence, IDs/revisions or status fields, host assumptions and compatibility constraints. Do not promise unverified functionality.]
+
+Explain unfamiliar terms in context only where they help the reader understand the consequence of a guarantee; for example, preserving a standalone path is an invariant only if that is a real proposed guarantee. Do not repeat the conceptual rationale or scenario in every bullet. Include a contract-specific trade-off here only if it has not already been explained in A.
+
+**D. Evidence and decisions**
+
+- **Current documented behavior:** [Actual inspected sources and revisions supporting relevant existing behavior; direct links; identify evidence limits rather than guessing.]
+- **Stage 2 findings:** [Real supplied F-xx (Cx) references and direct audited source, with a brief explanation of the finding that motivated this contract. If no Stage 2 report was provided, say so; do not invent a finding.]
+- **Proposed change / what stays unchanged:** [In one concise statement, connect the evidence to the new agreement and identify existing behavior to preserve. Flag material UNVERIFIED ENFORCEMENT or other evidence limits; no new implementation claims. Refer to the exact guarantees in C rather than repeating them.]
+- **Dependencies:** [Describe actual prerequisites or unresolved design decisions in plain English: what is required or needs deciding and why it matters. Distinguish required prerequisites from optional context and identify unresolved blockers. For each decision, show `D-xx — descriptive title/question (Section 6)` and a brief **Why it matters** explanation. Use separate nested bullets for multiple dependencies. Each decision must appear with the same title/question in Section 6 and link back to this IC-xx. Never output a bare key. If none are identified, write `None identified`, qualifying material evidence limits.]
+- **Status:** [PROPOSED / CONDITIONAL — NEEDS HUMAN / APPROVED — DESIGN ONLY, supported by explicit human approval and unresolved required decisions. Separate status from dependencies; never claim implemented or tested.]
+
+**Illustrative reading-order example (not target evidence, an imposed handoff, or a fixed decision ID):**
+
+### IC-01 — Optional Forward Handoff
+
+**Connection:** Upstream planning skill → downstream refinement skill
+
+**A. Understanding the proposed integration**
+
+Let the refinement skill reuse an available planning document rather than forcing the developer to repeat discovery. Make the document optional, so the refinement skill can still start independently.
+
+**B. How it would work in practice**
+
+In this proposed example, a developer chooses to supply an existing planning document. The refinement skill uses it as context and identifies remaining questions. If no document is supplied, the skill starts from its usual required inputs instead. Neither path implies automatic invocation or approval.
+
+**C. Technical contract**
+
+- **Trigger / inputs:** The developer chooses whether to supply the planning document; normal required starting information must still be available.
+- **Outputs:** Refined requirements and unresolved questions.
+- **Invariant (what must stay true):** Both supported entry paths remain available; a missing optional document alone must not block execution.
+- **Approval:** Any proposed change to an owned product decision returns to the authorized owner for review rather than silently changing it.
+
+**D. Evidence and decisions**
+
+- **Current behavior / Stage 2:** In an actual card, cite the inspected skill source and real relevant findings; this example does not assert that any target has these capabilities.
+- **Proposed change:** Explicitly agree on the optional exchange while retaining the documented standalone path, if supported.
 - **Dependencies:**
   - **D-01 — Adopt the optional forward handoff** (Section 6).
-  - **Why it matters:** Determines whether the receiving skill can use upstream output when supplied while retaining its standalone entry path.
+  - **Why it matters:** Determines whether the downstream skill can reuse upstream information without a mandatory dependency.
 - **Status:** CONDITIONAL — NEEDS HUMAN.
 
-In this example, D-01 is an unresolved decision that blocks finalizing this contract. The actual Section 6 ledger must use the same decision title and identify the affected contract. These explanatory instructions are not part of the generated card.
+In this example the unresolved decision blocks finalizing the contract. In a real report, Section 6 must define that decision under the same title and identify the affected IC. Do not copy this example as evidence or a fixed workflow. When no dependency is identified, show **Dependencies: None identified** and an independently justified **Status**; this does not imply approval. The card should make sense without looking up Section 6, where the exact decision, alternatives and approval record belong.
 
-For cards without identified dependencies, show **Dependencies: None identified** and the independently justified **Status**. Absence of dependencies does not constitute approval. The card must remain understandable without looking up the ledger; Section 6 supplies full decision rationale, alternatives and approval details.
-
-For one skill, name `IC-01 — [Skill] standalone entry/exit`; don't invent a producer. When a contract is not relevant, omit it rather than inserting empty fields.
+For one skill, name the contract `IC-01 — [Skill] standalone entry/exit` and omit irrelevant cross-skill fields; do not invent a producer or a practical walkthrough just to complete the format. When a contract is not relevant, omit it rather than inserting empty fields.
 
 ## 5. Cross-Cutting Guarantees & Trade-offs
 
