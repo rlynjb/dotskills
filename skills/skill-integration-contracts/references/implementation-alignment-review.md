@@ -1,100 +1,142 @@
 # Implementation Alignment Review — Stage 3 (Optional)
 
-**Purpose:** After Stage 4, compare modified skill source with the **specific human-approved** Stage 3 integration contract (`IC-xx`) and decision (`D-xx`). This optional, **read-only** mode stays inside `skill-integration-contracts`. It is not a script, implementation, general code review, runtime test or substitute for Stage 5.
+**Purpose:** After Stage 4, assess modified skill source against the strongest available design evidence. Use specific human-approved IC/D terms when verified, compare against an independent proposal when approval is unavailable, or assess documented integration behavior directly when neither exists. This optional **read-only** mode stays inside `skill-integration-contracts`. It is not implementation, general code review, a runtime test or a substitute for Stage 5.
 
-**Invocation:** `implementation_alignment_review: on`. **Default: off**; otherwise use the existing four-step Stage 3 design process and seven-section design report. The alignment mode uses the separate report below and never changes target files.
+**Invocation:** `implementation_alignment_review: on`. **Default: off**; otherwise use the existing four-step Stage 3 design process and seven-section design report. Alignment review always uses the five-section report below; it never changes target files. No new flag, retained chat session or approval record is required to start a useful review.
 
-## Inputs and approval baseline
+## Inputs and adaptive review basis
 
-- **Approved baseline:** actual exact IC-xx terms, linked D-xx decisions, explicit human approval of those exact terms, and design version/revision if available. Approval of D-01 does not authorize separate D-02; a previous `CLEAR` score, Stage 2 recommendation, or proposed text is not approval.
-- **Implemented source:** actual updated target `SKILL.md` and affected references/config/executable code where relevant, links and inspected revision or base/head diff if available. A current source snapshot can prove current documentary alignment, but **without a diff it cannot prove which changes were newly introduced**.
-- **Read-only access:** Inspect only authorized source and supplied evidence. Do not change files, invoke target skills, run tests, publish, approve, or grant permissions.
-- **Missing approved design:** Report `APPROVED BASELINE NOT VERIFIED`, identify what exact approved text or decision is unavailable, and do **not** mark anything ALIGNED to an approved contract. A limited clearly labeled comparison to PROPOSED text may be useful, never authoritative.
-- **Evidence distinctions:** `APPROVED DESIGN`, `CURRENT DOCUMENTED SOURCE`, `INSPECTED CODE/CONFIG`, `SUPPLIED OBSERVED RESULT`, `NOT VERIFIED`. Documentary instructions about permissions or automatic dispatch are not proof of actual host/runtime enforcement.
+- **Target source:** Actual current `SKILL.md`, referenced handoff files, relevant config/executable code, accessible branch/revision and working-tree or base/head diff if available. Read only authorized sources. A snapshot supports current documentary findings, not claims about when a change was introduced.
+- **Optional independent design:** Exact approved IC/D wording, version and explicit human approval; or a separately identifiable proposal (file, supplied text or accessible prior design) with sufficiently specific terms to compare. Use existing IDs only when grounded. A Stage 2 recommendation supports provisional comparison only if it specifies an independent design expectation. A source-derived summary is not independent design evidence.
+- **Approval limits:** Implementation, commit history, diff, prior CLEAR result, or a claim that a design was implemented cannot establish exact human approval. Approval of D-01 does not approve D-02. If approval or exact approved wording cannot be established, report `APPROVED BASELINE NOT VERIFIED` and state what is missing.
+- **Evidence distinctions:** APPROVED DESIGN, INDEPENDENT PROPOSAL, CURRENT DOCUMENTED SOURCE, INSPECTED CODE/CONFIG, SUPPLIED OBSERVED RESULT, INFERRED, NOT VERIFIED. Documentary permissions and dispatch instructions are not proof of runtime enforcement.
 
-## Read-only comparison procedure
+### Three adaptive review modes — automatic selection
 
-### Step 1 — Resolve the approved IC/D version
+| Mode | Required evidence | Permitted source-level verdicts |
+| --- | --- | --- |
+| **1 — APPROVED DESIGN ALIGNMENT** | Exact independent terms plus verified explicit human approval of that version and scope | ALIGNED / PARTIALLY ALIGNED / MISMATCH / NOT VERIFIED |
+| **2 — PROVISIONAL DESIGN ALIGNMENT** | Independent sufficiently specific proposed terms, approval missing/unverified | CONSISTENT WITH PROPOSAL / PARTIALLY CONSISTENT / MISMATCH (against proposal) / NOT VERIFIED |
+| **3 — SOURCE-BASED INTEGRATION ASSESSMENT** | Current source and relevant changes without an independent sufficiently specific design baseline | DOCUMENTED / INCONSISTENT / GAP IDENTIFIED / NOT VERIFIED |
 
-Identify exact approved clauses and D-xx decisions, owner and any available design revision. Exclude rejected, deferred, unapproved, changed or superseded decisions. Check the design applies to the inspected connections; don't invent an approval date or baseline.
+Select the strongest supported mode for each assessed scope. For mixed scopes, group rows by basis and label the corresponding verdicts and validation candidates. Never extend approval to another term. Without an independent design, do not fabricate IC/D wording or call a source's agreement with itself alignment. **Missing approval limits claims, not the five-section output.** Complete Sections 1–5 using the strongest available evidence. If target source is unavailable, disclose that limit rather than inventing observations/tests.
+
+## Read-only review procedure
+
+### Step 1 — Resolve the strongest available design basis
+
+Inspect supplied or accessible relevant design/approval records; identify actual version, scope and owner when known. Select Mode 1 if exact approved terms are verified; otherwise report APPROVED BASELINE NOT VERIFIED and select Mode 2 for independent specific proposed terms or Mode 3 without them. Distinguish rejected/deferred terms from proposals under consideration; do not revive superseded designs or fabricate signoff. A fresh session with source and diffs alone is valid Mode 3 input. Do not require prior chat recovery before assessing accessible source.
 
 ### Step 2 — Inspect changed or current source
 
-Read affected current skill instructions, references and relevant executable tools/config only when accessible. Inspect base/head diff when available and cite actual source file/line/section. Note missing revisions and out-of-scope host enforcement. Check independent invocation, optional context, source provenance, failure/feedback and human decision boundaries where approved.
+Read affected current skill instructions, directional handoff references and relevant executable tools/config. Inspect base/head or working-tree diff when available and cite actual file/line/section and revision. Note unknown host enforcement. Check material independent invocation, optional/required context, ownership, source provenance, failure/feedback and human decision boundaries. Use the six contract dimensions only where helpful; do not force a checklist or coordinator.
 
-### Step 3 — Assess material guarantees
+### Step 3 — Assess material guarantees according to the selected basis
 
-Compare **each material approved guarantee**, not each generic lens or every optional field. Use four source-level verdicts:
+**Mode 1 — Approved Design Alignment:** Compare each material approved guarantee with inspected evidence.
 
-- **ALIGNED:** Inspected current source/code/config adequately reflects the approved guarantee at the stated evidence level. Does **not** imply runtime PASS, permission enforcement, newly introduced behavior or approved deployment.
+- **ALIGNED:** Source/code/config adequately reflects the approved term at the stated evidence level.
 - **PARTIALLY ALIGNED:** Some approved expectations are reflected but a material part is missing or ambiguous.
-- **MISMATCH:** Direct inspected source contradicts an approved guarantee, including a formerly optional handoff made mandatory or a changed approval owner.
-- **NOT VERIFIED:** Missing/inaccessible evidence or insufficient approval/version information prevents a reliable source-level comparison. **Absent runtime traces alone do not turn source-ALIGNED documentation into a mismatch or defect.**
+- **MISMATCH:** Inspected source directly contradicts an approved term.
+- **NOT VERIFIED:** Missing or insufficient evidence prevents a reliable comparison.
 
-Link each verdict to the **specific approved IC-xx wording** and the **actual inspected source evidence**; where relevant distinguish `ALIGNED — DOCUMENTED` from host/tool enforcement still `NOT VERIFIED AT RUNTIME`. One IC can have different outcomes for different guarantees. No new findings-ID family.
+**Mode 2 — Provisional Design Alignment:** Compare actual independent proposed terms to source.
 
-### Step 4 — Route gaps to the appropriate stage
+- **CONSISTENT WITH PROPOSAL:** Source adequately reflects the proposed term.
+- **PARTIALLY CONSISTENT:** Some proposed expectations are reflected but a material part is missing or ambiguous.
+- **MISMATCH (against proposal):** Source contradicts the proposal; not a violation of an approved agreement.
+- **NOT VERIFIED:** Insufficient evidence to compare.
 
-- **Implementation mismatch / missing approved wording:** Stage 4 makes the smallest correction to the existing approved agreement. Rerun this mode on the **same approved design version** and a new current-source revision. Do not silently rewrite IC-xx.
-- **Approved design no longer suitable or a new trust/ownership decision required:** Separate Stage 3 design revision, new D-xx human review/approval, then Stage 4 changes. Preserve the old approved version for comparison.
-- **Source appears aligned, execution unverified:** Stage 5 runs authorized evaluations/integration tests; this mode can propose V-xx candidates but cannot run or mark them PASS.
-- **Approved baseline missing:** Return to design-baseline recovery or explicit human approval; do not declare alignment complete.
+**Mode 3 — Source-Based Integration Assessment:** Compare producer/consumer instructions, handoff references and relevant diffs for mutual consistency and documented guarantees. Report observations and meaningful candidate guarantees, not invented approved clauses.
+
+- **DOCUMENTED:** Current inspected source explicitly describes behavior; not approval, correctness or enforcement.
+- **INCONSISTENT:** Actual inspected instructions/code conflict across a material boundary; cite both sides and explain the consequence.
+- **GAP IDENTIFIED:** A concretely justified integration expectation is absent or ambiguous (e.g., required handoff field has no receiving-side behavior, or consequential revision has no stated owner). Ground the expectation and consequence in evidence, not a generic checklist.
+- **NOT VERIFIED:** Source/evidence or runtime capability is missing, inaccessible or inconclusive. Missing runtime traces alone are not a source defect.
+
+In every mode cite actual evidence, distinguish documentary instructions from inspected enforcement or supplied observed results, and avoid invented IC/D/F IDs. No source verdict demonstrates runtime PASS, change history, merge/deploy approval or actual tool authority.
+
+### Step 4 — Route gaps and future validation
+
+- **Approved mismatch:** Propose smallest Stage 4 correction to the existing approved agreement; rerun against the same design version and new source. If design itself needs revision, return to Stage 3 for explicit new approval before Stage 4.
+- **Provisional mismatch:** Clarify whether proposal or implementation needs revision. Propose the smallest change and obtain the appropriate human decision before changing intended scope/authority. Do not imply an approved contract was violated.
+- **Source inconsistency/gap:** Propose targeted clarification/correction of actual conflicting or incomplete instructions. Route unresolved ownership/design choices to Stage 3; a clear source correction may be proposed for Stage 4. No edits or approval in this review.
+- **Missing independent baseline/approval:** Recover an existing record or separately review and approve a design if authoritative alignment is desired. This is not a prerequisite for source assessment, candidate preparation or separately authorized tests of documented/proposed behavior. Do not declare approved alignment complete.
+- **Future Stage 5:** Prepare proportionate cases for approved, proposed or documented expectations with material behavioral uncertainty. Separately authorized controlled tests may evaluate the scoped expectation without verified approval; they cannot establish approved-contract compliance or acceptance. Resolve material contradictions, permissions and safety prerequisites before executing affected tests; unaffected cases may be scoped separately.
 
 ## Alignment-mode report (separate from seven-section design report)
 
+**All five headings and substantive sections are mandatory in every mode.** Use mode-specific content rather than stopping when approval is missing. If evidence is unavailable, explain what is NOT VERIFIED and why.
+
 ### 1. Review Scope & Approved Baseline
 
-- **Mode:** IMPLEMENTATION ALIGNMENT REVIEW — READ ONLY.
-- **Scope:** [Approved connections, exact IC-xx/D-xx and relevant Stage 2 F-xx (Cx) only if actually present.]
-- **Approved design evidence and revision:** [Source link, human approval scope, version or `APPROVED BASELINE NOT VERIFIED`.]
-- **Implementation reviewed:** [Affected current file paths, accessible base/head or revision and evidence limits.]
+- **Mode:** IMPLEMENTATION ALIGNMENT REVIEW — READ ONLY; [selected mode(s) and scope].
+- **Scope:** [Actual skill connections/standalone boundary; real IC/D/F references only if supplied/found.]
+- **Review basis / approval status:** [Exact approved terms/version and approval in Mode 1; independent proposal and APPROVED BASELINE NOT VERIFIED in Mode 2; current source/diff only and APPROVED BASELINE NOT VERIFIED in Mode 3. State missing evidence.]
+- **Implementation reviewed:** [Actual paths, revisions/working-tree changes and limits.]
+- **What this review establishes:** [Approved alignment vs provisional consistency vs source observations; actual behavior remains unverified unless supplied evidence establishes it.]
 
 ### 2. Contract Alignment Coverage
 
-One compact Markdown table with **a row per material approved guarantee**, grouping rows by existing IC-xx. Avoid one row per generic quality category or introducing an `A-xx` ID series.
+Always assess available material behavior in a compact source-backed Markdown table. Use the appropriate schema, grouping mixed scopes by basis. Avoid fake IDs, empty tables and placeholder clauses.
+
+**Mode 1: Approved Design Alignment**
 
 | Approved clause | Current source evidence | Source-level verdict |
 | --- | --- | --- |
-| [IC-01 — optional context] | [Exact inspected file/section] | [ALIGNED / PARTIALLY ALIGNED / MISMATCH / NOT VERIFIED — brief reason] |
-| [IC-01 — human approval] | [Actual source/host evidence or limitation] | [Verdict with DOCUMENTED vs ENFORCED distinction] |
+| [Actual approved IC/version/term] | [Exact inspected file/section] | [ALIGNED / PARTIALLY ALIGNED / MISMATCH / NOT VERIFIED — reason] |
 
-If no **verified approved baseline** is available, **omit purported approved guarantee rows**; instead state the missing approval/version evidence and optionally show a *provisional comparison to proposed terms*, not ALIGNED.
+**Mode 2: Provisional Design Alignment**
+
+| Proposed clause / independent design reference | Current source evidence | Provisional verdict |
+| --- | --- | --- |
+| [Actual independent proposed term; approval unverified] | [Exact inspected file/section] | [CONSISTENT WITH PROPOSAL / PARTIALLY CONSISTENT / MISMATCH (against proposal) / NOT VERIFIED — reason] |
+
+**Mode 3: Source-Based Integration Assessment**
+
+| Contract dimension / documented behavior | Source evidence and consistency assessment | Status |
+| --- | --- | --- |
+| [Material behavior, e.g. optional handoff or ownership; no fabricated IC] | [Specific producer/consumer links; actual agreement, conflict, justified gap or evidence limit] | [DOCUMENTED / INCONSISTENT / GAP IDENTIFIED / NOT VERIFIED — reason] |
+
+In Mode 3 assess both sides of a connection when accessible; explain the boundary and implications instead of only restating implementation text. Keep documented expectations separate from inferred candidate requirements. Use applicable dimensions and cite evidence. No purported approved-clause rows without verified approval. If no source is inspectable, explain the access limitation and needed evidence here.
 
 ### 3. Material Gaps & Evidence Limits
 
-Use concise **vertical notes** only for material partial alignment, contradictions or consequential unknowns:
+Use concise **vertical notes** for material partial alignment, contradictions, gaps and consequential unknowns, including missing independent baseline/approval.
 
-- **Approved term and source:** [Exact IC-xx/D-xx wording and version.]
-- **Inspected source and evidence level:** [Actual current file/revision or inaccessible area.]
-- **Assessment / impact:** [One of the four verdicts; meaningful effect on connection or standalone behavior.]
-- **Smallest next correction or evidence needed:** [Stage 4 proposal only, or missing evidence; no edits performed.]
-- **Design decision impact:** [Existing D-xx unchanged or needs separate Stage 3 redesign/human approval.]
+- **Expectation / basis:** [Actual approved term, independent proposal or documented behavior and evidence-based issue.]
+- **Inspected source and evidence level:** [Actual file/revision or inaccessible area.]
+- **Assessment / impact:** [Mode-specific verdict; meaningful consequence.]
+- **Smallest next correction or evidence needed:** [Proposed Stage 4 correction, Stage 3 clarification, missing evidence or separate validation; no edits.]
+- **Design decision impact:** [Existing approved decision unchanged, or proposal/unresolved decision requiring human review; no invented D-xx.]
 
-Zero material deviations is valid; don't fabricate warnings to fill the section.
+Zero material gaps is valid. In Mode 2/3, if supported, report no material proposal contradictions or source inconsistencies in inspected scope, not "no deviations from approved design." Distinguish absent approval, source gaps and unverified runtime behavior; never inflate unknowns into defects.
 
 ### 4. Next Stage & Iteration Handoff
 
-- **Overall source-level outcome:** [What is aligned, partially aligned, mismatched, or not verified; include evidence scope.]
-- **Routing:** [Stage 4 correction / Stage 3 redesign & approval / supply approved baseline / Stage 5 test.]
-- **Same-baseline rerun:** [Which approved IC/D version and updated source revision to compare next.]
-- **Boundary:** Source review never grants permission to merge, deploy, publish, or invoke runtime controls.
+- **Overall outcome:** [Mode(s), supported conclusions and remaining limits.]
+- **Stage 3 design / baseline:** [Verified approved terms unchanged, or recover independent design/approval if needed for authoritative alignment; real unresolved decisions.]
+- **Stage 4 implementation:** [Smallest proposed correction for actual mismatch/inconsistency, or none indicated by assessed evidence; no unsupported approval/completion claim.]
+- **Next stage:** [Separate Stage 5 candidates for actual basis; prerequisites for execution; unapproved expectations cannot establish approved-contract compliance. Do not block candidate preparation because approval is missing.]
+- **Rerun / future baseline:** [Retain approved version if available; otherwise retain independent proposal reference or inspected revision and optionally obtain independent approval in a separate task.]
+- **Boundary:** Review never grants permission to merge, deploy, publish, change source or invoke runtime controls.
 
 ### 5. Stage 5 Candidates — NOT EXECUTED
 
 **Required output format:** Render this section in full in every alignment-mode report. Use the three visible blocks below in order: **What we are doing here**, **How to proceed with Stage 5** (four numbered steps), and **Validation candidate cards**. Do not collapse this section into a table or key-only list, even on a concise rerun or when previous reports used such a table. Instructions in this reference specify the content of the generated report, not optional background for the reviewing agent. If no candidate is justified, retain both explanatory blocks and state the reason instead of inventing a card.
 
-**What we are doing here:** The alignment review checks whether the implementation reflects the approved design in source. Stage 5 — Validation & Iteration checks whether the implemented skills actually behave according to the approved contracts when exercised. A source-level ALIGNED verdict does not establish behavioral correctness, tool-level enforcement or workflow readiness. This section prepares the handoff to that separate validation stage; it does not execute any evaluation.
+**What we are doing here:** Explain the selected review basis: approved source alignment, consistency with an independent proposal, or current documented integration behavior. Stage 5 — Validation & Iteration exercises skills to determine whether the corresponding observable expectations hold. Source assessment does not establish runtime correctness, tool enforcement or workflow readiness. If approval is unverified, label candidates as provisional or source-based; future tests cannot establish approved-contract compliance. Prepare a separate validation task, not execution.
 
 **What a V-xx candidate means:** `V-xx` is a report-local validation scenario identifier, not an industry-defined test type. Give every candidate a descriptive title that explains the behavior under review, rather than displaying a bare key. The Given–When–Then pattern is an established way to structure behavioral scenarios: Given = initial state and test setup, When = the action performed, Then = the observable assertions that should hold. Expected evidence is what the future evaluator will inspect to determine whether those assertions passed; it is not evidence already collected.
 
 #### How to proceed with Stage 5
 
-Render all four numbered steps below as user-facing instructions, concisely adapted to the actual approved scope and Section 4 routing:
+Render all four numbered steps below as user-facing instructions, concisely adapted to the actual review basis, scope and Section 4 routing:
 
-1. **Confirm the validation scope and prerequisites.** Use the exact approved IC/D version and inspected implementation revision. Resolve any required Stage 4 corrections or missing approval baseline before claiming validation readiness for affected terms; unaffected approved terms may be scoped separately. Approval of a design is not authorization to execute tests or modify production artifacts.
-2. **Check coverage and choose the smallest useful level.** Map material approved guarantees to existing verified evidence and candidate scenarios. Start with standalone behavior where applicable, then the approved skill-to-skill integration, then representative end-to-end workflow paths only when that broader scope is separately approved and relevant. Include meaningful success, missing/conflicting input, optional handoff, ownership/approval, and feedback or recovery cases where the contract calls for them. Do not require every category or a full workflow run to validate one connection. Identify material coverage gaps instead of asserting completeness.
-3. **Turn candidates into executable evaluations.** In a separate Stage 5 task, use the approved baseline, actual target revision and these cards to select representative controlled/synthetic fixtures, authorized execution environments, explicit assertions and evidence collection. Use Evaluate Skill where its runner and fixtures support the scoped evaluation; otherwise define an appropriate controlled manual or integration test. Use Profile Agent Workflow separately when available traces, latency, context usage or cost help diagnose execution. Profiling alone is not a correctness evaluation. This alignment skill does not invoke either tool or generate claims of completed tests.
-4. **Execute, assess, and iterate (future Stage 5 work only).** Compare collected artifacts and available traces with each assertion; record PASS, FAIL, INCONCLUSIVE/NOT VERIFIED, or NOT EXECUTED as warranted. If the source or runtime implementation violates the approved guarantee, route the smallest correction to Stage 4 and re-evaluate. If the approved guarantee itself needs revision, return to Stage 3 for a new explicitly approved design before implementing changes. Missing or insufficient evidence calls for additional authorized verification rather than an invented pass or automatic redesign.
+1. **Confirm the validation scope and prerequisites.** Identify the inspected revision and actual basis: approved IC/D version, independent proposal or documented behavior. Resolve relevant safety, permissions and blocking inconsistencies; scope unaffected cases separately. Missing approval blocks validation as approved-contract compliance, not candidate preparation or separately authorized controlled tests of documented/proposed expectations. No review grants execution or production-write permission.
+2. **Check coverage and choose the smallest useful level.** Map material expectations under the actual basis to verified evidence and candidate scenarios. Start with standalone behavior where applicable, then the scoped integration, then representative end-to-end paths only when broader scope is separately authorized and relevant. Include meaningful success, missing/conflicting input, optional handoff, ownership/approval, and feedback or recovery cases where the contract calls for them. Do not require every category or a full workflow run to validate one connection. Identify material coverage gaps instead of asserting completeness.
+3. **Turn candidates into executable evaluations.** In a separate Stage 5 task, use the actual review basis, target revision and these cards to select representative controlled/synthetic fixtures, authorized execution environments, explicit assertions and evidence collection. Use Evaluate Skill where its runner and fixtures support the scoped evaluation; otherwise define an appropriate controlled manual or integration test. Use Profile Agent Workflow separately when available traces, latency, context usage or cost help diagnose execution. Profiling alone is not a correctness evaluation. This alignment skill does not invoke either tool or generate claims of completed tests.
+4. **Execute, assess, and iterate (future Stage 5 work only).** Compare collected artifacts and available traces with each assertion; record PASS, FAIL, INCONCLUSIVE/NOT VERIFIED, or NOT EXECUTED as warranted. If an approved guarantee is violated, route the smallest Stage 4 correction and re-evaluate. For provisional or documented expectations, assess whether behavior, instructions or intended design need clarification; obtain human decisions when design/authority must change. If an approved guarantee needs revision, return to Stage 3 for new explicit approval before implementation. Missing or insufficient evidence calls for additional authorized verification rather than an invented pass or automatic redesign.
 
 #### Validation candidate cards
 
@@ -102,17 +144,17 @@ Use concise **vertical Markdown cards**, separated by whitespace; no table (incl
 
 **V-01 — [Descriptive scenario title]**
 
-- **Purpose / contract guarantee:** [Plain-English behavior to validate, why it matters, exact approved IC-xx clause/version and related D-xx or supplied F-xx (Cx) when material. Refer to actual entries only.]
+- **Purpose / contract guarantee:** [Behavior to validate and why it matters. Explicitly label **Basis: APPROVED DESIGN**, **Basis: INDEPENDENT PROPOSAL — APPROVAL NOT VERIFIED**, or **Basis: CURRENT DOCUMENTED SOURCE — APPROVAL NOT VERIFIED**. Link actual approved IC/D version, independent proposal, or inspected source file/revision respectively; use real F-xx (Cx) only if supplied. In source-based mode distinguish documented behavior and any inferred candidate expectation; never invent IC/D IDs.]
 - **Validation level:** [Standalone / Integration / End-to-end; choose the smallest justified level. Do not imply an entire workflow is in scope.]
 - **Given — Test setup:** [Initial state, representative fixture/input, available or deliberately unavailable dependencies, relevant permissions/approval state and controlled environment. Identify setup or authorization still needed; no invented fixtures or actual execution.]
-- **When — Execution:** [Specific future action: invoke the identified skill with that input, perform the approved handoff, or exercise an applicable feedback path under the test conditions. Keep it proportional and distinguish human choice from automatic dispatch.]
-- **Then — Assertions:** [Specific observable conditions that must hold for the approved guarantee. Use separate short bullets for independent checks; distinguish artifact assertions from behavior or permission assertions. A negative assertion such as no unauthorized tool action requires suitable evidence, not just an agent's statement.]
+- **When — Execution:** [Specific future action: invoke the identified skill with that input, perform the scoped handoff, or exercise an applicable feedback path under the test conditions. Keep it proportional and distinguish human choice from automatic dispatch.]
+- **Then — Assertions:** [Specific observable conditions that must hold for the specified approved/proposed/documented expectation. Use separate short bullets for independent checks; distinguish artifact assertions from behavior or permission assertions. A negative assertion such as no unauthorized tool action requires suitable evidence, not just an agent's statement.]
 - **Expected evidence:** [Concrete output artifact, source/requirement identifiers, decision/status record, controlled harness result, tool/action receipt or available trace needed to evaluate each assertion. State evidence limitations and missing instrumentation; do not assume a trace exists or treat lack of a trace as proof that an action did not happen.]
 - **Status:** NOT EXECUTED. [State any prerequisite correction, approval or evidence access needed before the case can run.]
 
-Reuse actual earlier V-xx candidates and their identifiers when their scope and meaning are unchanged. Refine their descriptions and assertions without silently changing the approved IC/D baseline. If splitting a candidate into meaningful subcases or adding a justified candidate, make the relationship explicit and use distinct identifiers; do not manufacture a fixed V-01–V-04 catalog or renumber unchanged candidates. Check that every reference resolves to the actual report/baseline or supplied earlier evidence. When no prior candidates exist, create only the necessary report-local IDs. If no additional Stage 5 candidate is justified, say `No additional Stage 5 candidate justified` with the reason. If the approved baseline is missing, explain the blocker; do not present provisional scenarios as validation of approved terms. Candidate design is not an executed test, PASS result, or permission to run.
+Reuse actual earlier V-xx candidates and their identifiers when their scope and meaning are unchanged. Refine descriptions/assertions without silently changing their basis or any approved IC/D baseline. If a prior candidate's approval record is unavailable, retain its behavior/ID only when justified by accessible evidence and explicitly re-label its basis. If splitting a candidate into meaningful subcases or adding a justified candidate, make the relationship explicit and use distinct identifiers; do not manufacture a fixed V-01–V-04 catalog or renumber unchanged candidates. Check that every reference resolves to the actual report/baseline or supplied earlier evidence. When no prior candidates exist, create only the necessary report-local IDs. If no additional Stage 5 candidate is justified, say `No additional Stage 5 candidate justified` with the reason. If the approved baseline is missing, disclose that limitation and still draft materially justified candidates from independent proposals or documented behavior, including evidence-based gaps where an expectation can be defined without inventing authority. Never present these as validation of approved terms. Missing approval alone is not a reason to omit candidate cards. Candidate design is not an executed test, PASS result, or permission to run.
 
-**Final output check (before delivering the report):** Verify that the actual rendered Section 5 includes the explanatory blocks and four next steps, every justified V-xx has its descriptive title and all seven named fields, and every candidate is NOT EXECUTED. If the answer still contains a candidate table or missing labels, rewrite Section 5 before returning it. Keep the earlier approved design and evidence scope unchanged.
+**Final output check (before delivering the report):** Verify that the actual rendered Section 5 includes the explanatory blocks and four next steps, every justified V-xx has its descriptive title and all seven named fields, and every candidate is NOT EXECUTED. If the answer still contains a candidate table or missing labels, rewrite Section 5 before returning it. Keep verified approved design unchanged and check each card's explicit basis and unverified approval where applicable. Confirm Sections 1–5 are all present even without an independent baseline.
 
 **Illustrative candidate (synthetic, not a fixed V-01 definition or an actual result):**
 
@@ -129,7 +171,7 @@ Reuse actual earlier V-xx candidates and their identifiers when their scope and 
 - **Expected evidence:** Actual generated standalone artifact, test environment/fixture record, and available invocation/dispatch evidence sufficient to assess the absence of a partner invocation. If the latter cannot be established, mark that assertion INCONCLUSIVE/NOT VERIFIED in the future run.
 - **Status:** NOT EXECUTED.
 
-If the actual approved contract protects both skills' standalone paths, repeat the test with the roles reversed or specify two distinct subcases within the candidate. Use a different scenario title and setup for a different guarantee. Do not copy this example as an actual finding or assume it is applicable to every skill pair.
+If the actual review basis supports both skills' standalone paths, repeat with reversed roles or specify subcases. In source-based mode the same scenario can be grounded in an inspected standalone entry instruction instead of an approved IC; label Basis: CURRENT DOCUMENTED SOURCE — APPROVAL NOT VERIFIED, cite it and do not claim approval. Use a different scenario title and setup for a different guarantee. Do not copy this example as an actual finding or assume it is applicable to every skill pair.
 
 ## Interaction with existing optional design reviews
 
@@ -137,4 +179,4 @@ If the actual approved contract protects both skills' standalone paths, repeat t
 
 ## Example (synthetic only)
 
-An approved IC-01 makes a PRD optional, and the inspected receiving `SKILL.md` documents optional context and independent invocation. That guarantee may be `ALIGNED — CURRENT DOCUMENTED SOURCE`, while any actual automatic dispatch or security enforcement remains `NOT VERIFIED AT RUNTIME` without host/run evidence. Do not turn the latter into an unnecessary implementation defect.
+The inspected receiving `SKILL.md` documents optional PRD context and independent invocation. With an independently verified approved IC specifying this, the verdict may be ALIGNED — CURRENT DOCUMENTED SOURCE (Mode 1). With an independent proposal but no approval, it may be CONSISTENT WITH PROPOSAL (Mode 2). With source alone, it is DOCUMENTED (Mode 3); compare sender/receiver instructions for actual inconsistencies and prepare a source-based standalone candidate. In all modes actual automatic dispatch or security enforcement is NOT VERIFIED AT RUNTIME without suitable evidence. Missing approval is not a source defect, and a successful source-based test cannot retroactively approve the design.
