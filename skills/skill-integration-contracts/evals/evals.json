@@ -955,7 +955,7 @@
     },
     {
       "id": 61,
-      "prompt": "implementation_alignment_review: on. Review the approved synthetic IC-01/D-01 v1 against product-framing and aligned-handoff. Prior V-01 is titled Standalone execution without the partner skill and remains relevant; no runtime traces are available. I am a junior developer: explain what Stage 5 does and give me readable validation candidates, not a table of unexplained IDs. Do not execute tests.",
+      "prompt": "implementation_alignment_review: on. Review the approved synthetic IC-01/D-01 v1 against product-framing and aligned-handoff. Prior V-01 is titled Standalone execution without the partner skill and remains relevant; no runtime traces are available. I am a junior developer: explain what Stage 5 does and give me readable validation candidates, not a table of unexplained IDs. The prior alignment report used a compact V-xx/Given-when/Expected-result table; carry forward its candidate IDs and meanings but do not reuse that layout. Do not execute tests.",
       "files": [
         "evals/files/approved-handoff-contract.md",
         "evals/files/product-framing/SKILL.md",
@@ -967,7 +967,9 @@
         "Section 5 explains source alignment versus actual behavioral validation, checks coverage and scope, and describes converting candidates into authorized executable evaluations, assessing results and routing iteration.",
         "Each candidate is self-contained and uses descriptive titles, contract trace links, validation level, Given/When/Then, expected evidence and NOT EXECUTED.",
         "Negative invocation or permission assertions require suitable evidence; absent traces do not prove that an action did not occur.",
-        "No actual skill invocation, test execution, fabricated runtime evidence, broader workflow approval or automatic implementation."
+        "No actual skill invocation, test execution, fabricated runtime evidence, broader workflow approval or automatic implementation.",
+        "The actual rendered Section 5 includes the visible 'What we are doing here' and 'How to proceed with Stage 5' blocks with four actionable steps before the candidate cards, even when the previous report was a compact table.",
+        "No candidate table, combined Given/When field or bare V-xx list replaces any required card; all seven named fields appear for every justified candidate."
       ]
     }
   ]
