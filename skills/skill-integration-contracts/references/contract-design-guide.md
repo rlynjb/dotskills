@@ -122,6 +122,17 @@ For a **relevant** pattern, Section 3 gives a **brief plain-English explanation*
 
 **Division of report responsibilities:** Section 3 explains the route and reason. **Section 4** specifies the applicable interface/behavior/approval/failure guarantees in **existing connection-based IC-xx cards**. **Section 5** analyzes **material cross-cutting** consequences or alternatives **only when not already covered in Section 4**. Avoid explaining the same pattern in three places. Stage 4 implements approved design, and Stage 5 verifies runtime behavior.
 
+## Teaching the contract before specifying it
+
+Section 4 is a guided design explanation for a junior developer, not a flat inventory of technical properties. Use the four layers in [report-template.md](report-template.md#4-proposed-integration-contract-cards):
+
+- **A — Understanding:** Say what the connection changes, why it helps, and what problem or trade-off the developer should understand first.
+- **B — Practical walkthrough (only if useful):** Use one hypothetical representative input and show who chooses the handoff, what the receiver does, and the outcome or relevant alternate branch. Do not invent automatic dispatch or treat the example as observed behavior. Use ASCII only for a material chat-friendly diagram that adds clarity beyond Section 3.
+- **C — Technical contract:** Keep exact guarantees and formal vocabulary, briefly explaining unfamiliar terms in context (e.g., an invariant is a property that must remain true across valid paths). Use concise vertical bullets; make it clear what is required versus optional. Explain why a guarantee matters when that is not already obvious from A/B, not as a generic lesson for every field.
+- **D — Evidence and decisions:** Connect the proposal to inspected source and real Stage 2 findings, distinguish current documented behavior, new proposal and unverified enforcement, and identify what remains unchanged. Keep direct links, named decision dependencies mapped to Section 6, and separate approval status. Do not fabricate missing evidence.
+
+The goal is to reduce the reader's need to assemble the design mentally, **not to add four long explanations to every card**. For simple connections or standalone entry/exit contracts, a compact A/C/D is sufficient; add B only when it materially improves comprehension. Keep evidence near claims and consolidate the rationale in D, not a repeated audit. A/B do not replace C's enforceable terms or D's approval boundary. This changes presentation, not the four-step SDI design procedure or seven-section report.
+
 ## Deciding how much detail to write
 
 - **Small, human-mediated handoff:** A short `IC-xx` card covering trigger, input/output, owner, invariants, approval and failure rule is usually enough.
