@@ -22,7 +22,7 @@ Optional, expandable **investigation perspectives** for `skill-responsibility-ov
 - **Inspect:** Input and handoff instructions, producer/consumer responsibilities, source links or revisions, permission language and supplied traces (if available).
 - **Map to:** C1 Inputs; C4 Handoffs; C5 Boundaries. Q-03, Q-06.
 - **Stage 2 boundary:** Do not claim a context-security failure or costly handoff from an absent run trace; do not define a new interface contract in Stage 2.
-- **Conference sessions & reading:
+- **Conference sessions & reading:**
   - **Topic:** Provenance and untrusted stored context. **Session:** Trustworthy Context Is Untrusted by Default. **Speaker:** Shub Argha. **PDF:** [Saved presentation](https://drive.google.com/file/d/19aoCF7WZ2GfVi7vb5ISZHIPKkQOtjjz1/view). **YouTube:** No matched video link in saved index.
   - **Topic:** Narrow, explicit handoffs; separate context from authority. **Session:** Don't Share the Database: Interface Contracts Between Isolated AI Agents. **Speaker:** Martin Bliss. **PDF:** [Saved presentation](https://drive.google.com/file/d/1E4J2rfYLoN-H9wnK_K3f6bGshiwmDUmo/view). **YouTube:** No matched video link in saved index.
   - **Topic:** Agent-facing interfaces and examples versus excessive instructions. **Session:** Patterns for Shifting from MCP as a Basic API to MCP as Agent Integration Interface. **Speaker:** James Ward and Alexander Ioffe. **PDF:** [Saved presentation](https://drive.google.com/file/d/1a37Vr3kwddeoA-z1rNlsrjUQS-nUHuOZ/view). **YouTube:** [Matched session video](https://www.youtube.com/watch?v=Okw9oLIB-GU).
@@ -35,7 +35,7 @@ Optional, expandable **investigation perspectives** for `skill-responsibility-ov
 - **Inspect:** Documented approval owners and side effects, coordinator/delegation descriptions, available host/tool permissions or manifests, mutable tool references, and real supplied security evidence.
 - **Map to:** C1 Inputs; C4 Handoffs; C5 Boundaries; C6 Feedback. Q-06, Q-07.
 - **Stage 2 boundary:** Report grounded authority ambiguity or risk; do not prescribe OAuth, cryptographic delegation, runtime controls or security implementation in Stage 2.
-- **Conference sessions & reading:
+- **Conference sessions & reading:**
   - **Topic:** Delegation boundaries, who acts under whose authority. **Session:** When Agents Spawn Agents: Securing Recursive Delegation in Multi-Agent Systems. **Speaker:** Anishma Mavuram. **PDF:** [Saved presentation](https://drive.google.com/file/d/1_jXpA_vFEBAAPYeklZmliAs9jNWZTyWx/view). **YouTube:** [Matched session video](https://www.youtube.com/watch?v=glxs_6J-7sQ).
   - **Topic:** Mutable tool definitions and renewed approval. **Session:** MCP Rug Pulls in the Wild: Live Attacks and How to Stop Them. **Speaker:** Charit Upadhyay and Advait Patel. **PDF:** [Saved presentation](https://drive.google.com/file/d/1X38wcquvL67JnJm_00zHY0E8rTjyTDrc/view). **YouTube:** [Matched session video](https://www.youtube.com/watch?v=EgkuEPUci24).
   - **Topic:** Identity and least-privilege authority when agents call tools. **Session:** Stop Running Agents as Service Accounts: User-Scoped Access for Enterprise Tool Calls. **Speaker:** Masato Kozuka. **PDF:** [Saved presentation](https://drive.google.com/file/d/1pFtRiB7w-_B4G10fbOwEZvq5PcAqf80Z/view). **YouTube:** No matched video link in saved index.
@@ -48,7 +48,7 @@ Optional, expandable **investigation perspectives** for `skill-responsibility-ov
 - **Inspect:** Documented steps, handoff clauses, completion/error labels, return/feedback paths, human gates, coordinator responsibilities, and supplied journey traces if available.
 - **Map to:** C2 Responsibilities; C4 Handoffs; C5 Boundaries; C6 Feedback. Q-04, Q-05, Q-08.
 - **Stage 2 boundary:** Stage 2 identifies missing or conflicting ownership/status evidence. Stage 3 defines the precise error, interface or dispatch contract; Stage 4 implements it.
-- **Conference sessions & reading:
+- **Conference sessions & reading:**
   - **Topic:** Completion, additional-input, asynchronous and progress states. **Session:** Agentic Messaging Primitives in MCP. **Speaker:** Caitie McCaffrey. **PDF:** [Saved presentation](https://drive.google.com/file/d/1OwyNvZGpIFDnc9KchDq5uER9DpgzLG4g/view). **YouTube:** [Matched session video](https://www.youtube.com/watch?v=iNV5-YkPHW4&t=21711s).
   - **Topic:** Separate agent reasoning from controlled workflow execution. **Session:** Non-Deterministic Minds, Deterministic Tools. **Speaker:** Adrian Warman. **PDF:** [Saved presentation](https://drive.google.com/file/d/1NNGBWE4u2cm0Ia4qAmUXPonxEKnxTwdf/view). **YouTube:** No matched video link in saved index.
   - **Topic:** Narrow, explicit handoffs; separate context from authority. **Session:** Don't Share the Database: Interface Contracts Between Isolated AI Agents. **Speaker:** Martin Bliss. **PDF:** [Saved presentation](https://drive.google.com/file/d/1E4J2rfYLoN-H9wnK_K3f6bGshiwmDUmo/view). **YouTube:** No matched video link in saved index.
@@ -61,7 +61,7 @@ Optional, expandable **investigation perspectives** for `skill-responsibility-ov
 - **Inspect:** Existing test definitions versus runs, supplied trajectories and outcome evidence, actual source-based responsibility boundaries, material duplicate behaviors, and recorded review decisions.
 - **Map to:** C2 Responsibilities; C3 Outputs; C6 Feedback. Q-09.
 - **Stage 2 boundary:** Do not run evals, calculate invented scores or mark unseen behavior as failed. Missing execution traces for a documented handoff are ordinarily a scope note; recommend Stage 5 verification only with a material trigger.
-- **Conference sessions & reading:
+- **Conference sessions & reading:**
   - **Topic:** Critical user journeys and costs of over-broad skills. **Session:** Building an Agentic Eval Pipeline: Battle-Tested Lessons with EvalBench. **Speaker:** Kurtis Van Gent and Haoyu Wang. **PDF:** [Saved presentation](https://drive.google.com/file/d/1us0-hWJPMvH7dw2ZGoCvbRRUtJBFSyBf/view). **YouTube:** No matched video link in saved index.
   - **Topic:** Finding precision, actionable review outcomes and noise. **Session:** Cut the Noise: Building a Code Reviewer You Can Trust. **Speaker:** Joah Gerstenberg. **PDF:** [Saved presentation](https://drive.google.com/file/d/1_jUfEJLY9lntZOvls2RWl-65oT_te4Zt/view). **YouTube:** No matched video link in saved index.
   - **Topic:** Tool/skill discovery overhead and mistaken domain routing. **Session:** The MCP Cold-Start Problem: When Your Agent Has 100 Tools and Has to Pick One. **Speaker:** Karthik Karunanithi. **PDF:** [Saved presentation](https://drive.google.com/file/d/1AT1V9r0LR0E8LeXN6A7AOqfNcgwoYjX4/view). **YouTube:** [Matched session video](https://www.youtube.com/watch?v=eB9I4Ixx2wc&t=7652s).
@@ -74,7 +74,7 @@ Optional, expandable **investigation perspectives** for `skill-responsibility-ov
 - **Inspect:** SKILL.md and linked references, neighboring instruction/adapter files, source-control revisions, documented owners and host/dependency claims, available CI/runtime evidence.
 - **Map to:** Cross-cutting C2 Responsibilities; C4 Handoffs; C5 Boundaries. Q-03, Q-10.
 - **Stage 2 boundary:** File-format checks and successful CI do not prove cross-host runtime compatibility. Recommend the smallest source-of-truth clarification, not an unrequested release system.
-- **Conference sessions & reading:
+- **Conference sessions & reading:**
   - **Topic:** One source of truth; concise instructions and stale-rule detection. **Session:** AGENTS.md Is the New CONTRIBUTING.md: A Field Report from One Year of Agent-Friendly Monorepos. **Speaker:** Unnati Mishra. **PDF:** [Saved presentation](https://drive.google.com/file/d/1ICV_vH6Q5qAAu-2sodIs03Ffbxv6Tl4P/view). **YouTube:** No matched video link in saved index.
   - **Topic:** Effective agent definitions, ownership, version and release provenance. **Session:** Stop Writing Agents, Declare Them: Declarative Agent Architecture in Production. **Speaker:** Chris Knuteson. **PDF:** [Saved presentation](https://drive.google.com/file/d/1f9v2ZupSLbcik_AkKJgtfVu9mmVZ5jjI/view). **YouTube:** No matched video link in saved index.
   - **Topic:** Skill versioning, portability assumptions and review/scan boundaries. **Session:** Shipping Agent Skills Safely: CI/CD, Evals, and Guardrails. **Speaker:** Michael Larson. **PDF:** [Saved presentation](https://drive.google.com/file/d/1eU_vKOAiG-8nZzbYNWaTBZE-TvFxw6j3/view). **YouTube:** No matched video link in saved index.

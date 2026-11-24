@@ -77,6 +77,10 @@ An existing handoff document is DOCUMENTED, not PLANNED; only **new** proposed c
 
 **Root-cause navigation, no duplicated findings:** The lens table is a **diagnostic index**, not a second detailed findings section. Keep full Finding/Evidence/Assessment/Why/Recommendation and any exact wording/concern/proposal in the original Cx-linked vertical F-xx notes under the Primary or Supporting table. Point to the **same F-xx (Cx)** from lens and Q coverage whenever both identify the same issue, and distinguish possible root causes as INFERRED unless verified. A lens-only run does not print the ten-question Q coverage table, and ordinary absent execution traces do not justify a new VERIFY finding. Default `review_lenses: none` shows no lens coverage.
 
+**Conference Sources & Further Reading (optional; required when lenses run):** Immediately after **Review Lens Coverage** inside report Section 2, include a Markdown table: **Lens / Topic | Conference session & speaker | PDF | YouTube**. Choose 1–3 relevant source talks per selected lens from [review-lenses.md](references/review-lenses.md), consolidate repeat sessions, and give topic, exact session title, speaker and a **direct saved PDF** link. Add YouTube **only if matched in the user's title/speaker video index**; otherwise show `—`. Include these links in the generated report even when a lens produces no material F-xx finding. If `review_lenses: relevant` selects no lenses, explain and omit both empty tables. Omit this table when lenses are off.
+
+**Source distinction:** Inspected skill files and supplied real runtime evidence support F-xx findings; conference PDFs/videos support **review questions and further learning**, not proof that a skill enforces security, dispatched another skill or passed evaluation. Speaker takeaways are not official AAIF/MCP requirements. Matched video links were read from the user's index, not independently watched.
+
 **Critical boundaries:** Q-05 inventories currently documented contracts/gaps, but never drafts Stage 3 interface, invariant or failure contracts. Q-07 does not treat written permission claims as enforced host/tool permissions. Q-09 distinguishes defined eval cases from actual executed results, and this skill **does not run evaluations or profile traces**.
 
 **Stage handoffs:** In Section 7, list grounded Stage 3 contract design questions and justified Stage 5 validation candidates (PROPOSED, NOT EXECUTED). A candidate requires a material finding, explicit assurance request or relevant unresolved decision; **not merely the absence of traces for a clearly documented handoff**. Explain the future Given / When / Then evidence without claiming READY TO TEST, TESTED or PASS.
@@ -215,7 +219,7 @@ In the audit report's **Section 5 — Prioritized Recommendations**, add **Optio
 Use these seven headings, in order:
 
 1. **Executive Summary** — scope, skill count, top findings, evidence limits.
-2. **Individual Skill Assessments** — all six considerations for each selected skill; optional Quality Review Coverage and Review Lens Coverage comparisons remain within this Section 2.
+2. **Individual Skill Assessments** — six considerations for each selected skill; optional Quality Review Coverage, Review Lens Coverage and Conference Sources & Further Reading all remain inside Section 2.
 3. **Cross-Skill Responsibility & Overlap Findings** — classifications and effects.
 4. **Missing Responsibilities & Gaps** — including uncertainty.
 5. **Prioritized Recommendations** — High / Medium / Low, proposals only.
@@ -228,7 +232,7 @@ Use these seven headings, in order:
 - **Primary:** `Consideration | Skill A | Skill B` with three main rows: C1 Inputs, C2 Responsibilities, C3 Outputs.
 - **Supporting:** identical skill headers and order, with three main rows: C4 Handoffs, C5 Boundaries, C6 Feedback.
 - **All table cells:** one **short observation** per skill, with `F-xx · Assessment` and a short direct source label where relevant. **Do not print Finding/Evidence/Why/Recommendation or any exact wording quote in full inside table cells.**
-- **Immediately after each C1–C6 table:** provide detailed material F-xx blocks, each field on a separate Markdown bullet line. Do not create extra wording-detail tables or detached Findings sections. After the Supporting notes, add optional **Quality Review Coverage** if requested and then optional **Review Lens Coverage** if requested, retaining the same F-xx (Cx) pointers.
+- **Immediately after each C1–C6 table:** give detailed material F-xx findings on separate bullet lines, never inside giant cells or detached findings tables. After Supporting findings, add Quality Review Coverage only when requested, then Review Lens Coverage and Conference Sources & Further Reading when lenses are requested, preserving existing F-xx (Cx) links.
 
 **Layout example (not actual findings):**
 
