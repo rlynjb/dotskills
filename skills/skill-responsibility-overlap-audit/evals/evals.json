@@ -918,6 +918,131 @@
         "Preserves normal scope-note treatment of unavailable traces.",
         "Includes speaker, topic, PDF and matches video only where established."
       ]
+    },
+    {
+      "id": 61,
+      "prompt": "Run the default skill-responsibility-overlap-audit on brief-planning and evidence-refinement, with no optional parameters.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "The original Stage 2 C1–C6 assessment and seven headings, with material F findings only; none of the Q, conference or industry tables appear.",
+      "assertions": [
+        "industry framework review is off by default",
+        "no official framework source table in default report",
+        "no extra numbered report heading or compliance claims",
+        "no skills changed or tests executed"
+      ]
+    },
+    {
+      "id": 62,
+      "prompt": "Use skill-responsibility-overlap-audit on brief-planning and evidence-refinement. industry_framework_review: relevant. Select only applicable industry framework lenses with original official-source links.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Section 2 selects only materially applicable frameworks with a selection reason, compares original Stage 2-adapted questions against target evidence and includes official publisher sources; no unrequested Q or conference tables.",
+      "assertions": [
+        "only source-applicable framework rows selected",
+        "each selected frame has a direct publisher URL, type and version where known",
+        "uses actual F-xx (Cx) only for material issues",
+        "no unsupported ISO, NIST, AWS, ATAM or OWASP conformance statements",
+        "framework-only does not trigger Q or conference review"
+      ]
+    },
+    {
+      "id": 63,
+      "prompt": "Run industry_framework_review: on for a one-skill standalone audit of requirements-review. Discuss all five frameworks proportionally and note which do not apply.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md"
+      ],
+      "expected_output": "All five official industry framework categories are considered briefly within Section 2, inapplicable frameworks marked NOT APPLICABLE, with one skill comparison column and official sources.",
+      "assertions": [
+        "five framework categories are considered without five fabricated findings",
+        "one skill column only",
+        "NIST/ISO/OWASP sections do not imply certified compliance",
+        "no mandatory orchestration/security implementation invented",
+        "no runtime evaluation executed"
+      ]
+    },
+    {
+      "id": 64,
+      "prompt": "Audit discovery-brief and approval-evidence with industry_frameworks: [aws-agentic-ai-lens, cmu-sei-atam] and no other optional reviews.",
+      "files": [
+        "evals/files/discovery-brief/SKILL.md",
+        "evals/files/approval-evidence/SKILL.md"
+      ],
+      "expected_output": "Only AWS Agentic AI Lens and CMU SEI ATAM Stage 2 adaptation rows appear in Industry Framework Review Coverage, with publisher links and evidence-backed C/F pointers.",
+      "assertions": [
+        "explicit subset selects only AWS and ATAM",
+        "no ISO, NIST or OWASP rows in framework coverage",
+        "no Q-01–Q-10 or conference lens output",
+        "ATAM-inspired scenario questions not misrepresented as completed ATAM",
+        "AWS references not interpreted as proof of AWS deployment"
+      ]
+    },
+    {
+      "id": 65,
+      "prompt": "Use quality_review: on, review_lenses: [security-and-trust] and industry_frameworks: [nist-ai-rmf, owasp-agentic-top10-2026] to investigate requirements-review and approval-evidence.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/approval-evidence/SKILL.md"
+      ],
+      "expected_output": "Section 2 shows C1–C6 findings, Q coverage, selected conference lens, conference sources, selected NIST/OWASP industry coverage, official industry sources in that exact order. Related issues point to the same F-xx.",
+      "assertions": [
+        "stable order Q then conference/source then industry/source",
+        "no duplicate F-xx for same actual root issue",
+        "OWASP ASI risk categories treated as questions not proven vulnerabilities",
+        "NIST Governance/Map/Measure/Manage not mistaken for four new mandatory audit steps",
+        "original seven numbered headings preserved"
+      ]
+    },
+    {
+      "id": 66,
+      "prompt": "Use industry_frameworks: [iso-25010, aws-agentic-ai-lens] on brief-planning, evidence-refinement, requirements-review, and approval-evidence.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/approval-evidence/SKILL.md"
+      ],
+      "expected_output": "Only two industry framework rows repeated across tables of at most two skill columns covering all four targets, with one consolidated official-source reading table.",
+      "assertions": [
+        "no table has more than two audited skill columns",
+        "all four target skills included",
+        "only two selected framework rows",
+        "official references not repeated once per skill group",
+        "no invented ISO full text or conformance score"
+      ]
+    },
+    {
+      "id": 67,
+      "prompt": "Use industry_framework_review: relevant on a single read-only self-contained skill without tools or inter-agent handoffs; avoid inventing security/runtime failures.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md"
+      ],
+      "expected_output": "Industry lenses selected only where relevant, or brief explanation why none apply. No empty industry table, invented OWASP vulnerability or unsupported architecture risk.",
+      "assertions": [
+        "no forced selection of all five in relevant mode",
+        "no security vulnerability fabricated from missing trace",
+        "when no relevant lenses are justified, omit both industry tables",
+        "source precision and evidence status preserved"
+      ]
+    },
+    {
+      "id": 68,
+      "prompt": "Audit routing-runtime-claim and brief-planning with industry_frameworks: [aws-agentic-ai-lens, owasp-agentic-top10-2026]. Treat written auto-dispatch claims separately from actual runtime enforcement.",
+      "files": [
+        "evals/files/routing-runtime-claim/SKILL.md",
+        "evals/files/brief-planning/SKILL.md"
+      ],
+      "expected_output": "Source-backed boundary review and official AWS/OWASP reading; no assertion that a coordinator executes from SKILL.md text, no presumed OWASP exploit and no false enforcement evidence.",
+      "assertions": [
+        "only documented claims are treated as documented",
+        "missing host evidence does not imply an observed run",
+        "risk category is not a vulnerability finding",
+        "no invented mandatory coordinator design or permission control"
+      ]
     }
   ]
 }
