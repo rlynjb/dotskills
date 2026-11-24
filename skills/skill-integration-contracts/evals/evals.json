@@ -737,9 +737,10 @@
         "evals/files/product-framing/SKILL.md",
         "evals/files/evidence-refinement/SKILL.md"
       ],
-      "expected_output": "Section 3 describes the actual one-way optional connection and independent entry when relevant, but omits conditional feedback loop prose, branch diagram and unneeded owner-revision scenario. No invented feedback route simply because a pair of skills was provided.",
+      "expected_output": "Section 3 includes a required compact ASCII one-way optional handoff map in a fenced text block and accompanying explanation; preserves supported independent entry and omits conditional feedback branches and unneeded owner-revision scenarios.",
       "assertions": [
-        "No fabricated conditional feedback route, diagram or obligatory human revision cycle.",
+        "Section 3 contains an actual fenced text ASCII map showing the meaningful one-way connection and optional exchange, even though prose could suffice.",
+        "No fabricated conditional feedback route or obligatory human revision cycle; omit return branches rather than the required map.",
         "Independent use may be stated only where supported by the supplied skill files.",
         "No generic presentation-ready feedback-loop boilerplate when no return condition applies.",
         "No coordinator is invented or deployed to solve a nonexistent routing problem.",
@@ -840,7 +841,7 @@
     },
     {
       "id": 54,
-      "prompt": "Design Stage 3 on the synthetic product-framing and evidence-refinement skills using the Stage 2 audit. A meaningful optional return for owner-reviewed product changes is in scope. Provide a chat-friendly Section 3 diagram if helpful.",
+      "prompt": "Design Stage 3 on the synthetic product-framing and evidence-refinement skills using the Stage 2 audit. A meaningful optional return for owner-reviewed product changes is in scope. Include the required chat-friendly Section 3 interaction map.",
       "files": [
         "evals/files/product-framing/SKILL.md",
         "evals/files/evidence-refinement/SKILL.md",
@@ -848,10 +849,10 @@
       ],
       "expected_output": "A narrow plain-ASCII Section 3 path in a fenced text code block, with the chosen handoff, a conditional owner-reviewed return, clear no-change continuation, and no Mermaid or render-dependent diagram.",
       "assertions": [
+        "Section 3 must contain a narrow plain-ASCII map in a fenced text block, even if prose could explain the route.",
         "No mermaid, flowchart TD/LR, graph DSL, or other rendering-dependent diagram syntax.",
-        "Any diagram uses plain ASCII and fenced text, legible in a chat without rendering.",
         "Only material evidence-supported feedback and human approval routes are shown; no forced loop.",
-        "Standalone skill paths and approval boundaries are preserved.",
+        "Standalone skill paths, no-change continuation and approval boundaries are preserved.",
         "No claim that text arrows execute automatic dispatch."
       ]
     },
@@ -871,17 +872,18 @@
     },
     {
       "id": 56,
-      "prompt": "Plan a Stage 3 interaction for synthetic evidence-refinement and ticket-construction with a required human publication review, but the observed files do not establish automatic dispatch. When an interaction diagram aids clarity, make it plain ASCII for chat.",
+      "prompt": "Plan a Stage 3 interaction for synthetic evidence-refinement and ticket-construction with a required human publication review, but the observed files do not establish automatic dispatch. Include the required plain ASCII Section 3 interaction map for chat.",
       "files": [
         "evals/files/evidence-refinement/SKILL.md",
         "evals/files/ticket-construction/SKILL.md"
       ],
-      "expected_output": "Short plain-text / ASCII-only conditional approval handoff when helpful, with a human gate and appropriate verification caveat. Never Mermaid or presumed agent dispatch.",
+      "expected_output": "Required compact fenced text ASCII interaction map showing the meaningful handoff and applicable human approval gate, with explanatory prose and verification caveat. Never Mermaid or presumed agent dispatch.",
       "assertions": [
-        "A real human approval gate stays visible if diagrammed.",
+        "Section 3 includes a mandatory ASCII interaction map for the meaningful integration, even if prose is sufficient.",
+        "A real human approval gate is visible in the diagram.",
         "Plain ASCII in fenced text rather than Mermaid or other render-dependent format.",
         "No unsupported automatic invocation or runtime evidence.",
-        "No mandatory diagram if prose is sufficient."
+        "No fabricated return branch or extra approval gate."
       ]
     },
     {
