@@ -28,7 +28,18 @@ Identify target/revision/source and **what is documented versus proposed**. If a
 
 Use the shared [Senior Engineer → Junior Developer Communication Guideline](../../docs/senior-engineer-mentoring-communication.md). Explain every material contract by **what it guarantees → why the consumer needs it → what can go wrong → the smallest design choice and trade-off**. Keep junior-friendly definitions brief and do not repeat a lesson for every routine field.
 
-Read [contract-design-guide.md](references/contract-design-guide.md) for contract dimensions, evidence and decision rules. Read [report-template.md](references/report-template.md) for the exact seven-section layout. These are design references, not evidence of the inspected target skills.
+Read [contract-design-guide.md](references/contract-design-guide.md) for contract dimensions, evidence and decision rules. Read [report-template.md](references/report-template.md) for the exact seven-section layout. Read [contract-quality-review-questions.md](references/contract-quality-review-questions.md) **only when contract quality review is explicitly requested**. These are design references, not evidence of the inspected target skills.
+
+## Optional Contract Quality Review — CQ-01–CQ-06
+
+**Default: off.** The normal four-step Stage 3 design still drafts proportional `IC-xx` contracts and `D-xx` human decisions without an extra review. Do not automatically load CQ questions.
+
+- `quality_review: on` or `contract_quality_review: on` explicitly enables **all six Stage 3 contract-quality questions** from [contract-quality-review-questions.md](references/contract-quality-review-questions.md). These are **CQ-01–CQ-06**, not Stage 2's Q-01–Q-10.
+- `quality_questions: CQ-03,CQ-06` (or an equivalent explicit subset) evaluates **only** those CQ IDs, in question order. Review the **proposed IC-xx cards**, not the target skills themselves.
+- After contract drafting and material cross-cutting analysis, add **Contract Quality Review Coverage (optional)** inside **report Section 5 — Cross-Cutting Guarantees & Trade-offs**, immediately **before Section 6 — Human Decision Ledger**.
+- Format as a compact Markdown comparison table: first column **Contract-quality question** with each selected CQ-xx ID, title and **full canonical question text**; remaining columns are the actual **IC-xx contract cards**, not skills. Compare one or two IC columns at once; group additional contracts and repeat selected CQ rows. Keep full arguments, revisions, and decisions in the existing vertical IC and D cards, **not** giant table cells.
+- Each cell has a concise `CLEAR / NEEDS CLARIFICATION / NEEDS HUMAN / NOT VERIFIED / NOT APPLICABLE` **design assessment**, a source/design reason and actual `IC-xx`, `D-xx` and supplied Stage 2 `F-xx (Cx)` references when relevant. `CLEAR` means the proposal is clear, **not approved, implemented, enforced or tested**. A material issue should improve the existing IC wording or link to an actual D-xx choice; never invent a second findings-ID series.
+- Do not require an unavailable Stage 2 report, fabricate source fields, make optional context mandatory, create one IC per CQ, prescribe the agent's internal reasoning, or force a coordinator. When no meaningful IC exists, explain and omit an empty coverage table. Human design approval remains separate.
 
 ## Four-step integration-design procedure (aligned with SDI)
 
@@ -58,7 +69,7 @@ Include only **applicable, decision-useful** guarantees:
 - **Failure and feedback:** unavailable/conflicting/malformed input; BLOCKED/NEEDS HUMAN vs safe standalone continuation; owner of returned questions and permission to resume; partial failure/fault isolation when applicable.
 - **Observability and compatibility:** evidence/source links and minimal status/identity fields needed for later diagnosis; version/host assumptions and changes consumers can tolerate. Do not promise telemetry or runtime checks not present.
 
-Mark **CURRENT DOCUMENTED** guarantees separately from **NEW PROPOSAL** and **UNVERIFIED ENFORCEMENT**. Do not write an exact implementation specification, dispatch algorithm, retries, security controls or additional artifacts unless the justified handoff requires it. **One meaningful contract per connection**, not one card for each generic quality category.
+Mark **CURRENT DOCUMENTED** guarantees separately from **NEW PROPOSAL** and **UNVERIFIED ENFORCEMENT**. Do not write an exact implementation specification, dispatch algorithm, retries, security controls or additional artifacts unless the justified handoff requires it. **One meaningful contract per connection**, not one card for each generic quality category. If contract quality review is requested, assess the drafted cards with CQ-xx before presenting the human decisions, and put material clarifications/choices in the existing IC/D cards.
 
 ### Step 4 — Trade-offs, human decision gate and Stage 4 handoff
 
@@ -76,13 +87,13 @@ Follow [report-template.md](references/report-template.md) with these headings, 
 2. **Current Skill Boundaries & Stage 2 Evidence** — compact side-by-side source-backed inputs/responsibilities/outputs; `F-xx (Cx)` trace links only when real.
 3. **Proposed Interaction & Ownership Map** — intended connections, independent paths, human gates, coordinator choice when justified.
 4. **Proposed Integration Contract Cards** — vertical `IC-xx` cards with evidence, minimal guarantees, failure/approval/feedback and status; only actual meaningful connections.
-5. **Cross-Cutting Guarantees & Trade-offs** — consolidate *material* trust, reliability, observability and compatibility issues without duplicating every card.
+5. **Cross-Cutting Guarantees & Trade-offs** — consolidate *material* trust, reliability, observability and compatibility issues without duplicating every card; add the optional CQ coverage comparison within this section when requested.
 6. **Human Decision Ledger & Open Questions** — `D-xx` decisions, recommendation, trade-off, explicit status and question requiring human confirmation.
 7. **Stage 4 Implementation Handoff & Stage 5 Candidates** — exact proposed changes/owners, dependencies and conditional validation ideas; no execution.
 
-**Formatting:** A small side-by-side Section 2 table is appropriate for two or three skills; keep exact contract cards and decision rationale in **vertical Markdown bullets** with one field per line, never enormous cells or HTML breaks. For larger workflows group comparisons; for one skill show a vertical profile. Use direct links to inspected source paths/lines when possible; never create an evidence-key table.
+**Formatting:** A small side-by-side Section 2 table is appropriate for two or three skills; keep exact contract cards and decision rationale in **vertical Markdown bullets** with one field per line, never enormous cells or HTML breaks. The optional Section 5 CQ coverage table compares **contracts**, not skills. For larger workflows group comparisons; for one skill show a vertical profile. Use direct links to inspected source paths/lines when possible; never create an evidence-key table.
 
-**IDs and statuses must not collide:** `C1–C6` are **Stage 2 considerations**, `F-xx` are **Stage 2 findings**, `IC-xx` are **Stage 3 contracts**, `D-xx` are **Stage 3 human design decisions**, and `V-xx` are **proposed Stage 5 checks**. Reference only IDs that exist in the report; do not infer that a contract is approved, implemented or tested.
+**IDs and statuses must not collide:** `C1–C6` are **Stage 2 considerations**, `F-xx` are **Stage 2 findings**, `IC-xx` are **Stage 3 contracts**, `D-xx` are **Stage 3 human design decisions**, and `V-xx` are **proposed Stage 5 checks**, and `CQ-xx` are **optional Stage 3 contract-quality questions**. Reference only IDs that exist in the report; do not infer that a contract is approved, implemented or tested.
 
 **One-pass default:** Present a complete, minimal proposal and all material options in the first report, even if human decisions are missing. Ask for approval/revision **after** showing the proposal. Do not start modifying targets when a user approves the design; that is separate Stage 4 work.
 

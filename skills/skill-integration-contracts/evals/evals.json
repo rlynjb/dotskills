@@ -190,6 +190,102 @@
         "Justifies minimal guarantees and explains the smallest trade-off.",
         "Contract remains PROPOSED, not implemented."
       ]
+    },
+    {
+      "id": 13,
+      "prompt": "Use skill-integration-contracts on product-framing and evidence-refinement without quality_review or contract_quality_review settings.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Default seven-section Stage 3 report with IC/D proposals and no optional CQ coverage table.",
+      "assertions": [
+        "CQ coverage is off by default.",
+        "Four steps and seven report headings remain intact.",
+        "Standalone optional handoff is not made mandatory.",
+        "No skills edited or evals executed."
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "Design IC-01 for optional product-framing to evidence-refinement; quality_review: on. Display all six CQ questions verbatim with a concise contract-quality assessment.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/stage2-audit.md"
+      ],
+      "expected_output": "In Section 5 after IC-01 drafting, a one-contract CQ table with CQ-01..CQ-06 exact full question text, concise design labels and actual IC/D/Stage2-F links where evidenced.",
+      "assertions": [
+        "All CQ-01 to CQ-06 in canonical order with complete original wording.",
+        "Table compares IC-01 not the target skills.",
+        "A CLEAR rating does not imply approved or enforced.",
+        "Only real D-xx/F-xx links are used.",
+        "No new numbered report section."
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "Run quality_questions: CQ-03,CQ-06 only on an optional handoff with unresolved approval ownership, using the supplied synthetic Stage 2 audit.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/stage2-audit.md"
+      ],
+      "expected_output": "Only CQ-03 and CQ-06 appear in Section 5 with exact original wording, contract quality and existing D-xx/F-xx context. Pending ownership remains NEEDS HUMAN, standalone use preserved.",
+      "assertions": [
+        "Subset includes only CQ-03 and CQ-06.",
+        "Decision D-xx is correctly unresolved.",
+        "Stage 2 F-xx cited only when provided.",
+        "No invented authorization or forced producer prerequisite."
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "Design two adjacent IC handoffs across product-framing -> evidence-refinement -> ticket-construction with contract_quality_review: on.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/ticket-construction/SKILL.md",
+        "evals/files/stage2-audit.md"
+      ],
+      "expected_output": "CQ comparison has two IC-xx contract columns, full question wording, and concise accurate statuses, preserving required human approval for ticket publication.",
+      "assertions": [
+        "Columns identify IC-xx contracts, not skill names.",
+        "Six CQ questions compare both IC contracts.",
+        "Optional PRD context and required publication approval are distinct.",
+        "No six extra contracts generated for six questions.",
+        "Stage 4/5 not executed."
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "quality_review: on with missing producer source and no Stage 2 audit. Draft conditional Stage 3 interface with honest traceability status.",
+      "files": [
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Optional CQ table says NOT VERIFIED for unsupported required fields or source traceability; no fabricated producer F-xx or implicit approval.",
+      "assertions": [
+        "Unknown producer evidence does not result in invented fields.",
+        "No fabricated Stage 2 F-xx.",
+        "NOT VERIFIED is not a runtime failure claim.",
+        "Conditional design still offers an actionable human decision."
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "Review a proposed coordinator-routing contract with quality_review: on, where written dispatch instructions exist but host enforcement is not evidenced.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/coordinator-routing/SKILL.md"
+      ],
+      "expected_output": "CQ-03 and CQ-06 assess authority and standalone flexibility without certifying automatic dispatch or enforced permissions.",
+      "assertions": [
+        "CQ concerns link to actual IC/D proposed choices.",
+        "Written routing is not claimed working.",
+        "CLEAR does not mean APPROVED or TESTED.",
+        "No automatic invocation or new evaluator runs."
+      ]
     }
   ]
 }

@@ -76,6 +76,23 @@ Capture only material constraints **not already clear** in contract cards.
 
 If no cross-cutting issue is material, say `No additional cross-cutting rules beyond IC-xx` instead of repeating all six categories.
 
+**Contract Quality Review Coverage (optional; only when requested)**
+
+This is a **design-quality comparison of the proposed IC-xx contracts**, not an assessment of the underlying skills and not evidence that any contract is approved or executed. The full six-question template below uses [contract-quality-review-questions.md](contract-quality-review-questions.md). Render it **after the concise cross-cutting considerations in Section 5**, before the numbered Section 6 decision ledger.
+
+| Contract-quality question | [IC-01 — Contract / connection] | [IC-02 — Contract / connection] |
+| --- | --- | --- |
+| **CQ-01 — Interface Clarity** — Are required and optional information clearly distinguished? | [Status — short reason/source; D-xx and F-xx if real] | [Status — short reason/source; D-xx and F-xx if real] |
+| **CQ-02 — Behavioral Guarantees** — Are preconditions, postconditions, and invariants clear and necessary? | [Status — short reason/source; D-xx and F-xx if real] | [Status — short reason/source; D-xx and F-xx if real] |
+| **CQ-03 — Ownership & Authority** — Are decision owners, permissions, and human approval boundaries explicit? | [Status — short reason/source; D-xx and F-xx if real] | [Status — short reason/source; D-xx and F-xx if real] |
+| **CQ-04 — Reliability & Feedback** — Are important failure conditions and feedback responsibilities defined? | [Status — short reason/source; D-xx and F-xx if real] | [Status — short reason/source; D-xx and F-xx if real] |
+| **CQ-05 — Evidence & Traceability** — Can contract decisions be traced to source evidence and Stage 2 findings? | [Status — short reason/source; D-xx and F-xx if real] | [Status — short reason/source; D-xx and F-xx if real] |
+| **CQ-06 — Compatibility & Flexibility** — Does the contract preserve standalone skill behavior without unnecessary coupling? | [Status — short reason/source; D-xx and F-xx if real] | [Status — short reason/source; D-xx and F-xx if real] |
+
+**Populate with:** a concise `CLEAR / NEEDS CLARIFICATION / NEEDS HUMAN / NOT VERIFIED / NOT APPLICABLE` design status; source evidence or limitation; and real **IC-xx**, **D-xx** or supplied Stage 2 **F-xx (Cx)** pointers when material. Keep full rationale in the existing IC/D cards; don't duplicate detailed findings or generate a new ID family. `CLEAR` does **not** imply APPROVED — DESIGN ONLY, implemented, enforced, or tested. An unverified runtime is not automatically a design defect.
+
+**Mode and layout:** The table appears only with `quality_review: on`, `contract_quality_review: on`, or a `quality_questions: CQ-…` subset. Full mode uses all six questions in canonical order; subset mode only selected rows. For **one contract**, show just one IC column; for **three or more**, group up to two IC columns and repeat selected CQ rows. Don't create placeholder contracts or mandatory requirements to populate the table. Keep each row one Markdown line, no HTML breaks or multiline field lists in cells. If no meaningful IC exists, explain and omit the empty table. Seven numbered report headings remain unchanged.
+
 ## 6. Human Decision Ledger & Open Questions
 
 Present **all materially distinct choices before inviting approval**, one vertical block per decision:

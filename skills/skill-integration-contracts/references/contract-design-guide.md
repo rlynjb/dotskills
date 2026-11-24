@@ -55,6 +55,16 @@ Questions: What input/output changes could break consumers? Is there a format/re
 - Prefer a minimal stable, human-readable structure for a small manual exchange, not mandatory versioning infrastructure.
 - If a documented coordinator is merely a `SKILL.md` routing instruction, do **not** claim it automatically dispatches or enforces cross-skill contracts. A separate host implementation may be needed.
 
+## Optional Contract Quality Review (CQ-01–CQ-06)
+
+The six contract dimensions above guide **drafting**. The optional [Contract Quality Review Questions](contract-quality-review-questions.md) inspect the **quality of proposed IC-xx terms**. They are distinct from Stage 2's Q-01–Q-10 skill-review questions and from Stage 5 behavioral tests.
+
+Set `quality_review: on` (or `contract_quality_review: on`) to review all six, or `quality_questions: CQ-03,CQ-06` for selected questions. The default report has no CQ table.
+
+Apply questions only **after a meaningful IC-xx exists**. In Section 5, place Contract Quality Review Coverage after normal material cross-cutting notes and before the D-xx human decision ledger. Link any `NEEDS CLARIFICATION` to a specific proposed IC revision; link `NEEDS HUMAN` to a real D decision. If Stage 2 F-xx findings were not provided, cite inspected sources directly rather than inventing IDs.
+
+A `CLEAR` proposed contract is not an approved or enforced contract. Avoid unnecessary schema/permission/telemetry requirements introduced only to fill a checklist cell. The reviewer still approves, revises, rejects or defers the exact terms.
+
 ## Evidence, uncertainty and status
 
 Maintain three *separate axes*:
