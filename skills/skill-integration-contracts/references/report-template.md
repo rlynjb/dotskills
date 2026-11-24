@@ -43,13 +43,13 @@ Describe the **specific connection(s) under review**, not necessarily the whole 
 [Skill A: standalone entry/output] -- chosen optional context --> [Skill B: standalone entry/output]
                                                                |
                                                    [Finding requires a change?]
-                                                      /                 \\
+                                                      /                 \
                                                     NO                  YES
                                                     |                    |
                                             [Continue as chosen]   [Owner reviews proposal]
                                                                          |
                                                               [Revision authorized?]
-                                                                 /            \\
+                                                                 /            \
                                                                 NO            YES
                                                                 |              |
                                                        [Continue / defer]  [Owner updates artifact]
