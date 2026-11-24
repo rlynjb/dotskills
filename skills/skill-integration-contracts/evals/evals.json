@@ -286,6 +286,121 @@
         "CLEAR does not mean APPROVED or TESTED.",
         "No automatic invocation or new evaluator runs."
       ]
+    },
+    {
+      "id": 19,
+      "prompt": "Use skill-integration-contracts to draft an optional product-framing → evidence-refinement handoff. Do not enable CQ or review_lenses.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Normal seven-section Stage 3 report with a reasonable IC-xx proposal and D-xx decisions; no CQ table, lens table or conference reading table.",
+      "assertions": [
+        "Lens and quality review are both off by default.",
+        "Four step procedure, seven headings and all independence/approval rules remain unchanged.",
+        "No mandatory extra coordinator or source references without a lens request."
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "Stage 3 with review_lenses: [context-engineering, security-and-trust] only. Analyze one optional handoff and include session title, speaker, source PDF and YouTube where matched.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/stage2-audit.md"
+      ],
+      "expected_output": "Two lens rows inside Section 5 comparing actual IC-xx contracts, with diagnostic questions/dimension mappings; a Conference Sources & Further Reading table includes Martin Bliss, Shub Argha, Anishma Mavuram, James Ward/Alexander Ioffe or applicable sources with exact title/speaker and direct saved-PDF plus matched-video links. No CQ table.",
+      "assertions": [
+        "Only two named lens rows, full source-defined diagnostic questions and contract dimensions.",
+        "No CQ-01–CQ-06 coverage or CQ question IDs suggesting those checks ran.",
+        "At least one real direct PDF source per selected lens, including title, topic and speaker.",
+        "Video links only where matched in saved YouTube-PDF index; do not invent YouTube for Martin Bliss or Shub Argha.",
+        "Contract diagnosis has actual target source evidence and real IC/D/F pointers; conference reading is not that evidence."
+      ]
+    },
+    {
+      "id": 21,
+      "prompt": "Stage 3 with quality_review: on AND review_lenses: [reliability-and-workflow, evaluation-and-observability] on product-framing → evidence-refinement → ticket-construction.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/ticket-construction/SKILL.md",
+        "evals/files/stage2-audit.md"
+      ],
+      "expected_output": "Section 5 displays CQ-01–CQ-06 first, then two selected lens rows as IC-xx comparisons, then a linked table with Caitie McCaffrey's session/video and Vikas Luthra's PDF, preserving all original D-xx decisions.",
+      "assertions": [
+        "CQ coverage first, lens coverage second and further reading third, all inside Section 5.",
+        "CQ questions and lens concerns link the same material IC/D decision; no duplicate issues.",
+        "Actual session titles, speaker names and PDF links shown in output.",
+        "No invented runtime trace or behavioral PASS.",
+        "No extra numbered section or mandatory schema."
+      ]
+    },
+    {
+      "id": 22,
+      "prompt": "Run review_lenses: relevant on a two-skill standalone-preserving optional PRD handoff and explain selected lens applicability.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "A selective set of relevant lens questions linked to actual IC-xx contracts with a concise selection rationale, followed by sources for selected lenses only; does not force all five conference lenses.",
+      "assertions": [
+        "Relevant modes choose lens rows grounded in the actual target files.",
+        "No requirement to include all five lenses or one IC per lens.",
+        "Each selected lens has at least one source with topic, presenter, original session title and PDF.",
+        "No unrelated sources or fabricated YouTube matches.",
+        "CQ mode is still off unless explicitly requested."
+      ]
+    },
+    {
+      "id": 23,
+      "prompt": "Use review_lenses: [lifecycle-and-portability] only on product-framing, evidence-refinement and coordinator-routing; give conference learning sources.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/coordinator-routing/SKILL.md"
+      ],
+      "expected_output": "One lifecycle lens with contract-dimension mapping, concise IC evaluation, and linked Chris Knuteson PDF plus optionally Karthik Karunanithi PDF/video; no explicit CQ questions presented as executed.",
+      "assertions": [
+        "Only requested lens and related sources shown.",
+        "No CQ coverage and no unexplained CQ IDs in lens-only output.",
+        "PDF link and speaker/title are present; matched video for Karthik may be included.",
+        "Does not claim coordinator code dispatches or that a host is proven portable.",
+        "No runtime tests or source edits."
+      ]
+    },
+    {
+      "id": 24,
+      "prompt": "Provide a Stage 3 conference security lens review of coordinator-routing, which documents automatic dispatch but supplies no actual host execution, with useful source reading links.",
+      "files": [
+        "evals/files/coordinator-routing/SKILL.md",
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/stage2-audit.md"
+      ],
+      "expected_output": "Security-and-trust lens identifies a conditional authorization/enforcement design question, not a proven runtime failure, with clear D-xx and IC-xx links; source reading names Anishma Mavuram / Masato Kozuka and appropriate PDFs, using verified video links only.",
+      "assertions": [
+        "No false claim that a markdown coordinator enforces permissions or dispatches.",
+        "Conference sources help learn, not establish target correctness.",
+        "No invented human approval or F-xx.",
+        "Direct titled speaker/PDF links and matched video where applicable."
+      ]
+    },
+    {
+      "id": 25,
+      "prompt": "Review four independent IC-xx proposals with review_lenses: [context-engineering, reliability-and-workflow]. Keep comparisons and citations readable.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/ticket-construction/SKILL.md",
+        "evals/files/coordinator-routing/SKILL.md"
+      ],
+      "expected_output": "Lens tables grouped to at most two IC-xx contract columns, repeating the selected lens rows and covering real selected connections; one consolidated further-reading table with only selected sources.",
+      "assertions": [
+        "At most two IC-xx contract columns per lens table.",
+        "Complete lens/question coverage of all material selected IC cards.",
+        "Source citations do not duplicate per contract group.",
+        "No invented YouTube links, speaker details or execution evidence."
+      ]
     }
   ]
 }
