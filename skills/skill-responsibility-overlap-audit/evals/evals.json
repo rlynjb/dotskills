@@ -811,6 +811,113 @@
         "Core table and vertical findings unchanged.",
         "No invented F-xx."
       ]
+    },
+    {
+      "id": 54,
+      "prompt": "Run the default Stage 2 responsibility/overlap audit on brief-planning and evidence-refinement, without quality_review or review_lenses.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Only original C1–C6 comparison tables, meaningful F-xx notes and seven numbered headings. No optional quality, lens or conference-reading table.",
+      "assertions": [
+        "Default still omits optional lens and sources tables.",
+        "No mandatory conference citation or new stage added.",
+        "Existing evidence/approval boundaries respected."
+      ]
+    },
+    {
+      "id": 55,
+      "prompt": "Review discovery-brief and approval-evidence with review_lenses: [context-engineering, security-and-trust] only. Add linked conference readings with their original speaker and session titles.",
+      "files": [
+        "evals/files/discovery-brief/SKILL.md",
+        "evals/files/approval-evidence/SKILL.md"
+      ],
+      "expected_output": "Section 2 includes the two selected lens rows with source-authority and delegation questions, then a Conference Sources & Further Reading table containing source topic, session title, speaker, PDF and matched YouTube link where established. No Q table.",
+      "assertions": [
+        "Only named lenses included and no Q coverage triggered.",
+        "Each selected lens has directly linked learning PDF with topic, speaker and title.",
+        "A matched Anishma Mavuram or James Ward/Alexander Ioffe YouTube may be included but no invented Martin Bliss or Shub Argha video.",
+        "Findings cite actual inspected target sources, not a conference slide as proof.",
+        "Seven report headings unchanged."
+      ]
+    },
+    {
+      "id": 56,
+      "prompt": "Assess brief-planning and routing-runtime-claim with review_lenses: [reliability-and-workflow]. The coordinator claims automatic dispatch but traces aren't provided; provide source reading links.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/routing-runtime-claim/SKILL.md"
+      ],
+      "expected_output": "Grounded inquiry into coordinator necessity, standalone behavior and the failure/return owner, with a material evidence-backed verification issue only if an explicit unsupported runtime claim merits it; speaker/PDF links to Caitie McCaffrey or Adrian Warman.",
+      "assertions": [
+        "No broad generic VERIFY for missing traces alone.",
+        "Concrete unsupported runtime claims remain eligible for targeted VERIFY.",
+        "No premature Stage 3 schema/retry/dispatch contract.",
+        "Reading session topic, title, speaker and valid PDF/video link when matched."
+      ]
+    },
+    {
+      "id": 57,
+      "prompt": "Use quality_review: on and review_lenses: [security-and-trust, evaluation-and-observability] for requirements-review and approval-evidence; include session references.",
+      "files": [
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/approval-evidence/SKILL.md"
+      ],
+      "expected_output": "Section 2 order: existing C1–C6 and F-xx findings, full ten-Q Quality Review Coverage, selected Review Lens Coverage, then Conference Sources & Further Reading. Shared concerns use the same F-xx (Cx).",
+      "assertions": [
+        "No added eighth report heading or changed C rows.",
+        "Q table, lens table and source readings in correct order.",
+        "Conference readings do not replace target evidence.",
+        "No fabricated executed evaluation or host enforcement claims."
+      ]
+    },
+    {
+      "id": 58,
+      "prompt": "For two skills, review_lenses: relevant. Choose only relevant topics based on inspected skills, and avoid forcing all five conference lenses.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/requirements-review/SKILL.md"
+      ],
+      "expected_output": "Select only source-justified lenses with brief reasons. Include only relevant session readings; if none apply, omit empty lens/source table with an explanation.",
+      "assertions": [
+        "No automatic five-lens output in relevant mode.",
+        "No fabricated missing security or coordinator issue.",
+        "Further Reading only for actually selected lenses.",
+        "Default six-consideration framework intact."
+      ]
+    },
+    {
+      "id": 59,
+      "prompt": "Audit brief-planning, evidence-refinement, requirements-review and approval-evidence with review_lenses: [lifecycle-and-portability]. Look for stale or competing canonical instructions, and provide direct learning sources.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/requirements-review/SKILL.md",
+        "evals/files/approval-evidence/SKILL.md"
+      ],
+      "expected_output": "One lifecycle lens repeated in at most two-skill-column comparison groups covering all four, with source evidence and single consolidated Further Reading listing Unnati Mishra/Chris Knuteson/Michael Larson when useful.",
+      "assertions": [
+        "Four skills covered with groups of at most two skill columns.",
+        "No assertion of duplicated instruction files unless inspected.",
+        "A single source table with topic, speaker/title and PDF.",
+        "File-format CI not equated to runtime portability."
+      ]
+    },
+    {
+      "id": 60,
+      "prompt": "Use review_lenses: [evaluation-and-observability] for two skills with no run traces. Investigate unnecessary work and noisy findings without claiming token savings.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "A Stage 2 diagnosis focused on material responsibility overlap/duplicated outputs, with uncertainty about runtime cost, plus linked EvalBench and Joah Gerstenberg presentations for learning.",
+      "assertions": [
+        "Does not invent token usage, performance or behavioral results.",
+        "Does not run Evaluate Skill or Profile Agent Workflow.",
+        "Preserves normal scope-note treatment of unavailable traces.",
+        "Includes speaker, topic, PDF and matches video only where established."
+      ]
     }
   ]
 }
