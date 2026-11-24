@@ -9,7 +9,7 @@ A **read-only integration-design skill** for defining minimal, evidence-backed c
 - Drafts proportional `IC-xx` contracts for interface, behavior, invariants, trust/approval, failure/feedback and observability/version assumptions **when applicable**.
 - Explains changes in senior-to-junior plain English, with **source → consequence → smallest recommended agreement → trade-off**.
 - Creates a `D-xx` **human decision ledger** and a bounded Stage 4 implementation handoff. Any `V-xx` validation idea is proposed for Stage 5, **not executed**.
-- Optionally compares **approved** IC-xx/D-xx terms with updated source **after Stage 4** using `implementation_alignment_review: on`, without changing target files or claiming runtime PASS.
+- Optionally reviews updated source **after Stage 4** using `implementation_alignment_review: on`: approved design alignment, provisional design alignment, or source-based integration assessment, without changing targets or claiming runtime PASS.
 
 ## What it doesn't do
 
@@ -136,15 +136,23 @@ The normal four-step procedure, standalone protections and D-xx human decision g
 
 ## Optional Implementation Alignment Review — after Stage 4
 
-Use `implementation_alignment_review: on` when you have **approved Stage 3 integration contracts**, made the corresponding **Stage 4 changes**, and want to recheck whether the modified skill files align with the approved design. This remains **inside Skill Integration Contracts**, without creating another skill or using Review Implementation.
+Use `implementation_alignment_review: on` to assess actual implemented instructions and handoff references. It works after clearing chat or when approval records are unavailable. It is **read-only instructions, not a script**: no edits, skill invocation, test execution or runtime certification.
 
-**It is instructions, not a script.** The review reads approved IC-xx/D-xx wording and the current changed skill source, then gives a source-level comparison. It never edits files, invokes skills, executes tests or certifies runtime behavior.
+### Three adaptive review modes
+
+| Available evidence | Automatic mode | Source-level verdicts |
+| --- | --- | --- |
+| Exact design plus verified human approval | Approved Design Alignment | ALIGNED / PARTIALLY ALIGNED / MISMATCH / NOT VERIFIED |
+| Independent specific proposal, approval unverified | Provisional Design Alignment | CONSISTENT WITH PROPOSAL / PARTIALLY CONSISTENT / MISMATCH (against proposal) / NOT VERIFIED |
+| Current implementation/source only | Source-Based Integration Assessment | DOCUMENTED / INCONSISTENT / GAP IDENTIFIED / NOT VERIFIED |
+
+No new flag. Mixed scopes use the appropriate basis per term. Missing approval is reported as **APPROVED BASELINE NOT VERIFIED** but does not stop the review. Implementation/diffs cannot establish approval or serve as their own independent design baseline.
 
 ### What to provide
 
-- **Approved Stage 3 design:** Link or path to the exact `IC-xx` contracts, `D-xx` decisions and explicit human approval of that version.
-- **Implementation:** Link or paths to the modified `SKILL.md` files/references and, when available, the Git branch, commit or base/head diff.
-- **Scope:** The intended producer → consumer connection(s). Other Stage 1/2 evidence is optional.
+- **Target implementation:** Paths to changed/current skill files, handoff references and relevant config/code; branch, revision/diff when available.
+- **Scope:** Actual skills or connections.
+- **Optional design evidence:** Independent exact IC/D version and explicit approval, or a specific proposed design. If absent, use available source. Stage 1/2 evidence may also be supplied.
 
 ### Copyable invocation
 
@@ -154,32 +162,27 @@ Use skill-integration-contracts on:
 - skills/second-skill
 
 implementation_alignment_review: on
-
-Approved Stage 3 design: [path or link to approved IC-xx/D-xx]
-Implemented revision: [branch, commit, diff or current file paths]
 ```
 
-You do **not** need to repeat the alignment procedure in the prompt.
+Optionally supply the revision/diff and approved or proposed design path. No need to preserve prior chat or repeat report instructions.
 
 ### How to read the result
 
-The alignment mode uses a **separate five-section report**, not the default seven-section design report:
+All modes use the same **five-section report**:
 
-1. **Review Scope & Approved Baseline** — exact approved IC-xx/D-xx, authorized decision scope, source revisions.
-2. **Contract Alignment Coverage** — one material guarantee per row and **ALIGNED / PARTIALLY ALIGNED / MISMATCH / NOT VERIFIED** source-level verdict.
-3. **Material Gaps & Evidence Limits** — source-backed differences and the smallest proposed correction.
-4. **Next Stage & Iteration Handoff** — Stage 4 source fixes, separate Stage 3 design revisions needing human approval, or Stage 5 testing.
-5. **Stage 5 Candidates — NOT EXECUTED** — a junior-friendly explanation of behavioral validation, practical next steps and named Given–When–Then candidate cards tied to the approved contract.
+1. **Review Scope & Approved Baseline** — mode, evidence basis, actual source revision, approval status and limits.
+2. **Contract Alignment Coverage** — source-backed table with mode-specific verdicts; source-based review examines documented behavior, mutual consistency and material gaps, not invented approved clauses.
+3. **Material Gaps & Evidence Limits** — actual contradictions, gaps and uncertainties; absent approval is not itself a source defect.
+4. **Next Stage & Iteration Handoff** — proposed Stage 4 corrections, separate Stage 3 clarification/approval when needed, and scoped Stage 5 validation.
+5. **Stage 5 Candidates — NOT EXECUTED** — visible explanation, four practical steps and named Given–When–Then cards, even without approved baseline when evidence justifies them.
 
-A contract can be **ALIGNED — DOCUMENTED SOURCE** while its runtime execution remains **NOT VERIFIED**. The mode never treats a missing trace alone as a failed implementation.
+A documented behavior, provisional consistency, or ALIGNED — DOCUMENTED SOURCE verdict does not prove runtime execution or permission enforcement.
 
-**Reading Section 5:** `V-xx` is a validation candidate ID, not a universal test category. Each card includes a descriptive scenario title, contract guarantee, validation level, **Given — Test setup**, **When — Execution**, **Then — Assertions**, **Expected evidence**, and **Status: NOT EXECUTED**. Reuse relevant existing candidate IDs when unchanged. Check coverage of approved guarantees, start with the smallest justified standalone/integration/end-to-end scope, and convert candidates to executable evaluations in a separate authorized Stage 5 task (Evaluate Skill where supported, or an appropriate controlled test). Collect actual evidence before recording PASS/FAIL/INCONCLUSIVE; profiling is supplementary. Missing evidence is not a pass. No automatic test execution or broader design approval follows from this report. See the [Section 5 candidate template and example](references/implementation-alignment-review.md#5-stage-5-candidates--not-executed).
+**Reading Section 5:** Each justified V-xx has a descriptive title, purpose/guarantee with explicit approved/proposed/documented basis, validation level, Given — Test setup, When — Execution, Then — Assertions, Expected evidence, and Status: NOT EXECUTED. Preserve actual prior IDs when relevant. Check coverage of scoped expectations; start with the smallest useful level and prepare controlled cases in a separately authorized Stage 5 task (Evaluate Skill where supported or another controlled test). Collect evidence before PASS/FAIL/INCONCLUSIVE. Missing approval does not prevent candidate preparation or separately authorized testing of documented/proposed expectations, but those tests cannot establish approved-contract compliance. No automatic execution, approval or deployment authority follows.
 
-**Iteration loop:** Approve IC/D in Stage 3 → implement in Stage 4 → run this alignment review → correct Stage 4 mismatches and rerun the same approved design. If the approved **design must change**, revise it in a separate Stage 3 design pass and get specific new approval before implementing that change. Stage 5 performs actual behavioral evaluations.
+**Iteration loop:** Correct approved implementation mismatches against unchanged design in Stage 4; changes to intended agreement need Stage 3 review and new approval. In provisional/source review, clarify actual contradictions or ownership gaps and propose the smallest correction. Recover or independently approve a design if authoritative alignment is needed. Save exact approved IC/D terms and approval as durable records for future reviews; recommended, not mandatory.
 
-**Approval requirement:** An explicit, identifiable approved design version is necessary for an authoritative alignment verdict. If only proposals or incomplete decisions are available, the result says **APPROVED BASELINE NOT VERIFIED**. No approval or contract wording is invented.
-
-**Interaction with other options:** `quality_review`, `review_lenses` and `industry_framework_review` are for **design mode**; turning on implementation alignment chooses the alignment-only report. Run a separate design review to reassess the contract itself.
+**Interaction with other options:** `quality_review`, `review_lenses` and `industry_framework_review` remain design-mode options. Alignment uses only its five-section report. Run a separate design review to revise/approve a contract.
 
 **Detailed procedure and reusable report:** [references/implementation-alignment-review.md](references/implementation-alignment-review.md).
 
