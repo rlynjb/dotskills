@@ -81,7 +81,51 @@ Zero material deviations is valid; don't fabricate warnings to fill the section.
 
 ### 5. Stage 5 Candidates — NOT EXECUTED
 
-Only list justified V-xx Given/When/Then checks for **actual** runtime dispatch, authorization, failure response, or evidence continuity that source inspection cannot establish. Never invent PASS. Otherwise say `No additional Stage 5 candidate justified`.
+**What we are doing here:** The alignment review checks whether the implementation reflects the approved design in source. Stage 5 — Validation & Iteration checks whether the implemented skills actually behave according to the approved contracts when exercised. A source-level ALIGNED verdict does not establish behavioral correctness, tool-level enforcement or workflow readiness. This section prepares the handoff to that separate validation stage; it does not execute any evaluation.
+
+**What a V-xx candidate means:** `V-xx` is a report-local validation scenario identifier, not an industry-defined test type. Give every candidate a descriptive title that explains the behavior under review, rather than displaying a bare key. The Given–When–Then pattern is an established way to structure behavioral scenarios: Given = initial state and test setup, When = the action performed, Then = the observable assertions that should hold. Expected evidence is what the future evaluator will inspect to determine whether those assertions passed; it is not evidence already collected.
+
+#### How to proceed with Stage 5
+
+Explain the next steps concisely, adapted to the actual approved scope and Section 4 routing:
+
+1. **Confirm the validation scope and prerequisites.** Use the exact approved IC/D version and inspected implementation revision. Resolve any required Stage 4 corrections or missing approval baseline before claiming validation readiness for affected terms; unaffected approved terms may be scoped separately. Approval of a design is not authorization to execute tests or modify production artifacts.
+2. **Check coverage and choose the smallest useful level.** Map material approved guarantees to existing verified evidence and candidate scenarios. Start with standalone behavior where applicable, then the approved skill-to-skill integration, then representative end-to-end workflow paths only when that broader scope is separately approved and relevant. Include meaningful success, missing/conflicting input, optional handoff, ownership/approval, and feedback or recovery cases where the contract calls for them. Do not require every category or a full workflow run to validate one connection. Identify material coverage gaps instead of asserting completeness.
+3. **Turn candidates into executable evaluations.** In a separate Stage 5 task, use the approved baseline, actual target revision and these cards to select representative controlled/synthetic fixtures, authorized execution environments, explicit assertions and evidence collection. Use Evaluate Skill where its runner and fixtures support the scoped evaluation; otherwise define an appropriate controlled manual or integration test. Use Profile Agent Workflow separately when available traces, latency, context usage or cost help diagnose execution. Profiling alone is not a correctness evaluation. This alignment skill does not invoke either tool or generate claims of completed tests.
+4. **Execute, assess, and iterate (future Stage 5 work only).** Compare collected artifacts and available traces with each assertion; record PASS, FAIL, INCONCLUSIVE/NOT VERIFIED, or NOT EXECUTED as warranted. If the source or runtime implementation violates the approved guarantee, route the smallest correction to Stage 4 and re-evaluate. If the approved guarantee itself needs revision, return to Stage 3 for a new explicitly approved design before implementing changes. Missing or insufficient evidence calls for additional authorized verification rather than an invented pass or automatic redesign.
+
+#### Validation candidate cards
+
+Use concise **vertical Markdown cards**, separated by whitespace; no wide table or key-only list. Each card must stand on its own and answer what is being tested, how it would be tested, what must pass, and how the result would be demonstrated. Include the following fields in order:
+
+**V-01 — [Descriptive scenario title]**
+
+- **Purpose / contract guarantee:** [Plain-English behavior to validate, why it matters, exact approved IC-xx clause/version and related D-xx or supplied F-xx (Cx) when material. Refer to actual entries only.]
+- **Validation level:** [Standalone / Integration / End-to-end; choose the smallest justified level. Do not imply an entire workflow is in scope.]
+- **Given — Test setup:** [Initial state, representative fixture/input, available or deliberately unavailable dependencies, relevant permissions/approval state and controlled environment. Identify setup or authorization still needed; no invented fixtures or actual execution.]
+- **When — Execution:** [Specific future action: invoke the identified skill with that input, perform the approved handoff, or exercise an applicable feedback path under the test conditions. Keep it proportional and distinguish human choice from automatic dispatch.]
+- **Then — Assertions:** [Specific observable conditions that must hold for the approved guarantee. Use separate short bullets for independent checks; distinguish artifact assertions from behavior or permission assertions. A negative assertion such as no unauthorized tool action requires suitable evidence, not just an agent's statement.]
+- **Expected evidence:** [Concrete output artifact, source/requirement identifiers, decision/status record, controlled harness result, tool/action receipt or available trace needed to evaluate each assertion. State evidence limitations and missing instrumentation; do not assume a trace exists or treat lack of a trace as proof that an action did not happen.]
+- **Status:** NOT EXECUTED. [State any prerequisite correction, approval or evidence access needed before the case can run.]
+
+Reuse actual earlier V-xx candidates and their identifiers when their scope and meaning are unchanged. Refine their descriptions and assertions without silently changing the approved IC/D baseline. If splitting a candidate into meaningful subcases or adding a justified candidate, make the relationship explicit and use distinct identifiers; do not manufacture a fixed V-01–V-04 catalog or renumber unchanged candidates. Check that every reference resolves to the actual report/baseline or supplied earlier evidence. When no prior candidates exist, create only the necessary report-local IDs. If no additional Stage 5 candidate is justified, say `No additional Stage 5 candidate justified` with the reason. If the approved baseline is missing, explain the blocker; do not present provisional scenarios as validation of approved terms. Candidate design is not an executed test, PASS result, or permission to run.
+
+**Illustrative candidate (synthetic, not a fixed V-01 definition or an actual result):**
+
+**V-01 — Standalone execution without the partner skill**
+
+- **Purpose / contract guarantee:** Verify that the receiving skill's standalone entry remains usable without mandatory upstream context, as specified by the example approved optional-handoff agreement. In an actual report, link the exact approved IC/D terms.
+- **Validation level:** Standalone.
+- **Given — Test setup:** In an authorized controlled environment, only the receiving skill is available; the partner skill is not installed or accessible. Supply sufficient normal starting information, without a PRD.
+- **When — Execution:** Invoke the receiving skill directly with that input.
+- **Then — Assertions:**
+  - Produce the expected standalone artifact with its required content.
+  - Do not make the absent optional PRD or partner installation a prerequisite.
+  - Do not invoke the partner skill; verify this from controlled environment or tool execution evidence rather than self-report.
+- **Expected evidence:** Actual generated standalone artifact, test environment/fixture record, and available invocation/dispatch evidence sufficient to assess the absence of a partner invocation. If the latter cannot be established, mark that assertion INCONCLUSIVE/NOT VERIFIED in the future run.
+- **Status:** NOT EXECUTED.
+
+If the actual approved contract protects both skills' standalone paths, repeat the test with the roles reversed or specify two distinct subcases within the candidate. Use a different scenario title and setup for a different guarantee. Do not copy this example as an actual finding or assume it is applicable to every skill pair.
 
 ## Interaction with existing optional design reviews
 
