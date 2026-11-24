@@ -583,6 +583,94 @@
         "Clear existing protections may receive KEEP.",
         "No invented scores, sources or runtime proof."
       ]
+    },
+    {
+      "id": 39,
+      "prompt": "Audit brief-planning and evidence-refinement in normal read-only Stage 2 scope. Their optional handoffs and owner-reviewed feedback are documented, but execution traces are not supplied. Does this alone justify F-xx VERIFY?",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Documented optional handoffs are reported as DOCUMENTED, with a possible meaningful KEEP. Runtime evidence is NOT VERIFIED once in scope limitations; no generic F-xx VERIFY, high-priority action, or forced Stage 5 case.",
+      "assertions": [
+        "No generic F-xx VERIFY merely because traces were not supplied.",
+        "Existing written handoffs are DOCUMENTED, not automatically PLANNED or OBSERVED.",
+        "No unobserved failure, unnecessary coordinator or mandatory validation ticket.",
+        "C1–C6 and compact terminal layout are preserved."
+      ]
+    },
+    {
+      "id": 40,
+      "prompt": "Audit routing-runtime-claim. The instructions explicitly promise automatic cross-skill dispatch and preservation of approval state, but no host runner or execution traces are supplied. Is VERIFY appropriate?",
+      "files": [
+        "evals/files/routing-runtime-claim/SKILL.md"
+      ],
+      "expected_output": "A material VERIFY cites the unsupported explicit automatic execution/approval guarantee, explains its consequence, and names targeted future trace or permission evidence without claiming that execution failed.",
+      "assertions": [
+        "VERIFY is grounded in a specific runtime guarantee, not absence of traces alone.",
+        "Instruction claim is DOCUMENTED; execution is NOT VERIFIED, not OBSERVED failure.",
+        "Names an authorized future trace/host-permission check.",
+        "Does not execute anything or invent implementation."
+      ]
+    },
+    {
+      "id": 41,
+      "prompt": "Audit discovery-brief and evidence-refinement. Discovery wording conflicts with the stated provisional entry path, but no runtime traces exist. Identify the substantive issue rather than repeatedly reporting missing traces.",
+      "files": [
+        "evals/files/discovery-brief/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "CLARIFY or REVISE the actual ambiguous wording with exact source, why and proposed wording, but no extra generic VERIFY merely because runtime is uninspected.",
+      "assertions": [
+        "Evidence-backed wording ambiguity is the actionable finding.",
+        "No duplicate F-xx VERIFY for missing execution traces.",
+        "Current and proposed wording are correctly distinguished.",
+        "Original side-by-side layout and vertical fields remain."
+      ]
+    },
+    {
+      "id": 42,
+      "prompt": "User requests confirmation that the optional handoff between brief-planning and evidence-refinement actually executes in Codex. Perform read-only Stage 2 investigation only; no authorization to run skills.",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "An actionable VERIFY is justified by the explicit request, with exact trace/dispatch evidence needed and a Stage 5 candidate marked PROPOSED NOT EXECUTED. No execution is claimed or performed.",
+      "assertions": [
+        "User-requested assurance is a legitimate VERIFY trigger.",
+        "Proposes targeted trace of source IDs, stage invocation and approval state.",
+        "No runtime behavior is falsely labeled observed or failed.",
+        "No testing performed and no automatic coordinator assumption."
+      ]
+    },
+    {
+      "id": 43,
+      "prompt": "Perform quality_review: on on brief-planning and evidence-refinement. Q-09 lacks execution traces. Does the NOT VERIFIED coverage status automatically create F-xx VERIFY?",
+      "files": [
+        "evals/files/brief-planning/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "Q-09 accurately describes evidence coverage, but does not automatically emit an F-xx VERIFY just because runtime evidence is unavailable.",
+      "assertions": [
+        "NOT VERIFIED evidence status is distinct from VERIFY assessment.",
+        "No fabricated evaluation pass or fail.",
+        "No duplicate finding for ordinary evidence limits.",
+        "Q-01–Q-10 optional coverage remains within seven report headings."
+      ]
+    },
+    {
+      "id": 44,
+      "prompt": "Review approval-evidence using security-and-trust lens. Ticket provenance may be misread as approval, and the user specifically requests assurance that human-approval enforcement cannot be bypassed. No host permission evidence was provided.",
+      "files": [
+        "evals/files/approval-evidence/SKILL.md"
+      ],
+      "expected_output": "Clarify documented provenance ambiguity and, if material to the explicit request, identify a narrowly targeted VERIFY for authorization enforcement. Do not suppress consequential safety questions or claim an observed bypass.",
+      "assertions": [
+        "Security and approval concerns remain eligible for a justified VERIFY.",
+        "Documented wording is distinguished from actual host enforcement.",
+        "Targets a permission/authorization check rather than generic missing traces.",
+        "Does not claim an approval bypass occurred or run tests."
+      ]
     }
   ]
 }
