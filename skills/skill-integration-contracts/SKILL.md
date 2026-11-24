@@ -1,6 +1,6 @@
 ---
 name: skill-integration-contracts
-description: "Read-only Stage 3 integration design for one or more AI agent skills. Turn Stage 2 responsibility/overlap findings and current skill evidence into minimal, traceable producer-consumer contracts, standalone boundaries, failure/approval guarantees, human decisions, and Stage 4 handoffs. Use when asked to define skill handoff/interface contracts or an optional coordinator contract. Does not edit skills, run agents, implement integration or approve decisions."
+description: "Stage 3 read-only integration contract design for AI agent skills, plus optional post-Stage-4 implementation alignment review against explicitly human-approved IC-xx/D-xx contracts. Draft traceable handoff guarantees and decisions, or inspect changed skill source for alignment, mismatches and next-stage routing. Does not edit skills, invoke agents, execute tests, implement integration or grant approval."
 ---
 
 # Skill Integration Contracts — Stage 3
@@ -11,9 +11,9 @@ Act as a senior software engineer helping a developer design **how independently
 
 Use when asked to define handoff contracts, interface guarantees, feedback/error boundaries, human approval requirements, or an optional coordinator's limited routing agreement. Support **one standalone skill**, a **single actual connection**, or an **entire approved/intended workflow**. A Stage 2 audit is helpful but not mandatory.
 
-**This skill owns:** read-only evidence review; proposed interface, behavior, trust, reliability, observability and compatibility agreements **only as applicable**; lightweight contract cards; options/trade-offs; an explicit human decision ledger; and a bounded Stage 4 handoff.
+**This skill owns:** in **default design mode**, read-only evidence review; proportional interface, behavior, trust, reliability, observability and compatibility agreement proposals; lightweight IC-xx cards, D-xx human decisions, and a Stage 4 handoff. In **optional implementation alignment mode**, a post-Stage-4, read-only comparison of **specific approved IC-xx/D-xx terms** against updated skill source and a routed fix/validation handoff.
 
-**This skill does not own:** changing any target `SKILL.md` or scripts; choosing product/technical scope on behalf of an owner; installing a coordinator, invoking other skills, executing agents or tests, publishing results, creating Jira tickets, or granting runtime permissions. Stage 4 implements human-approved designs; Stage 5 tests actual runtime behavior. A written contract is **not** proof that a host enforces it.
+**This skill does not own:** changing target `SKILL.md` or scripts, selecting product/technical scope for an owner, installing a coordinator, invoking other skills, executing agents/tests, publishing results, creating Jira tickets, or granting runtime permissions. **Stage 4 implements** human-approved designs; **Stage 5 tests** actual runtime behavior. Even an ALIGNED source-level review is **not** proof that host permissions, dispatch or workflow behavior were exercised.
 
 ## Inputs and scope
 
@@ -23,12 +23,13 @@ Inspect what is accessible and authorized:
 - **Optional Stage 1 architecture:** phases, intended route, existing feedback paths and human gates.
 - **Optional Stage 2 audit:** material `F-xx (Cx)` findings, affected skills, source links, proposed optional handoffs, unresolved ownership questions, evidence status, and reviewer responses.
 - **Existing decisions and environment:** exact approved boundary wording if any, human decision maker when known, intended host/coordinator, existing contracts, known constraints and revisions.
+- **Alignment-only inputs (when opted in):** the exact **human-approved** IC-xx/D-xx design and identifiable approval/version, actual changed/current skill source and relevant config/code, and revision/diff where accessible. An incomplete or unavailable approval baseline cannot be silently inferred from proposed text.
 
 Identify target/revision/source and **what is documented versus proposed**. If a Stage 2 report or a target source is missing, do a bounded read-only discovery of the accessible skills; mark unresolved ownership and evidence gaps **UNVERIFIED / NOT ASSESSED**. Do not fabricate `F-xx` IDs, approvals, interfaces, execution traces, or hidden code. If a critical owner/permission decision is unresolved, you **may still draft a conditional example**, but never finalize it.
 
 Use the shared [Senior Engineer → Junior Developer Communication Guideline](../../docs/senior-engineer-mentoring-communication.md). Explain every material contract by **what it guarantees → why the consumer needs it → what can go wrong → the smallest design choice and trade-off**. Keep junior-friendly definitions brief and do not repeat a lesson for every routine field.
 
-Read [contract-design-guide.md](references/contract-design-guide.md) for contract dimensions, evidence and decision rules. Read [report-template.md](references/report-template.md) for the exact seven-section layout. Read [contract-quality-review-questions.md](references/contract-quality-review-questions.md) **only when contract quality review is explicitly requested**. Read [review-lenses.md](references/review-lenses.md) **only when Stage 3 conference lenses are requested**. Read [industry-framework-review-lenses.md](references/industry-framework-review-lenses.md) **only when optional Stage 3 industry review is requested**. These are design references, not evidence of the inspected target skills.
+Read [contract-design-guide.md](references/contract-design-guide.md) for contract dimensions, evidence and decision rules. Read [report-template.md](references/report-template.md) for the exact seven-section layout. Read [contract-quality-review-questions.md](references/contract-quality-review-questions.md) **only when contract quality review is explicitly requested**. Read [review-lenses.md](references/review-lenses.md) **only when Stage 3 conference lenses are requested**. Read [industry-framework-review-lenses.md](references/industry-framework-review-lenses.md) **only when optional Stage 3 industry review is requested**. Read [implementation-alignment-review.md](references/implementation-alignment-review.md) **only when `implementation_alignment_review: on` is explicitly requested**, using its separate output format instead of the normal design template. References are not evidence of target behavior.
 
 ## Optional Contract Quality Review — CQ-01–CQ-06
 
@@ -64,6 +65,18 @@ Read [contract-design-guide.md](references/contract-design-guide.md) for contrac
 - Immediately after industry coverage, include **Official Industry Framework Sources & Further Reading (optional)** with `Framework / type | Topic or official section | Publisher & version | Official URL`, using direct links from the reference for only selected frameworks. Industry sources provide design perspectives, not evidence that the targets behave correctly.
 - Treat the sources distinctly: ISO/IEC 25010 is an international product-quality standard; AWS Agentic AI Lens is vendor guidance; NIST AI RMF is voluntary AI-risk guidance; CMU SEI ATAM is an architecture-evaluation method; OWASP Agentic Top 10 is community security guidance. These are **adapted design questions**, not certification or a completed formal assessment.
 - Industry-only mode does not enable CQ or conference reviews. Preserve order **core cross-cutting → CQ (if enabled) → conference lenses/sources (if enabled) → industry frameworks/official sources (if enabled)**, all in Section 5. Keep the four SDI steps, seven report sections and human decision gate. Never force a coordinator, mandatory cross-skill dependency, runtime controls, telemetry or elaborate schemas to satisfy a framework. Stage 4 implements; Stage 5 tests.
+
+## Optional Implementation Alignment Review — after Stage 4
+
+**Default: off.** The existing contract-design workflow stays unchanged. Explicitly set `implementation_alignment_review: on` to switch to a **read-only post-implementation comparison** against **approved** IC-xx and D-xx terms. This is still the Stage 3 *skill* assessing alignment to its design; it does not make implementation part of Stage 3 or replace Stage 5 runtime validation.
+
+- **Load [implementation-alignment-review.md](references/implementation-alignment-review.md)** for the four-step source-comparison procedure, verdict definitions, five-section alignment report and example. **Do not rerun the default seven-section design report** in alignment mode or rewrite the approved baseline.
+- **Mandatory approval baseline for authoritative verdicts:** Identify exact IC-xx/D-xx wording, explicit human approval of that version and scope, and the inspected current source/revision. If approval or exact wording cannot be established, output **APPROVED BASELINE NOT VERIFIED** and the missing input; an optional provisional comparison must never be reported as alignment to an approved design. Approval of one D-xx doesn't approve another.
+- **Source comparison:** Read the changed/current `SKILL.md`, relevant references, configs or code and base/head diff **when available**, rather than relying on a claim that changes were implemented. Match each material approved guarantee to actual source links and assess **ALIGNED / PARTIALLY ALIGNED / MISMATCH / NOT VERIFIED**. With no diff, state that only current source content was assessed.
+- **Evidence boundary:** `ALIGNED` means the specific approved guarantee is represented in inspected source at a disclosed evidence level; it does **not** prove runtime enforcement, actual automatic skill dispatch, successful evaluations, approval to merge or deployment readiness. Missing traces alone do not make a documented source-aligned clause a defect.
+- **Stage routing:** If a source change is incomplete or contradicts an approved IC, recommend the **smallest Stage 4 correction** and rerun alignment against the same approved design. If the **design itself** needs revision, route to a separate Stage 3 IC/D revision and **new human approval** before Stage 4. If source aligns but runtime behavior remains unknown, propose proportionate **Stage 5 validation**, NOT EXECUTED.
+- **Independent modes:** CQ, conference lenses and industry frameworks remain **design-mode-only** options. If supplied together with alignment mode, perform **alignment only** and note that the design-mode checks weren't run; use a separate invocation to redesign contracts. Don't create duplicate F/IC/D identifiers or add an eighth section to the default report.
+- **No script or writes:** This is implemented as skill/reference **instructions**, not executable tooling. Never edit targets, run tests, invoke connected skills or claim behavioral PASS in this review.
 
 ## Four-step integration-design procedure (aligned with SDI)
 
@@ -103,7 +116,9 @@ Mark **CURRENT DOCUMENTED** guarantees separately from **NEW PROPOSAL** and **UN
 - Only a human's **explicit approval of a specific, fully shown design version** can mark it **APPROVED — DESIGN ONLY**. Approval is not repository implementation, tool permission, management authorization or runtime verification. Changed boundaries reopen dependent contracts.
 - In Section 7, list the *smallest* approved or still-conditional changes that Stage 4 could implement, affected skill-local files and a few relevant Stage 5 candidate checks (`V-xx`), clearly **NOT EXECUTED**. Never edit target files or claim a test ran here.
 
-## Output contract — seven stable sections
+## Output contract — seven stable sections (default design mode only)
+
+**Alignment-only exception:** `implementation_alignment_review: on` uses the **five-section implementation alignment report** in [implementation-alignment-review.md](references/implementation-alignment-review.md) instead of the seven design sections below. All existing design-mode headings remain stable.
 
 Follow [report-template.md](references/report-template.md) with these headings, in order:
 
@@ -119,8 +134,10 @@ Follow [report-template.md](references/report-template.md) with these headings, 
 
 **IDs and statuses must not collide:** `C1–C6` are **Stage 2 considerations**, `F-xx` are **Stage 2 findings**, `IC-xx` are **Stage 3 contracts**, `D-xx` are **Stage 3 human design decisions**, and `V-xx` are **proposed Stage 5 checks**, and `CQ-xx` are **optional Stage 3 contract-quality questions**. Reference only IDs that exist in the report; do not infer that a contract is approved, implemented or tested.
 
-**One-pass default:** Present a complete, minimal proposal and all material options in the first report, even if human decisions are missing. Ask for approval/revision **after** showing the proposal. Do not start modifying targets when a user approves the design; that is separate Stage 4 work.
+**One-pass design default:** Present a complete, minimal proposal and all material options in the first design report, even if human decisions are missing. Ask for approval/revision **after** showing the proposal. Do not start modifying targets when a user approves the design; that is separate Stage 4 work.
 
 ## Completion boundary
 
-Deliver a traceable integration design, not a running integration. Stop with the human decision ledger and Stage 4 handoff. The user may approve, revise, reject or defer individual `D-xx / IC-xx` proposals in a later discussion. Do not execute the workflow or fabricate implementation evidence.
+**Design mode:** Deliver a traceable integration design, not a running integration. Stop with human decisions and a Stage 4 handoff. The human may approve, revise, reject or defer specific D-xx/IC-xx proposals.
+
+**Implementation alignment mode:** Deliver a source-backed comparison against **specific approved IC-xx/D-xx terms** and route material differences to Stage 4 correction, separate Stage 3 redesign/approval, or Stage 5 verification. A missing approval baseline blocks an authoritative alignment verdict. Never modify files, execute the workflow or fabricate runtime evidence.

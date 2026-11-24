@@ -9,10 +9,11 @@ A **read-only integration-design skill** for defining minimal, evidence-backed c
 - Drafts proportional `IC-xx` contracts for interface, behavior, invariants, trust/approval, failure/feedback and observability/version assumptions **when applicable**.
 - Explains changes in senior-to-junior plain English, with **source → consequence → smallest recommended agreement → trade-off**.
 - Creates a `D-xx` **human decision ledger** and a bounded Stage 4 implementation handoff. Any `V-xx` validation idea is proposed for Stage 5, **not executed**.
+- Optionally compares **approved** IC-xx/D-xx terms with updated source **after Stage 4** using `implementation_alignment_review: on`, without changing target files or claiming runtime PASS.
 
 ## What it doesn't do
 
-It never edits the target skills, writes formal implementation files into them, automatically invokes them, starts a coordinator, calls live Jira, runs a test harness, or approves a design on a user's behalf. Written contracts do not imply runtime enforcement. No blanket approval is inferred from a prior audit recommendation.
+It never edits the target skills, writes formal implementation files into them, automatically invokes them, starts a coordinator, calls live Jira, runs a test harness, or approves a design on a user's behalf (including in implementation alignment mode). Written contracts do not imply runtime enforcement. No blanket approval is inferred from a prior audit recommendation.
 
 ## Quick start
 
@@ -101,6 +102,53 @@ industry_framework_review: relevant
 
 The normal four-step procedure, standalone protections and D-xx human decision gate are already built in.
 
+## Optional Implementation Alignment Review — after Stage 4
+
+Use `implementation_alignment_review: on` when you have **approved Stage 3 integration contracts**, made the corresponding **Stage 4 changes**, and want to recheck whether the modified skill files align with the approved design. This remains **inside Skill Integration Contracts**, without creating another skill or using Review Implementation.
+
+**It is instructions, not a script.** The review reads approved IC-xx/D-xx wording and the current changed skill source, then gives a source-level comparison. It never edits files, invokes skills, executes tests or certifies runtime behavior.
+
+### What to provide
+
+- **Approved Stage 3 design:** Link or path to the exact `IC-xx` contracts, `D-xx` decisions and explicit human approval of that version.
+- **Implementation:** Link or paths to the modified `SKILL.md` files/references and, when available, the Git branch, commit or base/head diff.
+- **Scope:** The intended producer → consumer connection(s). Other Stage 1/2 evidence is optional.
+
+### Copyable invocation
+
+```text
+Use skill-integration-contracts on:
+- skills/first-skill
+- skills/second-skill
+
+implementation_alignment_review: on
+
+Approved Stage 3 design: [path or link to approved IC-xx/D-xx]
+Implemented revision: [branch, commit, diff or current file paths]
+```
+
+You do **not** need to repeat the alignment procedure in the prompt.
+
+### How to read the result
+
+The alignment mode uses a **separate five-section report**, not the default seven-section design report:
+
+1. **Review Scope & Approved Baseline** — exact approved IC-xx/D-xx, authorized decision scope, source revisions.
+2. **Contract Alignment Coverage** — one material guarantee per row and **ALIGNED / PARTIALLY ALIGNED / MISMATCH / NOT VERIFIED** source-level verdict.
+3. **Material Gaps & Evidence Limits** — source-backed differences and the smallest proposed correction.
+4. **Next Stage & Iteration Handoff** — Stage 4 source fixes, separate Stage 3 design revisions needing human approval, or Stage 5 testing.
+5. **Stage 5 Candidates — NOT EXECUTED** — only justified runtime tests to carry forward.
+
+A contract can be **ALIGNED — DOCUMENTED SOURCE** while its runtime execution remains **NOT VERIFIED**. The mode never treats a missing trace alone as a failed implementation.
+
+**Iteration loop:** Approve IC/D in Stage 3 → implement in Stage 4 → run this alignment review → correct Stage 4 mismatches and rerun the same approved design. If the approved **design must change**, revise it in a separate Stage 3 design pass and get specific new approval before implementing that change. Stage 5 performs actual behavioral evaluations.
+
+**Approval requirement:** An explicit, identifiable approved design version is necessary for an authoritative alignment verdict. If only proposals or incomplete decisions are available, the result says **APPROVED BASELINE NOT VERIFIED**. No approval or contract wording is invented.
+
+**Interaction with other options:** `quality_review`, `review_lenses` and `industry_framework_review` are for **design mode**; turning on implementation alignment chooses the alignment-only report. Run a separate design review to reassess the contract itself.
+
+**Detailed procedure and reusable report:** [references/implementation-alignment-review.md](references/implementation-alignment-review.md).
+
 ## How to read the report
 
 The seven stable headings are **Executive Summary**, **Current Skill Boundaries & Stage 2 Evidence**, **Proposed Interaction & Ownership Map**, **Proposed Integration Contract Cards**, **Cross-Cutting Guarantees & Trade-offs**, **Human Decision Ledger & Open Questions**, and **Stage 4 Implementation Handoff & Stage 5 Candidates**.
@@ -129,6 +177,7 @@ An optional coordinator contract is useful only when documented or expressly req
 - [`references/contract-quality-review-questions.md`](references/contract-quality-review-questions.md) — canonical CQ-01–CQ-06 and coverage rules.
 - [`references/review-lenses.md`](references/review-lenses.md) — five optional conference lenses with topics, speakers, PDF sources and matched YouTube links.
 - [`references/industry-framework-review-lenses.md`](references/industry-framework-review-lenses.md) — five official industry references adapted to Stage 3 contract review.
+- [`references/implementation-alignment-review.md`](references/implementation-alignment-review.md) — optional post-Stage-4 approved-contract/source alignment procedure and separate five-section output template.
 - [`evals/evals.json`](evals/evals.json) — **defined scenarios/assertions, not evidence the skill was behaviorally evaluated**.
 
 The shared [Senior Engineer → Junior Developer Communication Guideline](../../docs/senior-engineer-mentoring-communication.md) supplies the common teaching style without adding more skill stages.

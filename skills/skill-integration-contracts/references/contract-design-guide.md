@@ -2,6 +2,10 @@
 
 This reference supports `skill-integration-contracts`. It is **not** a separate skill, standards certification, runtime enforcement, or another workflow stage. Select only relevant questions; the aim is a **minimum dependable agreement between independently useful skills**, not a fully prescriptive prompt or distributed-system specification.
 
+## Optional source alignment check after Stage 4
+
+The skill can be rerun with `implementation_alignment_review: on` to assess **current source-level alignment** with specific, human-approved Stage 3 `IC-xx`/`D-xx` designs after Stage 4 implementation. This is a **separate, read-only mode**, not the normal design pass; see [implementation-alignment-review.md](implementation-alignment-review.md) for approval prerequisites, the four comparison statuses, stage routing and the separate five-section report. Missing runtime traces do not by themselves make aligned documented wording defective. Stage 5 remains responsible for executed verification.
+
 ## The distinction between Stage 2 and Stage 3
 
 - **Stage 2 asks:** What inputs, responsibilities, outputs, handoffs, boundaries and feedback paths are **currently** documented? Which are shared, missing or ambiguous? Evidence link: `F-xx (Cx)`.

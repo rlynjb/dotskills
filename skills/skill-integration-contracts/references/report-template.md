@@ -1,6 +1,8 @@
 # Skill Integration Contracts — Stage 3 Report Template
 
-This is an **output template, not a source of target facts or approvals**. Replace brackets with actual inspected evidence. Keep the seven section titles and the source-backed junior-friendly explanations. `F-xx (Cx)` refers only to real prior Stage 2 findings; `IC-xx`, `D-xx` and `V-xx` are report-local Stage 3 references.
+This is the **default contract-design output template**, not a source of target facts or approvals. Replace brackets with actual inspected evidence. Keep the seven section titles and the source-backed junior-friendly explanations. `F-xx (Cx)` refers only to real prior Stage 2 findings; `IC-xx`, `D-xx` and `V-xx` are report-local Stage 3 references.
+
+**Optional post-Stage-4 review:** When `implementation_alignment_review: on` is explicitly selected, use [implementation-alignment-review.md](implementation-alignment-review.md) and its **separate five-section source alignment report** instead of these seven design-mode sections. Don't silently rerun contract design, revise an approved baseline, change skill files or perform Stage 5 tests.
 
 ## 1. Executive Summary
 
