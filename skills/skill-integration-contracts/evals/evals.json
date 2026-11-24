@@ -682,6 +682,53 @@
         "Current source takes precedence for current alignment; earlier partial state remains historical context.",
         "Results don't prove runtime dispatch or host permissions."
       ]
+    },
+    {
+      "id": 44,
+      "prompt": "Run skill-integration-contracts on synthetic product-framing and evidence-refinement. The refinement found a potential upstream product change requiring a human decision. Explain Section 3 as a local conditional feedback loop while preserving the wider workflow and independence.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/stage2-audit.md"
+      ],
+      "expected_output": "Seven-section Stage 3 design report with Section 3 identifying an optional handoff, human owner review, conditional return for an authorized upstream revision, no-change forward path, and targeted re-entry only if needed. Concise presentation-ready reason for preserving standalone skills.",
+      "assertions": [
+        "A two-skill map is scoped as one interaction, not asserted to be the full multi-skill architecture.",
+        "Feedback is conditional: material finding/question → owner decision → authorized revision when needed; no change → continue.",
+        "Preserves independent entry/output and optional handoff without imposing mandatory prerequisites or automatic reruns.",
+        "Explains flexibility and branch/iteration benefit alongside explicit contracts and human approvals.",
+        "No new coordinator merely because feedback exists; no implementation or observed dispatch claims."
+      ]
+    },
+    {
+      "id": 45,
+      "prompt": "Design Stage 3 standalone entry/exit contract for product-framing only. No cross-skill consumer and no relevant change feedback is supplied. Ensure Section 3 does not invent a loop.",
+      "files": [
+        "evals/files/product-framing/SKILL.md"
+      ],
+      "expected_output": "Section 3 documents standalone entry, owner and result without inventing a second skill, coordinator, or required conditional feedback diagram. Concise explanation of independence only where useful.",
+      "assertions": [
+        "No fabricated producer-consumer connection or mandatory feedback branch.",
+        "No forced user approval step absent evidence, but documented product-authority boundary remains intact.",
+        "Seven default design sections remain stable.",
+        "No runtime or implementation claim."
+      ]
+    },
+    {
+      "id": 46,
+      "prompt": "Review a three-skill proposed path product-framing → evidence-refinement → ticket-construction. A finding from refinement may return to product owner; a draft ticket may proceed without an upstream PRD change. Produce scoped Section 3 flow.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/ticket-construction/SKILL.md"
+      ],
+      "expected_output": "Shows only relevant pairwise paths and conditional human-owned feedback as an optional branch, not an all-to-all forced sequence or perpetual loop. Approvals and independent skill paths preserved.",
+      "assertions": [
+        "Distinguishes local feedback route from full multi-skill workflow map.",
+        "No unconditional PRD revision and no silent approval of ticket publication.",
+        "Preserves optional context and owner authority.",
+        "Does not infer need for coordinator from feedback alone."
+      ]
     }
   ]
 }

@@ -29,21 +29,37 @@ For a single skill, use a short vertical profile instead of inventing a second t
 
 ## 3. Proposed Interaction & Ownership Map
 
-- **Intended connection:** [Producer → consumer; when chosen, required vs optional, and explicit standalone alternatives.]
-- **Proposed decision owner:** [Who owns product/domain decisions, technical decisions, human approval, feedback resolution. Don't guess names.]
-- **Simpler path vs coordinator:** [NOT NEEDED / CONDITIONAL PROPOSAL / DEFER; why.]
-- **Human checkpoints:** [What requires explicit human action, not just an AI suggestion.]
-- **Diagram when useful:**
+Describe the **specific connection(s) under review**, not necessarily the whole product or engineering workflow. A two-skill interaction can be a local part of a larger multi-skill architecture. Keep existing high-level architecture intact unless a change is explicitly proposed and approved.
+
+- **Intended connection:** [Producer → consumer; user/authorized workflow trigger; required vs optional context; explicit standalone entry and complete result for each relevant skill.]
+- **Proposed decision owner:** [Who produces, consumes, proposes changes, authorizes a revision, and resolves returned questions; don't guess authority.]
+- **Conditional feedback route (only if material):** [Which finding/question triggers feedback; to which responsible owner/artifact it returns; what that owner can approve, reject or defer; when an authorized revision is made; whether **only the affected skill/phase** needs another pass. If no actionable issue or no authorized revision, continue by the chosen forward path.]
+- **Why standalone skills matter:** [One or two team-friendly sentences explaining how independent entry, optional handoffs, and targeted re-entry allow branching, feedback and future workflow changes **without a rigid mandatory skill sequence**. Do **not** equate flexibility with absent contracts, waived prerequisites or bypassed human approval.]
+- **Simpler path vs coordinator:** [NOT NEEDED / CONDITIONAL PROPOSAL / DEFER; is manual/user-selected routing sufficient? A feedback loop alone does not require a coordinator.]
+- **Human checkpoints:** [What requires explicit approval; distinguish a skill's proposed changes from the owner's authorized artifact revision.]
+- **Diagram when useful (adapt to actual connections, including a standalone-only path):**
 
 ```text
-[Skill A standalone input] -> [Skill A output]
-               |
-               +-- optional context, user/authorized workflow chooses -->
-                                              [Skill B standalone input or optional context]
-                                              [Skill B review result] -> [Human owner decides]
+[Skill A: standalone entry/output] -- chosen optional context --> [Skill B: standalone entry/output]
+                                                               |
+                                                   [Finding requires a change?]
+                                                      /                 \\
+                                                    NO                  YES
+                                                    |                    |
+                                            [Continue as chosen]   [Owner reviews proposal]
+                                                                         |
+                                                              [Revision authorized?]
+                                                                 /            \\
+                                                                NO            YES
+                                                                |              |
+                                                       [Continue / defer]  [Owner updates artifact]
+                                                                                  |
+                                                                    [Revisit affected step if needed]
 ```
 
-The diagram is **illustrative**, not evidence of actual dispatch or existing tool integration.
+**Interpretation:** This is a **conditional feedback path**, not a loop every invocation must traverse. The upstream artifact changes only with appropriate authorization; revisiting the affected step is optional and purpose-driven. Each skill remains independently useful where its actual prerequisites permit. The diagram is **illustrative**—not evidence of automatic dispatch, an executed loop, or a coordinator implementation. Omit unnecessary branches for a simple/standalone-only scope.
+
+**Presentation-ready rationale (adapt rather than recite):** "We keep skills independently useful and define their handoffs explicitly. That lets a workflow branch or return a finding to the responsible owner, then revisit only what needs to change—without forcing every skill into one fixed execution sequence. Contracts and human approval still govern the connection."
 
 ## 4. Proposed Integration Contract Cards
 

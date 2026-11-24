@@ -89,8 +89,10 @@ Read [contract-design-guide.md](references/contract-design-guide.md) for contrac
 
 ### Step 2 — High-level interactions and responsibility boundaries
 
-- Map each **actual intended producer → consumer** connection and any optional reverse feedback, plus a skill's own standalone entry. Give a small ASCII/Markdown diagram only when it clarifies branching.
+- Map each **actual intended producer → consumer** connection and any optional reverse feedback, plus each skill's standalone entry. Give a small ASCII/Markdown diagram only when it clarifies branching. **A local interaction map is not a replacement for an existing broader workflow architecture**; name its scope rather than inventing or showing every other skill.
 - Assign each **decision/result a proposed owner**, identifying who produces, consumes, verifies and approves. Distinguish separate decisions from shared input context; legitimate overlap is not automatically a problem.
+- If a material review finding may change an upstream artifact, map a **conditional feedback route**: what finding triggers the return, which authorized owner decides, what can be revised **only after approval**, and whether to revisit the affected skill or continue forward. **No issue or no authorized change → no mandatory return loop**. Never imply automatic reruns, approvals or dispatch.
+- Explain briefly **why standalone skills matter** in the interaction map: they can start independently, use optional context when chosen, and revisit only the work that needs attention. This permits branching and iteration without forcing all skills through one rigid sequence. **Flexible routing still requires clear contracts** for required prerequisites, responsibilities, handoff evidence and human authority.
 - Prefer a **manual or user-chosen optional handoff** over unnecessary coupled skill invocation. A producer's output being available does not make it a required prerequisite; never relax a genuinely required safety/data prerequisite.
 - Evaluate a **separately invoked optional coordinator** only when routing/sequence/context-return complexity is evidenced or explicitly requested. Its contract covers routing and context passing, not component skills' substantive decisions. Do not assume a `SKILL.md` automatically dispatches another skill.
 
@@ -124,7 +126,7 @@ Follow [report-template.md](references/report-template.md) with these headings, 
 
 1. **Executive Summary** — goal, scope, key decision and evidence limits.
 2. **Current Skill Boundaries & Stage 2 Evidence** — compact side-by-side source-backed inputs/responsibilities/outputs; `F-xx (Cx)` trace links only when real.
-3. **Proposed Interaction & Ownership Map** — intended connections, independent paths, human gates, coordinator choice when justified.
+3. **Proposed Interaction & Ownership Map** — scoped connections, standalone paths, conditional feedback/owner-approved revision and selective re-entry where applicable; briefly explain flexibility without weakening contracts or human gates, and evaluate coordinator choice only when justified.
 4. **Proposed Integration Contract Cards** — vertical `IC-xx` cards with evidence, minimal guarantees, failure/approval/feedback and status; only actual meaningful connections.
 5. **Cross-Cutting Guarantees & Trade-offs** — consolidate material trust, reliability, observability and compatibility issues; when requested, append CQ coverage, conference Review Lens Coverage and sources, and Industry Framework Review Coverage and official sources, all within this section.
 6. **Human Decision Ledger & Open Questions** — `D-xx` decisions, recommendation, trade-off, explicit status and question requiring human confirmation.

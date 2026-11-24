@@ -185,6 +185,8 @@ A contract can be **ALIGNED — DOCUMENTED SOURCE** while its runtime execution 
 
 The seven stable headings are **Executive Summary**, **Current Skill Boundaries & Stage 2 Evidence**, **Proposed Interaction & Ownership Map**, **Proposed Integration Contract Cards**, **Cross-Cutting Guarantees & Trade-offs**, **Human Decision Ledger & Open Questions**, and **Stage 4 Implementation Handoff & Stage 5 Candidates**.
 
+**Section 3 — Conditional feedback and standalone rationale:** A report covering two skills describes their **local interaction**, not a replacement for any broader workflow. When an actual finding calls for a change, the proposed feedback route returns it to the authorized owner; an approved revision may lead to revisiting **only the affected skill/phase**. If no change is needed, continue forward—there is no mandatory rerun. Independently usable skills and user-chosen handoffs support branching and iterative workflows without fixed all-skills sequencing. Their **IC-xx contracts**, genuine prerequisites and human approval boundaries remain explicit. See the [Section 3 example and presentation-ready rationale](references/report-template.md#3-proposed-interaction--ownership-map).
+
 **IDs:**
 - `C1–C6` = considerations in the Stage 2 audit.
 - `F-xx` = findings from that audit, used only if an actual report supplies them.
