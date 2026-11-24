@@ -883,6 +883,39 @@
         "No unsupported automatic invocation or runtime evidence.",
         "No mandatory diagram if prose is sufficient."
       ]
+    },
+    {
+      "id": 57,
+      "prompt": "Run Stage 3 integration design on synthetic product-framing and evidence-refinement with the supplied Stage 2 audit. I am a junior developer and want to understand how the optional forward handoff would work before reading the technical guarantees. The report is for chat.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md",
+        "evals/files/stage2-audit.md"
+      ],
+      "expected_output": "Section 4 uses a descriptive IC-xx heading and a compact A/B/C/D reading order: plain-English concept, clearly proposed representative walkthrough where useful, precise technical guarantees, and evidence/decisions. Standalone and optional handoff paths, source evidence, approval and uncertainty remain explicit. Decision references are descriptive and resolve to Section 6.",
+      "assertions": [
+        "Within each applicable IC card, conceptual understanding comes before detailed technical guarantees; evidence and decisions follow, within Section 4 rather than new numbered report sections.",
+        "Any walkthrough is labeled hypothetical/proposed and explains the user-chosen handoff, what the receiver does, and the relevant standalone alternative without claiming runtime dispatch or evidence.",
+        "Technical terms are explained concisely where useful while precise required/optional inputs, ownership, preconditions/postconditions/invariants, and relevant failure/approval guarantees remain explicit.",
+        "Current documented behavior, real supplied Stage 2 findings and new proposed changes are distinct; source links and uncertainty are preserved.",
+        "Dependency descriptions include the matching D-xx title/question and Section 6 reference, separate status, and why the decision matters; no dangling IDs.",
+        "No duplicate cards or unnecessary repeated audit, diagram or tutorial; any material diagram is ASCII in a fenced text block only."
+      ]
+    },
+    {
+      "id": 58,
+      "prompt": "Run Stage 3 for synthetic product-framing only. The reader is a junior developer. The standalone entry/exit boundary is simple; do not make the report longer than needed.",
+      "files": [
+        "evals/files/product-framing/SKILL.md"
+      ],
+      "expected_output": "A compact, accessible standalone IC-xx card with concept, applicable technical guarantees, and actual evidence/decisions; omit the practical walkthrough when it adds no value. Preserve the seven-section structure.",
+      "assertions": [
+        "A short concept precedes technical terms and the reader can understand the standalone contract without inventing a second skill.",
+        "B is omitted when no additional walkthrough is useful; no mandatory diagram or invented scenario, decision or dependency.",
+        "Exact source-backed entry/exit guarantees and applicable human approval or failure boundaries remain; no fabricated F-xx or D-xx.",
+        "When no dependencies are identified, show None identified with any evidence limit and separate approval status, not automatic approval.",
+        "No extra numbered report sections, duplicate contract cards or runtime execution claims."
+      ]
     }
   ]
 }
