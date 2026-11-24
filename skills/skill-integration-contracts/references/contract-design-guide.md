@@ -71,6 +71,12 @@ Read [review-lenses.md](review-lenses.md) only when the user selects named lense
 
 Keep two evidence types separate: inspected target skills/approved decisions support factual contract findings; conference sources support the review **perspective and further learning**. Show the original session topic, talk title, speaker and actual PDF/YouTube link directly in the report. Do not invent video URLs or claim conference takeaways are official standards. Read only applicable lenses, preserve independent skill operation, and avoid a second issue numbering scheme.
 
+## Optional industry framework review
+
+The [industry-framework-review-lenses.md](industry-framework-review-lenses.md) questions are designed for **Stage 3 IC-xx proposals**; Stage 2's corresponding file examines **existing skills and responsibility boundaries**. The same industry frameworks can inform both stages without creating the same review.
+
+Load only when `industry_framework_review: relevant`, `industry_framework_review: on` or a named `industry_frameworks` subset is explicitly supplied. The framework questions inspect the existing six contract dimensions, not another set of mandatory contract fields. In Section 5, place optional industry coverage and official publisher readings **after** CQ and conference coverage if those are enabled. A publisher source justifies the question, not target-skill correctness, actual runtime enforcement or certification. Preserve the IC/D human decision structure and avoid unnecessary orchestration.
+
 ## Evidence, uncertainty and status
 
 Maintain three *separate axes*:

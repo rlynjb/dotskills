@@ -81,6 +81,26 @@ then include sources by topic, title, speaker, PDF and matched YouTube.
 Keep the skills independent; do not edit or run anything.
 ```
 
+## Optional Industry Framework Review
+
+A third optional review, mirroring Stage 2's [Industry Framework Review Lenses](../skill-responsibility-overlap-audit/references/industry-framework-review-lenses.md) but adapting the questions to **proposed Stage 3 integration contracts** rather than existing skill responsibilities. **Default off.**
+
+- `industry_framework_review: relevant` selects only applicable industry frameworks for the drafted IC-xx contracts.
+- `industry_framework_review: on` considers all five proportionately.
+- `industry_frameworks: [aws-agentic-ai-lens, cmu-sei-atam]` selects only those two; the [reference](references/industry-framework-review-lenses.md) lists all five IDs.
+
+**Output:** In Section 5, the **Industry Framework Review Coverage** table compares proposed IC-xx cards against the adapted design questions. **Official Industry Framework Sources & Further Reading** immediately follows with publisher, framework type, version, topic and direct official links. These are design reviews, not certified compliance, security proof or runtime evaluations. This independent option does not silently turn on CQ or conference review.
+
+```text
+Use skill-integration-contracts on:
+- PRD Development
+- Refine Requirements
+
+industry_framework_review: relevant
+```
+
+The normal four-step procedure, standalone protections and D-xx human decision gate are already built in.
+
 ## How to read the report
 
 The seven stable headings are **Executive Summary**, **Current Skill Boundaries & Stage 2 Evidence**, **Proposed Interaction & Ownership Map**, **Proposed Integration Contract Cards**, **Cross-Cutting Guarantees & Trade-offs**, **Human Decision Ledger & Open Questions**, and **Stage 4 Implementation Handoff & Stage 5 Candidates**.
@@ -108,6 +128,7 @@ An optional coordinator contract is useful only when documented or expressly req
 - [`references/report-template.md`](references/report-template.md) — copyable seven-section report, vertical IC/D cards, and optional CQ coverage table.
 - [`references/contract-quality-review-questions.md`](references/contract-quality-review-questions.md) — canonical CQ-01–CQ-06 and coverage rules.
 - [`references/review-lenses.md`](references/review-lenses.md) — five optional conference lenses with topics, speakers, PDF sources and matched YouTube links.
+- [`references/industry-framework-review-lenses.md`](references/industry-framework-review-lenses.md) — five official industry references adapted to Stage 3 contract review.
 - [`evals/evals.json`](evals/evals.json) — **defined scenarios/assertions, not evidence the skill was behaviorally evaluated**.
 
 The shared [Senior Engineer → Junior Developer Communication Guideline](../../docs/senior-engineer-mentoring-communication.md) supplies the common teaching style without adding more skill stages.
