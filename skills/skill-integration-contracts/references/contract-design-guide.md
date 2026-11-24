@@ -65,6 +65,12 @@ Apply questions only **after a meaningful IC-xx exists**. In Section 5, place Co
 
 A `CLEAR` proposed contract is not an approved or enforced contract. Avoid unnecessary schema/permission/telemetry requirements introduced only to fill a checklist cell. The reviewer still approves, revises, rejects or defers the exact terms.
 
+## Optional conference lenses and source-linked learning
+
+Read [review-lenses.md](review-lenses.md) only when the user selects named lenses or `review_lenses: relevant`. Their five names mirror the Stage 2 topics but the diagnostic questions assess **Stage 3 IC-xx handoff design**. Under Section 5, put normal cross-cutting analysis first, optional **CQ coverage** second, **Review Lens Coverage** third, and **Conference Sources & Further Reading** fourth. The lens/source subsections are omitted when lenses are off. Lenses do **not** activate CQ unless CQ was requested.
+
+Keep two evidence types separate: inspected target skills/approved decisions support factual contract findings; conference sources support the review **perspective and further learning**. Show the original session topic, talk title, speaker and actual PDF/YouTube link directly in the report. Do not invent video URLs or claim conference takeaways are official standards. Read only applicable lenses, preserve independent skill operation, and avoid a second issue numbering scheme.
+
 ## Evidence, uncertainty and status
 
 Maintain three *separate axes*:

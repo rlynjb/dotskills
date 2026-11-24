@@ -57,6 +57,30 @@ Preserve standalone skill behavior; do not edit or execute.
 
 A `CLEAR` contract is a readable proposal—not a human-approved design or a tested integration.
 
+## Optional conference-derived Review Lenses and Further Reading
+
+**Default off.** This Stage 3 option parallels Stage 2's conference lenses, but evaluates **proposed integration contracts**, not the individual skills.
+
+- `review_lenses: relevant`: choose only lenses supported by actual target/IC context, explaining relevance.
+- `review_lenses: [context-engineering, security-and-trust]`: explicitly choose these lenses (also available: `reliability-and-workflow`, `evaluation-and-observability`, `lifecycle-and-portability`).
+- `quality_review: on` can run together with lenses. When both are enabled, **Section 5** shows Contract Quality Review Coverage first, Review Lens Coverage second, and **Conference Sources & Further Reading** third. A lens-only run does not imply CQ review took place.
+
+**Conference learning sources in the result:** The Further Reading table gives the **topic**, **talk title**, **speaker**, and **direct PDF link** for each relevant selected-lens source, plus a **YouTube session link only when matched** in the saved conference YouTube/PDF spreadsheet. This is a learning reference, not evidence that a target IC is correct, approved or enforced.
+
+```text
+Use skill-integration-contracts on:
+- skills/first-skill
+- skills/second-skill
+
+Stage 2 audit: [optional]
+quality_review: on
+review_lenses: relevant
+
+Draft minimal IC-xx proposals, show contract quality and lens coverage,
+then include sources by topic, title, speaker, PDF and matched YouTube.
+Keep the skills independent; do not edit or run anything.
+```
+
 ## How to read the report
 
 The seven stable headings are **Executive Summary**, **Current Skill Boundaries & Stage 2 Evidence**, **Proposed Interaction & Ownership Map**, **Proposed Integration Contract Cards**, **Cross-Cutting Guarantees & Trade-offs**, **Human Decision Ledger & Open Questions**, and **Stage 4 Implementation Handoff & Stage 5 Candidates**.
@@ -83,6 +107,7 @@ An optional coordinator contract is useful only when documented or expressly req
 - [`references/contract-design-guide.md`](references/contract-design-guide.md) — six relevant contract dimensions, explanations and trade-off questions.
 - [`references/report-template.md`](references/report-template.md) — copyable seven-section report, vertical IC/D cards, and optional CQ coverage table.
 - [`references/contract-quality-review-questions.md`](references/contract-quality-review-questions.md) — canonical CQ-01–CQ-06 and coverage rules.
+- [`references/review-lenses.md`](references/review-lenses.md) — five optional conference lenses with topics, speakers, PDF sources and matched YouTube links.
 - [`evals/evals.json`](evals/evals.json) — **defined scenarios/assertions, not evidence the skill was behaviorally evaluated**.
 
 The shared [Senior Engineer → Junior Developer Communication Guideline](../../docs/senior-engineer-mentoring-communication.md) supplies the common teaching style without adding more skill stages.

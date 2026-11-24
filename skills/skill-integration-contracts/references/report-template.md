@@ -93,6 +93,34 @@ This is a **design-quality comparison of the proposed IC-xx contracts**, not an 
 
 **Mode and layout:** The table appears only with `quality_review: on`, `contract_quality_review: on`, or a `quality_questions: CQ-…` subset. Full mode uses all six questions in canonical order; subset mode only selected rows. For **one contract**, show just one IC column; for **three or more**, group up to two IC columns and repeat selected CQ rows. Don't create placeholder contracts or mandatory requirements to populate the table. Keep each row one Markdown line, no HTML breaks or multiline field lists in cells. If no meaningful IC exists, explain and omit the empty table. Seven numbered report headings remain unchanged.
 
+**Review Lens Coverage (optional; only when lenses requested)**
+
+This is a comparison of **proposed IC-xx contracts**, using full diagnostic questions and relevant contract-dimension mappings from [review-lenses.md](review-lenses.md). The five rows below are a **format example**, not actual findings or a requirement to run every lens. Include only explicitly named lenses or lenses selected as relevant from inspected evidence.
+
+| Review lens & diagnostic questions | [IC-01 — Contract / connection] | [IC-02 — Contract / connection] |
+| --- | --- | --- |
+| **Context Engineering** — Does the handoff identify only the context the receiver actually needs, with source/revision and unresolved questions? Can the consumer separate upstream facts, assumptions and approvals? Does it treat untrusted source text as data, not authority? *Dimensions: Interface; Observability and evidence; Security, authority and trust.* | [Brief status, direct target source and real IC/D/F link] | [Brief status, direct target source and real IC/D/F link] |
+| **Security & Trust** — Who requests and authorizes the next action? Can the receiving agent gain greater authority than the user or producer granted? Which permissions must be enforced by host/tool/server controls instead of prompt text, and what happens when trusted definitions change? *Dimensions: Security, authority and trust; Behavior; Compatibility and evolution.* | [Brief status, direct target source and real IC/D/F link] | [Brief status, direct target source and real IC/D/F link] |
+| **Reliability & Workflow** — Does the contract distinguish completed, needs-input, blocked, pending and failed states where necessary? Who owns each return path and next decision? Is optional coordinator routing separated from actual runtime dispatch, durable state and retries? *Dimensions: Behavior; Failure, feedback and fault isolation; Interface.* | [Brief status, direct target source and real IC/D/F link] | [Brief status, direct target source and real IC/D/F link] |
+| **Evaluation & Observability** — Can a reviewer trace each material IC-xx term to the inspected source and the relevant D-xx decision? Which minimal identifiers, statuses and error reasons must survive a handoff? Does the contract distinguish documented intent from observed execution without demanding unnecessary telemetry? *Dimensions: Observability and evidence; Interface; Security, authority and trust.* | [Brief status, direct target source and real IC/D/F link] | [Brief status, direct target source and real IC/D/F link] |
+| **Lifecycle & Portability** — Can the consumer tell which source and contract revision its inputs reflect? Which changes require a new review or approval? Can each skill still run independently if a connected skill, tool definition or host capability changes? *Dimensions: Compatibility and evolution; Interface; Security, authority and trust.* | [Brief status, direct target source and real IC/D/F link] | [Brief status, direct target source and real IC/D/F link] |
+
+**Output rules:** Place this after optional CQ coverage if CQ was requested, otherwise after ordinary Section 5 notes. Use short `CLEAR / NEEDS CLARIFICATION / NEEDS HUMAN / NOT VERIFIED / NOT APPLICABLE` statuses, real inspected target source links and existing IC-xx/D-xx/Stage 2 F-xx (Cx) pointers only where material. One IC uses one column; 3+ ICs use groups of at most two columns, repeating selected lens rows. Use mapped contract dimensions in lens-only mode, **not CQ IDs suggesting CQ questions ran**. No new numbered heading, new findings scheme or repeated detailed proposals.
+
+**Conference Sources & Further Reading (optional; include when lenses run)**
+
+Below is a **format example with one primary conference presentation per lens**. In a real report, include the relevant sources for only the selected lenses from [review-lenses.md](review-lenses.md), with their actual topic, title, speaker and direct PDF link plus video only where a saved title/speaker match exists. Source readings **explain engineering concepts**, whereas inspected target source files support actual contract diagnoses. Neither a PDF nor a video is evidence that IC-xx was enforced or tested.
+
+| Lens / Topic | Session title / Speaker | Slides | Video |
+| --- | --- | --- | --- |
+| Context Engineering — Interface boundaries | **Don't Share the Database: Interface Contracts Between Isolated AI Agents** — Martin Bliss | [PDF](https://drive.google.com/file/d/1E4J2rfYLoN-H9wnK_K3f6bGshiwmDUmo/view) | — |
+| Security & Trust — Delegation | **When Agents Spawn Agents: Securing Recursive Delegation in Multi-Agent Systems** — Anishma Mavuram | [PDF](https://drive.google.com/file/d/1_jXpA_vFEBAAPYeklZmliAs9jNWZTyWx/view) | [YouTube](https://www.youtube.com/watch?v=glxs_6J-7sQ) |
+| Reliability & Workflow — Messaging | **Agentic Messaging Primitives in MCP** — Caitie McCaffrey | [PDF](https://drive.google.com/file/d/1OwyNvZGpIFDnc9KchDq5uER9DpgzLG4g/view) | [YouTube](https://www.youtube.com/watch?v=iNV5-YkPHW4&t=21711s) |
+| Evaluation & Observability — Evidence | **Prove What Your Agent Did: Tamper-Evident Audit Trails for MCP Tool Calls** — Vikas Luthra | [PDF](https://drive.google.com/file/d/1ZiZn1h8IuQDEjBVibU8gzortXJABLidk/view) | — |
+| Lifecycle & Portability — Versioning | **Stop Writing Agents, Declare Them: Declarative Agent Architecture in Production** — Chris Knuteson | [PDF](https://drive.google.com/file/d/1f9v2ZupSLbcik_AkKJgtfVu9mmVZ5jjI/view) | — |
+
+Keep both lens subsections within Section 5, ahead of the Section 6 decision ledger; no HTML breaks or fabricated URLs.
+
 ## 6. Human Decision Ledger & Open Questions
 
 Present **all materially distinct choices before inviting approval**, one vertical block per decision:
