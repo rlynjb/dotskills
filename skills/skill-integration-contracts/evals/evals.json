@@ -1003,6 +1003,37 @@
         "All five sections including instructional Stage 5 blocks and named cards explicitly based on proposal, approval unverified, NOT EXECUTED.",
         "Appropriate design clarification/correction before consequential change; separate execution authorization and no claim of approved-contract compliance."
       ]
+    },
+    {
+      "id": 64,
+      "prompt": "Run Stage 3 integration design for the supplied product-framing and evidence-refinement skills. Plan a meaningful optional forward handoff and a separately documented owner-reviewed reverse feedback route. The user wants each participating skill to own its own detailed handoff file. Specify the proposed filenames and folders for Stage 4; do not implement.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "The normal seven-section report maps each actual proposed route to IC-xx guarantees. Section 7 includes an explicitly proposed local handoff artifact plan for each relevant participating skill, with directional -handoff.md names inside their own references/ folders, distinct direction for separately documented reverse feedback, and local SKILL.md link/instruction changes. Existing vs new files and approval dependencies are explicit; no actual file or folder changes.",
+      "assertions": [
+        "Section 7 identifies owning skill, relative filename/path, CREATE/UPDATE/REUSE/NO NEW FILE status, real IC-xx, role/direction, contents, local links, and approval status.",
+        "Single-direction names end in -handoff.md and describe the actual producer-to-consumer direction; any separately documented reverse direction is distinct.",
+        "Both affected skills have local files as requested; core standalone and authority rules remain local and no mandatory shared dependency or circular import is introduced.",
+        "Existing suitable references are reused or revised rather than duplicated, and missing paths are marked planned, not created.",
+        "Stage 3 only designs; no target file is edited, created, renamed, or represented as implemented."
+      ]
+    },
+    {
+      "id": 65,
+      "prompt": "Design a minimal Stage 3 optional handoff for the supplied product-framing and evidence-refinement skills. It is a brief exchange; no separate reference files were requested. Explain the proposed documentation structure in Section 7 without creating any files.",
+      "files": [
+        "evals/files/product-framing/SKILL.md",
+        "evals/files/evidence-refinement/SKILL.md"
+      ],
+      "expected_output": "A minimal IC-xx proposal and per-skill artifact plan that may choose SKILL.md-only with an explicit no-new-file reason when sufficient. Separate files are proposed only if the actual complexity warrants them; if proposed, apply local directional filenames, paths, and approval statuses. No forced additional files.",
+      "assertions": [
+        "Artifact plan is present for the applicable connection, including owners, paths or no-new-file rationale and IC links.",
+        "No unnecessary reference files or mandatory shared dependency; standalone behavior stays complete.",
+        "New filenames if any follow Stage 3 naming and placement convention and are explicitly proposed, not created.",
+        "Seven-section report and human design approval boundaries are preserved."
+      ]
     }
   ]
 }
