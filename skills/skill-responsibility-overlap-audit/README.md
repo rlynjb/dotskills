@@ -94,25 +94,11 @@ When the audit finds handoff, boundary, or feedback issues, it may recommend **w
 
 If inspection shows a skill actually requires a partner's output, the report must **not** pretend it already supports standalone use. Changing a documented required dependency would be a separate design decision. Security or authorization rules may also require enforcement beyond documentation.
 
-### Where to document an optional handoff
+### Stage 2 focuses on cleaning up skill responsibilities
 
-**During Stage 2, recommend a *planned* `Optional Handoffs` note in each affected `SKILL.md`.** The core rules belong there: standalone inputs and outputs, what each skill owns, the possible future handoff direction, approval/permission limits, and feedback to the responsible human owner. Explicitly mark the connection **PLANNED / PROPOSED — NOT IMPLEMENTED**. The purpose is to communicate the integration *plan* to a future reviewer, not to assert that the skills have been integrated.
+The audit identifies missing, overlapping or ambiguous responsibilities, inputs, outputs, boundaries, and feedback. It may propose concise wording for an affected skill when a finding justifies it. If the connection is future work, label it **PLANNED / PROPOSED — NOT IMPLEMENTED**. Keep standalone behavior and human ownership intact.
 
-**Recommend an optional local reference as a potential Stage 3 artifact only when warranted** by substantial mapping rules, examples, conditional handoffs or conflict-resolution guidance. If it does not exist, label its path **PLANNED — NOT CREATED**. A skill may later point to **its own** reference, never require a shared file or another skill's installation to function. Prefer self-explanatory direction names:
-
-```text
-skills/
-├── prd-development/
-│   ├── SKILL.md
-│   └── references/
-│       └── prd-to-refinement-handoff.md     # Only if detailed
-└── refine-requirements/
-    ├── SKILL.md
-    └── references/
-        └── refinement-to-prd-handoff.md     # Only if detailed
-```
-
-This tree is **illustrative**, not a requirement to create files. No target skill files or handoff references are created by this audit. For a short connection, the two *proposed* `SKILL.md` notes are enough. Stage 3 will decide the actual integration contract and whether any proposed reference file is needed. Use `handoff` for one transition or `handoffs` for multiple transitions within a single file; inspect existing references before suggesting duplicates. The audit recommends file placement and wording **per affected skill**, but does not edit target skills or create their handoff files.
+**Defer integration design to Stage 3.** Do not decide handoff filenames, folder structure, file placement, links, new reference artifacts or interaction patterns in the audit. Existing paths may be cited as evidence, not as a proposed layout. [Skill Integration Contracts](../skill-integration-contracts/SKILL.md) designs those details; Stage 4 implements the approved plan. No target files are edited by the audit itself.
 
 ### When to recommend an optional coordinator skill
 
@@ -122,7 +108,7 @@ The audit now checks **whether multiple skills need more than an optional handof
 - **OPTIONAL COORDINATOR RECOMMENDED:** A requested combined workflow repeatedly needs to select a starting skill, sequence stages, retain source/requirement IDs and revisions, manage human-reviewed returns, or report the end-to-end result. Explain why that work should be owned in one optional entry-point skill rather than spread across the individual skills.
 - **DEFER / UNVERIFIED:** The coordination need, supporting source evidence or host execution capability is unclear.
 
-When warranted, the audit may propose a separate `skills/<workflow-goal>-workflow/SKILL.md` with a **router + short sequential workflow** concept. It would own only coordination: where to start, what context to carry, how to present the next action and who reviews proposed updates. It **must not** take over the individual skills' decisions or remove their standalone invocation. The audit compares this with the simpler manual/copyable-prompt route, and **does not create the coordinator** or claim Markdown alone guarantees runtime dispatch.
+When warranted, the audit may identify a separate optional coordination responsibility: choosing where to start, preserving context, presenting next actions and routing proposed updates to their owners. It **must not** take over the individual skills' decisions or remove their standalone invocation. Compare with the simpler manual/copyable-prompt route. Defer the specific pattern, entry-point filename, directory and contract to Stage 3. The audit **does not create the coordinator** or claim Markdown alone guarantees runtime dispatch.
 
 ## How this differs from other DotSkills skills
 
