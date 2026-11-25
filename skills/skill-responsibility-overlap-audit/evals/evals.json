@@ -124,34 +124,33 @@
     },
     {
       "id": 9,
-      "prompt": "Audit the synthetic brief-planning and evidence-refinement skills. There is only a brief optional PRD-context handoff and owner-reviewed feedback; recommend where the documentation should live. Do not edit files or draft contracts.",
+      "prompt": "Audit the synthetic brief-planning and evidence-refinement skills. There is only a brief optional context handoff and owner-reviewed feedback. Identify any skill responsibility or boundary clarification, even if asked where future handoff documentation should live. Do not edit files or design contracts or artifact placement.",
       "files": [
         "evals/files/brief-planning/SKILL.md",
         "evals/files/evidence-refinement/SKILL.md"
       ],
-      "expected_output": "For each skill, propose a short SKILL.md section containing standalone workflow and optional handoff rules. No unnecessary shared file or new references; proposals and rationale are explicit, and the counterpart need not be installed or invoked.",
+      "expected_output": "Each affected skill receives a concise evidence-based responsibility or boundary clarification when justified, preserving standalone inputs, outputs, authority, optional context and owner-reviewed feedback. Existing file references can support findings. New handoff filenames, locations, directory structure and file design are explicitly deferred to Stage 3.",
       "assertions": [
-        "Each affected skill has its own documentation placement recommendation, not one generic shared file.",
-        "Short optional connections default to SKILL.md only and explain why a reference is unnecessary.",
-        "Essential independent inputs, workflow, outputs, boundaries and feedback remain in each SKILL.md.",
-        "No automatic cross-skill invocation, implementation change or formal contract is proposed as completed.",
-        "The result retains side-by-side considerations and clear evidence/uncertainty distinctions."
+        "Per-skill recommendations address actual ownership, inputs/outputs or boundary problems, not file placement.",
+        "No new handoff filename, folder structure, required documentation section or reference artifact is prescribed.",
+        "Standalone behavior and optional context remain intact; no automatic invocation or completed implementation is claimed.",
+        "The core comparison layout and evidence/uncertainty distinctions remain intact."
       ]
     },
     {
       "id": 10,
-      "prompt": "Audit the supplied brief-planning and evidence-refinement skills and recommend documentation organization for a PROPOSED optional integration that would include eight context-field mappings, three conditional handoff scenarios, several examples, and reconciliation guidance. The extra details are proposals from the user, not present in the attached SKILL.md files. Provide per-skill placement recommendations only; do not create files or specify formal schemas.",
+      "prompt": "Audit the supplied brief-planning and evidence-refinement skills. The user proposes eight context-field mappings, three conditional handoff scenarios, several examples and reconciliation guidance and asks for directional handoff filenames and a folder tree. These proposed details are not present in the attached skills. Remain in Stage 2 investigation.",
       "files": [
         "evals/files/brief-planning/SKILL.md",
         "evals/files/evidence-refinement/SKILL.md"
       ],
-      "expected_output": "For each affected skill, keep core standalone/optional-handoff instructions in its SKILL.md, and conditionally recommend optional, locally owned references with directional names only where longer details warrant it (e.g. brief-planning/references/brief-to-refinement-handoff.md and evidence-refinement/references/refinement-to-brief-handoff.md). Distinguish source-evidenced behavior from user-proposed details; no mandatory shared file, formal contract or automatic invocation.",
+      "expected_output": "Assess the existing skills' inputs, outputs, responsibility boundaries and handoff/feedback gaps; distinguish user-proposed integration intent from inspected facts. Defer formal contracts, filenames, folder structure, file ownership/placement design and other artifact details to Stage 3 without drafting them.",
       "assertions": [
-        "Per-skill decision explicitly explains SKILL.md essentials versus optional reference for substantial details.",
-        "Proposed filenames identify direction and belong inside their respective owning skill packages.",
-        "No required shared file or cross-skill import is introduced.",
-        "Documentation and file paths are PROPOSED rather than represented as existing files.",
-        "Formal field schemas and executable integration behavior are deferred."
+        "Existing documented behavior and proposed integration intent are distinguished.",
+        "The audit identifies meaningful handoff/ownership/feedback issues without inventing new facts or formal fields.",
+        "No proposed handoff filename, new file, directory tree or placement recommendation is produced.",
+        "Stage 3 follow-up records material design questions rather than a premature design.",
+        "Standalone invocation and human approvals remain intact."
       ]
     },
     {
@@ -176,14 +175,15 @@
         "evals/files/brief-planning/SKILL.md",
         "evals/files/evidence-refinement/SKILL.md"
       ],
-      "expected_output": "The audit conditionally recommends a separate optional coordinator skill with routing followed by a short sequential workflow, names owned coordination responsibilities versus independent component responsibilities, compares copyable manual prompts, preserves human approvals, and labels runtime dispatch and the reported copy/paste problem as unverified where applicable.",
+      "expected_output": "The audit conditionally recommends investigating a separate optional coordination responsibility, identifies starting-point, sequencing, context and feedback needs versus component ownership, compares copyable manual prompts, preserves human approvals, and labels runtime dispatch and the reported copy/paste problem as unverified where applicable. Pattern selection, coordinator file naming and directory structure are deferred to Stage 3.",
       "assertions": [
         "Optional coordinator is separately invoked and never required for either skill's standalone entrypoint.",
         "It owns starting-point choice, sequence, context continuity, feedback/approval path, and completion summary—not product/refinement decisions.",
         "Human owner reviews proposed changes; no automatic rewriting or authorization is inferred.",
         "Manual invocation with copyable prompts is compared as an alternative.",
         "Host support, automatic dispatch, actual workflow execution and traces are NOT VERIFIED.",
-        "No coordinator SKILL.md or formal dispatch contract is created."
+        "No coordinator SKILL.md or formal dispatch contract is created.",
+        "No routing/orchestration pattern, coordinator filename or proposed directory structure is selected in Stage 2."
       ]
     },
     {
@@ -204,18 +204,17 @@
     },
     {
       "id": 14,
-      "prompt": "Audit two synthetic skills with a possible future optional handoff. This is Stage 2 Investigation; the user wants the person reading each skill to understand the integration plan, but explicitly says the skills are NOT yet integrated. An optional direction-specific handoff reference might be helpful later; no such file exists today. Show per-skill proposed documentation and the Stage 3 follow-up without editing targets.",
+      "prompt": "Audit two synthetic skills with a possible future optional handoff. The user explicitly says the skills are NOT yet integrated and asks about a possible direction-specific handoff reference; no such file exists today. Show per-skill responsibility clarifications and Stage 3 follow-up without designing artifacts or editing targets.",
       "files": [
         "evals/files/brief-planning/SKILL.md",
         "evals/files/evidence-refinement/SKILL.md"
       ],
-      "expected_output": "The assessment proposes a brief future Optional Handoffs note for each affected SKILL.md, preserves standalone invocation, marks future cross-skill connection PLANNED / PROPOSED — NOT IMPLEMENTED and NOT VERIFIED, names possible directional references only if useful and labels nonexistent files PLANNED — NOT CREATED, and lists unresolved Stage 3 design/contract questions without writing a contract or claiming integration.",
+      "expected_output": "The assessment preserves independent inputs, workflow and outputs; describes proposed handoff and feedback only to clarify responsibility/ownership issues; marks future integration PLANNED / PROPOSED — NOT IMPLEMENTED and NOT VERIFIED. It defers the reference filename, folder, layout and formal integration design to Stage 3, without claiming any new file exists.",
       "assertions": [
-        "Each affected skill has a separate proposed Optional Handoffs note and retains its own independent inputs, workflow, and outputs.",
-        "The intended handoff is clearly a plan, not an existing executed or contracted integration.",
-        "Missing optional handoff reference files are not falsely cited as existing or linked as if materialized.",
-        "A simple handoff can remain SKILL.md only instead of mandating another file.",
-        "Open contract, approval, and feedback decisions are deferred to Stage 3.",
+        "Per-skill proposed wording is evidence-backed when justified; independent inputs, workflow, and outputs remain intact.",
+        "The intended handoff is a plan, not an existing executed or contracted integration.",
+        "No proposed reference filenames, directory tree or placement rules are specified; nonexistent files are not falsely cited.",
+        "Open contract, naming, file placement, approval, and feedback design questions are deferred to Stage 3.",
         "No coordinator is built, no source file edited, and no automatic cross-skill invocation is claimed."
       ]
     },
