@@ -13,7 +13,7 @@ Invoke for requests such as "compare these skills' responsibilities," "find over
 
 **This skill owns:** an as-is responsibility assessment, cross-skill overlap classification, documented gaps, prioritized *proposals*, and open questions for humans.
 
-**This skill does not own:** finalized ownership decisions; formal input/output or other integration contracts; agent orchestration implementation; source edits; live execution; security enforcement; or eval grading. The original Q-01–Q-10 are now available here as an **optional review**, not a dependency on the legacy Audit Skill. [Evaluate Skill](../evaluate-skill/SKILL.md) and [Profile Agent Workflow](../profile-agent-workflow/SKILL.md) remain separate, permission-scoped capabilities for later behavioral evaluation and trace review. Do not invoke them automatically.
+**This skill does not own:** finalized ownership decisions; formal input/output or other integration contracts; handoff artifact naming, file/folder placement, directory structure or integration-pattern design; agent orchestration implementation; source edits; live execution; security enforcement; or eval grading. The original Q-01–Q-10 are now available here as an **optional review**, not a dependency on the legacy Audit Skill. [Evaluate Skill](../evaluate-skill/SKILL.md) and [Profile Agent Workflow](../profile-agent-workflow/SKILL.md) remain separate, permission-scoped capabilities for later behavioral evaluation and trace review. Do not invoke them automatically.
 
 ## Inputs and scope
 
@@ -156,7 +156,7 @@ Within each C1–C6 row, include only a short observation and any **F-xx · KEEP
 
 **Important:** This is a **recommendation for documentation**, not an automatic change to target skills. Do not presume standalone use already works if a skill currently documents a required dependency, and do not rewrite a truly mandatory safety or data prerequisite as optional. Report the actual documented dependency and mark any independence proposal as conditional on human design review. Do not manufacture an optional handoff when the skills are unrelated. A feedback or security issue may need controls beyond explanatory wording; identify those limits.
 
-Do not design schemas, preconditions, postconditions, invariants, retries, routing rules, runtime controls, or feedback orchestration here. Record unknowns rather than guessing.
+Do not design schemas, preconditions, postconditions, invariants, retries, routing rules, runtime controls, feedback orchestration, naming conventions, proposed handoff filenames, folder structures or artifact placement here. Record unknowns rather than guessing. Inspect and cite existing files as evidence; defer all new integration artifact design to Stage 3.
 
 ### Step 2 — Cross-skill responsibility and overlap analysis
 
@@ -185,23 +185,16 @@ Prioritize each actionable suggestion **High / Medium / Low** and include:
 - **Benefit / trade-off**, including a no-change option when intentional overlap is reasonable.
 - **Human confirmation required:** yes/no; identify the decision owner only if known.
 - **For relevant Handoff, Boundary, or Feedback issues:** include concise **per-skill optional-connection wording** as a *PROPOSED documentation change*: standalone entry and complete output; optional use of the partner's output; retained decision/authority boundaries; return of proposed updates/questions to the owner. Make the partner's corresponding wording explicit when both skills are affected. Link evidence and avoid making either skill mandatory or automatically invoked.
-- **Documentation placement and Stage 2 plan:** For each affected skill, recommend an explicit, short **planned Optional Handoffs note in its own SKILL.md**; include an optional, locally owned handoff reference **as a proposed artifact only when details justify it**. Clearly label the integration **PLANNED / PROPOSED — NOT IMPLEMENTED** and list what must be decided in Stage 3. Keep each skill's standalone rules complete.
+- **Investigation outcome and Stage 3 follow-up:** For each affected skill, state the responsibility, input/output, boundary or feedback clarification needed and why. If a future connection is suggested, mark it **PLANNED / PROPOSED — NOT IMPLEMENTED**. Identify unresolved integration-design questions without deciding documentation placement, filenames, folder structure or artifact layout. Keep standalone behavior intact.
 - **Optional coordinator decision for material combined-workflow issues:** assess whether a separately invoked routing/sequencing skill is warranted **after** checking simpler handoff documentation and copyable next actions. State NOT NEEDED, OPTIONAL COORDINATOR RECOMMENDED, or DEFER/UNVERIFIED with evidence; do not implement it.
 
 Keep proposals separate from documented facts.
 
-### Where optional handoff documentation belongs — recommendation only
+### Keep Stage 2 focused on skill cleanup
 
-Apply this **after** observing a material handoff, boundary, or feedback issue; do not create extra files by default.
+Identify and propose the smallest evidence-backed changes to clarify each skill's responsibilities, inputs, outputs, standalone behavior, boundaries, optional context and owner-reviewed feedback. Recommend concise per-skill wording when it resolves a finding; do not duplicate existing valid instructions. Existing file locations can be cited as evidence and wording can refer to an existing passage being corrected.
 
-1. **Propose an `Optional Handoffs` note in each affected skill's own `SKILL.md`:** summarize standalone starting inputs, full core workflow and outputs, distinct decision ownership, authorization/approval limits, and the **planned** optional handoff/feedback direction. If the source already has equivalent wording, recommend preserving or clarifying it instead of duplicating. The note must clearly say that the cross-skill path is **PLANNED / PROPOSED, not yet integrated**, and may be used only if a human or authorized workflow chooses it. The skill must remain understandable and independently usable without installing or reading another skill.
-2. **Prefer `SKILL.md` only for a concise connection:** if the issue can be resolved with short, clear instructions in each skill, recommend updating those existing files rather than introducing references.
-3. **Record the optional handoff reference as a *planned artifact* when useful:** propose a skill-local `references/` handoff file for substantial details, such as field mappings, examples, conditional cases or conflict handling. If a suitable file already exists, identify it accurately; otherwise explicitly mark the suggested file **PLANNED — NOT CREATED**. A simple connection can stay in `SKILL.md` with no new file. Keep essential rules in `SKILL.md`; a reference only supplements them and must not become a shared required dependency.
-4. **Make directional filenames self-documenting:** recommend `<source>-to-<destination>-handoff.md` (singular) for one transition, such as `prd-to-refinement-handoff.md`; use `handoffs` when one file intentionally covers several transitions. Put each proposed file under the owning skill's own `references/`, not in a mandatory cross-skill shared directory. For reverse feedback, use a distinct direction such as `refinement-to-prd-handoff.md`. Adapt names to the **actual** audited skills; illustrative names are not evidence of existing files.
-5. **Inspect before proposing new files:** if the skill already has a suitable reference, recommend updating or linking to it rather than creating a duplicate. Do not move core rules out of `SKILL.md`, create circular imports, or imply one skill automatically triggers another.
-6. **State the plan per affected skill:** `Proposed SKILL.md note:` the future optional connection, standalone behavior, and ownership; `Potential reference:` an existing confirmed file or `references/<direction>-handoff.md — PLANNED, NOT CREATED` when details warrant one; `Reason:` why that placement is appropriate; `Current status: PLANNED / PROPOSED — NOT IMPLEMENTED`; `Stage 3 follow-up:` the exact contracts, handoff fields, authorizations, feedback rules or verification questions left to design. If source layout cannot be verified, label paths illustrative.
-
-Keep this at the **documentation organization** level. Leave formal field contracts, invariants, runtime routing, enforcement, and implementation for later approved stages. No target file or repository change is authorized by running this audit. Do not finalize ownership or architecture decisions, even when a suggestion seems obvious.
+Do not propose a new handoff file, filename convention, folder tree, documentation location, link structure or integration pattern. Record the affected skills, material exchange/ownership concerns and open questions for Stage 3 instead. **Stage 3 — Skill Integration Contracts** owns technical interaction design and handoff artifact naming, ownership, directory placement and local links. Stage 4 implements approved changes. The audit itself stays read-only.
 
 ### Optional coordinator skill — conditional recommendation only
 
@@ -214,10 +207,10 @@ Use a small decision rule, backed by evidence:
 
 When recommending one, include a **brief proposed responsibility boundary**, not a complete coordinator implementation:
 
-- **Proposed entry point:** An optional, explicitly chosen combined workflow (e.g. `skills/<workflow-goal>-workflow/SKILL.md`), *in addition to* invoking each existing skill alone. This path and any suggested name are illustrative until reviewed.
+- **Potential need:** An optional, explicitly chosen combined workflow in addition to each existing skill's standalone invocation. Defer the entry-point name, directory and structure to Stage 3.
 - **What it owns:** Decide where the combined flow starts based on supplied context; present the next skill/action; coordinate the intended order; preserve source links, document/version identifiers, requirement IDs, findings and open questions; route proposed changes back to the responsible owner; surface human approval stops; summarize results and unresolved items.
 - **What it does NOT own:** Product/technical decisions belonging to component skills, rewriting an upstream artifact without owner authorization, bypassing a user's explicit choice or approval, silently making a skill mandatory, or claiming runtime/tool/permission enforcement.
-- **Suggested pattern:** Prefer **routing followed by a short sequential workflow** for a simple PRD → refinement → owner-reviewed update loop. Consider a worker-agent supervisor only if independently justified; reserve a state machine or durable executor for real multi-session recovery and retry requirements. Do not prescribe an orchestrator framework in this audit.
+- **Defer pattern selection:** Describe the actual coordination burden and required capability, not a preferred routing, orchestration, supervisor or state-machine design. Stage 3 evaluates and selects a suitable pattern.
 - **Execution reality:** A coordinator `SKILL.md` contains instructions, not proof of automatic dispatch, durability or multi-agent support. Mark unsupported execution claims NOT VERIFIED; ordinary absence of traces belongs in evidence limits, not a generic F-xx VERIFY or coordinator recommendation.
 - **Alternative and trade-off:** Compare with manual, user-driven invocation using copyable prompts and optional handoff files. State the extra maintenance and possible misrouting risk of adding another skill. Keep the smallest adequate design.
 
@@ -277,10 +270,10 @@ Use these seven headings, in order:
 
 For four or more skills, use comparable groups of two or three skill columns with a synthesis covering all selected skills. For one skill, use consideration-first vertical assessment blocks. If tables are unsupported, use consideration-first blocks with clear per-skill labels instead of malformed tables.
 
-For C4–C6, preserve the planned optional handoffs, independent ownership, and owner-reviewed feedback. Label unimplemented plans **PLANNED / PROPOSED — NOT IMPLEMENTED**, and proposed missing references **PLANNED — NOT CREATED**. Consider a coordinator only if justified; design contracts in Stage 3. Use the [report template](references/report-template.md) as layout guidance, not evidence.
+For C4–C6, preserve independent ownership, optional context and owner-reviewed feedback. Label unimplemented connections **PLANNED / PROPOSED — NOT IMPLEMENTED**. Identify missing documentation as a finding only when material, without inventing new filenames or paths. Consider a coordination need only if justified; design contracts, interaction patterns and handoff artifact structure in Stage 3. Use the [report template](references/report-template.md) as layout guidance, not evidence.
 
 ## Completion boundary
 
 Deliver the investigation report in one bounded pass. Human owners may approve, revise, reject, or defer recommendations in a later discussion. No design is approved by this report.
 
-**Next stage:** separate *Skill Integration Contracts* work should define any agreed input/output schemas, pre/postconditions, invariants, failure behavior, observability, security, compatibility and feedback rules **only after** the responsibility investigation has informed those choices.
+**Next stage:** separate *Skill Integration Contracts* work should define any agreed input/output schemas, pre/postconditions, invariants, failure behavior, observability, security, compatibility, feedback rules, applicable interaction patterns and handoff artifact naming/folder placement **only after** the responsibility investigation has informed those choices.
