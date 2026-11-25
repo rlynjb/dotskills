@@ -224,6 +224,32 @@ Use lightweight RFC-inspired **MUST / MUST NOT / SHOULD / MAY** wording for mean
 
 **Status guidance:** PROPOSED means suggested, CONDITIONAL — NEEDS HUMAN means dependent on an unresolved ownership/permission decision, APPROVED — DESIGN ONLY means a human explicitly accepted an exact design version. None imply that integration is implemented or the agent actually ran.
 
+## Handoff artifact design — Stage 3
+
+Stage 2 investigates existing skills and proposes responsibility clarifications; **Stage 3 decides the handoff filenames, folder placement and local ownership**. Section 7 carries the concrete artifact plan into Stage 4 after human design approval.
+
+- Keep essential standalone behavior and concise handoff rules in each skill's own `SKILL.md`. Plan local references for substantial handoff details, or when the user requests separate files for affected skills; a simple connection can otherwise remain in `SKILL.md` with a reason.
+- Use `references/<source>-to-<destination>-handoff.md` for a single direction; use a descriptive `-handoffs.md` suffix for a genuinely multi-transition file. Reverse feedback gets its own direction when separately documented.
+- Inspect existing references, reuse suitable files, and avoid mandatory shared files or cross-skill imports. Each participating skill owns its own instructions. Keep producer/consumer role-specific content consistent with the associated IC-xx.
+- In Section 7, provide owner, path, CREATE / UPDATE / REUSE / NO NEW FILE, linked IC-xx, role, contents, local link changes and design approval status. Use an illustrative directory tree when useful.
+
+For example, when separate files are justified or requested:
+
+```text
+skills/
+  skill-a/
+    SKILL.md
+    references/
+      skill-a-to-skill-b-handoff.md
+  skill-b/
+    SKILL.md
+    references/
+      skill-a-to-skill-b-handoff.md
+      skill-b-to-skill-a-handoff.md  # only if reverse feedback applies
+```
+
+These are illustrative, proposed paths. Existing files must be inspected before reuse, revision or a proposed rename. **Stage 3 does not create folders or files, edit skills or implement routing.** Stage 4 implements the approved plan.
+
 ## How to keep it flexible
 
 **A handoff contract governs the connection, not every internal reasoning step.** If a skill accepts a feature idea independently and can optionally use a PRD, the contract must not quietly turn the PRD into a mandatory prerequisite. True safety/data requirements remain mandatory.
