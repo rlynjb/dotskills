@@ -160,7 +160,7 @@ For each real overlap, align the involved skills and reference the originating *
 - **Finding:** [F-xx, C1–C6, affected skill and assessment; refer to the vertical finding note rather than repeating its fields or recommended wording.]
 - **Proposed change:** [Ownership/documentation proposal only; when appropriate, cite the per-skill proposed optional handoff, boundary, and feedback wording from section 2.]
 - **Standalone integrity:** [Does each skill retain its own inputs, outputs and workflow? If not evidenced, what needs human confirmation?]
-- **Documentation location:** [Per affected skill: proposed `Optional Handoffs` note in `SKILL.md`, plus a potential optional, directionally named local reference only if warranted; say whether that file actually exists.]
+- **Skill cleanup:** [Per affected skill: evidence-backed responsibility, input/output, boundary or feedback clarification; cite existing passages when relevant. Do not prescribe new filenames, directories, reference artifacts or placement.]
 - **Planning status / Stage 3:** [PLANNED / PROPOSED — NOT IMPLEMENTED. Identify what Stage 3 must agree before any integration claim.]
 - **Benefit / trade-off:** [Including cost of change.]
 - **Human confirmation:** [Required? Who, if known?]
@@ -172,9 +172,9 @@ For each real overlap, align the involved skills and reference the originating *
 - **Simpler alternative:** [Existing optional handoffs and copyable next-action prompts; why sufficient or insufficient.]
 - **Minimal coordinator role (only if recommended):** [Separately invoked workflow entry point; selects starting stage, sequences optional steps, carries references/IDs/revisions/open questions, routes proposed changes for human review, reports completion.]
 - **Non-ownership:** [Underlying skills retain their own inputs, outputs, domain decisions and standalone invocation. Coordinator does not silently rewrite, approve, or run them.]
-- **Suggested pattern (only if recommended):** [Router + sequential workflow by default, or evidence-based alternative. Do not design a dispatch contract here.]
+- **Deferred design questions (only if recommended):** [Specific coordination needs or constraints that Stage 3 must address; do not select a routing/orchestration pattern or design an entry-point artifact here.]
 - **Trade-off and validation:** [Added complexity, potential misrouting, availability of host/manual invocations and unknown runtime enforcement; actual multi-skill execution remains UNVERIFIED without traces.]
-- **Human confirmation:** [Whether to investigate a separate optional `skills/<workflow-goal>-workflow/SKILL.md` in later stages, not permission to create it.]
+- **Human confirmation:** [Whether to investigate a separate optional coordination responsibility in later stages, not approval of a pattern or permission to create a file.]
 
 If simple handoffs suffice, state **NOT NEEDED** with one reason; do not fill a long coordinator template. If facts are missing, **DEFER** and name the evidence needed. Do not create the coordinator skill in this audit.
 
@@ -185,7 +185,7 @@ If simple handoffs suffice, state **NOT NEEDED** with one reason; do not fill a 
 ## 7. Deferred Items for Integration-Contract Design
 
 **Contract design questions — Stage 3 (when justified)**
-- [Related F-xx/Cx; affected skill(s); unresolved handoff, guarantee, authorization, feedback, version or failure question; human decision needed. Do not draft the contract.]
+- [Related F-xx/Cx; affected skill(s); unresolved handoff, guarantee, authorization, feedback, version or failure question; human decision needed. Defer contract drafting, naming conventions, artifact placement, directory structure and applicable interaction-pattern design to Stage 3.]
 - [For an optional coordinator proposal, note future routing, context preservation, approvals and host compatibility as open design questions.]
 
 **Validation candidates — Stage 5 (PROPOSED, NOT EXECUTED; only when materially justified or explicitly requested)**
